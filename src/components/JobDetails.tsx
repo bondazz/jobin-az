@@ -61,7 +61,7 @@ const JobDetails = ({ job }: JobDetailsProps) => {
     <div className="h-full overflow-y-auto bg-gradient-to-br from-job-details to-primary/3">
       {/* Hero Section with Company Logo */}
       <div className="relative h-48 bg-gradient-to-r from-primary via-primary/80 to-accent overflow-hidden">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.05"%3E%3Ccircle cx="30" cy="30" r="4"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] bg-repeat"></div>
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23ffffff\" fill-opacity=\"0.05\"%3E%3Ccircle cx=\"30\" cy=\"30\" r=\"4\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] bg-repeat"></div>
         
         {/* Company Logo in Center */}
         <div className="absolute inset-0 flex items-center justify-center">
@@ -71,16 +71,6 @@ const JobDetails = ({ job }: JobDetailsProps) => {
             </span>
           </div>
         </div>
-
-        {/* Premium Badge */}
-        {job.tags.includes('premium') && (
-          <div className="absolute top-4 right-4">
-            <Badge variant="premium" className="text-sm px-3 py-1.5 shadow-lg">
-              <Star className="w-4 h-4 mr-1 fill-current" />
-              Premium
-            </Badge>
-          </div>
-        )}
       </div>
 
       <div className="p-6 space-y-6">
