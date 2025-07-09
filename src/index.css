@@ -8,67 +8,67 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 98%;
-    --foreground: 0 0% 10%;
+    --background: 250 248 255;
+    --foreground: 42 0 78;
 
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 10%;
+    --card: 255 255 255;
+    --card-foreground: 42 0 78;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 10%;
+    --popover: 255 255 255;
+    --popover-foreground: 42 0 78;
 
-    --primary: 23 100% 50%;
-    --primary-foreground: 0 0% 100%;
-    --primary-hover: 23 100% 45%;
-    --primary-light: 23 100% 60%;
+    --primary: 241 74 0;
+    --primary-foreground: 255 255 255;
+    --primary-hover: 198 35 0;
+    --primary-light: 255 102 51;
 
-    --secondary: 211 56% 30%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 80 0 115;
+    --secondary-foreground: 255 255 255;
 
-    --muted: 0 0% 95%;
-    --muted-foreground: 0 0% 45%;
+    --muted: 248 246 252;
+    --muted-foreground: 120 113 132;
 
-    --accent: 23 100% 50%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 198 35 0;
+    --accent-foreground: 255 255 255;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 220 38 38;
+    --destructive-foreground: 255 255 255;
 
-    --success: 142 76% 36%;
-    --success-foreground: 0 0% 100%;
+    --success: 22 163 74;
+    --success-foreground: 255 255 255;
 
-    --warning: 45 93% 47%;
-    --warning-foreground: 0 0% 0%;
+    --warning: 245 158 11;
+    --warning-foreground: 255 255 255;
 
-    --border: 0 0% 90%;
-    --input: 0 0% 95%;
-    --ring: 23 100% 50%;
+    --border: 230 224 236;
+    --input: 248 246 252;
+    --ring: 241 74 0;
 
     --radius: 0.75rem;
 
     /* Job board specific tokens */
-    --job-card: 0 0% 100%;
-    --job-card-alt: 0 0% 98%;
-    --job-tag-premium: 23 100% 50%;
-    --job-tag-new: 45 93% 47%;
-    --job-tag-urgent: 0 84% 60%;
-    --job-sidebar: 0 0% 98%;
-    --job-details: 0 0% 100%;
+    --job-card: 255 255 255;
+    --job-card-alt: 252 250 255;
+    --job-tag-premium: 241 74 0;
+    --job-tag-new: 245 158 11;
+    --job-tag-urgent: 198 35 0;
+    --job-sidebar: 250 248 255;
+    --job-details: 255 255 255;
     
     /* Enhanced Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(25 100% 50%), hsl(25 100% 40%));
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(210 40% 98%));
-    --gradient-premium: linear-gradient(135deg, hsl(25 100% 50%), hsl(210 53% 25%));
-    --gradient-hero: linear-gradient(135deg, hsl(25 100% 50%) 0%, hsl(210 53% 25%) 50%, hsl(210 56% 17%) 100%);
-    --gradient-surface: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(210 40% 98%) 100%);
-    --gradient-background: linear-gradient(135deg, hsl(210 56% 17%) 0%, hsl(210 53% 25%) 50%, hsl(25 100% 50%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(16 100% 47%), hsl(8 91% 39%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(252 100% 99%));
+    --gradient-premium: linear-gradient(135deg, hsl(16 100% 47%), hsl(285 100% 23%));
+    --gradient-hero: linear-gradient(135deg, hsl(16 100% 47%) 0%, hsl(8 91% 39%) 50%, hsl(285 100% 15%) 100%);
+    --gradient-surface: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(252 100% 98%) 100%);
+    --gradient-background: linear-gradient(135deg, hsl(285 100% 15%) 0%, hsl(285 100% 23%) 50%, hsl(16 100% 47%) 100%);
     
     /* Enhanced Shadows */
-    --shadow-card: 0 1px 3px 0 hsl(210 56% 17% / 0.1), 0 1px 2px -1px hsl(210 56% 17% / 0.1);
-    --shadow-card-hover: 0 10px 25px -3px hsl(210 56% 17% / 0.1), 0 4px 6px -2px hsl(210 56% 17% / 0.05);
-    --shadow-elegant: 0 20px 25px -5px hsl(25 100% 50% / 0.15), 0 10px 10px -5px hsl(25 100% 50% / 0.08);
-    --shadow-glow: 0 0 40px hsl(25 100% 50% / 0.2);
-    --shadow-premium: 0 0 30px hsl(25 100% 50% / 0.3);
+    --shadow-card: 0 1px 3px 0 hsl(285 100% 15% / 0.1), 0 1px 2px -1px hsl(285 100% 15% / 0.1);
+    --shadow-card-hover: 0 10px 25px -3px hsl(285 100% 15% / 0.1), 0 4px 6px -2px hsl(285 100% 15% / 0.05);
+    --shadow-elegant: 0 20px 25px -5px hsl(16 100% 47% / 0.15), 0 10px 10px -5px hsl(16 100% 47% / 0.08);
+    --shadow-glow: 0 0 40px hsl(16 100% 47% / 0.2);
+    --shadow-premium: 0 0 30px hsl(16 100% 47% / 0.3);
 
     /* Transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -94,65 +94,65 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 211 85% 6%;
-    --foreground: 0 0% 95%;
+    --background: 24 0 38;
+    --foreground: 250 248 255;
 
-    --card: 211 56% 17%;
-    --card-foreground: 0 0% 95%;
+    --card: 42 0 78;
+    --card-foreground: 250 248 255;
 
-    --popover: 211 56% 17%;
-    --popover-foreground: 0 0% 95%;
+    --popover: 42 0 78;
+    --popover-foreground: 250 248 255;
 
-    --primary: 23 100% 50%;
-    --primary-foreground: 0 0% 100%;
-    --primary-hover: 23 100% 60%;
-    --primary-light: 23 100% 70%;
+    --primary: 241 74 0;
+    --primary-foreground: 255 255 255;
+    --primary-hover: 255 102 51;
+    --primary-light: 255 138 91;
 
-    --secondary: 211 56% 30%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 80 0 115;
+    --secondary-foreground: 255 255 255;
 
-    --muted: 211 85% 8%;
-    --muted-foreground: 0 0% 60%;
+    --muted: 60 0 95;
+    --muted-foreground: 180 160 200;
 
-    --accent: 23 100% 50%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 198 35 0;
+    --accent-foreground: 255 255 255;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 220 38 38;
+    --destructive-foreground: 255 255 255;
 
-    --success: 142 76% 36%;
-    --success-foreground: 0 0% 100%;
+    --success: 22 163 74;
+    --success-foreground: 255 255 255;
 
-    --warning: 45 93% 47%;
-    --warning-foreground: 0 0% 0%;
+    --warning: 245 158 11;
+    --warning-foreground: 255 255 255;
 
-    --border: 211 56% 20%;
-    --input: 211 56% 17%;
-    --ring: 23 100% 50%;
+    --border: 80 0 115;
+    --input: 60 0 95;
+    --ring: 241 74 0;
 
     /* Dark mode job tokens */
-    --job-card: 211 56% 17%;
-    --job-card-alt: 211 56% 20%;
-    --job-tag-premium: 23 100% 50%;
-    --job-tag-new: 45 93% 47%;
-    --job-tag-urgent: 0 84% 60%;
-    --job-sidebar: 211 85% 6%;
-    --job-details: 211 56% 17%;
+    --job-card: 42 0 78;
+    --job-card-alt: 60 0 95;
+    --job-tag-premium: 241 74 0;
+    --job-tag-new: 245 158 11;
+    --job-tag-urgent: 198 35 0;
+    --job-sidebar: 24 0 38;
+    --job-details: 42 0 78;
     
     /* Dark mode gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(25 100% 50%), hsl(25 100% 40%));
-    --gradient-card: linear-gradient(145deg, hsl(210 56% 17%), hsl(210 53% 25%));
-    --gradient-premium: linear-gradient(135deg, hsl(25 100% 50%), hsl(210 53% 25%));
-    --gradient-hero: linear-gradient(135deg, hsl(25 100% 50%) 0%, hsl(210 53% 25%) 50%, hsl(0 0% 0%) 100%);
-    --gradient-surface: linear-gradient(145deg, hsl(210 56% 17%) 0%, hsl(210 53% 25%) 100%);
-    --gradient-background: linear-gradient(135deg, hsl(0 0% 0%) 0%, hsl(210 53% 25%) 50%, hsl(25 100% 50%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(16 100% 47%), hsl(8 91% 39%));
+    --gradient-card: linear-gradient(145deg, hsl(285 100% 15%), hsl(285 100% 19%));
+    --gradient-premium: linear-gradient(135deg, hsl(16 100% 47%), hsl(285 100% 23%));
+    --gradient-hero: linear-gradient(135deg, hsl(16 100% 47%) 0%, hsl(8 91% 39%) 50%, hsl(285 100% 7%) 100%);
+    --gradient-surface: linear-gradient(145deg, hsl(285 100% 15%) 0%, hsl(285 100% 19%) 100%);
+    --gradient-background: linear-gradient(135deg, hsl(285 100% 7%) 0%, hsl(285 100% 15%) 50%, hsl(16 100% 47%) 100%);
     
     /* Dark mode shadows */
-    --shadow-card: 0 1px 3px 0 hsl(0 0% 0% / 0.3), 0 1px 2px -1px hsl(0 0% 0% / 0.2);
-    --shadow-card-hover: 0 10px 25px -3px hsl(0 0% 0% / 0.3), 0 4px 6px -2px hsl(0 0% 0% / 0.2);
-    --shadow-elegant: 0 20px 25px -5px hsl(25 100% 50% / 0.2), 0 10px 10px -5px hsl(25 100% 50% / 0.1);
-    --shadow-glow: 0 0 40px hsl(25 100% 50% / 0.25);
-    --shadow-premium: 0 0 30px hsl(25 100% 50% / 0.4);
+    --shadow-card: 0 1px 3px 0 hsl(285 100% 5% / 0.3), 0 1px 2px -1px hsl(285 100% 5% / 0.2);
+    --shadow-card-hover: 0 10px 25px -3px hsl(285 100% 5% / 0.3), 0 4px 6px -2px hsl(285 100% 5% / 0.2);
+    --shadow-elegant: 0 20px 25px -5px hsl(16 100% 47% / 0.2), 0 10px 10px -5px hsl(16 100% 47% / 0.1);
+    --shadow-glow: 0 0 40px hsl(16 100% 47% / 0.25);
+    --shadow-premium: 0 0 30px hsl(16 100% 47% / 0.4);
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
