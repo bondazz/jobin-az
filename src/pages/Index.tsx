@@ -4,6 +4,7 @@ import { Job } from '@/types/job';
 import JobListings from '@/components/JobListings';
 import JobDetails from '@/components/JobDetails';
 import MobileMenu from '@/components/MobileMenu';
+import BottomNavigation from '@/components/BottomNavigation';
 
 const Index = () => {
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
@@ -40,9 +41,9 @@ const Index = () => {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex min-w-0 pt-16 lg:pt-0">
+      <div className="flex-1 flex min-w-0 pt-16 lg:pt-0 pb-16 lg:pb-0">
         {/* Job Listings - Responsive Column */}
-        <div className="w-full lg:w-[650px] xl:w-[680px] border-r border-border animate-fade-in">
+        <div className="w-full lg:w-[400px] xl:w-[450px] border-r border-border animate-fade-in">
           <JobListings
             selectedJob={selectedJob}
             onJobSelect={handleJobSelect}
@@ -71,6 +72,12 @@ const Index = () => {
           <JobDetails job={selectedJob} />
         </div>
       )}
+
+      {/* Bottom Navigation - Mobile Only */}
+      <BottomNavigation 
+        selectedCategory={selectedCategory}
+        onCategorySelect={handleCategorySelect}
+      />
     </div>
   );
 };

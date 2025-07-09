@@ -69,6 +69,10 @@ const JobListings = ({ selectedJob, onJobSelect, selectedCategory }: JobListings
     return categoryMap[category] || category;
   };
 
+  // Daily and monthly job statistics
+  const dailyJobCount = 127;
+  const monthlyJobCount = 3420;
+
   return (
     <div className="flex-1 flex flex-col h-full bg-background">
       {/* Search Header */}
@@ -76,7 +80,7 @@ const JobListings = ({ selectedJob, onJobSelect, selectedCategory }: JobListings
         <div className="space-y-4">
           <div className="flex items-center gap-3">
             <div className="relative">
-              <h2 className="text-xl font-bold bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
+              <h2 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
                 {selectedCategory ? `${getCategoryLabel(selectedCategory)} İşləri` : 'Bütün İşlər'}
               </h2>
               <div className="absolute -bottom-0.5 left-0 w-full h-0.5 bg-gradient-primary rounded-full"></div>
@@ -88,8 +92,20 @@ const JobListings = ({ selectedJob, onJobSelect, selectedCategory }: JobListings
               {filteredJobs.length}
             </Badge>
           </div>
+
+          {/* Statistics */}
+          <div className="flex gap-4 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-primary">{dailyJobCount}</span>
+              <span>günlük yeni ilan</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-primary">{monthlyJobCount}</span>
+              <span>aylıq ilan</span>
+            </div>
+          </div>
           
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1 group">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors duration-300" />
               <Input
@@ -105,7 +121,7 @@ const JobListings = ({ selectedJob, onJobSelect, selectedCategory }: JobListings
                 placeholder="Məkan"
                 value={locationFilter}
                 onChange={(e) => setLocationFilter(e.target.value)}
-                className="pl-10 pr-3 py-2.5 w-40 bg-background/80 backdrop-blur-sm border-border/50 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all duration-300 text-sm"
+                className="pl-10 pr-3 py-2.5 w-full sm:w-40 bg-background/80 backdrop-blur-sm border-border/50 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all duration-300 text-sm"
               />
             </div>
             <Button 
@@ -121,22 +137,22 @@ const JobListings = ({ selectedJob, onJobSelect, selectedCategory }: JobListings
 
       {/* Job List */}
       <div className="flex-1 overflow-y-auto p-2 bg-gradient-to-b from-transparent to-primary/5">
-        <div className="flex flex-col gap-2 justify-center items-center">
+        <div className="flex flex-col gap-2 justify-center items-center max-w-full">
           {filteredJobs.length > 0 ? (
             filteredJobs.map((job, index) => (
-              <div key={`job-${job.id}`}>
+              <div key={`job-${job.id}`} className="w-full max-w-[620px]">
                 {/* Advertisement Banner every 6 jobs */}
                 {index > 0 && index % 6 === 0 && (
-                  <div className="w-[620px] h-[100px] bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 rounded-xl mb-2 flex items-center justify-center animate-fade-in">
+                  <div className="w-full h-[100px] bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 rounded-xl mb-2 flex items-center justify-center animate-fade-in">
                     <div className="text-center">
                       <p className="text-sm font-bold text-primary">Reklam Yeri</p>
-                      <p className="text-xs text-muted-foreground">620x100px Banner</p>
+                      <p className="text-xs text-muted-foreground">Banner Reklamı</p>
                     </div>
                   </div>
                 )}
                 
                 <div 
-                  className="animate-fade-in"
+                  className="animate-fade-in w-full"
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
                   <JobCard

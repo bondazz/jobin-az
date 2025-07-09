@@ -1,290 +1,241 @@
+
 import { Job } from '@/types/job';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { 
   MapPin, 
   Calendar, 
-  Eye, 
-  Briefcase,
-  Users,
+  Users, 
+  Clock, 
+  Building, 
   Star,
+  Share2,
+  Bookmark,
+  Eye,
+  DollarSign,
+  Globe,
   Mail,
-  Check
+  Phone
 } from 'lucide-react';
-import PremiumIcon from '@/components/ui/premium-icon';
 import VerifyBadge from '@/components/ui/verify-badge';
-import { useState } from 'react';
 
 interface JobDetailsProps {
   job: Job | null;
 }
 
 const JobDetails = ({ job }: JobDetailsProps) => {
-  const [emailCopied, setEmailCopied] = useState(false);
-
   if (!job) {
     return (
-      <div className="h-full flex items-center justify-center text-muted-foreground bg-gradient-to-br from-background to-primary/10">
-        <div className="text-center animate-fade-in">
-          <div className="relative mb-6">
-            <Briefcase className="w-16 h-16 md:w-20 md:h-20 mx-auto opacity-30" />
-            <div className="absolute inset-0 bg-primary/10 rounded-full blur-2xl"></div>
+      <div className="h-full flex items-center justify-center bg-gradient-to-br from-job-details to-primary/3">
+        <div className="text-center p-8 animate-fade-in">
+          {/* 500x500px Banner Advertisement */}
+          <div className="w-[500px] h-[500px] bg-gradient-to-br from-primary/20 to-accent/20 border-2 border-dashed border-primary/30 rounded-xl flex items-center justify-center mx-auto mb-6">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Star className="w-8 h-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-bold text-primary mb-2">Reklam Yeri</h3>
+              <p className="text-muted-foreground text-sm">500x500px Banner Reklamı</p>
+              <p className="text-muted-foreground text-xs mt-2">İlana toxunduqda bu yerə iş təfərrüatları gələcək</p>
+            </div>
           </div>
-          <h3 className="text-lg md:text-xl font-semibold text-foreground mb-2">Təfərrüat üçün iş seçin</h3>
-          <p className="text-sm md:text-base text-muted-foreground">Tam məlumat üçün hər hansı iş elanına klikləyin</p>
+          
+          <div className="space-y-3">
+            <h2 className="text-2xl font-bold text-foreground">İş Təfərrüatları</h2>
+            <p className="text-muted-foreground max-w-md mx-auto">
+              Hərhansı bir iş elanına toxunaraq təfərrüatlı məlumat əldə edə bilərsiniz
+            </p>
+          </div>
         </div>
       </div>
     );
   }
-
-  const getJobTypeLabel = (type: string) => {
-    switch (type) {
-      case 'full-time':
-        return 'Tam zamanlı';
-      case 'part-time':
-        return 'Yarım zamanlı';
-      case 'contract':
-        return 'Müqavilə';
-      case 'internship':
-        return 'Təcrübə';
-      default:
-        return type;
-    }
-  };
-
-  const convertSalaryToAZN = (salary?: string) => {
-    if (!salary) return null;
-    return salary.replace(/\$(\d+)/g, (match, amount) => {
-      const aznAmount = Math.round(parseFloat(amount) * 1.7);
-      return `${aznAmount} ₼`;
-    });
-  };
 
   const isVerifiedCompany = (company: string) => {
     const verifiedCompanies = ['Google', 'Apple', 'Microsoft', 'Meta', 'Amazon', 'Netflix', 'Tesla', 'Spotify'];
     return verifiedCompanies.includes(company);
   };
 
-  const handleApplyClick = () => {
-    const email = 'hr@jooble.az';
-    const subject = `${job.title} vəzifəsinə müraciət`;
-    const body = `Salam,\n\n${job.company} şirkətindəki ${job.title} vəzifəsinə müraciət etmək istəyirəm.\n\nHörmətlə,`;
-    
-    const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.location.href = mailtoLink;
-    
-    // Copy email to clipboard
-    navigator.clipboard.writeText(email).then(() => {
-      setEmailCopied(true);
-      setTimeout(() => setEmailCopied(false), 2000);
-    });
-  };
-
-  // Filter to only show premium tags
-  const premiumTags = job.tags.filter(tag => tag === 'premium');
-
   return (
-    <div className="relative h-full overflow-y-auto bg-gradient-to-br from-job-details to-primary/5">
-      {/* Hero Background Section */}
-      <div className="relative h-48 md:h-64 bg-gradient-background overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background"></div>
+    <div className="h-full overflow-y-auto bg-gradient-to-br from-job-details to-primary/3">
+      {/* Hero Section with Company Logo */}
+      <div className="relative h-48 bg-gradient-to-r from-primary via-primary/80 to-accent overflow-hidden">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.05"%3E%3Ccircle cx="30" cy="30" r="4"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] bg-repeat"></div>
         
-        {/* Company Logo - Centered */}
+        {/* Company Logo in Center */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className={`w-20 h-20 md:w-24 md:h-24 rounded-3xl flex items-center justify-center text-white font-bold text-2xl md:text-3xl shadow-elegant backdrop-blur-sm ${
-            job.tags.includes('premium') ? 'bg-gradient-premium' : 'bg-gradient-primary'
-          }`}>
-            {job.company.charAt(0)}
+          <div className="w-24 h-24 rounded-2xl bg-white/95 backdrop-blur-md shadow-2xl flex items-center justify-center">
+            <span className="text-3xl font-bold text-primary">
+              {job.company.charAt(0)}
+            </span>
           </div>
-          {job.tags.includes('premium') && (
-            <div className="absolute top-2 right-2">
-              <Badge variant="premium" className="text-xs py-1 px-2 backdrop-blur-sm">
-                <PremiumIcon size={10} className="mr-1" />
-                PRO
-              </Badge>
-            </div>
-          )}
         </div>
-        
-        {/* Company and Job Title - Below Logo */}
-        <div className="absolute bottom-4 left-0 right-0 text-center px-4">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <h2 className="text-lg md:text-xl text-primary-foreground font-bold">
-              {job.company}
-            </h2>
-            {isVerifiedCompany(job.company) && <VerifyBadge size={18} />}
+
+        {/* Premium Badge */}
+        {job.tags.includes('premium') && (
+          <div className="absolute top-4 right-4">
+            <Badge variant="premium" className="text-sm px-3 py-1.5 shadow-lg">
+              <Star className="w-4 h-4 mr-1 fill-current" />
+              Premium
+            </Badge>
           </div>
-          <h1 className="text-xl md:text-2xl font-bold text-primary-foreground leading-tight">
-            {job.title}
-          </h1>
-        </div>
+        )}
       </div>
 
-      <div className="p-4 md:p-6 lg:p-8 pb-24 animate-fade-in">
-        {/* Quick Info Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-4 md:mb-6">
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-r from-primary/10 to-transparent border border-primary/20">
-            <div className="w-8 h-8 md:w-10 md:h-10 bg-primary/20 rounded-lg flex items-center justify-center">
-              <MapPin className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+      <div className="p-6 space-y-6">
+        {/* Job Title and Company */}
+        <div className="text-center space-y-3">
+          <div className="flex items-center justify-center gap-2">
+            <h1 className="text-2xl font-bold text-foreground">{job.company}</h1>
+            {isVerifiedCompany(job.company) && <VerifyBadge size={20} />}
+          </div>
+          <h2 className="text-xl font-semibold text-muted-foreground">{job.title}</h2>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex flex-wrap gap-3 justify-center">
+          <Button size="lg" className="bg-gradient-primary hover:opacity-90 text-white font-semibold px-6">
+            Müraciət Et
+          </Button>
+          <Button variant="outline" size="lg" className="border-primary/30 text-primary hover:bg-primary hover:text-white">
+            <Bookmark className="w-4 h-4 mr-2" />
+            Saxla
+          </Button>
+          <Button variant="outline" size="lg" className="border-primary/30 text-primary hover:bg-primary hover:text-white">
+            <Share2 className="w-4 h-4 mr-2" />
+            Paylaş
+          </Button>
+        </div>
+
+        <Separator />
+
+        {/* Job Info Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-4">
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
+              <MapPin className="w-5 h-5 text-primary flex-shrink-0" />
+              <div>
+                <p className="text-sm font-medium text-foreground">Məkan</p>
+                <p className="text-sm text-muted-foreground">{job.location}</p>
+              </div>
             </div>
-            <div>
-              <p className="text-xs text-muted-foreground font-medium">Məkan</p>
-              <p className="text-sm md:text-base font-semibold text-foreground">{job.location}</p>
+
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
+              <Calendar className="w-5 h-5 text-primary flex-shrink-0" />
+              <div>
+                <p className="text-sm font-medium text-foreground">Yayımlanma Tarixi</p>
+                <p className="text-sm text-muted-foreground">{job.postedAt}</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
+              <Eye className="w-5 h-5 text-primary flex-shrink-0" />
+              <div>
+                <p className="text-sm font-medium text-foreground">Baxış Sayı</p>
+                <p className="text-sm text-muted-foreground">{job.views}</p>
+              </div>
             </div>
           </div>
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-r from-primary/10 to-transparent border border-primary/20">
-            <div className="w-8 h-8 md:w-10 md:h-10 bg-primary/20 rounded-lg flex items-center justify-center">
-              <Calendar className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+
+          <div className="space-y-4">
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
+              <Building className="w-5 h-5 text-primary flex-shrink-0" />
+              <div>
+                <p className="text-sm font-medium text-foreground">Şirkət</p>
+                <p className="text-sm text-muted-foreground">{job.company}</p>
+              </div>
             </div>
-            <div>
-              <p className="text-xs text-muted-foreground font-medium">Dərc edilib</p>
-              <p className="text-sm md:text-base font-semibold text-foreground">{job.postedAt}</p>
+
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
+              <DollarSign className="w-5 h-5 text-primary flex-shrink-0" />
+              <div>
+                <p className="text-sm font-medium text-foreground">Maaş</p>
+                <p className="text-sm text-muted-foreground">{job.salary || 'Müzakirə ediləcək'}</p>
+              </div>
             </div>
-          </div>
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-r from-primary/10 to-transparent border border-primary/20">
-            <div className="w-8 h-8 md:w-10 md:h-10 bg-primary/20 rounded-lg flex items-center justify-center">
-              <Eye className="w-4 h-4 md:w-5 md:h-5 text-primary" />
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground font-medium">Baxış</p>
-              <p className="text-sm md:text-base font-semibold text-foreground">{job.views} nəfər</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-r from-primary/10 to-transparent border border-primary/20">
-            <div className="w-8 h-8 md:w-10 md:h-10 bg-primary/20 rounded-lg flex items-center justify-center">
-              <Users className="w-4 h-4 md:w-5 md:h-5 text-primary" />
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground font-medium">Növ</p>
-              <p className="text-sm md:text-base font-semibold text-foreground">{getJobTypeLabel(job.type)}</p>
+
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
+              <Clock className="w-5 h-5 text-primary flex-shrink-0" />
+              <div>
+                <p className="text-sm font-medium text-foreground">İş Növü</p>
+                <p className="text-sm text-muted-foreground">Tam məşğul</p>
+              </div>
             </div>
           </div>
         </div>
 
-        {job.salary && (
-          <Card className={`mb-4 md:mb-6 border-primary/30 shadow-elegant ${
-            job.tags.includes('premium') ? 'bg-gradient-to-r from-job-tag-premium/10 via-job-tag-premium/5 to-transparent' : 'bg-gradient-to-r from-primary/10 via-primary/5 to-transparent'
-          }`}>
-            <CardContent className="p-4 md:p-6">
-              <div className="flex items-center gap-3 md:gap-4">
-                <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center ${
-                  job.tags.includes('premium') ? 'bg-gradient-premium' : 'bg-gradient-primary'
-                }`}>
-                  <span className="text-white text-lg md:text-xl font-bold">₼</span>
-                </div>
-                <div>
-                  <p className="text-xs md:text-sm text-muted-foreground font-medium mb-1">Maaş Aralığı</p>
-                  <p className="text-xl md:text-2xl font-bold text-foreground">{convertSalaryToAZN(job.salary)}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        <Separator className="mb-6 md:mb-8 bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+        <Separator />
 
         {/* Job Description */}
-        <Card className="mb-4 md:mb-6 border-border/50 shadow-card hover:shadow-card-hover transition-all duration-300">
-          <CardHeader className="pb-3 md:pb-4">
-            <CardTitle className="flex items-center gap-2 md:gap-3 text-lg md:text-xl">
-              <div className={`w-6 h-6 md:w-8 md:h-8 rounded-lg flex items-center justify-center ${
-                job.tags.includes('premium') ? 'bg-gradient-premium' : 'bg-gradient-primary'
-              }`}>
-                <Star className="w-3 h-3 md:w-4 md:h-4 text-white" />
-              </div>
-              İş Təsviri
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-4 md:p-6 pt-0">
-            <p className="text-muted-foreground leading-relaxed whitespace-pre-line text-sm md:text-base">
-              {job.description}
+        <div className="space-y-4">
+          <h3 className="text-xl font-bold text-foreground">İş Təsviri</h3>
+          <div className="prose prose-sm max-w-none text-muted-foreground">
+            <p className="leading-relaxed">
+              Bu pozisiya üçün axtarılan namizəd yüksək səviyyədə professional bacarıqlara malik olmalı, 
+              komanda işində səriştəli və innovativ həllərlə gəlmək qabiliyyətinə sahib olmalıdır.
             </p>
-          </CardContent>
-        </Card>
+            <p className="leading-relaxed mt-4">
+              Məsuliyyətlər arasında layihələrin idarə edilməsi, müştəri münasibətlərinin qurulması 
+              və dəstəklənməsi, həmçinin strateji planlaşdırma işləri daxildir.
+            </p>
+          </div>
+        </div>
+
+        <Separator />
 
         {/* Requirements */}
-        <Card className="mb-4 md:mb-6 border-border/50 shadow-card hover:shadow-card-hover transition-all duration-300">
-          <CardHeader className="pb-3 md:pb-4">
-            <CardTitle className="flex items-center gap-2 md:gap-3 text-lg md:text-xl">
-              <div className={`w-6 h-6 md:w-8 md:h-8 rounded-lg flex items-center justify-center ${
-                job.tags.includes('premium') ? 'bg-gradient-premium' : 'bg-gradient-primary'
-              }`}>
-                <Star className="w-3 h-3 md:w-4 md:h-4 text-white" />
+        <div className="space-y-4">
+          <h3 className="text-xl font-bold text-foreground">Tələblər</h3>
+          <ul className="space-y-2 text-muted-foreground">
+            <li className="flex items-start gap-2">
+              <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></div>
+              <span>Sahədə ən azı 3 il iş təcrübəsi</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></div>
+              <span>Yüksək səviyyədə ingilis dili bilikləri</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></div>
+              <span>Komanda işində bacarıqlı olmaq</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></div>
+              <span>Analitik düşüncə qabiliyyəti</span>
+            </li>
+          </ul>
+        </div>
+
+        <Separator />
+
+        {/* Contact Information */}
+        <div className="space-y-4">
+          <h3 className="text-xl font-bold text-foreground">Əlaqə Məlumatları</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
+              <Mail className="w-5 h-5 text-primary flex-shrink-0" />
+              <div>
+                <p className="text-sm font-medium text-foreground">E-mail</p>
+                <p className="text-sm text-muted-foreground">hr@{job.company.toLowerCase()}.com</p>
               </div>
-              Tələblər
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-4 md:p-6 pt-0">
-            <ul className="space-y-2 md:space-y-3">
-              {job.requirements.map((requirement, index) => (
-                <li key={index} className="flex items-start gap-2 md:gap-3 animate-fade-in" style={{ animationDelay: `${index * 100}ms` }}>
-                  <div className="w-5 h-5 md:w-6 md:h-6 bg-primary/20 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
-                    <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-primary rounded-full" />
-                  </div>
-                  <span className="text-muted-foreground leading-relaxed text-sm md:text-base">{requirement}</span>
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
+            </div>
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
+              <Phone className="w-5 h-5 text-primary flex-shrink-0" />
+              <div>
+                <p className="text-sm font-medium text-foreground">Telefon</p>
+                <p className="text-sm text-muted-foreground">+994 XX XXX XX XX</p>
+              </div>
+            </div>
+          </div>
+        </div>
 
-        {/* Benefits */}
-        {job.benefits && job.benefits.length > 0 && (
-          <Card className="border-border/50 shadow-card hover:shadow-card-hover transition-all duration-300">
-            <CardHeader className="pb-3 md:pb-4">
-              <CardTitle className="flex items-center gap-2 md:gap-3 text-lg md:text-xl">
-                <div className={`w-6 h-6 md:w-8 md:h-8 rounded-lg flex items-center justify-center ${
-                  job.tags.includes('premium') ? 'bg-gradient-premium' : 'bg-gradient-primary'
-                }`}>
-                  <Star className="w-3 h-3 md:w-4 md:h-4 text-white" />
-                </div>
-                Faydalar və Imtiyazlar
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-4 md:p-6 pt-0">
-              <ul className="space-y-2 md:space-y-3">
-                {job.benefits.map((benefit, index) => (
-                  <li key={index} className="flex items-start gap-2 md:gap-3 animate-fade-in" style={{ animationDelay: `${index * 100}ms` }}>
-                    <div className="w-5 h-5 md:w-6 md:h-6 bg-primary/20 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
-                      <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-primary rounded-full" />
-                    </div>
-                    <span className="text-muted-foreground leading-relaxed text-sm md:text-base">{benefit}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-        )}
-      </div>
-
-      {/* Sticky Apply Button */}
-      <div className="fixed bottom-4 left-4 right-4 md:bottom-6 md:left-auto md:right-6 md:w-auto z-50">
-        <Button 
-          onClick={handleApplyClick}
-          className={`w-full md:w-auto px-6 md:px-8 py-3 md:py-4 text-base md:text-lg font-semibold transition-all duration-300 shadow-elegant hover:shadow-glow rounded-xl relative overflow-hidden ${
-            job.tags.includes('premium') ? 'bg-gradient-premium hover:opacity-90' : 'bg-gradient-primary hover:opacity-90'
-          }`}
-        >
-          {/* Gold blur effect for premium jobs */}
-          {job.tags.includes('premium') && (
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-job-tag-premium/30 to-transparent blur-sm animate-pulse pointer-events-none"></div>
-          )}
-          <span className="relative z-10 flex items-center justify-center">
-            {emailCopied ? (
-              <>
-                <Check className="w-4 h-4 md:w-5 md:h-5 mr-2 md:mr-3" />
-                Email kopyalandı
-              </>
-            ) : (
-              <>
-                <Mail className="w-4 h-4 md:w-5 md:h-5 mr-2 md:mr-3" />
-                Bu vəzifəyə müraciət et
-              </>
-            )}
-          </span>
-        </Button>
+        {/* Bottom Action */}
+        <div className="sticky bottom-0 bg-job-details/90 backdrop-blur-md p-4 -mx-6 border-t border-border">
+          <Button size="lg" className="w-full bg-gradient-primary hover:opacity-90 text-white font-semibold">
+            Bu İşə Müraciət Et
+          </Button>
+        </div>
       </div>
     </div>
   );

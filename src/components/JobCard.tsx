@@ -1,8 +1,8 @@
+
 import { Job } from '@/types/job';
 import { Badge } from '@/components/ui/badge';
 import { Eye, Heart } from 'lucide-react';
 import VerifyBadge from '@/components/ui/verify-badge';
-import PremiumIcon from '@/components/ui/premium-icon';
 import { useState, useEffect } from 'react';
 
 interface JobCardProps {
@@ -30,15 +30,6 @@ const JobCard = ({
     return verifiedCompanies.includes(company);
   };
 
-  // Convert salary from $ to AZN (assuming 1 USD = 1.7 AZN)
-  const convertSalaryToAZN = (salary?: string) => {
-    if (!salary) return null;
-    return salary.replace(/\$(\d+)/g, (match, amount) => {
-      const aznAmount = Math.round(parseFloat(amount) * 1.7);
-      return `${aznAmount} ₼`;
-    });
-  };
-
   // Filter to only show premium tags
   const premiumTags = job.tags.filter(tag => tag === 'premium');
 
@@ -63,18 +54,21 @@ const JobCard = ({
       className={`
         group cursor-pointer p-3 rounded-xl border transition-all duration-300 ease-smooth
         hover:shadow-card-hover hover:-translate-y-0.5 hover:scale-[1.01] animate-fade-in
-        w-[620px] h-[65px] flex flex-row items-center justify-between backdrop-blur-sm relative
+        w-full max-w-[620px] h-[65px] flex flex-row items-center justify-between backdrop-blur-sm relative
         ${isSelected ? 'border-primary bg-gradient-to-r from-primary/15 to-primary/5 shadow-elegant ring-2 ring-primary/40' : 
           job.tags.includes('premium') ? 'bg-gradient-to-r from-job-tag-premium/10 to-transparent border-job-tag-premium/30 hover:border-job-tag-premium/50 hover:shadow-premium relative overflow-hidden' : 
           isAlternate ? 'bg-gradient-surface border-border/60 hover:border-primary/50 hover:shadow-card-hover' : 
           'bg-card border-border/60 hover:border-primary/50 hover:shadow-card-hover'}
-        ${job.tags.includes('premium') ? 'before:absolute before:inset-0 before:rounded-xl before:p-[1px] before:bg-gradient-to-r before:from-transparent before:via-job-tag-premium/50 before:to-transparent before:animate-pulse before:-z-10' : ''}
       `}
     >
       
-      {/* Premium Glow Animation Effect */}
-      {job.tags.includes('premium') && (
-        <div className="absolute -inset-0.5 rounded-xl bg-gradient-to-r from-job-tag-premium/40 via-transparent to-job-tag-premium/40 animate-pulse pointer-events-none"></div>
+      {/* Premium PRO Badge in Top Right Corner */}
+      {premiumTags.length > 0 && (
+        <div className="absolute -top-1 -right-1 z-10">
+          <Badge variant="premium" className="text-[8px] py-0.5 px-1.5 rounded-md font-bold">
+            PRO
+          </Badge>
+        </div>
       )}
 
       {/* Left Section - Company & Job Info */}
@@ -83,11 +77,6 @@ const JobCard = ({
           <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-md ${job.tags.includes('premium') ? 'bg-gradient-premium' : 'bg-gradient-primary'}`}>
             {job.company.charAt(0)}
           </div>
-          {job.tags.includes('premium') && 
-            <div className="absolute -top-1 -right-1">
-              <PremiumIcon size={16} />
-            </div>
-          }
         </div>
         
         <div className="flex-1 min-w-0">
@@ -104,19 +93,8 @@ const JobCard = ({
         </div>
       </div>
 
-      {/* Right Section - Premium, Stats & Save */}
+      {/* Right Section - Stats & Save */}
       <div className="flex items-center gap-2 flex-shrink-0 relative z-10">
-        {/* Premium Badge in Top Right Corner */}
-        {premiumTags.length > 0 && (
-          <div className="absolute -top-0.5 -right-0.5">
-            <Badge variant="premium" className="text-[10px] py-0.5 px-1 rounded-md">
-              <PremiumIcon size={8} className="mr-0.5" />
-              PRO
-            </Badge>
-          </div>
-        )}
-        
-        {/* Stats and Save Column */}
         <div className="flex flex-col items-end gap-0.5 text-xs text-muted-foreground">
           <div className="flex items-center gap-1">
             <span className="text-success text-xs font-bold">₼</span>
