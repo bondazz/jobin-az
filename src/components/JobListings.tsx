@@ -19,7 +19,7 @@ const JobListings = ({ selectedJob, onJobSelect, selectedCategory }: JobListings
   const [locationFilter, setLocationFilter] = useState('');
 
   const filteredJobs = useMemo(() => {
-    return mockJobs.filter((job) => {
+    const filtered = mockJobs.filter((job) => {
       const matchesSearch = searchQuery === '' || 
         job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         job.company.toLowerCase().includes(searchQuery.toLowerCase());
@@ -32,6 +32,27 @@ const JobListings = ({ selectedJob, onJobSelect, selectedCategory }: JobListings
 
       return matchesSearch && matchesLocation && matchesCategory;
     });
+
+    // Separate premium and regular jobs
+    const premiumJobs = filtered.filter(job => job.tags.includes('premium'));
+    const regularJobs = filtered.filter(job => !job.tags.includes('premium'));
+
+    // Randomize premium jobs on each render
+    const shuffledPremium = [...premiumJobs].sort(() => Math.random() - 0.5);
+    
+    // Sort regular jobs by posting date (newest first)
+    const sortedRegular = [...regularJobs].sort((a, b) => {
+      const dateA = new Date(a.postedAt === 'Today' ? Date.now() : 
+                             a.postedAt === 'Yesterday' ? Date.now() - 86400000 :
+                             Date.now() - (parseInt(a.postedAt) * 86400000));
+      const dateB = new Date(b.postedAt === 'Today' ? Date.now() : 
+                             b.postedAt === 'Yesterday' ? Date.now() - 86400000 :
+                             Date.now() - (parseInt(b.postedAt) * 86400000));
+      return dateB.getTime() - dateA.getTime();
+    });
+
+    // Combine: premium first, then regular
+    return [...shuffledPremium, ...sortedRegular].slice(0, 20);
   }, [searchQuery, locationFilter, selectedCategory]);
 
   const getCategoryLabel = (category: string) => {
@@ -103,17 +124,28 @@ const JobListings = ({ selectedJob, onJobSelect, selectedCategory }: JobListings
         <div className="flex flex-col gap-2 justify-center items-center">
           {filteredJobs.length > 0 ? (
             filteredJobs.map((job, index) => (
-              <div 
-                key={job.id}
-                className="animate-fade-in"
-                style={{ animationDelay: `${index * 50}ms` }}
-              >
-                <JobCard
-                  job={job}
-                  isSelected={selectedJob?.id === job.id}
-                  onClick={() => onJobSelect(job)}
-                  isAlternate={index % 2 === 1}
-                />
+              <div key={`job-${job.id}`}>
+                {/* Advertisement Banner every 6 jobs */}
+                {index > 0 && index % 6 === 0 && (
+                  <div className="w-[620px] h-[100px] bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 rounded-xl mb-2 flex items-center justify-center animate-fade-in">
+                    <div className="text-center">
+                      <p className="text-sm font-bold text-primary">Reklam Yeri</p>
+                      <p className="text-xs text-muted-foreground">620x100px Banner</p>
+                    </div>
+                  </div>
+                )}
+                
+                <div 
+                  className="animate-fade-in"
+                  style={{ animationDelay: `${index * 50}ms` }}
+                >
+                  <JobCard
+                    job={job}
+                    isSelected={selectedJob?.id === job.id}
+                    onClick={() => onJobSelect(job)}
+                    isAlternate={index % 2 === 1}
+                  />
+                </div>
               </div>
             ))
           ) : (
