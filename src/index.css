@@ -9,26 +9,26 @@ All colors MUST be HSL.
 @layer base {
   :root {
     --background: 0 0% 98%;
-    --foreground: 210 29% 17%;
+    --foreground: 0 0% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 210 29% 17%;
+    --card-foreground: 0 0% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 210 29% 17%;
+    --popover-foreground: 0 0% 10%;
 
-    --primary: 25 100% 50%;
+    --primary: 23 100% 50%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 25 100% 40%;
-    --primary-light: 25 100% 60%;
+    --primary-hover: 23 100% 45%;
+    --primary-light: 23 100% 60%;
 
-    --secondary: 210 53% 25%;
+    --secondary: 211 56% 30%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 40% 95%;
-    --muted-foreground: 210 29% 45%;
+    --muted: 0 0% 95%;
+    --muted-foreground: 0 0% 45%;
 
-    --accent: 25 100% 50%;
+    --accent: 23 100% 50%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
@@ -40,19 +40,19 @@ All colors MUST be HSL.
     --warning: 45 93% 47%;
     --warning-foreground: 0 0% 0%;
 
-    --border: 210 40% 90%;
-    --input: 210 40% 95%;
-    --ring: 25 100% 50%;
+    --border: 0 0% 90%;
+    --input: 0 0% 95%;
+    --ring: 23 100% 50%;
 
     --radius: 0.75rem;
 
     /* Job board specific tokens */
     --job-card: 0 0% 100%;
-    --job-card-alt: 210 40% 98%;
-    --job-tag-premium: 25 100% 50%;
+    --job-card-alt: 0 0% 98%;
+    --job-tag-premium: 23 100% 50%;
     --job-tag-new: 45 93% 47%;
     --job-tag-urgent: 0 84% 60%;
-    --job-sidebar: 210 40% 98%;
+    --job-sidebar: 0 0% 98%;
     --job-details: 0 0% 100%;
     
     /* Enhanced Gradients */
@@ -94,27 +94,27 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 0 0% 0%;
+    --background: 211 85% 6%;
     --foreground: 0 0% 95%;
 
-    --card: 210 56% 17%;
+    --card: 211 56% 17%;
     --card-foreground: 0 0% 95%;
 
-    --popover: 210 56% 17%;
+    --popover: 211 56% 17%;
     --popover-foreground: 0 0% 95%;
 
-    --primary: 25 100% 50%;
+    --primary: 23 100% 50%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 25 100% 60%;
-    --primary-light: 25 100% 70%;
+    --primary-hover: 23 100% 60%;
+    --primary-light: 23 100% 70%;
 
-    --secondary: 210 53% 25%;
+    --secondary: 211 56% 30%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 56% 10%;
-    --muted-foreground: 210 29% 60%;
+    --muted: 211 85% 8%;
+    --muted-foreground: 0 0% 60%;
 
-    --accent: 25 100% 50%;
+    --accent: 23 100% 50%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
@@ -126,18 +126,18 @@ All colors MUST be HSL.
     --warning: 45 93% 47%;
     --warning-foreground: 0 0% 0%;
 
-    --border: 210 53% 25%;
-    --input: 210 56% 17%;
-    --ring: 25 100% 50%;
+    --border: 211 56% 20%;
+    --input: 211 56% 17%;
+    --ring: 23 100% 50%;
 
     /* Dark mode job tokens */
-    --job-card: 210 56% 17%;
-    --job-card-alt: 210 53% 25%;
-    --job-tag-premium: 25 100% 50%;
+    --job-card: 211 56% 17%;
+    --job-card-alt: 211 56% 20%;
+    --job-tag-premium: 23 100% 50%;
     --job-tag-new: 45 93% 47%;
     --job-tag-urgent: 0 84% 60%;
-    --job-sidebar: 0 0% 0%;
-    --job-details: 210 56% 17%;
+    --job-sidebar: 211 85% 6%;
+    --job-details: 211 56% 17%;
     
     /* Dark mode gradients */
     --gradient-primary: linear-gradient(135deg, hsl(25 100% 50%), hsl(25 100% 40%));

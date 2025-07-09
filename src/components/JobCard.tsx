@@ -108,7 +108,7 @@ const JobCard = ({
       <div className="flex items-center gap-2 flex-shrink-0 relative z-10">
         {/* Premium Badge in Top Right Corner */}
         {premiumTags.length > 0 && (
-          <div className="absolute -top-2 -right-2 z-20">
+          <div className="absolute -top-1 -right-1 z-10">
             <Badge variant="premium" className="text-[8px] py-0.5 px-1.5 rounded-md shadow-lg">
               <PremiumIcon size={6} className="mr-0.5" />
               PRO
