@@ -72,20 +72,9 @@ const JobCard = ({
       `}
     >
       
-      {/* Premium Animation Effect */}
+      {/* Premium Glow Animation Effect */}
       {job.tags.includes('premium') && (
-        <div className="absolute inset-0 rounded-xl overflow-hidden pointer-events-none">
-          <div className="absolute -inset-2 bg-gradient-to-r from-transparent via-job-tag-premium/30 to-transparent blur-sm animate-pulse"></div>
-          <div className="absolute top-0 left-0 w-full h-full">
-            <div 
-              className="absolute top-0 left-0 w-8 h-full bg-gradient-to-r from-transparent via-job-tag-premium/40 to-transparent blur-md animate-pulse" 
-              style={{ 
-                animation: 'slide-right 3s ease-in-out infinite',
-                animationDelay: '0s'
-              }}
-            ></div>
-          </div>
-        </div>
+        <div className="absolute -inset-0.5 rounded-xl bg-gradient-to-r from-job-tag-premium/40 via-transparent to-job-tag-premium/40 animate-pulse pointer-events-none"></div>
       )}
 
       {/* Left Section - Company & Job Info */}
@@ -117,12 +106,12 @@ const JobCard = ({
 
       {/* Right Section - Premium, Stats & Save */}
       <div className="flex items-center gap-2 flex-shrink-0 relative z-10">
-        {/* Premium Badge in Top Right */}
+        {/* Premium Badge in Top Right Corner */}
         {premiumTags.length > 0 && (
-          <div className="absolute -top-2 -right-8">
-            <Badge variant="premium" className="text-xs py-0.5 px-1.5">
-              <PremiumIcon size={12} className="mr-1" />
-              PREMİUM
+          <div className="absolute -top-0.5 -right-0.5">
+            <Badge variant="premium" className="text-[10px] py-0.5 px-1 rounded-md">
+              <PremiumIcon size={8} className="mr-0.5" />
+              PRO
             </Badge>
           </div>
         )}

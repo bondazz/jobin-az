@@ -144,7 +144,8 @@ export default {
 				'gradient-card': 'var(--gradient-card)',
 				'gradient-premium': 'var(--gradient-premium)',
 				'gradient-hero': 'var(--gradient-hero)',
-				'gradient-surface': 'var(--gradient-surface)'
+				'gradient-surface': 'var(--gradient-surface)',
+				'gradient-background': 'var(--gradient-background)'
 			},
 			boxShadow: {
 				'card': 'var(--shadow-card)',

@@ -87,112 +87,101 @@ const JobDetails = ({ job }: JobDetailsProps) => {
 
   return (
     <div className="relative h-full overflow-y-auto bg-gradient-to-br from-job-details to-primary/5">
-      <div className="p-4 md:p-6 lg:p-8 pb-24 animate-fade-in">
-        {/* Enhanced Header */}
-        <div className="mb-6 md:mb-8">
-          <div className="flex flex-col md:flex-row items-start gap-4 md:gap-6 mb-4 md:mb-6">
-            <div className="relative mx-auto md:mx-0">
-              <div className={`w-16 h-16 md:w-20 md:h-20 rounded-2xl flex items-center justify-center text-white font-bold text-xl md:text-2xl shadow-elegant ${
-                job.tags.includes('premium') ? 'bg-gradient-premium' : 'bg-gradient-primary'
-              }`}>
-                {job.company.charAt(0)}
-              </div>
-              {job.tags.includes('premium') && (
-                <div className="absolute -top-2 -right-2">
-                  <PremiumIcon size={28} />
-                </div>
-              )}
-            </div>
-            <div className="flex-1 text-center md:text-left">
-              <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2 leading-tight">
-                {job.title}
-              </h1>
-              <div className="flex items-center justify-center md:justify-start gap-2 mb-3 md:mb-4">
-                <p className="text-lg md:text-xl text-primary font-semibold">
-                  {job.company}
-                </p>
-                {isVerifiedCompany(job.company) && <VerifyBadge size={20} />}
-              </div>
-              {premiumTags.length > 0 && (
-                <div className="flex flex-wrap justify-center md:justify-start gap-2">
-                  {premiumTags.map((tag, index) => (
-                    <Badge 
-                      key={tag} 
-                      variant="premium"
-                      className="px-2 md:px-3 py-1 md:py-1.5 text-xs font-semibold animate-bounce-in shadow-sm relative overflow-hidden"
-                      style={{ animationDelay: `${index * 100}ms` }}
-                    >
-                      <PremiumIcon size={12} className="mr-1" />
-                      PREMİUM
-                      {/* Gold blur effect */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-job-tag-premium/30 to-transparent blur-sm animate-pulse pointer-events-none"></div>
-                    </Badge>
-                  ))}
-                </div>
-              )}
-            </div>
+      {/* Hero Background Section */}
+      <div className="relative h-48 md:h-64 bg-gradient-background overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background"></div>
+        
+        {/* Company Logo - Centered */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className={`w-20 h-20 md:w-24 md:h-24 rounded-3xl flex items-center justify-center text-white font-bold text-2xl md:text-3xl shadow-elegant backdrop-blur-sm ${
+            job.tags.includes('premium') ? 'bg-gradient-premium' : 'bg-gradient-primary'
+          }`}>
+            {job.company.charAt(0)}
           </div>
-
-          {/* Quick Info Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-4 md:mb-6">
-            <div className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-r from-primary/10 to-transparent border border-primary/20">
-              <div className="w-8 h-8 md:w-10 md:h-10 bg-primary/20 rounded-lg flex items-center justify-center">
-                <MapPin className="w-4 h-4 md:w-5 md:h-5 text-primary" />
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground font-medium">Məkan</p>
-                <p className="text-sm md:text-base font-semibold text-foreground">{job.location}</p>
-              </div>
+          {job.tags.includes('premium') && (
+            <div className="absolute top-2 right-2">
+              <Badge variant="premium" className="text-xs py-1 px-2 backdrop-blur-sm">
+                <PremiumIcon size={10} className="mr-1" />
+                PRO
+              </Badge>
             </div>
-            <div className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-r from-primary/10 to-transparent border border-primary/20">
-              <div className="w-8 h-8 md:w-10 md:h-10 bg-primary/20 rounded-lg flex items-center justify-center">
-                <Calendar className="w-4 h-4 md:w-5 md:h-5 text-primary" />
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground font-medium">Dərc edilib</p>
-                <p className="text-sm md:text-base font-semibold text-foreground">{job.postedAt}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-r from-primary/10 to-transparent border border-primary/20">
-              <div className="w-8 h-8 md:w-10 md:h-10 bg-primary/20 rounded-lg flex items-center justify-center">
-                <Eye className="w-4 h-4 md:w-5 md:h-5 text-primary" />
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground font-medium">Baxış</p>
-                <p className="text-sm md:text-base font-semibold text-foreground">{job.views} nəfər</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-r from-primary/10 to-transparent border border-primary/20">
-              <div className="w-8 h-8 md:w-10 md:h-10 bg-primary/20 rounded-lg flex items-center justify-center">
-                <Users className="w-4 h-4 md:w-5 md:h-5 text-primary" />
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground font-medium">Növ</p>
-                <p className="text-sm md:text-base font-semibold text-foreground">{getJobTypeLabel(job.type)}</p>
-              </div>
-            </div>
-          </div>
-
-          {job.salary && (
-            <Card className={`mb-4 md:mb-6 border-primary/30 shadow-elegant ${
-              job.tags.includes('premium') ? 'bg-gradient-to-r from-job-tag-premium/10 via-job-tag-premium/5 to-transparent' : 'bg-gradient-to-r from-primary/10 via-primary/5 to-transparent'
-            }`}>
-              <CardContent className="p-4 md:p-6">
-                <div className="flex items-center gap-3 md:gap-4">
-                  <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center ${
-                    job.tags.includes('premium') ? 'bg-gradient-premium' : 'bg-gradient-primary'
-                  }`}>
-                    <span className="text-white text-lg md:text-xl font-bold">₼</span>
-                  </div>
-                  <div>
-                    <p className="text-xs md:text-sm text-muted-foreground font-medium mb-1">Maaş Aralığı</p>
-                    <p className="text-xl md:text-2xl font-bold text-foreground">{convertSalaryToAZN(job.salary)}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
           )}
         </div>
+        
+        {/* Company and Job Title - Below Logo */}
+        <div className="absolute bottom-4 left-0 right-0 text-center px-4">
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <h2 className="text-lg md:text-xl text-primary-foreground font-bold">
+              {job.company}
+            </h2>
+            {isVerifiedCompany(job.company) && <VerifyBadge size={18} />}
+          </div>
+          <h1 className="text-xl md:text-2xl font-bold text-primary-foreground leading-tight">
+            {job.title}
+          </h1>
+        </div>
+      </div>
+
+      <div className="p-4 md:p-6 lg:p-8 pb-24 animate-fade-in">
+        {/* Quick Info Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-4 md:mb-6">
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-r from-primary/10 to-transparent border border-primary/20">
+            <div className="w-8 h-8 md:w-10 md:h-10 bg-primary/20 rounded-lg flex items-center justify-center">
+              <MapPin className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground font-medium">Məkan</p>
+              <p className="text-sm md:text-base font-semibold text-foreground">{job.location}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-r from-primary/10 to-transparent border border-primary/20">
+            <div className="w-8 h-8 md:w-10 md:h-10 bg-primary/20 rounded-lg flex items-center justify-center">
+              <Calendar className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground font-medium">Dərc edilib</p>
+              <p className="text-sm md:text-base font-semibold text-foreground">{job.postedAt}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-r from-primary/10 to-transparent border border-primary/20">
+            <div className="w-8 h-8 md:w-10 md:h-10 bg-primary/20 rounded-lg flex items-center justify-center">
+              <Eye className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground font-medium">Baxış</p>
+              <p className="text-sm md:text-base font-semibold text-foreground">{job.views} nəfər</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-r from-primary/10 to-transparent border border-primary/20">
+            <div className="w-8 h-8 md:w-10 md:h-10 bg-primary/20 rounded-lg flex items-center justify-center">
+              <Users className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground font-medium">Növ</p>
+              <p className="text-sm md:text-base font-semibold text-foreground">{getJobTypeLabel(job.type)}</p>
+            </div>
+          </div>
+        </div>
+
+        {job.salary && (
+          <Card className={`mb-4 md:mb-6 border-primary/30 shadow-elegant ${
+            job.tags.includes('premium') ? 'bg-gradient-to-r from-job-tag-premium/10 via-job-tag-premium/5 to-transparent' : 'bg-gradient-to-r from-primary/10 via-primary/5 to-transparent'
+          }`}>
+            <CardContent className="p-4 md:p-6">
+              <div className="flex items-center gap-3 md:gap-4">
+                <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center ${
+                  job.tags.includes('premium') ? 'bg-gradient-premium' : 'bg-gradient-primary'
+                }`}>
+                  <span className="text-white text-lg md:text-xl font-bold">₼</span>
+                </div>
+                <div>
+                  <p className="text-xs md:text-sm text-muted-foreground font-medium mb-1">Maaş Aralığı</p>
+                  <p className="text-xl md:text-2xl font-bold text-foreground">{convertSalaryToAZN(job.salary)}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         <Separator className="mb-6 md:mb-8 bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
