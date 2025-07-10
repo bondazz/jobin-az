@@ -80,7 +80,7 @@ const JobCard = ({
       <div className="flex items-center gap-1.5 flex-shrink-0 relative z-10">
         <div className="flex flex-col items-end gap-0 text-xs text-muted-foreground">
           <div className="flex items-center gap-1">
-            <span className="text-success text-xs font-bold">₼</span>
+            <span className="text-xs font-bold text-orange-500">₼</span>
             <span>|</span>
             <span className="text-xs">{job.postedAt}</span>
           </div>
