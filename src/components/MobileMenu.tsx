@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -41,7 +42,8 @@ const MobileMenu = ({ selectedCategory, onCategorySelect }: MobileMenuProps) => 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="sm" className="lg:hidden p-2">
+        {/* Bu trigger artıq istifadə olunmur, çünki BottomNavigation-da menyu var */}
+        <Button variant="ghost" size="sm" className="hidden p-2">
           <Menu className="w-5 h-5" />
         </Button>
       </SheetTrigger>

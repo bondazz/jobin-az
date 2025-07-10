@@ -21,27 +21,8 @@ const Index = () => {
 
   return (
     <div className="h-full flex bg-gradient-to-br from-background via-primary/3 to-background overflow-hidden">
-      {/* Mobile Header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border">
-        <div className="flex items-center justify-between p-3">
-          <MobileMenu 
-            selectedCategory={selectedCategory}
-            onCategorySelect={handleCategorySelect}
-          />
-          <div className="flex items-center gap-2">
-            <img 
-              src="/lovable-uploads/e888818f-70b8-405b-a5e8-f62f8e842525.png" 
-              alt="Jooble"
-              className="w-8 h-8 object-contain dark:invert transition-all duration-300"
-            />
-            <h1 className="font-bold text-lg text-foreground">Jooble</h1>
-          </div>
-          <div className="w-10"></div>
-        </div>
-      </div>
-
-      {/* Main Content Area */}
-      <div className="flex-1 flex min-w-0 pt-16 lg:pt-0 pb-16 lg:pb-0">
+      {/* Main Content Area - No mobile header needed */}
+      <div className="flex-1 flex min-w-0 pb-16 xl:pb-0">
         {/* Job Listings - Responsive Column */}
         <div className="w-full lg:w-[400px] xl:w-[450px] border-r border-border animate-fade-in">
           <JobListings

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -58,7 +59,7 @@ const MainSidebar = () => {
     if (path === '/') return location.pathname === '/';
     return location.pathname.startsWith(path);
   };
-  return <aside className="w-64 bg-gradient-to-b from-job-sidebar to-job-sidebar/80 border-r border-border/60 flex flex-col h-full backdrop-blur-sm">
+  return <aside className="hidden xl:flex w-64 bg-gradient-to-b from-job-sidebar to-job-sidebar/80 border-r border-border/60 flex-col h-full backdrop-blur-sm">
       {/* Logo & Branding */}
       <div className="p-4 border-b border-border/40 bg-gradient-to-r from-job-sidebar/90 to-primary/5">
         <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
