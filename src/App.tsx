@@ -4,6 +4,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Layout from "./components/Layout";
 import Index from "./pages/Index";
+import Categories from "./pages/Categories";
+import Companies from "./pages/Companies";
 import About from "./pages/About";
 import Pricing from "./pages/Pricing";
 import NotFound from "./pages/NotFound";
@@ -17,14 +19,16 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Index />} />
-            <Route path="/jobs" element={<Index />} />
-            <Route path="/categories" element={<Index />} />
-            <Route path="/industry" element={<Index />} />
-            <Route path="/companies" element={<Index />} />
-            <Route path="/saved" element={<Index />} />
-            <Route path="/alerts" element={<Index />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/vakansiyalar" element={<Index />} />
+            <Route path="/vakansiyalar/:slug" element={<Index />} />
+            <Route path="/kateqoriyalar" element={<Categories />} />
+            <Route path="/kateqoriyalar/:category" element={<Index />} />
+            <Route path="/sirketler" element={<Companies />} />
+            <Route path="/sirketler/:company" element={<Companies />} />
+            <Route path="/saxlanilan" element={<Index />} />
+            <Route path="/bildirisler" element={<Index />} />
+            <Route path="/qiymetler" element={<Pricing />} />
+            <Route path="/haqqinda" element={<About />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

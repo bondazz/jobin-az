@@ -1,63 +1,55 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import ThemeToggle from '@/components/ThemeToggle';
-import { Briefcase, Tag, Building, Bookmark, Bell, Search, TrendingUp, Info, DollarSign, Users, Home, Calendar, BarChart3 } from 'lucide-react';
+import LanguageToggle from '@/components/LanguageToggle';
+import { Briefcase, Tag, Building, Bookmark, Bell, TrendingUp, Info, DollarSign, Calendar, BarChart3 } from 'lucide-react';
 
 const MainSidebar = () => {
   const location = useLocation();
+  
   const menuItems = [{
-    icon: Home,
-    label: 'Ana Səhifə',
-    path: '/',
-    count: null
-  }, {
     icon: Briefcase,
-    label: 'İş Elanları',
-    path: '/jobs',
+    label: 'Vakansiyalar',
+    path: '/vakansiyalar',
     count: 1247
   }, {
     icon: Tag,
     label: 'Kateqoriyalar',
-    path: '/categories',
+    path: '/kateqoriyalar',
     count: 8
-  }, {
-    icon: TrendingUp,
-    label: 'Sənaye',
-    path: '/industry',
-    count: 12
   }, {
     icon: Building,
     label: 'Şirkətlər',
-    path: '/companies',
+    path: '/sirketler',
     count: 156
   }, {
     icon: Bookmark,
     label: 'Saxlanılan İşlər',
-    path: '/saved',
+    path: '/saxlanilan',
     count: 23
   }, {
     icon: Bell,
     label: 'İş Bildirişləri',
-    path: '/alerts',
+    path: '/bildirisler',
     count: 5
   }, {
     icon: DollarSign,
     label: 'Qiymətlər',
-    path: '/pricing',
+    path: '/qiymetler',
     count: null
   }, {
     icon: Info,
     label: 'Haqqında',
-    path: '/about',
+    path: '/haqqinda',
     count: null
   }];
 
   const isActivePath = (path: string) => {
-    if (path === '/') return location.pathname === '/';
+    if (path === '/vakansiyalar') return location.pathname === '/' || location.pathname === '/vakansiyalar';
     return location.pathname.startsWith(path);
   };
 
@@ -155,8 +147,11 @@ const MainSidebar = () => {
       {/* Footer */}
       <div className="p-3 border-t border-border/40 bg-gradient-to-r from-job-sidebar/90 to-transparent">
         <div className="flex items-center justify-between mb-3">
-          <span className="font-medium text-sm text-foreground">Mövzu</span>
-          <ThemeToggle />
+          <div className="flex items-center gap-2">
+            <LanguageToggle />
+            <span className="font-medium text-sm text-foreground">Mövzu</span>
+            <ThemeToggle />
+          </div>
         </div>
         
         <div className="text-xs text-muted-foreground">
