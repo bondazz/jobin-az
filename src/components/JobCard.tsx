@@ -55,7 +55,7 @@ const JobCard = ({
         </div>}
 
       {/* Left Section - Company & Job Info */}
-      <div className="flex items-center gap-2 flex-1 min-w-0 relative z-10 mx-[18px]">
+      <div className="flex items-center gap-2 flex-1 min-w-0 relative z-10 mx-0">
         <div className="relative flex-shrink-0">
           <div className={`w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs shadow-sm ${job.tags.includes('premium') ? 'bg-gradient-premium' : 'bg-gradient-primary'}`}>
             {job.company.charAt(0)}
