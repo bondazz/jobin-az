@@ -50,7 +50,7 @@ const JobCard = ({
   return <div onClick={onClick} className={`
         group cursor-pointer p-2 rounded-lg border transition-all duration-200 ease-smooth
         hover:shadow-card-hover hover:-translate-y-0.5 animate-fade-in
-        w-full max-w-[660px] h-[45px] flex flex-row items-center justify-between backdrop-blur-sm relative
+        w-full max-w-[700px] h-[45px] flex flex-row items-center justify-between backdrop-blur-sm relative
         ${isSelected ? 'border-primary bg-gradient-to-r from-primary/20 to-primary/5 shadow-elegant ring-1 ring-primary/50' : job.tags.includes('premium') ? 'bg-job-card-premium border-job-tag-premium/40 hover:border-job-tag-premium/60 hover:shadow-premium relative overflow-hidden' : isAlternate ? 'bg-job-card-alt border-border/50 hover:border-primary/40 hover:shadow-card-hover' : 'bg-job-card border-border/50 hover:border-primary/40 hover:shadow-card-hover'}
       `}>
       
@@ -83,31 +83,31 @@ const JobCard = ({
         </div>
       </div>
 
-      {/* Right Section - Single Column with all elements */}
-      <div className="flex flex-col items-end gap-0.5 flex-shrink-0 relative z-10 text-xs text-muted-foreground">
-        {/* Salary + Date Row */}
-        <div className="flex items-center gap-1 text-xs">
-          {job.salary && (
-            <>
-              <span className="font-bold text-orange-500">₼</span>
-              <span>|</span>
-            </>
-          )}
-          <span>{job.postedAt}</span>
-        </div>
+      {/* Right Section - Single Row with all elements separated by | */}
+      <div className="flex items-center gap-2 flex-shrink-0 relative z-10 text-xs text-muted-foreground">
+        {/* Salary (if exists) */}
+        {job.salary && (
+          <>
+            <span className="font-bold text-orange-500">₼</span>
+            <span className="text-muted-foreground">|</span>
+          </>
+        )}
         
-        {/* Views Row */}
-        <div className="flex items-center gap-0.5 text-xs">
-          <Eye className="w-2.5 h-2.5" />
+        {/* Posted Date */}
+        <span>{job.postedAt}</span>
+        <span className="text-muted-foreground">|</span>
+        
+        {/* Views with Eye Icon */}
+        <div className="flex items-center gap-1">
+          <Eye className="w-3 h-3" />
           <span>{job.views}</span>
         </div>
+        <span className="text-muted-foreground">|</span>
         
-        {/* Save Button Row */}
-        <div className="flex items-center">
-          <button onClick={handleSaveClick} className={`p-0.5 rounded-sm transition-all duration-200 hover:scale-110 ${isSaved ? 'text-red-500 hover:text-red-600' : 'text-muted-foreground hover:text-primary'}`}>
-            <Heart className={`w-3 h-3 ${isSaved ? 'fill-current' : ''}`} />
-          </button>
-        </div>
+        {/* Save Button with Heart Icon */}
+        <button onClick={handleSaveClick} className={`p-0.5 rounded-sm transition-all duration-200 hover:scale-110 ${isSaved ? 'text-red-500 hover:text-red-600' : 'text-muted-foreground hover:text-primary'}`}>
+          <Heart className={`w-3 h-3 ${isSaved ? 'fill-current' : ''}`} />
+        </button>
       </div>
     </div>;
 };
