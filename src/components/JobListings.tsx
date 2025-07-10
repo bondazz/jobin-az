@@ -108,12 +108,12 @@ const JobListings = ({
         </div>
       </div>
 
-      {/* Job List */}
-      <div className="flex-1 overflow-y-auto p-2 bg-gradient-to-b from-transparent to-primary/5 w-[610px]">
-        <div className="flex flex-col gap-2 justify-center items-center max-w-full">
-          {filteredJobs.length > 0 ? filteredJobs.map((job, index) => <div key={`job-${job.id}`} className="w-full max-w-[600px]">
+      {/* Job List - Responsive Container */}
+      <div className="flex-1 overflow-y-auto p-2 bg-gradient-to-b from-transparent to-primary/5 w-full max-w-[100%] mx-auto">
+        <div className="flex flex-col gap-2 justify-center items-center w-full max-w-full px-2">
+          {filteredJobs.length > 0 ? filteredJobs.map((job, index) => <div key={`job-${job.id}`} className="w-full max-w-[600px] min-w-0">
                 {/* Advertisement Banner every 6 jobs */}
-                {index > 0 && index % 6 === 0 && <div className="w-[600px] h-[100px] bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 rounded-xl mb-2 flex items-center justify-center animate-fade-in">
+                {index > 0 && index % 6 === 0 && <div className="w-full max-w-[600px] h-[100px] bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 rounded-xl mb-2 flex items-center justify-center animate-fade-in">
                     <div className="text-center">
                       <p className="text-sm font-bold text-primary">Reklam Yeri</p>
                       <p className="text-xs text-muted-foreground">Banner Reklamı</p>
