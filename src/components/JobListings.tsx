@@ -109,7 +109,7 @@ const JobListings = ({
       </div>
 
       {/* Job List */}
-      <div className="flex-1 overflow-y-auto p-2 bg-gradient-to-b from-transparent to-primary/5">
+      <div className="flex-1 overflow-y-auto p-2 bg-gradient-to-b from-transparent to-primary/5 w-[610px]">
         <div className="flex flex-col gap-2 justify-center items-center max-w-full">
           {filteredJobs.length > 0 ? filteredJobs.map((job, index) => <div key={`job-${job.id}`} className="w-full max-w-[600px]">
                 {/* Advertisement Banner every 6 jobs */}
