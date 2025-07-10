@@ -56,15 +56,17 @@ const JobCard = ({
         hover:shadow-card-hover hover:-translate-y-0.5 animate-fade-in
         w-full max-w-[620px] h-[45px] flex flex-row items-center justify-between backdrop-blur-sm relative
         ${isSelected ? 'border-primary bg-gradient-to-r from-primary/20 to-primary/5 shadow-elegant ring-1 ring-primary/50' : 
-          job.tags.includes('premium') ? 'bg-gradient-to-r from-job-tag-premium/15 to-transparent border-job-tag-premium/40 hover:border-job-tag-premium/60 hover:shadow-premium relative overflow-hidden' : 
-          isAlternate ? 'bg-gradient-surface border-border/50 hover:border-primary/40 hover:shadow-card-hover' : 
-          'bg-card border-border/50 hover:border-primary/40 hover:shadow-card-hover'}
+          job.tags.includes('premium') ? 
+            'bg-job-card-premium border-job-tag-premium/40 hover:border-job-tag-premium/60 hover:shadow-premium relative overflow-hidden' : 
+          isAlternate ? 
+            'bg-job-card-alt border-border/50 hover:border-primary/40 hover:shadow-card-hover' : 
+            'bg-job-card border-border/50 hover:border-primary/40 hover:shadow-card-hover'}
       `}
     >
       
-      {/* Premium PRO Badge in Top Right Corner */}
+      {/* Premium PRO Badge - positioned at top border */}
       {premiumTags.length > 0 && (
-        <div className="absolute -top-0.5 -right-0.5 z-10">
+        <div className="absolute -top-px right-1 z-10">
           <Badge variant="premium" className="text-[7px] py-0 px-1 rounded-sm font-bold">
             PRO
           </Badge>

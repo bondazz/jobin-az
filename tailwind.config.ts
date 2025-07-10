@@ -19,67 +19,68 @@ export default {
 		},
 		extend: {
 			colors: {
-				border: 'rgb(var(--border))',
-				input: 'rgb(var(--input))',
-				ring: 'rgb(var(--ring))',
-				background: 'rgb(var(--background))',
-				foreground: 'rgb(var(--foreground))',
+				border: 'hsl(var(--border))',
+				input: 'hsl(var(--input))',
+				ring: 'hsl(var(--ring))',
+				background: 'hsl(var(--background))',
+				foreground: 'hsl(var(--foreground))',
 				primary: {
-					DEFAULT: 'rgb(var(--primary))',
-					foreground: 'rgb(var(--primary-foreground))',
-					hover: 'rgb(var(--primary-hover))',
-					light: 'rgb(var(--primary-light))'
+					DEFAULT: 'hsl(var(--primary))',
+					foreground: 'hsl(var(--primary-foreground))',
+					hover: 'hsl(var(--primary-hover))',
+					light: 'hsl(var(--primary-light))'
 				},
 				secondary: {
-					DEFAULT: 'rgb(var(--secondary))',
-					foreground: 'rgb(var(--secondary-foreground))'
+					DEFAULT: 'hsl(var(--secondary))',
+					foreground: 'hsl(var(--secondary-foreground))'
 				},
 				destructive: {
-					DEFAULT: 'rgb(var(--destructive))',
-					foreground: 'rgb(var(--destructive-foreground))'
+					DEFAULT: 'hsl(var(--destructive))',
+					foreground: 'hsl(var(--destructive-foreground))'
 				},
 				success: {
-					DEFAULT: 'rgb(var(--success))',
-					foreground: 'rgb(var(--success-foreground))'
+					DEFAULT: 'hsl(var(--success))',
+					foreground: 'hsl(var(--success-foreground))'
 				},
 				warning: {
-					DEFAULT: 'rgb(var(--warning))',
-					foreground: 'rgb(var(--warning-foreground))'
+					DEFAULT: 'hsl(var(--warning))',
+					foreground: 'hsl(var(--warning-foreground))'
 				},
 				muted: {
-					DEFAULT: 'rgb(var(--muted))',
-					foreground: 'rgb(var(--muted-foreground))'
+					DEFAULT: 'hsl(var(--muted))',
+					foreground: 'hsl(var(--muted-foreground))'
 				},
 				accent: {
-					DEFAULT: 'rgb(var(--accent))',
-					foreground: 'rgb(var(--accent-foreground))'
+					DEFAULT: 'hsl(var(--accent))',
+					foreground: 'hsl(var(--accent-foreground))'
 				},
 				popover: {
-					DEFAULT: 'rgb(var(--popover))',
-					foreground: 'rgb(var(--popover-foreground))'
+					DEFAULT: 'hsl(var(--popover))',
+					foreground: 'hsl(var(--popover-foreground))'
 				},
 				card: {
-					DEFAULT: 'rgb(var(--card))',
-					foreground: 'rgb(var(--card-foreground))'
+					DEFAULT: 'hsl(var(--card))',
+					foreground: 'hsl(var(--card-foreground))'
 				},
 				job: {
-					card: 'rgb(var(--job-card))',
-					'card-alt': 'rgb(var(--job-card-alt))',
-					'tag-premium': 'rgb(var(--job-tag-premium))',
-					'tag-new': 'rgb(var(--job-tag-new))',
-					'tag-urgent': 'rgb(var(--job-tag-urgent))',
-					sidebar: 'rgb(var(--job-sidebar))',
-					details: 'rgb(var(--job-details))'
+					card: 'hsl(var(--job-card))',
+					'card-alt': 'hsl(var(--job-card-alt))',
+					'card-premium': 'hsl(var(--job-card-premium))',
+					'tag-premium': 'hsl(var(--job-tag-premium))',
+					'tag-new': 'hsl(var(--job-tag-new))',
+					'tag-urgent': 'hsl(var(--job-tag-urgent))',
+					sidebar: 'hsl(var(--job-sidebar))',
+					details: 'hsl(var(--job-details))'
 				},
 				sidebar: {
-					DEFAULT: 'rgb(var(--sidebar-background))',
-					foreground: 'rgb(var(--sidebar-foreground))',
-					primary: 'rgb(var(--sidebar-primary))',
-					'primary-foreground': 'rgb(var(--sidebar-primary-foreground))',
-					accent: 'rgb(var(--sidebar-accent))',
-					'accent-foreground': 'rgb(var(--sidebar-accent-foreground))',
-					border: 'rgb(var(--sidebar-border))',
-					ring: 'rgb(var(--sidebar-ring))'
+					DEFAULT: 'hsl(var(--sidebar-background))',
+					foreground: 'hsl(var(--sidebar-foreground))',
+					primary: 'hsl(var(--sidebar-primary))',
+					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
+					accent: 'hsl(var(--sidebar-accent))',
+					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+					border: 'hsl(var(--sidebar-border))',
+					ring: 'hsl(var(--sidebar-ring))'
 				}
 			},
 			borderRadius: {
