@@ -50,7 +50,7 @@ const JobCard = ({
   return <div onClick={onClick} className={`
         group cursor-pointer p-2 rounded-lg border transition-all duration-200 ease-smooth
         hover:shadow-card-hover hover:-translate-y-0.5 animate-fade-in
-        w-full max-w-[700px] h-[45px] flex flex-row items-center justify-between backdrop-blur-sm relative
+        w-[600px] min-w-[610px] h-[45px] flex flex-row items-center justify-between backdrop-blur-sm relative
         ${isSelected ? 'border-primary bg-gradient-to-r from-primary/20 to-primary/5 shadow-elegant ring-1 ring-primary/50' : job.tags.includes('premium') ? 'bg-job-card-premium border-job-tag-premium/40 hover:border-job-tag-premium/60 hover:shadow-premium relative overflow-hidden' : isAlternate ? 'bg-job-card-alt border-border/50 hover:border-primary/40 hover:shadow-card-hover' : 'bg-job-card border-border/50 hover:border-primary/40 hover:shadow-card-hover'}
       `}>
       

@@ -1,3 +1,4 @@
+
 import { useState, useMemo } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -110,9 +111,9 @@ const JobListings = ({
       {/* Job List */}
       <div className="flex-1 overflow-y-auto p-2 bg-gradient-to-b from-transparent to-primary/5">
         <div className="flex flex-col gap-2 justify-center items-center max-w-full">
-          {filteredJobs.length > 0 ? filteredJobs.map((job, index) => <div key={`job-${job.id}`} className="w-full max-w-[660px]">
+          {filteredJobs.length > 0 ? filteredJobs.map((job, index) => <div key={`job-${job.id}`} className="w-full max-w-[600px]">
                 {/* Advertisement Banner every 6 jobs */}
-                {index > 0 && index % 6 === 0 && <div className="w-full h-[100px] bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 rounded-xl mb-2 flex items-center justify-center animate-fade-in">
+                {index > 0 && index % 6 === 0 && <div className="w-[600px] h-[100px] bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 rounded-xl mb-2 flex items-center justify-center animate-fade-in">
                     <div className="text-center">
                       <p className="text-sm font-bold text-primary">Reklam Yeri</p>
                       <p className="text-xs text-muted-foreground">Banner Reklamı</p>
