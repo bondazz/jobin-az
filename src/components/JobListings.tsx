@@ -11,12 +11,16 @@ interface JobListingsProps {
   selectedJob: Job | null;
   onJobSelect: (job: Job) => void;
   selectedCategory?: string;
+  companyFilter?: string;
+  showHeader?: boolean;
 }
 
 const JobListings = ({
   selectedJob,
   onJobSelect,
-  selectedCategory
+  selectedCategory,
+  companyFilter,
+  showHeader = true
 }: JobListingsProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [locationFilter, setLocationFilter] = useState('');
@@ -26,7 +30,8 @@ const JobListings = ({
       const matchesSearch = searchQuery === '' || job.title.toLowerCase().includes(searchQuery.toLowerCase()) || job.company.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesLocation = locationFilter === '' || job.location.toLowerCase().includes(locationFilter.toLowerCase());
       const matchesCategory = !selectedCategory || job.category === selectedCategory;
-      return matchesSearch && matchesLocation && matchesCategory;
+      const matchesCompany = !companyFilter || job.company === companyFilter;
+      return matchesSearch && matchesLocation && matchesCategory && matchesCompany;
     });
 
     // Default sorting by newest with premium jobs first
@@ -49,7 +54,7 @@ const JobListings = ({
     });
     sortedJobs = [...shuffledPremium, ...sortedRegular];
     return sortedJobs.slice(0, 20);
-  }, [searchQuery, locationFilter, selectedCategory]);
+  }, [searchQuery, locationFilter, selectedCategory, companyFilter]);
 
   const getCategoryLabel = (category: string) => {
     const categoryMap: Record<string, string> = {
@@ -67,43 +72,47 @@ const JobListings = ({
 
   return <div className="flex-1 flex flex-col h-full bg-background">
       {/* Mobile/Tablet Sticky Header with Logo */}
-      <div className="lg:hidden sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border/50 shadow-sm">
-        <div className="flex justify-center items-center py-3 px-4">
-          <img src="/lovable-uploads/e888818f-70b8-405b-a5e8-f62f8e842525.png" alt="Logo" className="h-12 w-auto object-contain" />
+      {showHeader && (
+        <div className="lg:hidden sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border/50 shadow-sm">
+          <div className="flex justify-center items-center py-3 px-4">
+            <img src="/lovable-uploads/e888818f-70b8-405b-a5e8-f62f8e842525.png" alt="Logo" className="h-12 w-auto object-contain" />
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Compact Search Section - Max height 73px */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-background via-primary/8 to-accent/5 border-b border-border/30 max-h-[73px]">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-60"></div>
-        
-        <div className="relative px-4 py-2 h-[73px] flex items-center justify-center">
-          {/* Centered Search Inputs with Job Count */}
-          <div className="flex items-center gap-4 w-full max-w-4xl justify-center">
-            {/* Job Count Badge */}
-            <div className="hidden sm:flex items-center">
-              
-            </div>
-
-            {/* Responsive Search Inputs */}
-            <div className="flex gap-3 flex-1 max-w-lg">
-              <div className="relative flex-1 min-w-[160px] max-w-[240px]">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input placeholder="Axtarış..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="pl-9 pr-3 py-2 h-9 bg-background/80 backdrop-blur-sm border-border/50 rounded-lg text-sm w-full" />
+      {showHeader && (
+        <div className="relative overflow-hidden bg-gradient-to-br from-background via-primary/8 to-accent/5 border-b border-border/30 max-h-[73px]">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-60"></div>
+          
+          <div className="relative px-4 py-2 h-[73px] flex items-center justify-center">
+            {/* Centered Search Inputs with Job Count */}
+            <div className="flex items-center gap-4 w-full max-w-4xl justify-center">
+              {/* Job Count Badge */}
+              <div className="hidden sm:flex items-center">
+                
               </div>
-              <div className="relative flex-1 min-w-[140px] max-w-[200px]">
-                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input placeholder="Yer..." value={locationFilter} onChange={e => setLocationFilter(e.target.value)} className="pl-9 pr-3 py-2 h-9 bg-background/80 backdrop-blur-sm border-border/50 rounded-lg text-sm w-full" />
-              </div>
-            </div>
 
-            {/* Mobile Job Count */}
-            <div className="sm:hidden">
-              
+              {/* Responsive Search Inputs */}
+              <div className="flex gap-3 flex-1 max-w-lg">
+                <div className="relative flex-1 min-w-[160px] max-w-[240px]">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input placeholder="Axtarış..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="pl-9 pr-3 py-2 h-9 bg-background/80 backdrop-blur-sm border-border/50 rounded-lg text-sm w-full" />
+                </div>
+                <div className="relative flex-1 min-w-[140px] max-w-[200px]">
+                  <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input placeholder="Yer..." value={locationFilter} onChange={e => setLocationFilter(e.target.value)} className="pl-9 pr-3 py-2 h-9 bg-background/80 backdrop-blur-sm border-border/50 rounded-lg text-sm w-full" />
+                </div>
+              </div>
+
+              {/* Mobile Job Count */}
+              <div className="sm:hidden">
+                
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Job List - Responsive Container */}
       <div className="flex-1 overflow-y-auto p-2 bg-gradient-to-b from-transparent to-primary/5 w-full max-w-[100%] mx-auto">

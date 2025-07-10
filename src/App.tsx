@@ -20,11 +20,13 @@ const App = () => (
           <Route path="/" element={<Layout />}>
             <Route index element={<Index />} />
             <Route path="/vakansiyalar" element={<Index />} />
-            <Route path="/vakansiyalar/:slug" element={<Index />} />
+            <Route path="/vakansiyalar/:job" element={<Index />} />
             <Route path="/kateqoriyalar" element={<Categories />} />
-            <Route path="/kateqoriyalar/:category" element={<Index />} />
+            <Route path="/kateqoriyalar/:category" element={<Categories />} />
+            <Route path="/kateqoriyalar/:category/vakansiya/:job" element={<Categories />} />
             <Route path="/sirketler" element={<Companies />} />
             <Route path="/sirketler/:company" element={<Companies />} />
+            <Route path="/sirketler/:company/vakansiya/:job" element={<Companies />} />
             <Route path="/saxlanilan" element={<Index />} />
             <Route path="/bildirisler" element={<Index />} />
             <Route path="/qiymetler" element={<Pricing />} />

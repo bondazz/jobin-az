@@ -1,16 +1,54 @@
 
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { mockCategories } from '@/data/mockJobs';
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { mockCategories, mockJobs } from '@/data/mockJobs';
 import { Badge } from '@/components/ui/badge';
 import { Tag, TrendingUp } from 'lucide-react';
+import JobListings from '@/components/JobListings';
+import JobDetails from '@/components/JobDetails';
+import { Job } from '@/types/job';
+import { generateCategorySEO, generateJobSEO, updatePageMeta } from '@/utils/seo';
 
 const Categories = () => {
   const navigate = useNavigate();
+  const { category: categorySlug, job: jobSlug } = useParams();
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  
+  // Decode category from URL
+  const selectedCategory = categorySlug 
+    ? mockCategories.find(cat => cat.name.toLowerCase().replace(/\s+/g, '-') === categorySlug)?.name || ''
+    : '';
+
+  // Find job if jobSlug exists
+  useEffect(() => {
+    if (jobSlug && selectedCategory) {
+      const job = mockJobs.find(j => 
+        j.title.toLowerCase().replace(/\s+/g, '-') === jobSlug && 
+        j.category === selectedCategory
+      );
+      if (job) {
+        setSelectedJob(job);
+        const seoData = generateJobSEO(job.title, job.company, job.category);
+        updatePageMeta(seoData);
+      }
+    } else if (selectedCategory) {
+      const category = mockCategories.find(cat => cat.name === selectedCategory);
+      if (category) {
+        const seoData = generateCategorySEO(category.name, category.count);
+        updatePageMeta(seoData);
+      }
+    }
+  }, [categorySlug, jobSlug, selectedCategory]);
 
   const handleCategoryClick = (categoryName: string) => {
-    // Navigate to jobs page with category filter
-    navigate(`/kateqoriyalar/${categoryName.toLowerCase().replace(/\s+/g, '-')}`);
+    const slug = categoryName.toLowerCase().replace(/\s+/g, '-');
+    navigate(`/kateqoriyalar/${slug}`);
+  };
+
+  const handleJobSelect = (job: Job) => {
+    setSelectedJob(job);
+    const jobSlug = job.title.toLowerCase().replace(/\s+/g, '-');
+    navigate(`/kateqoriyalar/${categorySlug}/vakansiya/${jobSlug}`);
   };
 
   return (
@@ -50,10 +88,13 @@ const Categories = () => {
                   <div
                     key={category.id}
                     onClick={() => handleCategoryClick(category.name)}
-                    className="group cursor-pointer p-3 rounded-lg border transition-all duration-200 ease-smooth
+                    className={`group cursor-pointer p-3 rounded-lg border transition-all duration-200 ease-smooth
                       hover:shadow-card-hover hover:-translate-y-0.5 animate-fade-in
                       w-full max-w-full min-w-0 h-[60px] flex flex-row items-center justify-between backdrop-blur-sm
-                      bg-job-card border-border/50 hover:border-primary/40 hover:shadow-card-hover"
+                      ${selectedCategory === category.name 
+                        ? 'border-primary bg-gradient-to-r from-primary/20 to-primary/5 shadow-elegant ring-1 ring-primary/50'
+                        : 'bg-job-card border-border/50 hover:border-primary/40 hover:shadow-card-hover'
+                      }`}
                     style={{ animationDelay: `${index * 50}ms` }}
                   >
                     {/* Left Section - Category Info */}
@@ -92,19 +133,30 @@ const Categories = () => {
           </div>
         </div>
 
-        {/* Right Section - Category Details */}
+        {/* Right Section - Filtered Jobs or Job Details */}
         <div className="hidden lg:block flex-1 bg-gradient-to-br from-job-details to-primary/3 animate-slide-in-right">
-          <div className="h-full flex items-center justify-center p-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                <Tag className="w-8 h-8 text-white" />
+          {selectedJob ? (
+            <JobDetails job={selectedJob} />
+          ) : selectedCategory ? (
+            <JobListings
+              selectedJob={null}
+              onJobSelect={handleJobSelect}
+              selectedCategory={selectedCategory}
+              showHeader={false}
+            />
+          ) : (
+            <div className="h-full flex items-center justify-center p-8">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Tag className="w-8 h-8 text-white" />
+                </div>
+                <h2 className="text-xl font-bold text-foreground mb-2">Kateqoriya Seçin</h2>
+                <p className="text-muted-foreground text-sm max-w-sm">
+                  Sol tərəfdən bir kateqoriya seçin və həmin sahədəki vakansiyaları görün
+                </p>
               </div>
-              <h2 className="text-xl font-bold text-foreground mb-2">Kateqoriya Seçin</h2>
-              <p className="text-muted-foreground text-sm max-w-sm">
-                Sol tərəfdən bir kateqoriya seçin və həmin sahədəki vakansiyaları görün
-              </p>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

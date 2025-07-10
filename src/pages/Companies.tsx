@@ -1,8 +1,12 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Building, MapPin, Users, Briefcase, Globe, Phone, Mail } from 'lucide-react';
+import JobListings from '@/components/JobListings';
+import { Job } from '@/types/job';
+import { mockJobs } from '@/data/mockJobs';
+import { generateCompanySEO, generateJobSEO, updatePageMeta } from '@/utils/seo';
 
 // Mock companies data
 const mockCompanies = [
@@ -15,13 +19,51 @@ const mockCompanies = [
 
 const Companies = () => {
   const navigate = useNavigate();
-  const { company: companySlug } = useParams();
+  const { company: companySlug, job: jobSlug } = useParams();
   const [selectedCompany, setSelectedCompany] = useState(null);
+  const [activeTab, setActiveTab] = useState('about');
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+
+  // Find company from URL slug
+  useEffect(() => {
+    if (companySlug) {
+      const company = mockCompanies.find(c => 
+        c.name.toLowerCase().replace(/\s+/g, '-') === companySlug
+      );
+      if (company) {
+        setSelectedCompany(company);
+        const seoData = generateCompanySEO(company.name, company.jobCount);
+        updatePageMeta(seoData);
+        
+        // If there's a job slug, find and set the job
+        if (jobSlug) {
+          const job = mockJobs.find(j => 
+            j.title.toLowerCase().replace(/\s+/g, '-') === jobSlug &&
+            j.company === company.name
+          );
+          if (job) {
+            setSelectedJob(job);
+            setActiveTab('jobs');
+            const jobSeoData = generateJobSEO(job.title, job.company, job.category);
+            updatePageMeta(jobSeoData);
+          }
+        }
+      }
+    }
+  }, [companySlug, jobSlug]);
 
   const handleCompanyClick = (company) => {
     setSelectedCompany(company);
+    setActiveTab('about');
+    setSelectedJob(null);
     const slug = company.name.toLowerCase().replace(/\s+/g, '-');
     navigate(`/sirketler/${slug}`);
+  };
+
+  const handleJobSelect = (job: Job) => {
+    setSelectedJob(job);
+    const jobSlug = job.title.toLowerCase().replace(/\s+/g, '-');
+    navigate(`/sirketler/${companySlug}/vakansiya/${jobSlug}`);
   };
 
   return (
@@ -137,59 +179,87 @@ const Companies = () => {
 
                 {/* Navigation Tabs */}
                 <div className="flex gap-4 mb-6 border-b border-border">
-                  <button className="pb-3 px-1 border-b-2 border-primary text-primary font-medium text-sm">
+                  <button 
+                    onClick={() => setActiveTab('about')}
+                    className={`pb-3 px-1 border-b-2 font-medium text-sm transition-colors ${
+                      activeTab === 'about' 
+                        ? 'border-primary text-primary' 
+                        : 'border-transparent text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
                     Şirkət Haqqında
                   </button>
-                  <button className="pb-3 px-1 text-muted-foreground hover:text-foreground font-medium text-sm">
+                  <button 
+                    onClick={() => setActiveTab('jobs')}
+                    className={`pb-3 px-1 border-b-2 font-medium text-sm transition-colors ${
+                      activeTab === 'jobs' 
+                        ? 'border-primary text-primary' 
+                        : 'border-transparent text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
                     İş Elanları ({selectedCompany.jobCount})
                   </button>
                 </div>
 
-                {/* Company Details */}
+                {/* Tab Content */}
                 <div className="space-y-6">
-                  <div>
-                    <h3 className="text-lg font-semibold text-foreground mb-3">Şirkət Haqqında</h3>
-                    <p className="text-muted-foreground leading-relaxed">
-                      {selectedCompany.name} Azərbaycanın aparıcı şirkətlərindən biridir. 
-                      Bizim missiyamız keyfiyyətli xidmətlər təqdim etmək və müştərilərimizin 
-                      ehtiyaclarını qarşılamaqdır. Komandamız təcrübəli mütəxəssislərdən ibarətdir.
-                    </p>
-                  </div>
+                  {activeTab === 'about' ? (
+                    <>
+                      <div>
+                        <h3 className="text-lg font-semibold text-foreground mb-3">Şirkət Haqqında</h3>
+                        <p className="text-muted-foreground leading-relaxed">
+                          {selectedCompany.name} Azərbaycanın aparıcı şirkətlərindən biridir. 
+                          Bizim missiyamız keyfiyyətli xidmətlər təqdim etmək və müştərilərimizin 
+                          ehtiyaclarını qarşılamaqdır. Komandamız təcrübəli mütəxəssislərdən ibarətdir.
+                        </p>
+                      </div>
 
-                  <div>
-                    <h3 className="text-lg font-semibold text-foreground mb-3">Əlaqə Məlumatları</h3>
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-3">
-                        <Globe className="w-5 h-5 text-primary" />
-                        <a href={`https://${selectedCompany.website}`} target="_blank" rel="noopener noreferrer" 
-                           className="text-primary hover:underline">
-                          {selectedCompany.website}
-                        </a>
+                      <div>
+                        <h3 className="text-lg font-semibold text-foreground mb-3">Əlaqə Məlumatları</h3>
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-3">
+                            <Globe className="w-5 h-5 text-primary" />
+                            <a href={`https://${selectedCompany.website}`} target="_blank" rel="noopener noreferrer" 
+                               className="text-primary hover:underline">
+                              {selectedCompany.website}
+                            </a>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <Phone className="w-5 h-5 text-primary" />
+                            <span className="text-foreground">+994 12 123 45 67</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <Mail className="w-5 h-5 text-primary" />
+                            <span className="text-foreground">info@{selectedCompany.website}</span>
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-3">
-                        <Phone className="w-5 h-5 text-primary" />
-                        <span className="text-foreground">+994 12 123 45 67</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <Mail className="w-5 h-5 text-primary" />
-                        <span className="text-foreground">info@{selectedCompany.website}</span>
-                      </div>
-                    </div>
-                  </div>
 
-                  <div>
-                    <h3 className="text-lg font-semibold text-foreground mb-3">Statistika</h3>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-background/50 p-4 rounded-lg border border-border/50">
-                        <div className="text-2xl font-bold text-primary mb-1">{selectedCompany.jobCount}</div>
-                        <div className="text-sm text-muted-foreground">Aktiv Vakansiya</div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-foreground mb-3">Statistika</h3>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="bg-background/50 p-4 rounded-lg border border-border/50">
+                            <div className="text-2xl font-bold text-primary mb-1">{selectedCompany.jobCount}</div>
+                            <div className="text-sm text-muted-foreground">Aktiv Vakansiya</div>
+                          </div>
+                          <div className="bg-background/50 p-4 rounded-lg border border-border/50">
+                            <div className="text-2xl font-bold text-accent mb-1">{selectedCompany.employees}</div>
+                            <div className="text-sm text-muted-foreground">İşçi Sayı</div>
+                          </div>
+                        </div>
                       </div>
-                      <div className="bg-background/50 p-4 rounded-lg border border-border/50">
-                        <div className="text-2xl font-bold text-accent mb-1">{selectedCompany.employees}</div>
-                        <div className="text-sm text-muted-foreground">İşçi Sayı</div>
-                      </div>
+                    </>
+                  ) : (
+                    <div className="h-[600px] overflow-hidden">
+                      <JobListings
+                        selectedJob={selectedJob}
+                        onJobSelect={handleJobSelect}
+                        selectedCategory=""
+                        companyFilter={selectedCompany.name}
+                        showHeader={false}
+                      />
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
             </div>
