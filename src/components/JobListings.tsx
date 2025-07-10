@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -43,16 +42,16 @@ const JobListings = ({
     let sortedRegular = [...regularJobs];
     if (sortBy === 'newest') {
       sortedRegular.sort((a, b) => {
-        const dateA = new Date(a.postedAt === 'Today' ? Date.now() : 
-          a.postedAt === 'Yesterday' ? Date.now() - 86400000 : 
-          Date.now() - parseInt(a.postedAt) * 86400000);
-        const dateB = new Date(b.postedAt === 'Today' ? Date.now() : 
-          b.postedAt === 'Yesterday' ? Date.now() - 86400000 : 
-          Date.now() - parseInt(b.postedAt) * 86400000);
-        return dateB.getTime() - dateA.getTime();
+        const getDateScore = (postedAt: string) => {
+          if (postedAt === 'Today') return 3;
+          if (postedAt === 'Yesterday') return 2;
+          if (postedAt.includes('day')) return 1;
+          return 0;
+        };
+        return getDateScore(b.postedAt) - getDateScore(a.postedAt);
       });
     } else if (sortBy === 'popular') {
-      sortedRegular.sort((a, b) => parseInt(b.views) - parseInt(a.views));
+      sortedRegular.sort((a, b) => b.views - a.views);
     }
 
     // Randomize premium jobs
