@@ -30,23 +30,38 @@ const JobListings = ({
       return matchesSearch && matchesLocation && matchesCategory;
     });
 
-    // Separate premium and regular jobs
-    const premiumJobs = filtered.filter(job => job.tags.includes('premium'));
-    const regularJobs = filtered.filter(job => !job.tags.includes('premium'));
+    // Sort based on selected sort type
+    let sortedJobs = [...filtered];
+    
+    if (sortBy === 'newest') {
+      // Separate premium and regular jobs
+      const premiumJobs = sortedJobs.filter(job => job.tags.includes('premium'));
+      const regularJobs = sortedJobs.filter(job => !job.tags.includes('premium'));
 
-    // Randomize premium jobs on each render
-    const shuffledPremium = [...premiumJobs].sort(() => Math.random() - 0.5);
+      // Randomize premium jobs on each render
+      const shuffledPremium = [...premiumJobs].sort(() => Math.random() - 0.5);
 
-    // Sort regular jobs by posting date (newest first)
-    const sortedRegular = [...regularJobs].sort((a, b) => {
-      const dateA = new Date(a.postedAt === 'Today' ? Date.now() : a.postedAt === 'Yesterday' ? Date.now() - 86400000 : Date.now() - parseInt(a.postedAt) * 86400000);
-      const dateB = new Date(b.postedAt === 'Today' ? Date.now() : b.postedAt === 'Yesterday' ? Date.now() - 86400000 : Date.now() - parseInt(b.postedAt) * 86400000);
-      return dateB.getTime() - dateA.getTime();
-    });
+      // Sort regular jobs by posting date (newest first)
+      const sortedRegular = [...regularJobs].sort((a, b) => {
+        const getDateValue = (postedAt: string) => {
+          if (postedAt === 'Today') return Date.now();
+          if (postedAt === 'Yesterday') return Date.now() - 86400000;
+          return Date.now() - parseInt(postedAt) * 86400000;
+        };
+        return getDateValue(b.postedAt) - getDateValue(a.postedAt);
+      });
 
-    // Combine: premium first, then regular
-    return [...shuffledPremium, ...sortedRegular].slice(0, 20);
-  }, [searchQuery, locationFilter, selectedCategory]);
+      sortedJobs = [...shuffledPremium, ...sortedRegular];
+    } else if (sortBy === 'popular') {
+      sortedJobs = sortedJobs.sort((a, b) => (b.views || 0) - (a.views || 0));
+    } else if (sortBy === 'premium') {
+      const premiumJobs = sortedJobs.filter(job => job.tags.includes('premium'));
+      const regularJobs = sortedJobs.filter(job => !job.tags.includes('premium'));
+      sortedJobs = [...premiumJobs, ...regularJobs];
+    }
+
+    return sortedJobs.slice(0, 20);
+  }, [searchQuery, locationFilter, selectedCategory, sortBy]);
 
   const getCategoryLabel = (category: string) => {
     const categoryMap: Record<string, string> = {
@@ -79,71 +94,50 @@ const JobListings = ({
         </div>
       </div>
 
-      {/* Enhanced Header Section */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-background via-primary/8 to-accent/5 border-b border-border/30">
-        {/* Background Pattern */}
+      {/* Compact Header Section - Max height 73px */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-background via-primary/8 to-accent/5 border-b border-border/30 max-h-[73px]">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-60"></div>
-        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-96 h-48 bg-primary/10 rounded-full blur-3xl opacity-30"></div>
         
-        <div className="relative p-6 lg:p-8">
-          {/* Main Header Button */}
-          <div className="flex justify-center mb-6">
-            <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-primary via-accent to-primary rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-300"></div>
-              <div className="relative bg-gradient-to-r from-background to-primary/10 backdrop-blur-sm border border-primary/20 rounded-2xl px-8 py-4 shadow-elegant hover:shadow-glow transition-all duration-300">
-                <h1 className="text-xl lg:text-2xl font-bold text-primary text-center tracking-wide">
-                  Vakansiyaların Sayı
-                </h1>
-                <div className="absolute -top-2 -right-2 w-4 h-4 bg-primary rounded-full animate-pulse"></div>
+        <div className="relative px-4 py-2 h-[73px] flex items-center justify-between">
+          {/* Left: Job Count Title */}
+          <div className="flex items-center gap-3">
+            <div className="bg-gradient-to-r from-primary/20 to-accent/20 rounded-lg px-3 py-1.5">
+              <h1 className="text-sm font-bold text-primary">Vakansiyaların Sayı</h1>
+            </div>
+          </div>
+
+          {/* Center: Statistics */}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 bg-background/80 backdrop-blur-sm border border-border/50 rounded-lg px-3 py-1.5">
+              <TrendingUp className="w-4 h-4 text-primary" />
+              <div className="text-center">
+                <div className="text-lg font-bold text-primary">{dailyJobCount}</div>
+                <div className="text-xs text-muted-foreground">Günlük</div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 bg-background/80 backdrop-blur-sm border border-border/50 rounded-lg px-3 py-1.5">
+              <Calendar className="w-4 h-4 text-accent" />
+              <div className="text-center">
+                <div className="text-lg font-bold text-accent">{monthlyJobCount}</div>
+                <div className="text-xs text-muted-foreground">Aylıq</div>
               </div>
             </div>
           </div>
 
-          {/* Statistics Section */}
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-8">
-            <div className="group relative">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/20 to-accent/20 rounded-xl blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
-              <div className="relative bg-gradient-to-br from-background/90 to-primary/5 backdrop-blur-sm border border-border/50 rounded-xl p-4 hover:border-primary/30 transition-all duration-300 min-w-[160px]">
-                <div className="flex items-center justify-center gap-3">
-                  <div className="p-2 bg-primary/10 rounded-lg">
-                    <TrendingUp className="w-5 h-5 text-primary" />
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-primary">{dailyJobCount}</div>
-                    <div className="text-sm text-muted-foreground font-medium">Günlük Yeni</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="group relative">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-accent/20 to-primary/20 rounded-xl blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
-              <div className="relative bg-gradient-to-br from-background/90 to-accent/5 backdrop-blur-sm border border-border/50 rounded-xl p-4 hover:border-primary/30 transition-all duration-300 min-w-[160px]">
-                <div className="flex items-center justify-center gap-3">
-                  <div className="p-2 bg-accent/10 rounded-lg">
-                    <Calendar className="w-5 h-5 text-accent" />
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-accent">{monthlyJobCount}</div>
-                    <div className="text-sm text-muted-foreground font-medium">Aylıq İlan</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Sorting Buttons */}
-          <div className="flex justify-center mb-6">
-            <div className="flex bg-background/80 backdrop-blur-sm border border-border/50 rounded-xl p-1 shadow-sm">
+          {/* Right: Sort + Search */}
+          <div className="flex items-center gap-2">
+            {/* Sorting Buttons */}
+            <div className="flex bg-background/80 backdrop-blur-sm border border-border/50 rounded-lg p-0.5">
               {[
-                { key: 'newest', label: 'Ən yeni' },
-                { key: 'popular', label: 'Populyar' },
-                { key: 'premium', label: 'Premium' }
+                { key: 'newest', label: 'Yeni' },
+                { key: 'popular', label: 'Pop' },
+                { key: 'premium', label: 'VIP' }
               ].map((sort) => (
                 <button
                   key={sort.key}
                   onClick={() => setSortBy(sort.key as 'newest' | 'popular' | 'premium')}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  className={`px-2 py-1 rounded text-xs font-medium transition-all duration-200 ${
                     sortBy === sort.key
                       ? 'bg-primary text-primary-foreground shadow-sm'
                       : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
@@ -153,27 +147,27 @@ const JobListings = ({
                 </button>
               ))}
             </div>
-          </div>
 
-          {/* Compact Search Section */}
-          <div className="flex flex-col sm:flex-row gap-3 max-w-2xl mx-auto">
-            <div className="relative flex-1 group">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors duration-300" />
-              <Input 
-                placeholder="İş, şirkət axtarın..." 
-                value={searchQuery} 
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4 py-2.5 bg-background/80 backdrop-blur-sm border-border/50 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all duration-300 text-sm shadow-sm"
-              />
-            </div>
-            <div className="relative group sm:w-48">
-              <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors duration-300" />
-              <Input 
-                placeholder="Məkan" 
-                value={locationFilter} 
-                onChange={(e) => setLocationFilter(e.target.value)}
-                className="pl-10 pr-4 py-2.5 bg-background/80 backdrop-blur-sm border-border/50 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all duration-300 text-sm shadow-sm"
-              />
+            {/* Compact Search */}
+            <div className="flex gap-1">
+              <div className="relative w-32">
+                <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 w-3 h-3 text-muted-foreground" />
+                <Input 
+                  placeholder="Axtarış..." 
+                  value={searchQuery} 
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-7 pr-2 py-1 h-8 bg-background/80 backdrop-blur-sm border-border/50 rounded-lg text-xs"
+                />
+              </div>
+              <div className="relative w-24">
+                <MapPin className="absolute left-2 top-1/2 transform -translate-y-1/2 w-3 h-3 text-muted-foreground" />
+                <Input 
+                  placeholder="Yer..." 
+                  value={locationFilter} 
+                  onChange={(e) => setLocationFilter(e.target.value)}
+                  className="pl-7 pr-2 py-1 h-8 bg-background/80 backdrop-blur-sm border-border/50 rounded-lg text-xs"
+                />
+              </div>
             </div>
           </div>
         </div>
