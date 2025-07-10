@@ -6,11 +6,13 @@ import { mockJobs } from '@/data/mockJobs';
 import { Job } from '@/types/job';
 import JobCard from './JobCard';
 import { Search, MapPin } from 'lucide-react';
+
 interface JobListingsProps {
   selectedJob: Job | null;
   onJobSelect: (job: Job) => void;
   selectedCategory?: string;
 }
+
 const JobListings = ({
   selectedJob,
   onJobSelect,
@@ -18,6 +20,7 @@ const JobListings = ({
 }: JobListingsProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [locationFilter, setLocationFilter] = useState('');
+
   const filteredJobs = useMemo(() => {
     const filtered = mockJobs.filter(job => {
       const matchesSearch = searchQuery === '' || job.title.toLowerCase().includes(searchQuery.toLowerCase()) || job.company.toLowerCase().includes(searchQuery.toLowerCase());
@@ -47,6 +50,7 @@ const JobListings = ({
     sortedJobs = [...shuffledPremium, ...sortedRegular];
     return sortedJobs.slice(0, 20);
   }, [searchQuery, locationFilter, selectedCategory]);
+
   const getCategoryLabel = (category: string) => {
     const categoryMap: Record<string, string> = {
       'Technology': 'Texnologiya',
@@ -60,6 +64,7 @@ const JobListings = ({
     };
     return categoryMap[category] || category;
   };
+
   return <div className="flex-1 flex flex-col h-full bg-background">
       {/* Mobile/Tablet Sticky Header with Logo */}
       <div className="lg:hidden sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border/50 shadow-sm">
@@ -103,9 +108,9 @@ const JobListings = ({
       {/* Job List - Responsive Container */}
       <div className="flex-1 overflow-y-auto p-2 bg-gradient-to-b from-transparent to-primary/5 w-full max-w-[100%] mx-auto">
         <div className="flex flex-col gap-2 justify-center items-center w-full max-w-full px-2">
-          {filteredJobs.length > 0 ? filteredJobs.map((job, index) => <div key={`job-${job.id}`} className="w-full max-w-[600px] min-w-0">
+          {filteredJobs.length > 0 ? filteredJobs.map((job, index) => <div key={`job-${job.id}`} className="w-full max-w-full min-w-0">
                 {/* Advertisement Banner every 6 jobs */}
-                {index > 0 && index % 6 === 0 && <div className="w-full max-w-[600px] h-[100px] bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 rounded-xl mb-2 flex items-center justify-center animate-fade-in">
+                {index > 0 && index % 6 === 0 && <div className="w-full max-w-full h-[60px] bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 rounded-xl mb-2 flex items-center justify-center animate-fade-in">
                     <div className="text-center">
                       <p className="text-sm font-bold text-primary">Reklam Yeri</p>
                       <p className="text-xs text-muted-foreground">Banner Reklamı</p>
@@ -137,4 +142,5 @@ const JobListings = ({
       </div>
     </div>;
 };
+
 export default JobListings;
