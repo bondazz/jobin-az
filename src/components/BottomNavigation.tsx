@@ -42,12 +42,12 @@ const BottomNavigation = ({ selectedCategory, onCategorySelect }: BottomNavigati
 
   const allMenuItems = [
     { icon: Home, label: 'Ana Səhifə', path: '/', count: null },
-    { icon: Briefcase, label: 'İş Elanları', path: '/jobs', count: 1247 },
-    { icon: Tag, label: 'Kateqoriyalar', path: '/categories', count: 8 },
-    { icon: TrendingUp, label: 'Sənaye', path: '/industry', count: 12 },
-    { icon: Building, label: 'Şirkətlər', path: '/companies', count: 156 },
+    { icon: Briefcase, label: 'İş Elanları', path: '/jobs', count: null },
+    { icon: Tag, label: 'Kateqoriyalar', path: '/categories', count: null },
+    { icon: TrendingUp, label: 'Sənaye', path: '/industry', count: null },
+    { icon: Building, label: 'Şirkətlər', path: '/companies', count: null },
     { icon: Bookmark, label: 'Saxlanılan İşlər', path: '/saved', count: 23 },
-    { icon: Bell, label: 'İş Bildirişləri', path: '/alerts', count: 5 },
+    { icon: Bell, label: 'İş Bildirişləri', path: '/alerts', count: null },
     { icon: DollarSign, label: 'Qiymətlər', path: '/pricing', count: null },
     { icon: Info, label: 'Haqqında', path: '/about', count: null }
   ];
@@ -86,7 +86,7 @@ const BottomNavigation = ({ selectedCategory, onCategorySelect }: BottomNavigati
             >
               <div className="relative">
                 <item.icon className="w-5 h-5" />
-                {item.count > 0 && (
+                {item.path === '/saved' && item.count > 0 && (
                   <Badge 
                     variant="secondary" 
                     className="absolute -top-2 -right-2 h-4 min-w-4 text-[10px] px-1 bg-primary text-white"
@@ -112,55 +112,52 @@ const BottomNavigation = ({ selectedCategory, onCategorySelect }: BottomNavigati
               </Button>
             </DrawerTrigger>
             
-            <DrawerContent className="max-h-[85vh] bg-gradient-to-b from-background to-primary/5">
-              <DrawerHeader className="text-center border-b border-border/40 bg-gradient-to-r from-background to-primary/10">
+            <DrawerContent className="max-h-[70vh] bg-gradient-to-b from-background to-primary/5 z-40">
+              <DrawerHeader className="text-center border-b border-border/40 bg-gradient-to-r from-background to-primary/10 pb-3">
                 <div className="flex items-center justify-center gap-3 mb-2">
                   <img 
                     src="/lovable-uploads/e888818f-70b8-405b-a5e8-f62f8e842525.png" 
                     alt="Jooble" 
-                    className="w-8 h-8 object-contain dark:invert transition-all duration-300" 
+                    className="w-10 h-10 object-contain dark:invert transition-all duration-300" 
                   />
-                  <DrawerTitle className="text-2xl font-bold bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
-                    Jooble
-                  </DrawerTitle>
                 </div>
                 <p className="text-sm text-muted-foreground">İş axtarışınızı asanlaşdırın</p>
               </DrawerHeader>
               
-              <div className="p-6 space-y-8 overflow-y-auto">
+              <div className="p-4 space-y-6 overflow-y-auto">
                 {/* All Navigation Items */}
                 <div>
-                  <h3 className="font-bold text-lg text-foreground mb-4 flex items-center gap-2">
+                  <h3 className="font-bold text-base text-foreground mb-3 flex items-center gap-2">
                     <div className="w-2 h-2 bg-primary rounded-full"></div>
                     Əsas Bölümlər
                   </h3>
-                  <div className="grid grid-cols-1 gap-3">
+                  <div className="grid grid-cols-1 gap-2">
                     {allMenuItems.map((item, index) => (
                       <Link
                         key={item.path}
                         to={item.path}
-                        className={`flex items-center justify-between p-4 rounded-xl transition-all duration-300 animate-fade-in shadow-sm ${
+                        className={`flex items-center justify-between p-3 rounded-lg transition-all duration-300 animate-fade-in shadow-sm ${
                           isActivePath(item.path)
-                            ? 'bg-gradient-to-r from-primary/20 to-primary/10 text-primary border border-primary/30 shadow-lg' 
-                            : 'bg-card hover:bg-accent/60 border border-border/40 hover:shadow-md'
+                            ? 'bg-gradient-to-r from-primary/20 to-primary/10 text-primary border border-primary/30' 
+                            : 'bg-card hover:bg-accent/60 border border-border/40'
                         }`}
-                        style={{ animationDelay: `${index * 50}ms` }}
+                        style={{ animationDelay: `${index * 30}ms` }}
                         onClick={() => setIsMenuOpen(false)}
                       >
-                        <div className="flex items-center gap-4">
-                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                        <div className="flex items-center gap-3">
+                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                             isActivePath(item.path) ? 'bg-primary/20' : 'bg-primary/10'
                           }`}>
-                            <item.icon className="w-5 h-5" />
+                            <item.icon className="w-4 h-4" />
                           </div>
-                          <span className="font-semibold text-base">{item.label}</span>
+                          <span className="font-medium text-sm">{item.label}</span>
                         </div>
                         {item.count && (
                           <Badge 
                             variant={isActivePath(item.path) ? "default" : "outline"} 
-                            className={`text-sm px-3 py-1 ${
+                            className={`text-xs px-2 py-0.5 ${
                               isActivePath(item.path) 
-                                ? 'bg-primary text-white shadow-md' 
+                                ? 'bg-primary text-white' 
                                 : 'bg-primary/10 text-primary border-primary/30'
                             }`}
                           >
@@ -174,27 +171,27 @@ const BottomNavigation = ({ selectedCategory, onCategorySelect }: BottomNavigati
 
                 {/* Categories */}
                 <div>
-                  <h3 className="font-bold text-lg text-foreground mb-4 flex items-center gap-2">
+                  <h3 className="font-bold text-base text-foreground mb-3 flex items-center gap-2">
                     <div className="w-2 h-2 bg-primary rounded-full"></div>
                     Populyar Kateqoriyalar
                   </h3>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-2">
                     {categories.map((category, index) => (
                       <Button
                         key={category.name}
                         variant={selectedCategory === category.name ? "default" : "outline"}
-                        className={`h-auto p-4 flex flex-col items-center gap-2 transition-all duration-300 animate-fade-in ${
+                        className={`h-auto p-3 flex flex-col items-center gap-1 transition-all duration-300 animate-fade-in ${
                           selectedCategory === category.name
-                            ? 'bg-primary text-white shadow-lg border-primary'
-                            : 'bg-card hover:bg-accent border-border/40 hover:shadow-md'
+                            ? 'bg-primary text-white border-primary'
+                            : 'bg-card hover:bg-accent border-border/40'
                         }`}
                         onClick={() => handleCategorySelect(category.name)}
-                        style={{ animationDelay: `${(index + allMenuItems.length) * 50}ms` }}
+                        style={{ animationDelay: `${(index + allMenuItems.length) * 30}ms` }}
                       >
-                        <span className="font-semibold text-sm">{category.name}</span>
+                        <span className="font-medium text-xs">{category.name}</span>
                         <Badge 
                           variant="secondary" 
-                          className={`text-xs px-2 py-0.5 ${
+                          className={`text-[10px] px-1.5 py-0.5 ${
                             selectedCategory === category.name
                               ? 'bg-white/20 text-white'
                               : 'bg-primary/10 text-primary'
@@ -208,26 +205,30 @@ const BottomNavigation = ({ selectedCategory, onCategorySelect }: BottomNavigati
                 </div>
 
                 {/* Theme Toggle & Footer */}
-                <div className="pt-6 border-t border-border/40">
-                  <div className="flex items-center justify-between mb-6 p-4 bg-card rounded-xl border border-border/40">
+                <div className="pt-4 border-t border-border/40">
+                  <div className="flex items-center justify-between mb-4 p-3 bg-card rounded-lg border border-border/40">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                        <span className="text-sm">🌙</span>
+                      <div className="w-6 h-6 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <span className="text-xs">🌙</span>
                       </div>
-                      <span className="font-semibold text-foreground">Mövzu</span>
+                      <span className="font-medium text-sm text-foreground">Mövzu</span>
                     </div>
                     <ThemeToggle />
                   </div>
                   
-                  <div className="text-center space-y-3">
-                    <div className="text-sm text-muted-foreground flex items-center justify-center gap-2">
-                      <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
-                      <span className="font-semibold">© 2024 Jooble</span>
+                  <div className="text-center space-y-2">
+                    <div className="text-xs text-muted-foreground flex items-center justify-center gap-2">
+                      <img 
+                        src="/lovable-uploads/e888818f-70b8-405b-a5e8-f62f8e842525.png" 
+                        alt="Jooble" 
+                        className="w-4 h-4 object-contain dark:invert" 
+                      />
+                      <span className="font-medium">© 2024 Jooble</span>
                     </div>
-                    <div className="flex justify-center gap-6 text-xs">
-                      <a href="#" className="text-muted-foreground hover:text-primary transition-colors font-medium">Kömək</a>
-                      <a href="#" className="text-muted-foreground hover:text-primary transition-colors font-medium">Məxfilik</a>
-                      <a href="#" className="text-muted-foreground hover:text-primary transition-colors font-medium">Şərtlər</a>
+                    <div className="flex justify-center gap-4 text-xs">
+                      <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Kömək</a>
+                      <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Məxfilik</a>
+                      <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Şərtlər</a>
                     </div>
                   </div>
                 </div>
