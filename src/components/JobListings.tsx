@@ -84,9 +84,7 @@ const JobListings = ({
         <div className="relative px-4 py-2 h-[73px] flex items-center justify-between">
           {/* Left: Title */}
           <div className="flex items-center gap-3">
-            <div className="bg-gradient-to-r from-primary/20 to-accent/20 rounded-lg px-3 py-1.5">
-              <h1 className="text-sm font-bold text-primary">İş Elanları</h1>
-            </div>
+            
           </div>
 
           {/* Right: Sort + Search */}
