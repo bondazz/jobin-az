@@ -5,14 +5,12 @@ import { Badge } from '@/components/ui/badge';
 import { mockJobs } from '@/data/mockJobs';
 import { Job } from '@/types/job';
 import JobCard from './JobCard';
-import { Search, Filter, MapPin, Calendar, TrendingUp, Star } from 'lucide-react';
-
+import { Search, Filter, MapPin } from 'lucide-react';
 interface JobListingsProps {
   selectedJob: Job | null;
   onJobSelect: (job: Job) => void;
   selectedCategory?: string;
 }
-
 const JobListings = ({
   selectedJob,
   onJobSelect,
@@ -20,17 +18,11 @@ const JobListings = ({
 }: JobListingsProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [locationFilter, setLocationFilter] = useState('');
-  const [sortBy, setSortBy] = useState('newest');
-
   const filteredJobs = useMemo(() => {
     const filtered = mockJobs.filter(job => {
-      const matchesSearch = searchQuery === '' || 
-        job.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        job.company.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesLocation = locationFilter === '' || 
-        job.location.toLowerCase().includes(locationFilter.toLowerCase());
+      const matchesSearch = searchQuery === '' || job.title.toLowerCase().includes(searchQuery.toLowerCase()) || job.company.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesLocation = locationFilter === '' || job.location.toLowerCase().includes(locationFilter.toLowerCase());
       const matchesCategory = !selectedCategory || job.category === selectedCategory;
-      
       return matchesSearch && matchesLocation && matchesCategory;
     });
 
@@ -38,29 +30,19 @@ const JobListings = ({
     const premiumJobs = filtered.filter(job => job.tags.includes('premium'));
     const regularJobs = filtered.filter(job => !job.tags.includes('premium'));
 
-    // Sort based on selected option
-    let sortedRegular = [...regularJobs];
-    if (sortBy === 'newest') {
-      sortedRegular.sort((a, b) => {
-        const getDateScore = (postedAt: string) => {
-          if (postedAt === 'Today') return 3;
-          if (postedAt === 'Yesterday') return 2;
-          if (postedAt.includes('day')) return 1;
-          return 0;
-        };
-        return getDateScore(b.postedAt) - getDateScore(a.postedAt);
-      });
-    } else if (sortBy === 'popular') {
-      sortedRegular.sort((a, b) => b.views - a.views);
-    }
-
-    // Randomize premium jobs
+    // Randomize premium jobs on each render
     const shuffledPremium = [...premiumJobs].sort(() => Math.random() - 0.5);
+
+    // Sort regular jobs by posting date (newest first)
+    const sortedRegular = [...regularJobs].sort((a, b) => {
+      const dateA = new Date(a.postedAt === 'Today' ? Date.now() : a.postedAt === 'Yesterday' ? Date.now() - 86400000 : Date.now() - parseInt(a.postedAt) * 86400000);
+      const dateB = new Date(b.postedAt === 'Today' ? Date.now() : b.postedAt === 'Yesterday' ? Date.now() - 86400000 : Date.now() - parseInt(b.postedAt) * 86400000);
+      return dateB.getTime() - dateA.getTime();
+    });
 
     // Combine: premium first, then regular
     return [...shuffledPremium, ...sortedRegular].slice(0, 20);
-  }, [searchQuery, locationFilter, selectedCategory, sortBy]);
-
+  }, [searchQuery, locationFilter, selectedCategory]);
   const getCategoryLabel = (category: string) => {
     const categoryMap: Record<string, string> = {
       'Technology': 'Texnologiya',
@@ -78,9 +60,7 @@ const JobListings = ({
   // Daily and monthly job statistics
   const dailyJobCount = 127;
   const monthlyJobCount = 3420;
-
-  return (
-    <div className="flex-1 flex flex-col h-full bg-background">
+  return <div className="flex-1 flex flex-col h-full bg-background">
       {/* Search Header */}
       <div className="p-4 border-b border-border bg-gradient-to-r from-background to-primary/5 backdrop-blur-sm">
         <div className="space-y-4">
@@ -100,7 +80,7 @@ const JobListings = ({
           <div className="flex gap-4 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               <span className="font-semibold text-primary">{dailyJobCount}</span>
-              <span>günlük yeni ilan</span>
+              <span className="mx-0 px-0 py-0 my-0">günlük yeni ilan</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="font-semibold text-primary">{monthlyJobCount}</span>
@@ -111,97 +91,38 @@ const JobListings = ({
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1 group">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors duration-300" />
-              <Input 
-                placeholder="İş, şirkət axtarın..." 
-                value={searchQuery} 
-                onChange={(e) => setSearchQuery(e.target.value)} 
-                className="pl-10 pr-3 py-2.5 bg-background/80 backdrop-blur-sm border-border/50 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all duration-300 text-sm" 
-              />
+              <Input placeholder="İş, şirkət axtarın..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="pl-10 pr-3 py-2.5 bg-background/80 backdrop-blur-sm border-border/50 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all duration-300 text-sm" />
             </div>
             <div className="relative group">
               <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors duration-300" />
-              <Input 
-                placeholder="Məkan" 
-                value={locationFilter} 
-                onChange={(e) => setLocationFilter(e.target.value)} 
-                className="pl-10 pr-3 py-2.5 w-full sm:w-40 bg-background/80 backdrop-blur-sm border-border/50 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all duration-300 text-sm" 
-              />
+              <Input placeholder="Məkan" value={locationFilter} onChange={e => setLocationFilter(e.target.value)} className="pl-10 pr-3 py-2.5 w-full sm:w-40 bg-background/80 backdrop-blur-sm border-border/50 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all duration-300 text-sm" />
             </div>
-            <Button 
-              variant="outline" 
-              className="px-4 py-2.5 rounded-lg border-primary/30 text-primary hover:bg-primary hover:text-white transition-all duration-300 hover:shadow-lg font-medium text-sm"
-            >
+            <Button variant="outline" className="px-4 py-2.5 rounded-lg border-primary/30 text-primary hover:bg-primary hover:text-white transition-all duration-300 hover:shadow-lg font-medium text-sm">
               <Filter className="w-4 h-4 mr-1.5" />
               Süzgəc
             </Button>
-          </div>
-
-          {/* Horizontal Sorting Buttons */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1">
-            <div className="flex items-center gap-1 flex-shrink-0">
-              <Button
-                variant={sortBy === 'newest' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setSortBy('newest')}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full border transition-all duration-200 hover:scale-105"
-              >
-                <Calendar className="w-3 h-3" />
-                Ən yeni
-              </Button>
-              <Button
-                variant={sortBy === 'popular' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setSortBy('popular')}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full border transition-all duration-200 hover:scale-105"
-              >
-                <TrendingUp className="w-3 h-3" />
-                Populyar
-              </Button>
-              <Button
-                variant={sortBy === 'premium' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setSortBy('premium')}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full border transition-all duration-200 hover:scale-105"
-              >
-                <Star className="w-3 h-3" />
-                Premium
-              </Button>
-            </div>
           </div>
         </div>
       </div>
 
       {/* Job List */}
-      <div className="flex-1 overflow-y-auto p-2 bg-gradient-to-b from-transparent to-primary/5 px-[2px]">
+      <div className="flex-1 overflow-y-auto p-2 bg-gradient-to-b from-transparent to-primary/5">
         <div className="flex flex-col gap-2 justify-center items-center max-w-full">
-          {filteredJobs.length > 0 ? (
-            filteredJobs.map((job, index) => (
-              <div key={`job-${job.id}`} className="w-full max-w-[620px]">
+          {filteredJobs.length > 0 ? filteredJobs.map((job, index) => <div key={`job-${job.id}`} className="w-full max-w-[620px]">
                 {/* Advertisement Banner every 6 jobs */}
-                {index > 0 && index % 6 === 0 && (
-                  <div className="w-full h-[100px] bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 rounded-xl mb-2 flex items-center justify-center animate-fade-in">
+                {index > 0 && index % 6 === 0 && <div className="w-full h-[100px] bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 rounded-xl mb-2 flex items-center justify-center animate-fade-in">
                     <div className="text-center">
                       <p className="text-sm font-bold text-primary">Reklam Yeri</p>
                       <p className="text-xs text-muted-foreground">Banner Reklamı</p>
                     </div>
-                  </div>
-                )}
+                  </div>}
                 
-                <div 
-                  className="animate-fade-in w-full" 
-                  style={{ animationDelay: `${index * 50}ms` }}
-                >
-                  <JobCard 
-                    job={job} 
-                    isSelected={selectedJob?.id === job.id} 
-                    onClick={() => onJobSelect(job)} 
-                    isAlternate={index % 2 === 1} 
-                  />
+                <div className="animate-fade-in w-full" style={{
+            animationDelay: `${index * 50}ms`
+          }}>
+                  <JobCard job={job} isSelected={selectedJob?.id === job.id} onClick={() => onJobSelect(job)} isAlternate={index % 2 === 1} />
                 </div>
-              </div>
-            ))
-          ) : (
-            <div className="flex flex-col items-center justify-center py-16 text-muted-foreground animate-fade-in">
+              </div>) : <div className="flex flex-col items-center justify-center py-16 text-muted-foreground animate-fade-in">
               <div className="relative mb-4">
                 <Search className="w-12 h-12 opacity-30" />
                 <div className="absolute inset-0 bg-primary/10 rounded-full blur-xl"></div>
@@ -210,22 +131,15 @@ const JobListings = ({
               <p className="text-sm text-center mb-4 max-w-sm leading-relaxed">
                 Axtarış kriteriyalarınızı dəyişdirin və ya fərqli kateqoriyaları araşdırın
               </p>
-              <Button 
-                variant="outline" 
-                className="mt-2 px-4 py-2.5 rounded-lg border-primary/30 text-primary hover:bg-primary hover:text-white transition-all duration-300 hover:shadow-lg font-medium text-sm"
-                onClick={() => {
-                  setSearchQuery('');
-                  setLocationFilter('');
-                }}
-              >
+              <Button variant="outline" className="mt-2 px-4 py-2.5 rounded-lg border-primary/30 text-primary hover:bg-primary hover:text-white transition-all duration-300 hover:shadow-lg font-medium text-sm" onClick={() => {
+            setSearchQuery('');
+            setLocationFilter('');
+          }}>
                 Süzgəcləri təmizlə
               </Button>
-            </div>
-          )}
+            </div>}
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default JobListings;
