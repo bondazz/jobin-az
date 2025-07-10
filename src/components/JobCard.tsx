@@ -3,12 +3,14 @@ import { Badge } from '@/components/ui/badge';
 import { Eye, Heart } from 'lucide-react';
 import VerifyBadge from '@/components/ui/verify-badge';
 import { useState, useEffect } from 'react';
+
 interface JobCardProps {
   job: Job;
   isSelected?: boolean;
   onClick: () => void;
   isAlternate?: boolean;
 }
+
 const JobCard = ({
   job,
   isSelected,
@@ -16,10 +18,12 @@ const JobCard = ({
   isAlternate
 }: JobCardProps) => {
   const [isSaved, setIsSaved] = useState(false);
+
   useEffect(() => {
     const savedJobs = JSON.parse(localStorage.getItem('savedJobs') || '[]');
     setIsSaved(savedJobs.includes(job.id));
   }, [job.id]);
+
   const isVerifiedCompany = (company: string) => {
     const verifiedCompanies = ['Google', 'Apple', 'Microsoft', 'Meta', 'Amazon', 'Netflix', 'Tesla', 'Spotify'];
     return verifiedCompanies.includes(company);
@@ -27,6 +31,7 @@ const JobCard = ({
 
   // Filter to only show premium tags
   const premiumTags = job.tags.filter(tag => tag === 'premium');
+
   const handleSaveClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     const savedJobs = JSON.parse(localStorage.getItem('savedJobs') || '[]');
@@ -40,10 +45,11 @@ const JobCard = ({
       setIsSaved(true);
     }
   };
+
   return <div onClick={onClick} className={`
         group cursor-pointer p-2 rounded-lg border transition-all duration-200 ease-smooth
         hover:shadow-card-hover hover:-translate-y-0.5 animate-fade-in
-        w-full max-w-[620px] h-[45px] flex flex-row items-center justify-between backdrop-blur-sm relative
+        w-full max-w-[640px] h-[45px] flex flex-row items-center justify-between backdrop-blur-sm relative
         ${isSelected ? 'border-primary bg-gradient-to-r from-primary/20 to-primary/5 shadow-elegant ring-1 ring-primary/50' : job.tags.includes('premium') ? 'bg-job-card-premium border-job-tag-premium/40 hover:border-job-tag-premium/60 hover:shadow-premium relative overflow-hidden' : isAlternate ? 'bg-job-card-alt border-border/50 hover:border-primary/40 hover:shadow-card-hover' : 'bg-job-card border-border/50 hover:border-primary/40 hover:shadow-card-hover'}
       `}>
       
@@ -76,25 +82,31 @@ const JobCard = ({
         </div>
       </div>
 
-      {/* Right Section - Stats & Save */}
-      <div className="flex items-center gap-1.5 flex-shrink-0 relative z-10">
-        <div className="flex flex-col items-end gap-0 text-xs text-muted-foreground">
-          <div className="flex items-center gap-1">
-            <span className="text-xs font-bold text-orange-500">₼</span>
-            <span>|</span>
-            <span className="text-xs">{job.postedAt}</span>
+      {/* Right Section - Single Column Layout */}
+      <div className="flex flex-col items-end gap-0.5 flex-shrink-0 relative z-10 text-xs text-muted-foreground">
+        {/* First Row: Salary (conditional) and Posted Date */}
+        <div className="flex items-center gap-1">
+          {job.salary && (
+            <>
+              <span className="text-xs font-bold text-orange-500">₼</span>
+              <span>|</span>
+            </>
+          )}
+          <span className="text-xs">{job.postedAt}</span>
+        </div>
+        
+        {/* Second Row: Views and Save Button */}
+        <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-0.5">
+            <Eye className="w-2.5 h-2.5" />
+            <span className="text-xs">{job.views}</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <div className="flex items-center gap-0.5">
-              <Eye className="w-2.5 h-2.5" />
-              <span className="text-xs">{job.views}</span>
-            </div>
-            <button onClick={handleSaveClick} className={`p-0.5 rounded-sm transition-all duration-200 hover:scale-110 ${isSaved ? 'text-red-500 hover:text-red-600' : 'text-muted-foreground hover:text-primary'}`}>
-              <Heart className={`w-3 h-3 ${isSaved ? 'fill-current' : ''}`} />
-            </button>
-          </div>
+          <button onClick={handleSaveClick} className={`p-0.5 rounded-sm transition-all duration-200 hover:scale-110 ${isSaved ? 'text-red-500 hover:text-red-600' : 'text-muted-foreground hover:text-primary'}`}>
+            <Heart className={`w-3 h-3 ${isSaved ? 'fill-current' : ''}`} />
+          </button>
         </div>
       </div>
     </div>;
 };
+
 export default JobCard;
