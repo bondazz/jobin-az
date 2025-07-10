@@ -1,3 +1,4 @@
+
 import { useState, useMemo } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -77,10 +78,6 @@ const JobListings = ({
     return categoryMap[category] || category;
   };
 
-  // Daily and monthly job statistics
-  const dailyJobCount = 127;
-  const monthlyJobCount = 3420;
-
   return (
     <div className="flex-1 flex flex-col h-full bg-background">
       {/* Mobile/Tablet Sticky Header with Logo */}
@@ -94,34 +91,15 @@ const JobListings = ({
         </div>
       </div>
 
-      {/* Compact Header Section - Max height 73px */}
+      {/* Compact Search Section - Max height 73px */}
       <div className="relative overflow-hidden bg-gradient-to-br from-background via-primary/8 to-accent/5 border-b border-border/30 max-h-[73px]">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-60"></div>
         
         <div className="relative px-4 py-2 h-[73px] flex items-center justify-between">
-          {/* Left: Job Count Title */}
+          {/* Left: Title */}
           <div className="flex items-center gap-3">
             <div className="bg-gradient-to-r from-primary/20 to-accent/20 rounded-lg px-3 py-1.5">
-              <h1 className="text-sm font-bold text-primary">Vakansiyaların Sayı</h1>
-            </div>
-          </div>
-
-          {/* Center: Statistics */}
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 bg-background/80 backdrop-blur-sm border border-border/50 rounded-lg px-3 py-1.5">
-              <TrendingUp className="w-4 h-4 text-primary" />
-              <div className="text-center">
-                <div className="text-lg font-bold text-primary">{dailyJobCount}</div>
-                <div className="text-xs text-muted-foreground">Günlük</div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 bg-background/80 backdrop-blur-sm border border-border/50 rounded-lg px-3 py-1.5">
-              <Calendar className="w-4 h-4 text-accent" />
-              <div className="text-center">
-                <div className="text-lg font-bold text-accent">{monthlyJobCount}</div>
-                <div className="text-xs text-muted-foreground">Aylıq</div>
-              </div>
+              <h1 className="text-sm font-bold text-primary">İş Elanları</h1>
             </div>
           </div>
 
