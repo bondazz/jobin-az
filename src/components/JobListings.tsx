@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { mockJobs } from '@/data/mockJobs';
 import { Job } from '@/types/job';
 import JobCard from './JobCard';
-import { Search, MapPin, TrendingUp, Calendar } from 'lucide-react';
+import { Search, MapPin } from 'lucide-react';
 
 interface JobListingsProps {
   selectedJob: Job | null;
@@ -20,7 +20,6 @@ const JobListings = ({
 }: JobListingsProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [locationFilter, setLocationFilter] = useState('');
-  const [sortBy, setSortBy] = useState<'newest' | 'popular' | 'premium'>('newest');
 
   const filteredJobs = useMemo(() => {
     const filtered = mockJobs.filter(job => {
@@ -30,35 +29,28 @@ const JobListings = ({
       return matchesSearch && matchesLocation && matchesCategory;
     });
 
-    // Sort based on selected sort type
+    // Default sorting by newest with premium jobs first
     let sortedJobs = [...filtered];
-    if (sortBy === 'newest') {
-      // Separate premium and regular jobs
-      const premiumJobs = sortedJobs.filter(job => job.tags.includes('premium'));
-      const regularJobs = sortedJobs.filter(job => !job.tags.includes('premium'));
+    // Separate premium and regular jobs
+    const premiumJobs = sortedJobs.filter(job => job.tags.includes('premium'));
+    const regularJobs = sortedJobs.filter(job => !job.tags.includes('premium'));
 
-      // Randomize premium jobs on each render
-      const shuffledPremium = [...premiumJobs].sort(() => Math.random() - 0.5);
+    // Randomize premium jobs on each render
+    const shuffledPremium = [...premiumJobs].sort(() => Math.random() - 0.5);
 
-      // Sort regular jobs by posting date (newest first)
-      const sortedRegular = [...regularJobs].sort((a, b) => {
-        const getDateValue = (postedAt: string) => {
-          if (postedAt === 'Today') return Date.now();
-          if (postedAt === 'Yesterday') return Date.now() - 86400000;
-          return Date.now() - parseInt(postedAt) * 86400000;
-        };
-        return getDateValue(b.postedAt) - getDateValue(a.postedAt);
-      });
-      sortedJobs = [...shuffledPremium, ...sortedRegular];
-    } else if (sortBy === 'popular') {
-      sortedJobs = sortedJobs.sort((a, b) => (b.views || 0) - (a.views || 0));
-    } else if (sortBy === 'premium') {
-      const premiumJobs = sortedJobs.filter(job => job.tags.includes('premium'));
-      const regularJobs = sortedJobs.filter(job => !job.tags.includes('premium'));
-      sortedJobs = [...premiumJobs, ...regularJobs];
-    }
+    // Sort regular jobs by posting date (newest first)
+    const sortedRegular = [...regularJobs].sort((a, b) => {
+      const getDateValue = (postedAt: string) => {
+        if (postedAt === 'Today') return Date.now();
+        if (postedAt === 'Yesterday') return Date.now() - 86400000;
+        return Date.now() - parseInt(postedAt) * 86400000;
+      };
+      return getDateValue(b.postedAt) - getDateValue(a.postedAt);
+    });
+    sortedJobs = [...shuffledPremium, ...sortedRegular];
+    
     return sortedJobs.slice(0, 20);
-  }, [searchQuery, locationFilter, selectedCategory, sortBy]);
+  }, [searchQuery, locationFilter, selectedCategory]);
 
   const getCategoryLabel = (category: string) => {
     const categoryMap: Record<string, string> = {
@@ -92,33 +84,18 @@ const JobListings = ({
         <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-60"></div>
         
         <div className="relative px-4 py-2 h-[73px] flex items-center justify-center">
-          {/* Centered Search Inputs with Responsive Sizing */}
-          <div className="flex items-center gap-3 w-full max-w-4xl justify-center">
-            {/* Sorting Buttons */}
-            <div className="hidden sm:flex gap-1">
-              <Button
-                variant={sortBy === 'newest' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setSortBy('newest')}
-                className="h-8 text-xs px-3"
-              >
-                <Calendar className="w-3 h-3 mr-1" />
-                Yeni
-              </Button>
-              <Button
-                variant={sortBy === 'popular' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setSortBy('popular')}
-                className="h-8 text-xs px-3"
-              >
-                <TrendingUp className="w-3 h-3 mr-1" />
-                Populyar
-              </Button>
+          {/* Centered Search Inputs with Job Count */}
+          <div className="flex items-center gap-4 w-full max-w-4xl justify-center">
+            {/* Job Count Badge */}
+            <div className="hidden sm:flex items-center">
+              <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/30 px-3 py-1 text-sm font-medium">
+                {filteredJobs.length} vakansiya
+              </Badge>
             </div>
 
             {/* Responsive Search Inputs */}
-            <div className="flex gap-2 flex-1 max-w-md">
-              <div className="relative flex-1 min-w-[140px] max-w-[200px]">
+            <div className="flex gap-3 flex-1 max-w-lg">
+              <div className="relative flex-1 min-w-[160px] max-w-[240px]">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
                   placeholder="Axtarış..."
@@ -127,7 +104,7 @@ const JobListings = ({
                   className="pl-9 pr-3 py-2 h-9 bg-background/80 backdrop-blur-sm border-border/50 rounded-lg text-sm w-full"
                 />
               </div>
-              <div className="relative flex-1 min-w-[120px] max-w-[160px]">
+              <div className="relative flex-1 min-w-[140px] max-w-[200px]">
                 <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
                   placeholder="Yer..."
@@ -138,15 +115,11 @@ const JobListings = ({
               </div>
             </div>
 
-            {/* Mobile Sorting Dropdown */}
+            {/* Mobile Job Count */}
             <div className="sm:hidden">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-8 text-xs px-2"
-              >
-                <TrendingUp className="w-3 h-3" />
-              </Button>
+              <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/30 px-2 py-1 text-xs">
+                {filteredJobs.length}
+              </Badge>
             </div>
           </div>
         </div>
