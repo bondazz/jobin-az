@@ -64,17 +64,7 @@ const JobListings = ({
       {/* Search Header */}
       <div className="p-4 border-b border-border bg-gradient-to-r from-background to-primary/5 backdrop-blur-sm">
         <div className="space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <h2 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
-                {selectedCategory ? `${getCategoryLabel(selectedCategory)} İşləri` : 'Bütün İşlər'}
-              </h2>
-              <div className="absolute -bottom-0.5 left-0 w-full h-0.5 bg-gradient-primary rounded-full"></div>
-            </div>
-            <Badge variant="secondary" className="px-3 py-1.5 text-xs font-bold bg-primary/10 text-primary border border-primary/20 animate-bounce-in">
-              {filteredJobs.length}
-            </Badge>
-          </div>
+          
 
           {/* Statistics */}
           <div className="flex gap-4 text-sm text-muted-foreground">
