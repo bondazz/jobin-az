@@ -1,17 +1,14 @@
-
 import { Job } from '@/types/job';
 import { Badge } from '@/components/ui/badge';
 import { Eye, Heart } from 'lucide-react';
 import VerifyBadge from '@/components/ui/verify-badge';
 import { useState, useEffect } from 'react';
-
 interface JobCardProps {
   job: Job;
   isSelected?: boolean;
   onClick: () => void;
   isAlternate?: boolean;
 }
-
 const JobCard = ({
   job,
   isSelected,
@@ -19,12 +16,10 @@ const JobCard = ({
   isAlternate
 }: JobCardProps) => {
   const [isSaved, setIsSaved] = useState(false);
-
   useEffect(() => {
     const savedJobs = JSON.parse(localStorage.getItem('savedJobs') || '[]');
     setIsSaved(savedJobs.includes(job.id));
   }, [job.id]);
-
   const isVerifiedCompany = (company: string) => {
     const verifiedCompanies = ['Google', 'Apple', 'Microsoft', 'Meta', 'Amazon', 'Netflix', 'Tesla', 'Spotify'];
     return verifiedCompanies.includes(company);
@@ -32,11 +27,9 @@ const JobCard = ({
 
   // Filter to only show premium tags
   const premiumTags = job.tags.filter(tag => tag === 'premium');
-
   const handleSaveClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     const savedJobs = JSON.parse(localStorage.getItem('savedJobs') || '[]');
-    
     if (isSaved) {
       const updatedSaved = savedJobs.filter((id: string) => id !== job.id);
       localStorage.setItem('savedJobs', JSON.stringify(updatedSaved));
@@ -47,31 +40,19 @@ const JobCard = ({
       setIsSaved(true);
     }
   };
-
-  return (
-    <div 
-      onClick={onClick} 
-      className={`
+  return <div onClick={onClick} className={`
         group cursor-pointer p-2 rounded-lg border transition-all duration-200 ease-smooth
         hover:shadow-card-hover hover:-translate-y-0.5 animate-fade-in
         w-full max-w-[620px] h-[45px] flex flex-row items-center justify-between backdrop-blur-sm relative
-        ${isSelected ? 'border-primary bg-gradient-to-r from-primary/20 to-primary/5 shadow-elegant ring-1 ring-primary/50' : 
-          job.tags.includes('premium') ? 
-            'bg-job-card-premium border-job-tag-premium/40 hover:border-job-tag-premium/60 hover:shadow-premium relative overflow-hidden' : 
-          isAlternate ? 
-            'bg-job-card-alt border-border/50 hover:border-primary/40 hover:shadow-card-hover' : 
-            'bg-job-card border-border/50 hover:border-primary/40 hover:shadow-card-hover'}
-      `}
-    >
+        ${isSelected ? 'border-primary bg-gradient-to-r from-primary/20 to-primary/5 shadow-elegant ring-1 ring-primary/50' : job.tags.includes('premium') ? 'bg-job-card-premium border-job-tag-premium/40 hover:border-job-tag-premium/60 hover:shadow-premium relative overflow-hidden' : isAlternate ? 'bg-job-card-alt border-border/50 hover:border-primary/40 hover:shadow-card-hover' : 'bg-job-card border-border/50 hover:border-primary/40 hover:shadow-card-hover'}
+      `}>
       
       {/* Premium badge - positioned at top border */}
-      {premiumTags.length > 0 && (
-        <div className="absolute -top-px right-[3px] z-10">
-          <Badge variant="premium" className="text-[7px] py-0 px-1 rounded-sm font-bold">
+      {premiumTags.length > 0 && <div className="absolute -top-px right-[3px] z-10">
+          <Badge variant="premium" className="text-[7px] rounded-sm font-bold my-[33px] py-px px-[10px] mx-[15px]">
             Premium
           </Badge>
-        </div>
-      )}
+        </div>}
 
       {/* Left Section - Company & Job Info */}
       <div className="flex items-center gap-2 flex-1 min-w-0 relative z-10">
@@ -108,21 +89,12 @@ const JobCard = ({
               <Eye className="w-2.5 h-2.5" />
               <span className="text-xs">{job.views}</span>
             </div>
-            <button
-              onClick={handleSaveClick}
-              className={`p-0.5 rounded-sm transition-all duration-200 hover:scale-110 ${
-                isSaved 
-                  ? 'text-red-500 hover:text-red-600' 
-                  : 'text-muted-foreground hover:text-primary'
-              }`}
-            >
+            <button onClick={handleSaveClick} className={`p-0.5 rounded-sm transition-all duration-200 hover:scale-110 ${isSaved ? 'text-red-500 hover:text-red-600' : 'text-muted-foreground hover:text-primary'}`}>
               <Heart className={`w-3 h-3 ${isSaved ? 'fill-current' : ''}`} />
             </button>
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default JobCard;
