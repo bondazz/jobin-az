@@ -6,13 +6,11 @@ import { mockJobs } from '@/data/mockJobs';
 import { Job } from '@/types/job';
 import JobCard from './JobCard';
 import { Search, MapPin } from 'lucide-react';
-
 interface JobListingsProps {
   selectedJob: Job | null;
   onJobSelect: (job: Job) => void;
   selectedCategory?: string;
 }
-
 const JobListings = ({
   selectedJob,
   onJobSelect,
@@ -20,7 +18,6 @@ const JobListings = ({
 }: JobListingsProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [locationFilter, setLocationFilter] = useState('');
-
   const filteredJobs = useMemo(() => {
     const filtered = mockJobs.filter(job => {
       const matchesSearch = searchQuery === '' || job.title.toLowerCase().includes(searchQuery.toLowerCase()) || job.company.toLowerCase().includes(searchQuery.toLowerCase());
@@ -50,7 +47,6 @@ const JobListings = ({
     sortedJobs = [...shuffledPremium, ...sortedRegular];
     return sortedJobs.slice(0, 20);
   }, [searchQuery, locationFilter, selectedCategory]);
-
   const getCategoryLabel = (category: string) => {
     const categoryMap: Record<string, string> = {
       'Technology': 'Texnologiya',
@@ -64,7 +60,6 @@ const JobListings = ({
     };
     return categoryMap[category] || category;
   };
-
   return <div className="flex-1 flex flex-col h-full bg-background">
       {/* Mobile/Tablet Sticky Header with Logo */}
       <div className="lg:hidden sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border/50 shadow-sm">
@@ -82,9 +77,7 @@ const JobListings = ({
           <div className="flex items-center gap-4 w-full max-w-4xl justify-center">
             {/* Job Count Badge */}
             <div className="hidden sm:flex items-center">
-              <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/30 px-3 py-1.5 text-sm font-medium">
-                {filteredJobs.length} vakansiya
-              </Badge>
+              
             </div>
 
             {/* Responsive Search Inputs */}
@@ -146,5 +139,4 @@ const JobListings = ({
       </div>
     </div>;
 };
-
 export default JobListings;
