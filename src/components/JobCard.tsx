@@ -1,17 +1,14 @@
-
 import { Job } from '@/types/job';
 import { Badge } from '@/components/ui/badge';
 import { Eye, Heart } from 'lucide-react';
 import VerifyBadge from '@/components/ui/verify-badge';
 import { useState, useEffect } from 'react';
-
 interface JobCardProps {
   job: Job;
   isSelected?: boolean;
   onClick: () => void;
   isAlternate?: boolean;
 }
-
 const JobCard = ({
   job,
   isSelected,
@@ -19,12 +16,10 @@ const JobCard = ({
   isAlternate
 }: JobCardProps) => {
   const [isSaved, setIsSaved] = useState(false);
-
   useEffect(() => {
     const savedJobs = JSON.parse(localStorage.getItem('savedJobs') || '[]');
     setIsSaved(savedJobs.includes(job.id));
   }, [job.id]);
-
   const isVerifiedCompany = (company: string) => {
     const verifiedCompanies = ['Google', 'Apple', 'Microsoft', 'Meta', 'Amazon', 'Netflix', 'Tesla', 'Spotify'];
     return verifiedCompanies.includes(company);
@@ -32,7 +27,6 @@ const JobCard = ({
 
   // Filter to only show premium tags
   const premiumTags = job.tags.filter(tag => tag === 'premium');
-
   const handleSaveClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     const savedJobs = JSON.parse(localStorage.getItem('savedJobs') || '[]');
@@ -46,7 +40,6 @@ const JobCard = ({
       setIsSaved(true);
     }
   };
-
   return <div onClick={onClick} className={`
         group cursor-pointer p-2 rounded-lg border transition-all duration-200 ease-smooth
         hover:shadow-card-hover hover:-translate-y-0.5 animate-fade-in
@@ -78,7 +71,7 @@ const JobCard = ({
               <p className="text-muted-foreground text-xs font-medium truncate">{job.company}</p>
               {isVerifiedCompany(job.company) && <VerifyBadge size={10} className="ml-0.5" />}
             </div>
-            <span className="text-muted-foreground text-xs truncate hidden sm:inline">{job.location}</span>
+            
           </div>
         </div>
       </div>
@@ -86,12 +79,10 @@ const JobCard = ({
       {/* Right Section - Single Row with all elements separated by | */}
       <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0 relative z-10 text-xs text-muted-foreground">
         {/* Salary (if exists) */}
-        {job.salary && (
-          <>
+        {job.salary && <>
             <span className="font-bold text-orange-500 hidden sm:inline">₼</span>
             <span className="text-muted-foreground hidden sm:inline">|</span>
-          </>
-        )}
+          </>}
         
         {/* Posted Date */}
         <span className="text-[10px] sm:text-xs">{job.postedAt}</span>
@@ -111,5 +102,4 @@ const JobCard = ({
       </div>
     </div>;
 };
-
 export default JobCard;
