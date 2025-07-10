@@ -64,11 +64,11 @@ const JobCard = ({
       `}
     >
       
-      {/* Premium PRO Badge - positioned at top border */}
+      {/* Premium badge - positioned at top border */}
       {premiumTags.length > 0 && (
-        <div className="absolute -top-px right-1 z-10">
+        <div className="absolute -top-px right-[3px] z-10">
           <Badge variant="premium" className="text-[7px] py-0 px-1 rounded-sm font-bold">
-            PRO
+            Premium
           </Badge>
         </div>
       )}
