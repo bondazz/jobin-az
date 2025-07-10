@@ -49,7 +49,7 @@ const JobCard = ({
       
       {/* Premium badge - positioned at top border */}
       {premiumTags.length > 0 && <div className="absolute -top-px right-[3px] z-10">
-          <Badge variant="premium" className="text-[7px] rounded-sm font-bold my-[33px] py-px px-[10px] mx-[64px]">
+          <Badge variant="premium" className="text-[7px] rounded-sm font-bold py-px px-[10px] mx-[64px] my-[24px]">
             Premium
           </Badge>
         </div>}
