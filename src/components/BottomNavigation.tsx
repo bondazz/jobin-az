@@ -112,26 +112,27 @@ const BottomNavigation = ({ selectedCategory, onCategorySelect }: BottomNavigati
               </Button>
             </DrawerTrigger>
             
-            <DrawerContent className="max-h-[70vh] bg-gradient-to-b from-background to-primary/5 z-40">
-              <DrawerHeader className="text-center border-b border-border/40 bg-gradient-to-r from-background to-primary/10 pb-3">
-                <div className="flex items-center justify-center gap-3 mb-2">
+            <DrawerContent className="z-[100] bg-background border-t border-border max-h-[85vh]">
+              <DrawerHeader className="text-center border-b border-border/40 bg-gradient-to-r from-background to-primary/5 pb-4">
+                <div className="flex items-center justify-center gap-3 mb-3">
                   <img 
                     src="/lovable-uploads/e888818f-70b8-405b-a5e8-f62f8e842525.png" 
                     alt="Jooble" 
-                    className="w-10 h-10 object-contain dark:invert transition-all duration-300" 
+                    className="w-16 h-16 object-contain dark:invert transition-all duration-300" 
                   />
                 </div>
+                <DrawerTitle className="text-lg font-bold text-foreground">Jooble Menyu</DrawerTitle>
                 <p className="text-sm text-muted-foreground">İş axtarışınızı asanlaşdırın</p>
               </DrawerHeader>
               
-              <div className="p-4 space-y-6 overflow-y-auto">
+              <div className="p-4 space-y-4 overflow-y-auto max-h-[60vh]">
                 {/* All Navigation Items */}
                 <div>
                   <h3 className="font-bold text-base text-foreground mb-3 flex items-center gap-2">
                     <div className="w-2 h-2 bg-primary rounded-full"></div>
                     Əsas Bölümlər
                   </h3>
-                  <div className="grid grid-cols-1 gap-2">
+                  <div className="grid grid-cols-2 gap-2">
                     {allMenuItems.map((item, index) => (
                       <Link
                         key={item.path}
@@ -144,18 +145,18 @@ const BottomNavigation = ({ selectedCategory, onCategorySelect }: BottomNavigati
                         style={{ animationDelay: `${index * 30}ms` }}
                         onClick={() => setIsMenuOpen(false)}
                       >
-                        <div className="flex items-center gap-3">
-                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                        <div className="flex items-center gap-2">
+                          <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${
                             isActivePath(item.path) ? 'bg-primary/20' : 'bg-primary/10'
                           }`}>
-                            <item.icon className="w-4 h-4" />
+                            <item.icon className="w-3 h-3" />
                           </div>
-                          <span className="font-medium text-sm">{item.label}</span>
+                          <span className="font-medium text-xs">{item.label}</span>
                         </div>
-                        {item.count && (
+                        {item.count && item.path === '/saved' && (
                           <Badge 
                             variant={isActivePath(item.path) ? "default" : "outline"} 
-                            className={`text-xs px-2 py-0.5 ${
+                            className={`text-xs px-1.5 py-0.5 ${
                               isActivePath(item.path) 
                                 ? 'bg-primary text-white' 
                                 : 'bg-primary/10 text-primary border-primary/30'
@@ -205,10 +206,10 @@ const BottomNavigation = ({ selectedCategory, onCategorySelect }: BottomNavigati
                 </div>
 
                 {/* Theme Toggle & Footer */}
-                <div className="pt-4 border-t border-border/40">
-                  <div className="flex items-center justify-between mb-4 p-3 bg-card rounded-lg border border-border/40">
+                <div className="pt-3 border-t border-border/40">
+                  <div className="flex items-center justify-between mb-3 p-3 bg-card rounded-lg border border-border/40">
                     <div className="flex items-center gap-3">
-                      <div className="w-6 h-6 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <div className="w-5 h-5 rounded-lg bg-primary/10 flex items-center justify-center">
                         <span className="text-xs">🌙</span>
                       </div>
                       <span className="font-medium text-sm text-foreground">Mövzu</span>
@@ -221,14 +222,14 @@ const BottomNavigation = ({ selectedCategory, onCategorySelect }: BottomNavigati
                       <img 
                         src="/lovable-uploads/e888818f-70b8-405b-a5e8-f62f8e842525.png" 
                         alt="Jooble" 
-                        className="w-4 h-4 object-contain dark:invert" 
+                        className="w-5 h-5 object-contain dark:invert" 
                       />
                       <span className="font-medium">© 2024 Jooble</span>
                     </div>
                     <div className="flex justify-center gap-4 text-xs">
-                      <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Kömək</a>
-                      <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Məxfilik</a>
-                      <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Şərtlər</a>
+                      <button className="text-muted-foreground hover:text-primary transition-colors">Kömək</button>
+                      <button className="text-muted-foreground hover:text-primary transition-colors">Məxfilik</button>
+                      <button className="text-muted-foreground hover:text-primary transition-colors">Şərtlər</button>
                     </div>
                   </div>
                 </div>
