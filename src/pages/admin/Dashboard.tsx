@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
+import AdminLayout from '@/components/AdminLayout';
 import { 
   Users, 
   Briefcase, 
@@ -95,11 +96,6 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate('/admin/login');
-  };
-
   const statsCards = [
     {
       title: 'Toplam Vakansiyalar',
@@ -147,42 +143,27 @@ export default function AdminDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-      </div>
+      <AdminLayout>
+        <div className="flex items-center justify-center h-full">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+        </div>
+      </AdminLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="border-b bg-card">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <h1 className="text-2xl font-bold text-foreground">Admin Panel</h1>
-            <div className="flex items-center gap-4">
-              <Button
-                variant="outline"
-                onClick={() => navigate('/admin/settings')}
-                className="hidden sm:flex"
-              >
-                <Settings className="h-4 w-4 mr-2" />
-                Tənzimləmələr
-              </Button>
-              <Button variant="outline" onClick={handleLogout}>
-                Çıxış
-              </Button>
-            </div>
-          </div>
+    <AdminLayout>
+      <div className="p-8">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-foreground">İdarə Paneli</h1>
+          <p className="text-muted-foreground mt-2">Saytın ümumi statistikası və idarəetmə</p>
         </div>
-      </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {statsCards.map((stat, index) => (
-            <Card key={index} className="hover:shadow-lg transition-shadow">
+            <Card key={index} className="hover:shadow-lg transition-shadow bg-card/50 backdrop-blur-sm border-border/50">
               <CardContent className="flex items-center p-6">
                 <div className={`${stat.bgColor} p-3 rounded-lg mr-4`}>
                   <stat.icon className={`h-6 w-6 ${stat.color}`} />
@@ -197,60 +178,63 @@ export default function AdminDashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer" 
-                onClick={() => navigate('/admin/jobs')}>
-            <CardHeader className="text-center">
-              <Briefcase className="h-8 w-8 mx-auto text-primary mb-2" />
-              <CardTitle className="text-lg">Vakansiyaları İdarə Et</CardTitle>
-            </CardHeader>
-            <CardContent className="text-center">
-              <p className="text-muted-foreground text-sm">
-                Vakansiyalar əlavə et, redaktə et və idarə et
-              </p>
-            </CardContent>
-          </Card>
+        <div>
+          <h2 className="text-xl font-semibold mb-4 text-foreground">Tez Əməliyyatlar</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Card className="hover:shadow-lg transition-all duration-200 cursor-pointer hover:scale-[1.02] bg-card/50 backdrop-blur-sm border-border/50" 
+                  onClick={() => navigate('/admin/jobs')}>
+              <CardHeader className="text-center">
+                <Briefcase className="h-8 w-8 mx-auto text-primary mb-2" />
+                <CardTitle className="text-lg">Vakansiyaları İdarə Et</CardTitle>
+              </CardHeader>
+              <CardContent className="text-center">
+                <p className="text-muted-foreground text-sm">
+                  Vakansiyalar əlavə et, redaktə et və idarə et
+                </p>
+              </CardContent>
+            </Card>
 
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer" 
-                onClick={() => navigate('/admin/companies')}>
-            <CardHeader className="text-center">
-              <Building2 className="h-8 w-8 mx-auto text-primary mb-2" />
-              <CardTitle className="text-lg">Şirkətləri İdarə Et</CardTitle>
-            </CardHeader>
-            <CardContent className="text-center">
-              <p className="text-muted-foreground text-sm">
-                Şirkətlər əlavə et, redaktə et və idarə et
-              </p>
-            </CardContent>
-          </Card>
+            <Card className="hover:shadow-lg transition-all duration-200 cursor-pointer hover:scale-[1.02] bg-card/50 backdrop-blur-sm border-border/50" 
+                  onClick={() => navigate('/admin/companies')}>
+              <CardHeader className="text-center">
+                <Building2 className="h-8 w-8 mx-auto text-primary mb-2" />
+                <CardTitle className="text-lg">Şirkətləri İdarə Et</CardTitle>
+              </CardHeader>
+              <CardContent className="text-center">
+                <p className="text-muted-foreground text-sm">
+                  Şirkətlər əlavə et, redaktə et və idarə et
+                </p>
+              </CardContent>
+            </Card>
 
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer" 
-                onClick={() => navigate('/admin/categories')}>
-            <CardHeader className="text-center">
-              <Tag className="h-8 w-8 mx-auto text-primary mb-2" />
-              <CardTitle className="text-lg">Kateqoriyaları İdarə Et</CardTitle>
-            </CardHeader>
-            <CardContent className="text-center">
-              <p className="text-muted-foreground text-sm">
-                Kateqoriyalar əlavə et, redaktə et və idarə et
-              </p>
-            </CardContent>
-          </Card>
+            <Card className="hover:shadow-lg transition-all duration-200 cursor-pointer hover:scale-[1.02] bg-card/50 backdrop-blur-sm border-border/50" 
+                  onClick={() => navigate('/admin/categories')}>
+              <CardHeader className="text-center">
+                <Tag className="h-8 w-8 mx-auto text-primary mb-2" />
+                <CardTitle className="text-lg">Kateqoriyaları İdarə Et</CardTitle>
+              </CardHeader>
+              <CardContent className="text-center">
+                <p className="text-muted-foreground text-sm">
+                  Kateqoriyalar əlavə et, redaktə et və idarə et
+                </p>
+              </CardContent>
+            </Card>
 
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer" 
-                onClick={() => navigate('/admin/settings')}>
-            <CardHeader className="text-center">
-              <Settings className="h-8 w-8 mx-auto text-primary mb-2" />
-              <CardTitle className="text-lg">Sayt Tənzimləmələri</CardTitle>
-            </CardHeader>
-            <CardContent className="text-center">
-              <p className="text-muted-foreground text-sm">
-                Sayt tənzimləmələri və SEO
-              </p>
-            </CardContent>
-          </Card>
+            <Card className="hover:shadow-lg transition-all duration-200 cursor-pointer hover:scale-[1.02] bg-card/50 backdrop-blur-sm border-border/50" 
+                  onClick={() => navigate('/admin/settings')}>
+              <CardHeader className="text-center">
+                <Settings className="h-8 w-8 mx-auto text-primary mb-2" />
+                <CardTitle className="text-lg">Sayt Tənzimləmələri</CardTitle>
+              </CardHeader>
+              <CardContent className="text-center">
+                <p className="text-muted-foreground text-sm">
+                  Sayt tənzimləmələri və SEO
+                </p>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
-    </div>
+    </AdminLayout>
   );
 }

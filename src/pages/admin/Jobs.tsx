@@ -11,13 +11,13 @@ import { Switch } from '@/components/ui/switch';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
+import AdminLayout from '@/components/AdminLayout';
 import { 
   Plus, 
   Edit, 
   Trash2, 
   Search, 
   Eye,
-  ArrowLeft,
   Building2,
   MapPin,
   Clock,
@@ -274,32 +274,30 @@ export default function AdminJobs() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-      </div>
+      <AdminLayout>
+        <div className="flex items-center justify-center h-full">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+        </div>
+      </AdminLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="border-b bg-card">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" onClick={() => navigate('/admin/dashboard')}>
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Geri
+    <AdminLayout>
+      <div className="p-8">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">Vakansiyalar</h1>
+            <p className="text-muted-foreground mt-2">Vakansiyaları idarə edin və yenilərini əlavə edin</p>
+          </div>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button onClick={resetForm}>
+                <Plus className="h-4 w-4 mr-2" />
+                Yeni Vakansiya
               </Button>
-              <h1 className="text-2xl font-bold text-foreground">Vakansiyalar</h1>
-            </div>
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-              <DialogTrigger asChild>
-                <Button onClick={resetForm}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Yeni Vakansiya
-                </Button>
-              </DialogTrigger>
+            </DialogTrigger>
               <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                   <DialogTitle>
@@ -516,13 +514,10 @@ export default function AdminJobs() {
                   </div>
                 </form>
               </DialogContent>
-            </Dialog>
-          </div>
+          </Dialog>
         </div>
-      </div>
 
-      {/* Search */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* Search */}
         <div className="relative mb-6">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
@@ -616,6 +611,6 @@ export default function AdminJobs() {
           </div>
         )}
       </div>
-    </div>
+    </AdminLayout>
   );
 }
