@@ -39,11 +39,14 @@ const JobCard = ({
       localStorage.setItem('savedJobs', JSON.stringify(savedJobs));
       setIsSaved(true);
     }
+    
+    // Trigger custom event for same-page updates
+    window.dispatchEvent(new Event('localStorageUpdate'));
   };
   return <div onClick={onClick} className={`
-        group cursor-pointer p-2 rounded-lg border transition-all duration-200 ease-smooth
+        group cursor-pointer p-3 rounded-lg border transition-all duration-200 ease-smooth
         hover:shadow-card-hover hover:-translate-y-0.5 animate-fade-in
-        w-full max-w-[600px] min-w-0 h-[45px] flex flex-row items-center justify-between backdrop-blur-sm relative
+        w-full max-w-full min-w-0 h-[60px] flex flex-row items-center justify-between backdrop-blur-sm relative
         ${isSelected ? 'border-primary bg-gradient-to-r from-primary/20 to-primary/5 shadow-elegant ring-1 ring-primary/50' : job.tags.includes('premium') ? 'bg-job-card-premium border-job-tag-premium/40 hover:border-job-tag-premium/60 hover:shadow-premium relative overflow-hidden' : isAlternate ? 'bg-job-card-alt border-border/50 hover:border-primary/40 hover:shadow-card-hover' : 'bg-job-card border-border/50 hover:border-primary/40 hover:shadow-card-hover'}
       `}>
       

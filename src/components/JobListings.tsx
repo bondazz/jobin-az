@@ -13,6 +13,7 @@ interface JobListingsProps {
   selectedCategory?: string;
   companyFilter?: string;
   showHeader?: boolean;
+  showOnlySaved?: boolean;
 }
 
 const JobListings = ({
@@ -20,13 +21,22 @@ const JobListings = ({
   onJobSelect,
   selectedCategory,
   companyFilter,
-  showHeader = true
+  showHeader = true,
+  showOnlySaved = false
 }: JobListingsProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [locationFilter, setLocationFilter] = useState('');
 
   const filteredJobs = useMemo(() => {
-    const filtered = mockJobs.filter(job => {
+    let jobsToFilter = mockJobs;
+    
+    // If showing only saved jobs, filter by saved job IDs first
+    if (showOnlySaved) {
+      const savedJobIds = JSON.parse(localStorage.getItem('savedJobs') || '[]');
+      jobsToFilter = mockJobs.filter(job => savedJobIds.includes(job.id));
+    }
+    
+    const filtered = jobsToFilter.filter(job => {
       const matchesSearch = searchQuery === '' || job.title.toLowerCase().includes(searchQuery.toLowerCase()) || job.company.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesLocation = locationFilter === '' || job.location.toLowerCase().includes(locationFilter.toLowerCase());
       const matchesCategory = !selectedCategory || job.category === selectedCategory;
@@ -54,7 +64,7 @@ const JobListings = ({
     });
     sortedJobs = [...shuffledPremium, ...sortedRegular];
     return sortedJobs.slice(0, 20);
-  }, [searchQuery, locationFilter, selectedCategory, companyFilter]);
+  }, [searchQuery, locationFilter, selectedCategory, companyFilter, showOnlySaved]);
 
   const getCategoryLabel = (category: string) => {
     const categoryMap: Record<string, string> = {

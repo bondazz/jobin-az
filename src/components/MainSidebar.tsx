@@ -11,31 +11,42 @@ import { Briefcase, Tag, Building, Bookmark, Bell, TrendingUp, Info, DollarSign,
 const MainSidebar = () => {
   const location = useLocation();
   
+  // Get saved jobs count
+  const [savedJobsCount, setSavedJobsCount] = useState(0);
+  
+  React.useEffect(() => {
+    const updateSavedJobsCount = () => {
+      const savedJobs = JSON.parse(localStorage.getItem('savedJobs') || '[]');
+      setSavedJobsCount(savedJobs.length);
+    };
+    
+    updateSavedJobsCount();
+    // Listen for storage changes
+    window.addEventListener('storage', updateSavedJobsCount);
+    
+    return () => window.removeEventListener('storage', updateSavedJobsCount);
+  }, []);
+
   const menuItems = [{
     icon: Briefcase,
     label: 'Vakansiyalar',
     path: '/vakansiyalar',
-    count: 1247
+    count: null
   }, {
     icon: Tag,
     label: 'Kateqoriyalar',
     path: '/kateqoriyalar',
-    count: 8
+    count: null
   }, {
     icon: Building,
     label: 'Şirkətlər',
     path: '/sirketler',
-    count: 156
+    count: null
   }, {
     icon: Bookmark,
-    label: 'Saxlanılan İşlər',
+    label: 'Seçilmiş elanlar',
     path: '/saxlanilan',
-    count: 23
-  }, {
-    icon: Bell,
-    label: 'İş Bildirişləri',
-    path: '/bildirisler',
-    count: 5
+    count: savedJobsCount
   }, {
     icon: DollarSign,
     label: 'Qiymətlər',
