@@ -99,7 +99,7 @@ export default function AdminLogin() {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="admin@example.com"
+                  placeholder="info@jooble.az"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="pl-10"
