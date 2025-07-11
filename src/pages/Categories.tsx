@@ -70,7 +70,7 @@ const Categories = () => {
                   <div className="w-8 h-8 bg-gradient-primary rounded-xl flex items-center justify-center shadow-lg">
                     <Tag className="w-4 h-4 text-white" />
                   </div>
-                  <h1 className="text-lg font-bold text-foreground">Kateqoriyalar</h1>
+                  
                   
                 </div>
                 <div className="relative">
