@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Job } from '@/types/job';
 import JobListings from '@/components/JobListings';
@@ -20,6 +20,8 @@ const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [categories, setCategories] = useState<Category[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
+  const { jobSlug } = useParams();
+  const navigate = useNavigate();
 
   // SEO setup
   useEffect(() => {
@@ -53,7 +55,76 @@ const Index = () => {
     }
   }, [searchParams, categories]);
 
-  const handleJobSelect = (job: Job) => {
+  // Fetch job by slug from URL
+  useEffect(() => {
+    if (jobSlug) {
+      const fetchJobBySlug = async () => {
+        const { data, error } = await supabase
+          .from('jobs')
+          .select(`
+            *,
+            companies (name, logo, is_verified),
+            categories (name)
+          `)
+          .eq('slug', jobSlug)
+          .eq('is_active', true)
+          .single();
+
+        if (data && !error) {
+          const transformedJob = {
+            id: data.id,
+            title: data.title,
+            company: data.companies?.name || '',
+            company_id: data.company_id,
+            companyLogo: data.companies?.logo,
+            location: data.location,
+            type: data.type as 'full-time' | 'part-time' | 'contract' | 'internship',
+            salary: data.salary,
+            description: data.description,
+            requirements: data.requirements || [],
+            benefits: data.benefits || [],
+            tags: (data.tags || []).filter((tag: string) => 
+              ['premium', 'new', 'urgent', 'remote'].includes(tag)
+            ) as ('premium' | 'new' | 'urgent' | 'remote')[],
+            views: data.views,
+            postedAt: formatDate(data.created_at),
+            category: data.categories?.name || '',
+            applicationUrl: data.application_url
+          };
+          setSelectedJob(transformedJob);
+        }
+      };
+      
+      fetchJobBySlug();
+    } else {
+      setSelectedJob(null);
+    }
+  }, [jobSlug]);
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffTime = Math.abs(now.getTime() - date.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 1) return 'Today';
+    if (diffDays === 2) return 'Yesterday';
+    if (diffDays <= 7) return `${diffDays - 1} days ago`;
+    if (diffDays <= 30) return `${Math.ceil(diffDays / 7)} weeks ago`;
+    return `${Math.ceil(diffDays / 30)} months ago`;
+  };
+
+  const handleJobSelect = async (job: Job) => {
+    // Get job slug from database
+    const { data } = await supabase
+      .from('jobs')
+      .select('slug')
+      .eq('id', job.id)
+      .single();
+    
+    if (data?.slug) {
+      navigate(`/vacancies/${data.slug}`);
+    }
     setSelectedJob(job);
   };
 

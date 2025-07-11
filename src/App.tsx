@@ -32,13 +32,13 @@ const App = () => (
           <Route path="/" element={<Layout />}>
             <Route index element={<Index />} />
             <Route path="/vacancies" element={<Index />} />
-            <Route path="/vacancies/:job" element={<Index />} />
+            <Route path="/vacancies/:jobSlug" element={<Index />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/categories/:category" element={<Categories />} />
-          <Route path="/categories/:category/vacancy/:job" element={<Categories />} />
+          <Route path="/categories/:category/vacancy/:jobSlug" element={<Categories />} />
           <Route path="/companies" element={<Companies />} />
           <Route path="/companies/:company" element={<Companies />} />
-          <Route path="/companies/:company/vacancy/:job" element={<Companies />} />
+          <Route path="/companies/:company/vacancy/:jobSlug" element={<Companies />} />
             <Route path="/favorites" element={
               <Suspense fallback={<div>Loading...</div>}>
                 <SavedJobs />

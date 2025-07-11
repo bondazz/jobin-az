@@ -29,6 +29,7 @@ interface JobDetailsProps {
 const JobDetails = ({ jobId }: JobDetailsProps) => {
   const [job, setJob] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
 
   // Dynamic SEO for job page
   useDynamicSEO('job', job);
@@ -42,7 +43,8 @@ const JobDetails = ({ jobId }: JobDetailsProps) => {
   const fetchJobDetails = async (id: string) => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      // First try to find by ID, then by slug
+      let { data, error } = await supabase
         .from('jobs')
         .select(`
           *,
@@ -52,20 +54,58 @@ const JobDetails = ({ jobId }: JobDetailsProps) => {
         .eq('id', id)
         .single();
 
+      // If not found by ID, try by slug
+      if (error && error.code === 'PGRST116') {
+        const slugResult = await supabase
+          .from('jobs')
+          .select(`
+            *,
+            companies:company_id(name, logo, website, email, phone, is_verified),
+            categories:category_id(name)
+          `)
+          .eq('slug', id)
+          .single();
+        
+        data = slugResult.data;
+        error = slugResult.error;
+      }
+
       if (error) throw error;
       
       // Increment view count
       await supabase
         .from('jobs')
         .update({ views: (data.views || 0) + 1 })
-        .eq('id', id);
+        .eq('id', data.id);
 
       setJob(data);
+      
+      // Check if job is saved
+      const savedJobs = JSON.parse(localStorage.getItem('savedJobs') || '[]');
+      setIsSaved(savedJobs.includes(data.id));
     } catch (error) {
       console.error('Error fetching job:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSaveJob = () => {
+    if (!job) return;
+    
+    const savedJobs = JSON.parse(localStorage.getItem('savedJobs') || '[]');
+    if (isSaved) {
+      const updatedSaved = savedJobs.filter((id: string) => id !== job.id);
+      localStorage.setItem('savedJobs', JSON.stringify(updatedSaved));
+      setIsSaved(false);
+    } else {
+      savedJobs.push(job.id);
+      localStorage.setItem('savedJobs', JSON.stringify(savedJobs));
+      setIsSaved(true);
+    }
+
+    // Trigger custom event for same-page updates
+    window.dispatchEvent(new Event('localStorageUpdate'));
   };
   if (loading) {
     return (
@@ -154,9 +194,14 @@ const JobDetails = ({ jobId }: JobDetailsProps) => {
               Müraciət Et
             </Button>
           )}
-          <Button variant="outline" size="lg" className="border-primary/30 text-primary hover:bg-primary hover:text-white">
-            <Bookmark className="w-4 h-4 mr-2" />
-            Saxla
+          <Button 
+            variant="outline" 
+            size="lg" 
+            className={`border-primary/30 hover:bg-primary hover:text-white ${isSaved ? 'bg-primary text-white' : 'text-primary'}`}
+            onClick={handleSaveJob}
+          >
+            <Bookmark className={`w-4 h-4 mr-2 ${isSaved ? 'fill-current' : ''}`} />
+            {isSaved ? 'Saxlanıldı' : 'Saxla'}
           </Button>
           <Button variant="outline" size="lg" className="border-primary/30 text-primary hover:bg-primary hover:text-white">
             <Share2 className="w-4 h-4 mr-2" />

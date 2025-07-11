@@ -37,7 +37,7 @@ const JobListings = ({
           .from('jobs')
           .select(`
             *,
-            companies (name),
+            companies (name, logo, is_verified),
             categories (name)
           `)
           .eq('is_active', true)
@@ -50,6 +50,8 @@ const JobListings = ({
           id: job.id,
           title: job.title,
           company: job.companies?.name || '',
+          company_id: job.company_id,
+          companyLogo: job.companies?.logo,
           location: job.location,
           type: job.type as 'full-time' | 'part-time' | 'contract' | 'internship',
           salary: job.salary,
