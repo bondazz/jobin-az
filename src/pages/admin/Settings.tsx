@@ -7,8 +7,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
+import AdminLayout from '@/components/AdminLayout';
 import { 
-  ArrowLeft,
   Save,
   Globe,
   Search,
@@ -165,28 +165,16 @@ export default function AdminSettings() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="border-b bg-card">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" onClick={() => navigate('/admin/dashboard')}>
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Geri
-              </Button>
-              <h1 className="text-2xl font-bold text-foreground">Sayt Tənzimləmələri</h1>
-            </div>
-            <Button onClick={handleSave} disabled={saving}>
-              <Save className="h-4 w-4 mr-2" />
-              {saving ? 'Saxlanılır...' : 'Saxla'}
-            </Button>
-          </div>
+    <AdminLayout>
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex justify-between items-center">
+          <h1 className="text-3xl font-bold text-foreground">Sayt Tənzimləmələri</h1>
+          <Button onClick={handleSave} disabled={saving}>
+            <Save className="h-4 w-4 mr-2" />
+            {saving ? 'Saxlanılır...' : 'Saxla'}
+          </Button>
         </div>
-      </div>
-
-      {/* Content */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-8">
           {/* Site Information */}
           <Card>
@@ -407,6 +395,6 @@ export default function AdminSettings() {
           </div>
         </div>
       </div>
-    </div>
+    </AdminLayout>
   );
 }
