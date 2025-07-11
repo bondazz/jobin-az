@@ -46,42 +46,44 @@ export default function AdminLogin() {
         email: 'info@jooble.az',
         password: 'Samir_1155',
         options: {
+          emailRedirectTo: window.location.origin + '/admin/dashboard',
           data: {
             full_name: 'Admin User'
           }
         }
       });
 
-      if (signUpError) throw signUpError;
-
-      if (signUpData.user) {
-        // Update the user's role to admin
-        const { error: updateError } = await supabase
-          .from('profiles')
-          .update({ role: 'admin' })
-          .eq('user_id', signUpData.user.id);
-
-        if (updateError) throw updateError;
-
-        // If user was created but needs email confirmation, we'll set confirmed
-        if (!signUpData.session) {
-          // Sign out and show success message
-          await supabase.auth.signOut();
-          setError('');
-          alert('Admin hesabı yaradıldı! İndi giriş edə bilərsiniz.');
+      if (signUpError) {
+        if (signUpError.message.includes('already registered')) {
+          setError('Bu email artıq qeydiyyatdan keçib. Giriş etməyi cəhd edin.');
           setShowCreateAdmin(false);
         } else {
-          // User is automatically logged in
+          setError('Admin hesabı yaradarkən xəta: ' + signUpError.message);
+        }
+        return;
+      }
+
+      if (signUpData.user) {
+        // If user was created but needs email confirmation
+        if (!signUpData.session) {
+          setError('Email təsdiq tələb olunur. Supabase tənzimləmələrində "Confirm email" söndürülməlidir.');
+          setShowCreateAdmin(false);
+        } else {
+          // User is automatically logged in, update role
+          const { error: updateError } = await supabase
+            .from('profiles')
+            .update({ role: 'admin' })
+            .eq('user_id', signUpData.user.id);
+
+          if (updateError) {
+            console.error('Profile update error:', updateError);
+          }
+
           navigate('/admin/dashboard');
         }
       }
     } catch (err: any) {
-      if (err.message.includes('already registered')) {
-        setError('Bu email artıq qeydiyyatdan keçib. Giriş etməyi cəhd edin.');
-        setShowCreateAdmin(false);
-      } else {
-        setError('Admin hesabı yaradarkən xəta: ' + err.message);
-      }
+      setError('Admin hesabı yaradarkən xəta: ' + err.message);
     } finally {
       setLoading(false);
     }
