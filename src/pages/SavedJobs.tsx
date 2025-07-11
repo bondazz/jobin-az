@@ -141,13 +141,15 @@ const SavedJobs = () => {
         {/* Right Section - Job Details */}
         <div className="hidden lg:block flex-1 bg-gradient-to-br from-job-details to-primary/3 animate-slide-in-right">
           {selectedJob ? (
-            <JobListings
-              selectedJob={selectedJob}
-              onJobSelect={handleJobSelect}
-              selectedCategory=""
-              showOnlySaved={true}
-              showHeader={false}
-            />
+            <div className="h-full p-6 overflow-y-auto">
+              <JobListings
+                selectedJob={selectedJob}
+                onJobSelect={handleJobSelect}
+                selectedCategory=""
+                showOnlySaved={true}
+                showHeader={false}
+              />
+            </div>
           ) : (
             <div className="h-full flex items-center justify-center p-8">
               <div className="text-center">

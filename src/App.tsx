@@ -23,15 +23,15 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Index />} />
-            <Route path="/vakansiyalar" element={<Index />} />
-            <Route path="/vakansiyalar/:job" element={<Index />} />
-          <Route path="/kateqoriyalar" element={<Categories />} />
-          <Route path="/kateqoriyalar/:category" element={<Categories />} />
-          <Route path="/kateqoriyalar/:category/vakansiya/:job" element={<Categories />} />
-          <Route path="/sirketler" element={<Companies />} />
-          <Route path="/sirketler/:company" element={<Companies />} />
-          <Route path="/sirketler/:company/vakansiya/:job" element={<Companies />} />
-           <Route path="/saxlanilan" element={
+            <Route path="/vacancies" element={<Index />} />
+            <Route path="/vacancies/:job" element={<Index />} />
+          <Route path="/categories" element={<Categories />} />
+          <Route path="/categories/:category" element={<Categories />} />
+          <Route path="/categories/:category/vacancy/:job" element={<Categories />} />
+          <Route path="/companies" element={<Companies />} />
+          <Route path="/companies/:company" element={<Companies />} />
+          <Route path="/companies/:company/vacancy/:job" element={<Companies />} />
+           <Route path="/favorites" element={
              <Suspense fallback={<div>Loading...</div>}>
                <SavedJobs />
              </Suspense>

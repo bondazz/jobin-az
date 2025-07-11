@@ -30,22 +30,22 @@ const MainSidebar = () => {
   const menuItems = [{
     icon: Briefcase,
     label: 'Vakansiyalar',
-    path: '/vakansiyalar',
+    path: '/vacancies',
     count: null
   }, {
     icon: Tag,
     label: 'Kateqoriyalar',
-    path: '/kateqoriyalar',
+    path: '/categories',
     count: null
   }, {
     icon: Building,
     label: 'Şirkətlər',
-    path: '/sirketler',
+    path: '/companies',
     count: null
   }, {
     icon: Bookmark,
     label: 'Seçilmiş elanlar',
-    path: '/saxlanilan',
+    path: '/favorites',
     count: savedJobsCount
   }, {
     icon: DollarSign,
@@ -60,7 +60,7 @@ const MainSidebar = () => {
   }];
 
   const isActivePath = (path: string) => {
-    if (path === '/vakansiyalar') return location.pathname === '/' || location.pathname === '/vakansiyalar';
+    if (path === '/vacancies') return location.pathname === '/' || location.pathname === '/vacancies';
     return location.pathname.startsWith(path);
   };
 

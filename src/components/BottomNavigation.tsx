@@ -23,7 +23,7 @@ const BottomNavigation = ({
     icon: Briefcase,
     label: 'İşlər',
     count: 1247,
-    path: '/jobs'
+    path: '/vacancies'
   }, {
     icon: Tag,
     label: 'Kateqoriyalar',
@@ -38,7 +38,7 @@ const BottomNavigation = ({
     icon: Bookmark,
     label: 'Saxlanmış',
     count: 23,
-    path: '/saved'
+    path: '/favorites'
   }];
 
   const allMenuItems = [{
@@ -49,17 +49,12 @@ const BottomNavigation = ({
   }, {
     icon: Briefcase,
     label: 'İş Elanları',
-    path: '/jobs',
+    path: '/vacancies',
     count: null
   }, {
     icon: Tag,
     label: 'Kateqoriyalar',
     path: '/categories',
-    count: null
-  }, {
-    icon: TrendingUp,
-    label: 'Sənaye',
-    path: '/industry',
     count: null
   }, {
     icon: Building,
@@ -69,22 +64,22 @@ const BottomNavigation = ({
   }, {
     icon: Bookmark,
     label: 'Saxlanılan İşlər',
-    path: '/saved',
+    path: '/favorites',
     count: 23
   }, {
     icon: Bell,
     label: 'İş Bildirişləri',
-    path: '/alerts',
+    path: '/bildirisler',
     count: null
   }, {
     icon: DollarSign,
     label: 'Qiymətlər',
-    path: '/pricing',
+    path: '/qiymetler',
     count: null
   }, {
     icon: Info,
     label: 'Haqqında',
-    path: '/about',
+    path: '/haqqinda',
     count: null
   }];
 
@@ -109,6 +104,7 @@ const BottomNavigation = ({
 
   const isActivePath = (path: string) => {
     if (path === '/') return location.pathname === '/';
+    if (path === '/vacancies') return location.pathname === '/' || location.pathname === '/vacancies';
     return location.pathname.startsWith(path);
   };
 
@@ -119,7 +115,7 @@ const BottomNavigation = ({
           {mainNavItems.map(item => <Link key={item.label} to={item.path} className={`flex flex-col items-center gap-1 h-auto py-2 px-3 rounded-lg transition-colors ${isActivePath(item.path) ? 'text-primary bg-primary/10' : 'text-muted-foreground hover:text-foreground'}`}>
               <div className="relative">
                 <item.icon className="w-5 h-5" />
-                {item.path === '/saved' && item.count > 0 && <Badge variant="secondary" className="absolute -top-2 -right-2 h-4 min-w-4 text-[10px] px-1 bg-primary text-white">
+                {item.path === '/favorites' && item.count > 0 && <Badge variant="secondary" className="absolute -top-2 -right-2 h-4 min-w-4 text-[10px] px-1 bg-primary text-white">
                     {item.count > 99 ? '99+' : item.count}
                   </Badge>}
               </div>

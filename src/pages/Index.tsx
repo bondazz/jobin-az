@@ -1,6 +1,8 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Job } from '@/types/job';
+import { mockCategories } from '@/data/mockJobs';
 import JobListings from '@/components/JobListings';
 import JobDetails from '@/components/JobDetails';
 import MobileMenu from '@/components/MobileMenu';
@@ -9,6 +11,18 @@ import BottomNavigation from '@/components/BottomNavigation';
 const Index = () => {
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Check for category filter from URL
+  useEffect(() => {
+    const categorySlug = searchParams.get('category');
+    if (categorySlug) {
+      const category = mockCategories.find(c => c.slug === categorySlug);
+      if (category) {
+        setSelectedCategory(category.name);
+      }
+    }
+  }, [searchParams]);
 
   const handleJobSelect = (job: Job) => {
     setSelectedJob(job);

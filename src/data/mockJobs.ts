@@ -424,14 +424,14 @@ export const mockJobs: Job[] = [
 ];
 
 export const mockCategories: JobCategory[] = [
-  { id: '1', name: 'Engineering', count: 245 },
-  { id: '2', name: 'Product', count: 89 },
-  { id: '3', name: 'Design', count: 67 },
-  { id: '4', name: 'Marketing', count: 112 },
-  { id: '5', name: 'Data Science', count: 78 },
-  { id: '6', name: 'Sales', count: 156 },
-  { id: '7', name: 'Operations', count: 134 },
-  { id: '8', name: 'Finance', count: 93 }
+  { id: '1', name: 'Engineering', count: 245, slug: 'engineering' },
+  { id: '2', name: 'Product', count: 89, slug: 'product' },
+  { id: '3', name: 'Design', count: 67, slug: 'design' },
+  { id: '4', name: 'Marketing', count: 112, slug: 'marketing' },
+  { id: '5', name: 'Data Science', count: 78, slug: 'data-science' },
+  { id: '6', name: 'Sales', count: 156, slug: 'sales' },
+  { id: '7', name: 'Operations', count: 134, slug: 'operations' },
+  { id: '8', name: 'Finance', count: 93, slug: 'finance' }
 ];
 
 export const mockCompanies: Company[] = [

@@ -3,7 +3,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { mockCategories, mockJobs } from '@/data/mockJobs';
 import { Badge } from '@/components/ui/badge';
-import { Tag, TrendingUp } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Tag, TrendingUp, Search } from 'lucide-react';
 import JobListings from '@/components/JobListings';
 import JobDetails from '@/components/JobDetails';
 import { Job } from '@/types/job';
@@ -13,6 +14,7 @@ const Categories = () => {
   const navigate = useNavigate();
   const { category: categorySlug, job: jobSlug } = useParams();
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
   
   // Decode category from URL
   const selectedCategory = categorySlug 
@@ -41,15 +43,21 @@ const Categories = () => {
   }, [categorySlug, jobSlug, selectedCategory]);
 
   const handleCategoryClick = (categoryName: string) => {
-    const slug = categoryName.toLowerCase().replace(/\s+/g, '-');
-    navigate(`/kateqoriyalar/${slug}`);
+    const category = mockCategories.find(c => c.name === categoryName);
+    if (category) {
+      navigate(`/vacancies?category=${category.slug}`);
+    }
   };
 
   const handleJobSelect = (job: Job) => {
     setSelectedJob(job);
     const jobSlug = job.title.toLowerCase().replace(/\s+/g, '-');
-    navigate(`/kateqoriyalar/${categorySlug}/vakansiya/${jobSlug}`);
+    navigate(`/categories/${categorySlug}/vacancy/${jobSlug}`);
   };
+
+  const filteredCategories = mockCategories.filter(category =>
+    category.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="h-full flex bg-gradient-to-br from-background via-primary/3 to-background overflow-hidden">
@@ -64,19 +72,28 @@ const Categories = () => {
               </div>
             </div>
 
-            {/* Header */}
-            <div className="relative overflow-hidden bg-gradient-to-br from-background via-primary/8 to-accent/5 border-b border-border/30 max-h-[73px]">
+            {/* Header with Search */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-background via-primary/8 to-accent/5 border-b border-border/30">
               <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-60"></div>
               
-              <div className="relative px-4 py-2 h-[73px] flex items-center justify-center">
+              <div className="relative px-4 py-3 space-y-3">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 bg-gradient-primary rounded-xl flex items-center justify-center shadow-lg">
                     <Tag className="w-4 h-4 text-white" />
                   </div>
                   <h1 className="text-lg font-bold text-foreground">Kateqoriyalar</h1>
                   <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30">
-                    {mockCategories.length}
+                    {filteredCategories.length}
                   </Badge>
+                </div>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Kateqoriyalar axtarın..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
                 </div>
               </div>
             </div>
@@ -84,7 +101,7 @@ const Categories = () => {
             {/* Categories List */}
             <div className="flex-1 overflow-y-auto p-2 bg-gradient-to-b from-transparent to-primary/5 w-full max-w-[100%] mx-auto">
               <div className="flex flex-col gap-2 justify-center items-center w-full max-w-full px-2">
-                {mockCategories.map((category, index) => (
+                {filteredCategories.map((category, index) => (
                   <div
                     key={category.id}
                     onClick={() => handleCategoryClick(category.name)}

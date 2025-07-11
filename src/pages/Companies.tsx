@@ -2,7 +2,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
-import { Building, MapPin, Users, Briefcase, Globe, Phone, Mail } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Building, MapPin, Users, Briefcase, Globe, Phone, Mail, Search } from 'lucide-react';
 import JobListings from '@/components/JobListings';
 import { Job } from '@/types/job';
 import { mockJobs } from '@/data/mockJobs';
@@ -23,6 +24,7 @@ const Companies = () => {
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [activeTab, setActiveTab] = useState('about');
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   // Find company from URL slug
   useEffect(() => {
@@ -57,14 +59,18 @@ const Companies = () => {
     setActiveTab('about');
     setSelectedJob(null);
     const slug = company.name.toLowerCase().replace(/\s+/g, '-');
-    navigate(`/sirketler/${slug}`);
+    navigate(`/companies/${slug}`);
   };
 
   const handleJobSelect = (job: Job) => {
     setSelectedJob(job);
     const jobSlug = job.title.toLowerCase().replace(/\s+/g, '-');
-    navigate(`/sirketler/${companySlug}/vakansiya/${jobSlug}`);
+    navigate(`/companies/${companySlug}/vacancy/${jobSlug}`);
   };
+
+  const filteredCompanies = mockCompanies.filter(company =>
+    company.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="h-full flex bg-gradient-to-br from-background via-primary/3 to-background overflow-hidden">
@@ -79,19 +85,28 @@ const Companies = () => {
               </div>
             </div>
 
-            {/* Header */}
-            <div className="relative overflow-hidden bg-gradient-to-br from-background via-primary/8 to-accent/5 border-b border-border/30 max-h-[73px]">
+            {/* Header with Search */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-background via-primary/8 to-accent/5 border-b border-border/30">
               <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-60"></div>
               
-              <div className="relative px-4 py-2 h-[73px] flex items-center justify-center">
+              <div className="relative px-4 py-3 space-y-3">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 bg-gradient-primary rounded-xl flex items-center justify-center shadow-lg">
                     <Building className="w-4 h-4 text-white" />
                   </div>
                   <h1 className="text-lg font-bold text-foreground">Şirkətlər</h1>
                   <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30">
-                    {mockCompanies.length}
+                    {filteredCompanies.length}
                   </Badge>
+                </div>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Şirkətlər axtarın..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
                 </div>
               </div>
             </div>
@@ -99,7 +114,7 @@ const Companies = () => {
             {/* Companies List */}
             <div className="flex-1 overflow-y-auto p-2 bg-gradient-to-b from-transparent to-primary/5 w-full max-w-[100%] mx-auto">
               <div className="flex flex-col gap-2 justify-center items-center w-full max-w-full px-2">
-                {mockCompanies.map((company, index) => (
+                {filteredCompanies.map((company, index) => (
                   <div
                     key={company.id}
                     onClick={() => handleCompanyClick(company)}
@@ -155,16 +170,34 @@ const Companies = () => {
         {/* Right Section - Company Details */}
         <div className="hidden lg:block flex-1 bg-gradient-to-br from-job-details to-primary/3 animate-slide-in-right">
           {selectedCompany ? (
-            <div className="h-full overflow-y-auto p-6">
-              <div className="max-w-2xl">
-                {/* Company Header */}
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-16 h-16 bg-gradient-primary rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg">
-                    {selectedCompany.logo}
+            <div className="h-full overflow-y-auto">
+              <div className="relative">
+                {/* Company Header with Background */}
+                <div className="relative h-48 bg-gradient-to-br from-primary/20 via-primary/10 to-accent/10 overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/20"></div>
+                  
+                  {/* Company Logo - Floating */}
+                  <div className="absolute bottom-0 left-6 transform translate-y-1/2">
+                    <div className="relative">
+                      <div className="w-24 h-24 bg-gradient-primary rounded-2xl flex items-center justify-center text-white font-bold text-2xl shadow-2xl border-4 border-background">
+                        {selectedCompany.logo}
+                      </div>
+                      {selectedCompany.verified && (
+                        <div className="absolute -top-2 -right-2 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                          <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <div>
-                    <h1 className="text-2xl font-bold text-foreground mb-1">{selectedCompany.name}</h1>
-                    <div className="flex items-center gap-3 text-muted-foreground text-sm">
+                </div>
+
+                {/* Company Info */}
+                <div className="pt-16 px-6 pb-6">
+                  <div className="mb-6">
+                    <h1 className="text-3xl font-bold text-foreground mb-2">{selectedCompany.name}</h1>
+                    <div className="flex items-center gap-4 text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <MapPin className="w-4 h-4" />
                         <span>{selectedCompany.location}</span>
@@ -173,93 +206,97 @@ const Companies = () => {
                         <Users className="w-4 h-4" />
                         <span>{selectedCompany.employees} işçi</span>
                       </div>
+                      <div className="flex items-center gap-1">
+                        <Briefcase className="w-4 h-4" />
+                        <span>{selectedCompany.jobCount} vakansiya</span>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Navigation Tabs */}
-                <div className="flex gap-4 mb-6 border-b border-border">
-                  <button 
-                    onClick={() => setActiveTab('about')}
-                    className={`pb-3 px-1 border-b-2 font-medium text-sm transition-colors ${
-                      activeTab === 'about' 
-                        ? 'border-primary text-primary' 
-                        : 'border-transparent text-muted-foreground hover:text-foreground'
-                    }`}
-                  >
-                    Şirkət Haqqında
-                  </button>
-                  <button 
-                    onClick={() => setActiveTab('jobs')}
-                    className={`pb-3 px-1 border-b-2 font-medium text-sm transition-colors ${
-                      activeTab === 'jobs' 
-                        ? 'border-primary text-primary' 
-                        : 'border-transparent text-muted-foreground hover:text-foreground'
-                    }`}
-                  >
-                    İş Elanları ({selectedCompany.jobCount})
-                  </button>
-                </div>
+                  {/* Navigation Tabs */}
+                  <div className="flex gap-4 mb-6 border-b border-border">
+                    <button 
+                      onClick={() => setActiveTab('about')}
+                      className={`pb-3 px-1 border-b-2 font-medium text-sm transition-colors ${
+                        activeTab === 'about' 
+                          ? 'border-primary text-primary' 
+                          : 'border-transparent text-muted-foreground hover:text-foreground'
+                      }`}
+                    >
+                      Şirkət Haqqında
+                    </button>
+                    <button 
+                      onClick={() => setActiveTab('jobs')}
+                      className={`pb-3 px-1 border-b-2 font-medium text-sm transition-colors ${
+                        activeTab === 'jobs' 
+                          ? 'border-primary text-primary' 
+                          : 'border-transparent text-muted-foreground hover:text-foreground'
+                      }`}
+                    >
+                      İş Elanları ({selectedCompany.jobCount})
+                    </button>
+                  </div>
 
-                {/* Tab Content */}
-                <div className="space-y-6">
-                  {activeTab === 'about' ? (
-                    <>
-                      <div>
-                        <h3 className="text-lg font-semibold text-foreground mb-3">Şirkət Haqqında</h3>
-                        <p className="text-muted-foreground leading-relaxed">
-                          {selectedCompany.name} Azərbaycanın aparıcı şirkətlərindən biridir. 
-                          Bizim missiyamız keyfiyyətli xidmətlər təqdim etmək və müştərilərimizin 
-                          ehtiyaclarını qarşılamaqdır. Komandamız təcrübəli mütəxəssislərdən ibarətdir.
-                        </p>
-                      </div>
+                  {/* Tab Content */}
+                  <div className="space-y-6">
+                    {activeTab === 'about' ? (
+                      <>
+                        <div>
+                          <h3 className="text-lg font-semibold text-foreground mb-3">Şirkət Haqqında</h3>
+                          <p className="text-muted-foreground leading-relaxed">
+                            {selectedCompany.name} Azərbaycanın aparıcı şirkətlərindən biridir. 
+                            Bizim missiyamız keyfiyyətli xidmətlər təqdim etmək və müştərilərimizin 
+                            ehtiyaclarını qarşılamaqdır. Komandamız təcrübəli mütəxəssislərdən ibarətdir.
+                          </p>
+                        </div>
 
-                      <div>
-                        <h3 className="text-lg font-semibold text-foreground mb-3">Əlaqə Məlumatları</h3>
-                        <div className="space-y-3">
-                          <div className="flex items-center gap-3">
-                            <Globe className="w-5 h-5 text-primary" />
-                            <a href={`https://${selectedCompany.website}`} target="_blank" rel="noopener noreferrer" 
-                               className="text-primary hover:underline">
-                              {selectedCompany.website}
-                            </a>
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <Phone className="w-5 h-5 text-primary" />
-                            <span className="text-foreground">+994 12 123 45 67</span>
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <Mail className="w-5 h-5 text-primary" />
-                            <span className="text-foreground">info@{selectedCompany.website}</span>
+                        <div>
+                          <h3 className="text-lg font-semibold text-foreground mb-3">Əlaqə Məlumatları</h3>
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-3">
+                              <Globe className="w-5 h-5 text-primary" />
+                              <a href={`https://${selectedCompany.website}`} target="_blank" rel="noopener noreferrer" 
+                                 className="text-primary hover:underline">
+                                {selectedCompany.website}
+                              </a>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <Phone className="w-5 h-5 text-primary" />
+                              <span className="text-foreground">+994 12 123 45 67</span>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <Mail className="w-5 h-5 text-primary" />
+                              <span className="text-foreground">info@{selectedCompany.website}</span>
+                            </div>
                           </div>
                         </div>
-                      </div>
 
-                      <div>
-                        <h3 className="text-lg font-semibold text-foreground mb-3">Statistika</h3>
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="bg-background/50 p-4 rounded-lg border border-border/50">
-                            <div className="text-2xl font-bold text-primary mb-1">{selectedCompany.jobCount}</div>
-                            <div className="text-sm text-muted-foreground">Aktiv Vakansiya</div>
-                          </div>
-                          <div className="bg-background/50 p-4 rounded-lg border border-border/50">
-                            <div className="text-2xl font-bold text-accent mb-1">{selectedCompany.employees}</div>
-                            <div className="text-sm text-muted-foreground">İşçi Sayı</div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-foreground mb-3">Statistika</h3>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="bg-background/50 p-4 rounded-lg border border-border/50">
+                              <div className="text-2xl font-bold text-primary mb-1">{selectedCompany.jobCount}</div>
+                              <div className="text-sm text-muted-foreground">Aktiv Vakansiya</div>
+                            </div>
+                            <div className="bg-background/50 p-4 rounded-lg border border-border/50">
+                              <div className="text-2xl font-bold text-accent mb-1">{selectedCompany.employees}</div>
+                              <div className="text-sm text-muted-foreground">İşçi Sayı</div>
+                            </div>
                           </div>
                         </div>
+                      </>
+                    ) : (
+                      <div className="h-[600px] overflow-hidden">
+                        <JobListings
+                          selectedJob={selectedJob}
+                          onJobSelect={handleJobSelect}
+                          selectedCategory=""
+                          companyFilter={selectedCompany.name}
+                          showHeader={false}
+                        />
                       </div>
-                    </>
-                  ) : (
-                    <div className="h-[600px] overflow-hidden">
-                      <JobListings
-                        selectedJob={selectedJob}
-                        onJobSelect={handleJobSelect}
-                        selectedCategory=""
-                        companyFilter={selectedCompany.name}
-                        showHeader={false}
-                      />
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
