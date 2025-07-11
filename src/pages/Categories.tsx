@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { mockCategories, mockJobs } from '@/data/mockJobs';
@@ -9,25 +8,22 @@ import JobListings from '@/components/JobListings';
 import JobDetails from '@/components/JobDetails';
 import { Job } from '@/types/job';
 import { generateCategorySEO, generateJobSEO, updatePageMeta } from '@/utils/seo';
-
 const Categories = () => {
   const navigate = useNavigate();
-  const { category: categorySlug, job: jobSlug } = useParams();
+  const {
+    category: categorySlug,
+    job: jobSlug
+  } = useParams();
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  
+
   // Decode category from URL
-  const selectedCategory = categorySlug 
-    ? mockCategories.find(cat => cat.name.toLowerCase().replace(/\s+/g, '-') === categorySlug)?.name || ''
-    : '';
+  const selectedCategory = categorySlug ? mockCategories.find(cat => cat.name.toLowerCase().replace(/\s+/g, '-') === categorySlug)?.name || '' : '';
 
   // Find job if jobSlug exists
   useEffect(() => {
     if (jobSlug && selectedCategory) {
-      const job = mockJobs.find(j => 
-        j.title.toLowerCase().replace(/\s+/g, '-') === jobSlug && 
-        j.category === selectedCategory
-      );
+      const job = mockJobs.find(j => j.title.toLowerCase().replace(/\s+/g, '-') === jobSlug && j.category === selectedCategory);
       if (job) {
         setSelectedJob(job);
         const seoData = generateJobSEO(job.title, job.company, job.category);
@@ -41,26 +37,19 @@ const Categories = () => {
       }
     }
   }, [categorySlug, jobSlug, selectedCategory]);
-
   const handleCategoryClick = (categoryName: string) => {
     const category = mockCategories.find(c => c.name === categoryName);
     if (category) {
       navigate(`/vacancies?category=${category.slug}`);
     }
   };
-
   const handleJobSelect = (job: Job) => {
     setSelectedJob(job);
     const jobSlug = job.title.toLowerCase().replace(/\s+/g, '-');
     navigate(`/categories/${categorySlug}/vacancy/${jobSlug}`);
   };
-
-  const filteredCategories = mockCategories.filter(category =>
-    category.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  return (
-    <div className="h-full flex bg-gradient-to-br from-background via-primary/3 to-background overflow-hidden">
+  const filteredCategories = mockCategories.filter(category => category.name.toLowerCase().includes(searchTerm.toLowerCase()));
+  return <div className="h-full flex bg-gradient-to-br from-background via-primary/3 to-background overflow-hidden">
       <div className="flex-1 flex min-w-0 pb-16 xl:pb-0">
         {/* Categories List */}
         <div className="w-full lg:w-[400px] xl:w-[450px] border-r border-border animate-fade-in">
@@ -82,18 +71,11 @@ const Categories = () => {
                     <Tag className="w-4 h-4 text-white" />
                   </div>
                   <h1 className="text-lg font-bold text-foreground">Kateqoriyalar</h1>
-                  <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30">
-                    {filteredCategories.length}
-                  </Badge>
+                  
                 </div>
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Kateqoriyalar axtarın..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
-                  />
+                  <Input placeholder="Kateqoriyalar axtarın..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="pl-10" />
                 </div>
               </div>
             </div>
@@ -101,19 +83,12 @@ const Categories = () => {
             {/* Categories List */}
             <div className="flex-1 overflow-y-auto p-2 bg-gradient-to-b from-transparent to-primary/5 w-full max-w-[100%] mx-auto">
               <div className="flex flex-col gap-2 justify-center items-center w-full max-w-full px-2">
-                {filteredCategories.map((category, index) => (
-                  <div
-                    key={category.id}
-                    onClick={() => handleCategoryClick(category.name)}
-                    className={`group cursor-pointer p-3 rounded-lg border transition-all duration-200 ease-smooth
+                {filteredCategories.map((category, index) => <div key={category.id} onClick={() => handleCategoryClick(category.name)} className={`group cursor-pointer p-3 rounded-lg border transition-all duration-200 ease-smooth
                       hover:shadow-card-hover hover:-translate-y-0.5 animate-fade-in
                       w-full max-w-full min-w-0 h-[60px] flex flex-row items-center justify-between backdrop-blur-sm
-                      ${selectedCategory === category.name 
-                        ? 'border-primary bg-gradient-to-r from-primary/20 to-primary/5 shadow-elegant ring-1 ring-primary/50'
-                        : 'bg-job-card border-border/50 hover:border-primary/40 hover:shadow-card-hover'
-                      }`}
-                    style={{ animationDelay: `${index * 50}ms` }}
-                  >
+                      ${selectedCategory === category.name ? 'border-primary bg-gradient-to-r from-primary/20 to-primary/5 shadow-elegant ring-1 ring-primary/50' : 'bg-job-card border-border/50 hover:border-primary/40 hover:shadow-card-hover'}`} style={{
+                animationDelay: `${index * 50}ms`
+              }}>
                     {/* Left Section - Category Info */}
                     <div className="flex items-center gap-3 flex-1 min-w-0">
                       <div className="relative flex-shrink-0">
@@ -143,8 +118,7 @@ const Categories = () => {
                         </Badge>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  </div>)}
               </div>
             </div>
           </div>
@@ -152,17 +126,7 @@ const Categories = () => {
 
         {/* Right Section - Filtered Jobs or Job Details */}
         <div className="hidden lg:block flex-1 bg-gradient-to-br from-job-details to-primary/3 animate-slide-in-right">
-          {selectedJob ? (
-            <JobDetails job={selectedJob} />
-          ) : selectedCategory ? (
-            <JobListings
-              selectedJob={null}
-              onJobSelect={handleJobSelect}
-              selectedCategory={selectedCategory}
-              showHeader={false}
-            />
-          ) : (
-            <div className="h-full flex items-center justify-center p-8">
+          {selectedJob ? <JobDetails job={selectedJob} /> : selectedCategory ? <JobListings selectedJob={null} onJobSelect={handleJobSelect} selectedCategory={selectedCategory} showHeader={false} /> : <div className="h-full flex items-center justify-center p-8">
               <div className="text-center">
                 <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4">
                   <Tag className="w-8 h-8 text-white" />
@@ -172,12 +136,9 @@ const Categories = () => {
                   Sol tərəfdən bir kateqoriya seçin və həmin sahədəki vakansiyaları görün
                 </p>
               </div>
-            </div>
-          )}
+            </div>}
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Categories;
