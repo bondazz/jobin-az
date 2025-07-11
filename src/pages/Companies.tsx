@@ -117,7 +117,7 @@ const Companies = () => {
             <div className="relative overflow-hidden bg-gradient-to-br from-background via-primary/8 to-accent/5 border-b border-border/30">
               <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-60"></div>
               
-              <div className="relative px-4 py-3 space-y-3">
+              <div className="relative space-y-3 px-[19px] py-[10px]">
                 
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
