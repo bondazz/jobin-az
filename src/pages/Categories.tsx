@@ -67,9 +67,7 @@ const Categories = () => {
               
               <div className="relative px-4 py-3 space-y-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 bg-gradient-primary rounded-xl flex items-center justify-center shadow-lg">
-                    <Tag className="w-4 h-4 text-white" />
-                  </div>
+                  
                   
                   
                 </div>
