@@ -44,16 +44,24 @@ const Index = () => {
     fetchCategories();
   }, []);
 
-  // Check for category filter from URL
+  // Check for category and company filters from URL
   useEffect(() => {
     const categorySlug = searchParams.get('category');
+    const companySlug = searchParams.get('company');
+    
     if (categorySlug && categories.length > 0) {
       const category = categories.find(c => c.slug === categorySlug);
       if (category) {
         setSelectedCategory(category.name);
       }
     }
+    
+    if (companySlug) {
+      setSelectedCompany(companySlug);
+    }
   }, [searchParams, categories]);
+
+  const [selectedCompany, setSelectedCompany] = useState<string>('');
 
   // Fetch job by slug from URL
   useEffect(() => {
@@ -139,10 +147,47 @@ const Index = () => {
       <div className="flex-1 flex min-w-0 pb-16 xl:pb-0">
         {/* Job Listings - Responsive Column */}
         <div className="w-full lg:w-[400px] xl:w-[450px] border-r border-border animate-fade-in">
+          {/* Active Filters */}
+          {(selectedCategory || selectedCompany) && (
+            <div className="p-3 bg-primary/5 border-b border-border">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-xs text-muted-foreground">Aktiv filterlər:</span>
+                {selectedCategory && (
+                  <div className="flex items-center gap-1 bg-primary/20 text-primary text-xs px-2 py-1 rounded">
+                    <span>{selectedCategory}</span>
+                    <button 
+                      onClick={() => {
+                        setSelectedCategory('');
+                        navigate('/vacancies');
+                      }}
+                      className="text-primary hover:text-primary/70"
+                    >
+                      ×
+                    </button>
+                  </div>
+                )}
+                {selectedCompany && (
+                  <div className="flex items-center gap-1 bg-primary/20 text-primary text-xs px-2 py-1 rounded">
+                    <span>Şirkət filtri</span>
+                    <button 
+                      onClick={() => {
+                        setSelectedCompany('');
+                        navigate('/vacancies');
+                      }}
+                      className="text-primary hover:text-primary/70"
+                    >
+                      ×
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
           <JobListings
             selectedJob={selectedJob}
             onJobSelect={handleJobSelect}
             selectedCategory={selectedCategory}
+            companyFilter={selectedCompany}
           />
         </div>
 

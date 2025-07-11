@@ -37,6 +37,9 @@ const JobDetails = ({ jobId }: JobDetailsProps) => {
   useEffect(() => {
     if (jobId) {
       fetchJobDetails(jobId);
+      // Check if job is saved
+      const savedJobs = JSON.parse(localStorage.getItem('savedJobs') || '[]');
+      setIsSaved(savedJobs.includes(jobId));
     }
   }, [jobId]);
 
@@ -94,18 +97,24 @@ const JobDetails = ({ jobId }: JobDetailsProps) => {
     if (!job) return;
     
     const savedJobs = JSON.parse(localStorage.getItem('savedJobs') || '[]');
+    let updatedSavedJobs;
+    
     if (isSaved) {
-      const updatedSaved = savedJobs.filter((id: string) => id !== job.id);
-      localStorage.setItem('savedJobs', JSON.stringify(updatedSaved));
-      setIsSaved(false);
+      // Remove from saved
+      updatedSavedJobs = savedJobs.filter((id: string) => id !== job.id);
     } else {
-      savedJobs.push(job.id);
-      localStorage.setItem('savedJobs', JSON.stringify(savedJobs));
-      setIsSaved(true);
+      // Add to saved
+      updatedSavedJobs = [...savedJobs, job.id];
     }
-
-    // Trigger custom event for same-page updates
-    window.dispatchEvent(new Event('localStorageUpdate'));
+    
+    localStorage.setItem('savedJobs', JSON.stringify(updatedSavedJobs));
+    setIsSaved(!isSaved);
+    
+    // Dispatch storage event to update sidebar count
+    window.dispatchEvent(new StorageEvent('storage', {
+      key: 'savedJobs',
+      newValue: JSON.stringify(updatedSavedJobs)
+    }));
   };
   if (loading) {
     return (
@@ -235,8 +244,8 @@ const JobDetails = ({ jobId }: JobDetailsProps) => {
             <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
               <Eye className="w-5 h-5 text-primary flex-shrink-0" />
               <div>
-                <p className="text-sm font-medium text-foreground">Baxış Sayı</p>
-                <p className="text-sm text-muted-foreground">{job.views || 0}</p>
+              <p className="text-sm font-medium text-foreground">Baxış Sayı</p>
+                <p className="text-sm text-muted-foreground">{((job.views || 0) + 1)}</p>
               </div>
             </div>
           </div>

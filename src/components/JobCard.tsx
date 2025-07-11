@@ -21,6 +21,7 @@ const JobCard = ({
 }: JobCardProps) => {
   const [isSaved, setIsSaved] = useState(false);
   const [company, setCompany] = useState<Company | null>(null);
+  
   useEffect(() => {
     const savedJobs = JSON.parse(localStorage.getItem('savedJobs') || '[]');
     setIsSaved(savedJobs.includes(job.id));
@@ -30,6 +31,30 @@ const JobCard = ({
       fetchCompany();
     }
   }, [job.id, job.company_id]);
+
+  const handleSaveToggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    const savedJobs = JSON.parse(localStorage.getItem('savedJobs') || '[]');
+    let updatedSavedJobs;
+    
+    if (isSaved) {
+      // Remove from saved
+      updatedSavedJobs = savedJobs.filter((id: string) => id !== job.id);
+    } else {
+      // Add to saved
+      updatedSavedJobs = [...savedJobs, job.id];
+    }
+    
+    localStorage.setItem('savedJobs', JSON.stringify(updatedSavedJobs));
+    setIsSaved(!isSaved);
+    
+    // Dispatch storage event to update sidebar count
+    window.dispatchEvent(new StorageEvent('storage', {
+      key: 'savedJobs',
+      newValue: JSON.stringify(updatedSavedJobs)
+    }));
+  };
 
   const fetchCompany = async () => {
     if (!job.company_id) return;
@@ -50,22 +75,6 @@ const JobCard = ({
 
   // Filter to only show premium tags
   const premiumTags = job.tags.filter(tag => tag === 'premium');
-  const handleSaveClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    const savedJobs = JSON.parse(localStorage.getItem('savedJobs') || '[]');
-    if (isSaved) {
-      const updatedSaved = savedJobs.filter((id: string) => id !== job.id);
-      localStorage.setItem('savedJobs', JSON.stringify(updatedSaved));
-      setIsSaved(false);
-    } else {
-      savedJobs.push(job.id);
-      localStorage.setItem('savedJobs', JSON.stringify(savedJobs));
-      setIsSaved(true);
-    }
-
-    // Trigger custom event for same-page updates
-    window.dispatchEvent(new Event('localStorageUpdate'));
-  };
   return <div onClick={onClick} className={`
         group cursor-pointer p-3 rounded-lg border transition-all duration-200 ease-smooth
         hover:shadow-card-hover hover:-translate-y-0.5 animate-fade-in
@@ -127,7 +136,7 @@ const JobCard = ({
         <span className="text-muted-foreground hidden sm:inline">|</span>
         
         {/* Save Button with Heart Icon */}
-        <button onClick={handleSaveClick} className={`p-0.5 rounded-sm transition-all duration-200 hover:scale-110 ${isSaved ? 'text-red-500 hover:text-red-600' : 'text-muted-foreground hover:text-primary'}`}>
+        <button onClick={handleSaveToggle} className={`p-0.5 rounded-sm transition-all duration-200 hover:scale-110 ${isSaved ? 'text-red-500 hover:text-red-600' : 'text-muted-foreground hover:text-primary'}`}>
           <Heart className={`w-3 h-3 ${isSaved ? 'fill-current' : ''}`} />
         </button>
       </div>

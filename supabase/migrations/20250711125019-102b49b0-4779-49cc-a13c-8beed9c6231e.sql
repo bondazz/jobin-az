@@ -1,0 +1,20 @@
+-- Insert categories into the database
+INSERT INTO public.categories (name, slug, is_active) VALUES 
+('İnzibati, Biznes və İdarəetmə', 'inzibati-biznes-idareetme', true),
+('Maliyyə xidmətləri', 'maliyye-xidmetleri', true),
+('Pərakəndə satış və müştəri xidmətləri', 'perakende-satis-musteri-xidmetleri', true),
+('Mühəndislik', 'muhendislik', true),
+('Komputerləşmə və İKT', 'komputerlesme-ikt', true),
+('Marketinq, reklam, çap və nəşriyyat', 'marketinq-reklam-cap-nesriyyat', true),
+('Təlim və tədris', 'telim-tedris', true),
+('Nəqliyyat, paylama və logistika', 'neqliyyat-paylama-logistika', true),
+('Otel, İaşə, Turizm', 'otel-iase-turizm', true),
+('Təsərrüfat və əmlak xidmətləri', 'teserrufat-emlaq-xidmetleri', true),
+('Dizayn, incəsənət və sənətkarlıq', 'dizayn-incesenet-senetkarlik', true),
+('Hüquq və məhkəmə xidmətləri', 'hüquq-mehkeme-xidmetleri', true),
+('Səhiyyə', 'sehiyye', true),
+('İstehsalat', 'istehsalat', true),
+('İnşaat və tikinti', 'insaat-tikinti', true),
+('Təhlükəsizlik, uniforma və qoruyucu xidmətlər', 'tehlukesizlik-uniforma-qoruyucu-xidmetler', true),
+('İfaçılıq sənəti və media', 'ifacilik-seneti-media', true),
+('Heyvanlar, torpaq və ətraf mühit', 'heyvanlar-torpaq-etraf-muhit', true);

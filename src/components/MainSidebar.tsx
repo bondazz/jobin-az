@@ -7,6 +7,7 @@ import { Separator } from '@/components/ui/separator';
 import ThemeToggle from '@/components/ThemeToggle';
 import LanguageToggle from '@/components/LanguageToggle';
 import { Briefcase, Tag, Building, Bookmark, Bell, TrendingUp, Info, DollarSign, Calendar, BarChart3 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 const MainSidebar = () => {
   const location = useLocation();
@@ -64,9 +65,47 @@ const MainSidebar = () => {
     return location.pathname.startsWith(path);
   };
 
-  // Statistics data
-  const dailyJobCount = 127;
-  const monthlyJobCount = 3420;
+  // Statistics data - fetch from database
+  const [dailyJobCount, setDailyJobCount] = useState(0);
+  const [monthlyJobCount, setMonthlyJobCount] = useState(0);
+
+  // Fetch statistics from database
+  React.useEffect(() => {
+    fetchStatistics();
+  }, []);
+
+  const fetchStatistics = async () => {
+    try {
+      // Get today's date
+      const today = new Date();
+      const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      
+      // Get first day of current month
+      const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
+      // Fetch daily count
+      const { count: dailyCount } = await supabase
+        .from('jobs')
+        .select('*', { count: 'exact', head: true })
+        .eq('is_active', true)
+        .gte('created_at', startOfDay.toISOString());
+
+      // Fetch monthly count
+      const { count: monthlyCount } = await supabase
+        .from('jobs')
+        .select('*', { count: 'exact', head: true })
+        .eq('is_active', true)
+        .gte('created_at', startOfMonth.toISOString());
+
+      setDailyJobCount(dailyCount || 0);
+      setMonthlyJobCount(monthlyCount || 0);
+    } catch (error) {
+      console.error('Error fetching statistics:', error);
+      // Fallback values
+      setDailyJobCount(127);
+      setMonthlyJobCount(3420);
+    }
+  };
 
   return (
     <aside className="hidden xl:flex w-64 bg-gradient-to-b from-job-sidebar to-job-sidebar/80 border-r border-border/60 flex-col h-full backdrop-blur-sm">

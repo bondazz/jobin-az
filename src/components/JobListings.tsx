@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -107,7 +108,7 @@ const JobListings = ({
       const matchesLocation = locationFilter === '' || 
         job.location.toLowerCase().includes(locationFilter.toLowerCase());
       const matchesCategory = !selectedCategory || job.category === selectedCategory;
-      const matchesCompany = !companyFilter || job.company === companyFilter;
+      const matchesCompany = !companyFilter || job.company_id === companyFilter;
       return matchesSearch && matchesLocation && matchesCategory && matchesCompany;
     });
 
@@ -159,7 +160,9 @@ const JobListings = ({
       {showHeader && (
         <div className="lg:hidden sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border/50 shadow-sm">
           <div className="flex justify-center items-center py-3 px-4">
-            <img src="/lovable-uploads/e888818f-70b8-405b-a5e8-f62f8e842525.png" alt="Logo" className="h-12 w-auto object-contain" />
+            <Link to="/">
+              <img src="/lovable-uploads/e888818f-70b8-405b-a5e8-f62f8e842525.png" alt="Logo" className="h-12 w-auto object-contain" />
+            </Link>
           </div>
         </div>
       )}
