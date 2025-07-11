@@ -1,12 +1,19 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Check, Star, Zap, Crown } from 'lucide-react';
 import PremiumIcon from '@/components/ui/premium-icon';
+import { generatePageSEO, updatePageMeta } from '@/utils/seo';
+import BottomNavigation from '@/components/BottomNavigation';
 
 const Pricing = () => {
+  useEffect(() => {
+    const seoData = generatePageSEO('services');
+    updatePageMeta(seoData);
+  }, []);
+
   const plans = [
     {
       name: 'Əsas',
@@ -230,6 +237,12 @@ const Pricing = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Bottom Navigation */}
+      <BottomNavigation 
+        selectedCategory=""
+        onCategorySelect={() => {}}
+      />
     </div>
   );
 };

@@ -1,19 +1,38 @@
 import { useState, useEffect } from 'react';
-import { Bookmark } from 'lucide-react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Bookmark, Heart } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import JobListings from '@/components/JobListings';
+import JobDetails from '@/components/JobDetails';
 import { Job } from '@/types/job';
 import { mockJobs } from '@/data/mockJobs';
+import { generatePageSEO, generateJobSEO, updatePageMeta } from '@/utils/seo';
+import BottomNavigation from '@/components/BottomNavigation';
 
 const SavedJobs = () => {
   const [savedJobs, setSavedJobs] = useState<Job[]>([]);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  const { jobId } = useParams();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const seoData = generatePageSEO('favorites');
+    updatePageMeta(seoData);
+  }, []);
 
   useEffect(() => {
     const updateSavedJobs = () => {
       const savedJobIds = JSON.parse(localStorage.getItem('savedJobs') || '[]');
       const jobs = mockJobs.filter(job => savedJobIds.includes(job.id));
       setSavedJobs(jobs);
+      
+      // Auto-select job from URL
+      if (jobId && jobs.length > 0) {
+        const foundJob = jobs.find(job => job.id === jobId);
+        if (foundJob) {
+          setSelectedJob(foundJob);
+        }
+      }
     };
     
     updateSavedJobs();
@@ -30,10 +49,30 @@ const SavedJobs = () => {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('localStorageUpdate', handleCustomStorageChange);
     };
-  }, []);
+  }, [jobId]);
 
   const handleJobSelect = (job: Job) => {
     setSelectedJob(job);
+    navigate(`/favorites/${job.id}`);
+    
+    // Update SEO for selected job
+    const jobSEO = generateJobSEO(job.title, job.company, job.category);
+    updatePageMeta(jobSEO);
+  };
+
+  const handleJobUnsave = (jobId: string) => {
+    const savedJobIds = JSON.parse(localStorage.getItem('savedJobs') || '[]');
+    const updatedSavedJobIds = savedJobIds.filter((id: string) => id !== jobId);
+    localStorage.setItem('savedJobs', JSON.stringify(updatedSavedJobIds));
+    
+    // Dispatch custom event to update the counter
+    window.dispatchEvent(new Event('localStorageUpdate'));
+    
+    // If the unsaved job was selected, clear selection
+    if (selectedJob?.id === jobId) {
+      setSelectedJob(null);
+      navigate('/favorites');
+    }
   };
 
   return (
@@ -76,7 +115,7 @@ const SavedJobs = () => {
                       onClick={() => handleJobSelect(job)}
                       className={`group cursor-pointer p-3 rounded-lg border transition-all duration-200 ease-smooth
                         hover:shadow-card-hover hover:-translate-y-0.5 animate-fade-in
-                        w-full max-w-full min-w-0 h-[60px] flex flex-row items-center justify-between backdrop-blur-sm relative
+                        w-full max-w-full min-w-0 h-[80px] flex flex-row items-center justify-between backdrop-blur-sm relative
                         ${selectedJob?.id === job.id 
                           ? 'border-primary bg-gradient-to-r from-primary/20 to-primary/5 shadow-elegant ring-1 ring-primary/50'
                           : job.tags.includes('premium') 
@@ -111,12 +150,24 @@ const SavedJobs = () => {
                               <p className="text-muted-foreground text-xs font-medium truncate">{job.company}</p>
                             </div>
                           </div>
+                          <div className="flex items-center gap-2 mt-1">
+                            <span className="text-[10px] text-muted-foreground">{job.postedAt}</span>
+                            <span className="text-[10px] text-primary font-medium">{job.salary}</span>
+                          </div>
                         </div>
                       </div>
 
-                      {/* Right Section */}
-                      <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0 relative z-10 text-xs text-muted-foreground">
-                        <span className="text-[10px] sm:text-xs">{job.postedAt}</span>
+                      {/* Right Section - Heart Icon */}
+                      <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0 relative z-10">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleJobUnsave(job.id);
+                          }}
+                          className="w-8 h-8 rounded-full bg-red-500/10 hover:bg-red-500/20 flex items-center justify-center transition-colors duration-200 group"
+                        >
+                          <Heart className="w-4 h-4 text-red-500 fill-red-500" />
+                        </button>
                       </div>
                     </div>
                   ))}
@@ -141,14 +192,8 @@ const SavedJobs = () => {
         {/* Right Section - Job Details */}
         <div className="hidden lg:block flex-1 bg-gradient-to-br from-job-details to-primary/3 animate-slide-in-right">
           {selectedJob ? (
-            <div className="h-full p-6 overflow-y-auto">
-              <JobListings
-                selectedJob={selectedJob}
-                onJobSelect={handleJobSelect}
-                selectedCategory=""
-                showOnlySaved={true}
-                showHeader={false}
-              />
+            <div className="h-full overflow-y-auto">
+              <JobDetails job={selectedJob} />
             </div>
           ) : (
             <div className="h-full flex items-center justify-center p-8">
@@ -165,6 +210,31 @@ const SavedJobs = () => {
           )}
         </div>
       </div>
+
+      {/* Mobile Job Details Modal */}
+      {selectedJob && (
+        <div className="lg:hidden fixed inset-0 bg-background z-50 overflow-y-auto animate-slide-in-right">
+          <div className="sticky top-0 bg-gradient-to-r from-background to-primary/8 border-b border-border p-4 flex items-center justify-between shadow-sm">
+            <h2 className="font-bold text-lg text-foreground">İş Təfərrüatları</h2>
+            <button
+              onClick={() => {
+                setSelectedJob(null);
+                navigate('/favorites');
+              }}
+              className="w-8 h-8 rounded-lg bg-muted/50 hover:bg-destructive/20 hover:text-destructive text-muted-foreground transition-all duration-300 flex items-center justify-center text-lg font-bold"
+            >
+              ×
+            </button>
+          </div>
+          <JobDetails job={selectedJob} />
+        </div>
+      )}
+
+      {/* Bottom Navigation */}
+      <BottomNavigation 
+        selectedCategory=""
+        onCategorySelect={() => {}}
+      />
     </div>
   );
 };

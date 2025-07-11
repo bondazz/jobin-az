@@ -31,14 +31,19 @@ const App = () => (
           <Route path="/companies" element={<Companies />} />
           <Route path="/companies/:company" element={<Companies />} />
           <Route path="/companies/:company/vacancy/:job" element={<Companies />} />
-           <Route path="/favorites" element={
-             <Suspense fallback={<div>Loading...</div>}>
-               <SavedJobs />
-             </Suspense>
-           } />
+            <Route path="/favorites" element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <SavedJobs />
+              </Suspense>
+            } />
+            <Route path="/favorites/:jobId" element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <SavedJobs />
+              </Suspense>
+            } />
             <Route path="/bildirisler" element={<Index />} />
-            <Route path="/qiymetler" element={<Pricing />} />
-            <Route path="/haqqinda" element={<About />} />
+            <Route path="/services" element={<Pricing />} />
+            <Route path="/about" element={<About />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

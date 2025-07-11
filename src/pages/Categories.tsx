@@ -7,7 +7,8 @@ import { Tag, TrendingUp, Search } from 'lucide-react';
 import JobListings from '@/components/JobListings';
 import JobDetails from '@/components/JobDetails';
 import { Job } from '@/types/job';
-import { generateCategorySEO, generateJobSEO, updatePageMeta } from '@/utils/seo';
+import { generateCategorySEO, generateJobSEO, generatePageSEO, updatePageMeta } from '@/utils/seo';
+import BottomNavigation from '@/components/BottomNavigation';
 const Categories = () => {
   const navigate = useNavigate();
   const {
@@ -16,6 +17,12 @@ const Categories = () => {
   } = useParams();
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+
+  // SEO setup
+  useEffect(() => {
+    const seoData = generatePageSEO('categories');
+    updatePageMeta(seoData);
+  }, []);
 
   // Decode category from URL
   const selectedCategory = categorySlug ? mockCategories.find(cat => cat.name.toLowerCase().replace(/\s+/g, '-') === categorySlug)?.name || '' : '';
@@ -137,6 +144,12 @@ const Categories = () => {
             </div>}
         </div>
       </div>
+
+      {/* Bottom Navigation */}
+      <BottomNavigation 
+        selectedCategory={selectedCategory}
+        onCategorySelect={() => {}}
+      />
     </div>;
 };
 export default Categories;

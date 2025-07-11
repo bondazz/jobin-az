@@ -74,12 +74,12 @@ const BottomNavigation = ({
   }, {
     icon: DollarSign,
     label: 'Qiymətlər',
-    path: '/qiymetler',
+    path: '/services',
     count: null
   }, {
     icon: Info,
     label: 'Haqqında',
-    path: '/haqqinda',
+    path: '/about',
     count: null
   }];
 

@@ -1,10 +1,17 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Users, Target, Award, Globe } from 'lucide-react';
+import { generatePageSEO, updatePageMeta } from '@/utils/seo';
+import BottomNavigation from '@/components/BottomNavigation';
 
 const About = () => {
+  useEffect(() => {
+    const seoData = generatePageSEO('about');
+    updatePageMeta(seoData);
+  }, []);
+
   const stats = [
     { icon: Users, label: 'Aktiv İstifadəçilər', value: '500K+', color: 'text-blue-500' },
     { icon: Target, label: 'İş Elanları', value: '50K+', color: 'text-green-500' },
@@ -126,6 +133,12 @@ const About = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Bottom Navigation */}
+      <BottomNavigation 
+        selectedCategory=""
+        onCategorySelect={() => {}}
+      />
     </div>
   );
 };

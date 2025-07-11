@@ -6,7 +6,8 @@ import { Building, MapPin, Users, Briefcase, Globe, Phone, Mail, Search } from '
 import JobListings from '@/components/JobListings';
 import { Job } from '@/types/job';
 import { mockJobs } from '@/data/mockJobs';
-import { generateCompanySEO, generateJobSEO, updatePageMeta } from '@/utils/seo';
+import { generateCompanySEO, generateJobSEO, generatePageSEO, updatePageMeta } from '@/utils/seo';
+import BottomNavigation from '@/components/BottomNavigation';
 
 // Mock companies data
 const mockCompanies = [{
@@ -65,6 +66,12 @@ const Companies = () => {
   const [activeTab, setActiveTab] = useState('about');
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+
+  // SEO setup
+  useEffect(() => {
+    const seoData = generatePageSEO('companies');
+    updatePageMeta(seoData);
+  }, []);
 
   // Find company from URL slug
   useEffect(() => {
@@ -291,6 +298,12 @@ const Companies = () => {
             </div>}
         </div>
       </div>
+
+      {/* Bottom Navigation */}
+      <BottomNavigation 
+        selectedCategory=""
+        onCategorySelect={() => {}}
+      />
     </div>;
 };
 export default Companies;

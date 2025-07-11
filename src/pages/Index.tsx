@@ -7,11 +7,18 @@ import JobListings from '@/components/JobListings';
 import JobDetails from '@/components/JobDetails';
 import MobileMenu from '@/components/MobileMenu';
 import BottomNavigation from '@/components/BottomNavigation';
+import { generatePageSEO, updatePageMeta } from '@/utils/seo';
 
 const Index = () => {
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [searchParams, setSearchParams] = useSearchParams();
+
+  // SEO setup
+  useEffect(() => {
+    const seoData = generatePageSEO('vacancies');
+    updatePageMeta(seoData);
+  }, []);
 
   // Check for category filter from URL
   useEffect(() => {
