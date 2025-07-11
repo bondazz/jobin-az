@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
@@ -10,17 +9,58 @@ import { mockJobs } from '@/data/mockJobs';
 import { generateCompanySEO, generateJobSEO, updatePageMeta } from '@/utils/seo';
 
 // Mock companies data
-const mockCompanies = [
-  { id: 1, name: 'Kapital Bank', logo: 'K', location: 'Bakı', employees: '500+', jobCount: 23, website: 'kapitalbank.az', verified: true },
-  { id: 2, name: 'SOCAR', logo: 'S', location: 'Bakı', employees: '1000+', jobCount: 45, website: 'socar.az', verified: true },
-  { id: 3, name: 'Pasha Bank', logo: 'P', location: 'Bakı', employees: '300+', jobCount: 12, website: 'pashabank.az', verified: true },
-  { id: 4, name: 'Azercell', logo: 'A', location: 'Bakı', employees: '800+', jobCount: 18, website: 'azercell.com', verified: true },
-  { id: 5, name: 'Bakcell', logo: 'B', location: 'Bakı', employees: '600+', jobCount: 15, website: 'bakcell.com', verified: true },
-];
-
+const mockCompanies = [{
+  id: 1,
+  name: 'Kapital Bank',
+  logo: 'K',
+  location: 'Bakı',
+  employees: '500+',
+  jobCount: 23,
+  website: 'kapitalbank.az',
+  verified: true
+}, {
+  id: 2,
+  name: 'SOCAR',
+  logo: 'S',
+  location: 'Bakı',
+  employees: '1000+',
+  jobCount: 45,
+  website: 'socar.az',
+  verified: true
+}, {
+  id: 3,
+  name: 'Pasha Bank',
+  logo: 'P',
+  location: 'Bakı',
+  employees: '300+',
+  jobCount: 12,
+  website: 'pashabank.az',
+  verified: true
+}, {
+  id: 4,
+  name: 'Azercell',
+  logo: 'A',
+  location: 'Bakı',
+  employees: '800+',
+  jobCount: 18,
+  website: 'azercell.com',
+  verified: true
+}, {
+  id: 5,
+  name: 'Bakcell',
+  logo: 'B',
+  location: 'Bakı',
+  employees: '600+',
+  jobCount: 15,
+  website: 'bakcell.com',
+  verified: true
+}];
 const Companies = () => {
   const navigate = useNavigate();
-  const { company: companySlug, job: jobSlug } = useParams();
+  const {
+    company: companySlug,
+    job: jobSlug
+  } = useParams();
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [activeTab, setActiveTab] = useState('about');
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
@@ -29,20 +69,15 @@ const Companies = () => {
   // Find company from URL slug
   useEffect(() => {
     if (companySlug) {
-      const company = mockCompanies.find(c => 
-        c.name.toLowerCase().replace(/\s+/g, '-') === companySlug
-      );
+      const company = mockCompanies.find(c => c.name.toLowerCase().replace(/\s+/g, '-') === companySlug);
       if (company) {
         setSelectedCompany(company);
         const seoData = generateCompanySEO(company.name, company.jobCount);
         updatePageMeta(seoData);
-        
+
         // If there's a job slug, find and set the job
         if (jobSlug) {
-          const job = mockJobs.find(j => 
-            j.title.toLowerCase().replace(/\s+/g, '-') === jobSlug &&
-            j.company === company.name
-          );
+          const job = mockJobs.find(j => j.title.toLowerCase().replace(/\s+/g, '-') === jobSlug && j.company === company.name);
           if (job) {
             setSelectedJob(job);
             setActiveTab('jobs');
@@ -53,27 +88,20 @@ const Companies = () => {
       }
     }
   }, [companySlug, jobSlug]);
-
-  const handleCompanyClick = (company) => {
+  const handleCompanyClick = company => {
     setSelectedCompany(company);
     setActiveTab('about');
     setSelectedJob(null);
     const slug = company.name.toLowerCase().replace(/\s+/g, '-');
     navigate(`/companies/${slug}`);
   };
-
   const handleJobSelect = (job: Job) => {
     setSelectedJob(job);
     const jobSlug = job.title.toLowerCase().replace(/\s+/g, '-');
     navigate(`/companies/${companySlug}/vacancy/${jobSlug}`);
   };
-
-  const filteredCompanies = mockCompanies.filter(company =>
-    company.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  return (
-    <div className="h-full flex bg-gradient-to-br from-background via-primary/3 to-background overflow-hidden">
+  const filteredCompanies = mockCompanies.filter(company => company.name.toLowerCase().includes(searchTerm.toLowerCase()));
+  return <div className="h-full flex bg-gradient-to-br from-background via-primary/3 to-background overflow-hidden">
       <div className="flex-1 flex min-w-0 pb-16 xl:pb-0">
         {/* Companies List */}
         <div className="w-full lg:w-[400px] xl:w-[450px] border-r border-border animate-fade-in">
@@ -90,23 +118,10 @@ const Companies = () => {
               <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-60"></div>
               
               <div className="relative px-4 py-3 space-y-3">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 bg-gradient-primary rounded-xl flex items-center justify-center shadow-lg">
-                    <Building className="w-4 h-4 text-white" />
-                  </div>
-                  <h1 className="text-lg font-bold text-foreground">Şirkətlər</h1>
-                  <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30">
-                    {filteredCompanies.length}
-                  </Badge>
-                </div>
+                
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Şirkətlər axtarın..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
-                  />
+                  <Input placeholder="Şirkətlər axtarın..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="pl-10" />
                 </div>
               </div>
             </div>
@@ -114,19 +129,12 @@ const Companies = () => {
             {/* Companies List */}
             <div className="flex-1 overflow-y-auto p-2 bg-gradient-to-b from-transparent to-primary/5 w-full max-w-[100%] mx-auto">
               <div className="flex flex-col gap-2 justify-center items-center w-full max-w-full px-2">
-                {filteredCompanies.map((company, index) => (
-                  <div
-                    key={company.id}
-                    onClick={() => handleCompanyClick(company)}
-                    className={`group cursor-pointer p-3 rounded-lg border transition-all duration-200 ease-smooth
+                {filteredCompanies.map((company, index) => <div key={company.id} onClick={() => handleCompanyClick(company)} className={`group cursor-pointer p-3 rounded-lg border transition-all duration-200 ease-smooth
                       hover:shadow-card-hover hover:-translate-y-0.5 animate-fade-in
                       w-full max-w-full min-w-0 h-[60px] flex flex-row items-center justify-between backdrop-blur-sm
-                      ${selectedCompany?.id === company.id 
-                        ? 'border-primary bg-gradient-to-r from-primary/20 to-primary/5 shadow-elegant ring-1 ring-primary/50'
-                        : 'bg-job-card border-border/50 hover:border-primary/40 hover:shadow-card-hover'
-                      }`}
-                    style={{ animationDelay: `${index * 50}ms` }}
-                  >
+                      ${selectedCompany?.id === company.id ? 'border-primary bg-gradient-to-r from-primary/20 to-primary/5 shadow-elegant ring-1 ring-primary/50' : 'bg-job-card border-border/50 hover:border-primary/40 hover:shadow-card-hover'}`} style={{
+                animationDelay: `${index * 50}ms`
+              }}>
                     {/* Left Section - Company Info */}
                     <div className="flex items-center gap-3 flex-1 min-w-0">
                       <div className="relative flex-shrink-0">
@@ -160,8 +168,7 @@ const Companies = () => {
                         <span className="text-xs">{company.employees}</span>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  </div>)}
               </div>
             </div>
           </div>
@@ -169,8 +176,7 @@ const Companies = () => {
 
         {/* Right Section - Company Details */}
         <div className="hidden lg:block flex-1 bg-gradient-to-br from-job-details to-primary/3 animate-slide-in-right">
-          {selectedCompany ? (
-            <div className="h-full overflow-y-auto">
+          {selectedCompany ? <div className="h-full overflow-y-auto">
               <div className="relative">
                 {/* Company Header with Background */}
                 <div className="relative h-48 bg-gradient-to-br from-primary/20 via-primary/10 to-accent/10 overflow-hidden">
@@ -182,13 +188,11 @@ const Companies = () => {
                       <div className="w-24 h-24 bg-gradient-primary rounded-2xl flex items-center justify-center text-white font-bold text-2xl shadow-2xl border-4 border-background">
                         {selectedCompany.logo}
                       </div>
-                      {selectedCompany.verified && (
-                        <div className="absolute -top-2 -right-2 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                      {selectedCompany.verified && <div className="absolute -top-2 -right-2 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
                           <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                           </svg>
-                        </div>
-                      )}
+                        </div>}
                     </div>
                   </div>
                 </div>
@@ -215,32 +219,17 @@ const Companies = () => {
 
                   {/* Navigation Tabs */}
                   <div className="flex gap-4 mb-6 border-b border-border">
-                    <button 
-                      onClick={() => setActiveTab('about')}
-                      className={`pb-3 px-1 border-b-2 font-medium text-sm transition-colors ${
-                        activeTab === 'about' 
-                          ? 'border-primary text-primary' 
-                          : 'border-transparent text-muted-foreground hover:text-foreground'
-                      }`}
-                    >
+                    <button onClick={() => setActiveTab('about')} className={`pb-3 px-1 border-b-2 font-medium text-sm transition-colors ${activeTab === 'about' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>
                       Şirkət Haqqında
                     </button>
-                    <button 
-                      onClick={() => setActiveTab('jobs')}
-                      className={`pb-3 px-1 border-b-2 font-medium text-sm transition-colors ${
-                        activeTab === 'jobs' 
-                          ? 'border-primary text-primary' 
-                          : 'border-transparent text-muted-foreground hover:text-foreground'
-                      }`}
-                    >
+                    <button onClick={() => setActiveTab('jobs')} className={`pb-3 px-1 border-b-2 font-medium text-sm transition-colors ${activeTab === 'jobs' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>
                       İş Elanları ({selectedCompany.jobCount})
                     </button>
                   </div>
 
                   {/* Tab Content */}
                   <div className="space-y-6">
-                    {activeTab === 'about' ? (
-                      <>
+                    {activeTab === 'about' ? <>
                         <div>
                           <h3 className="text-lg font-semibold text-foreground mb-3">Şirkət Haqqında</h3>
                           <p className="text-muted-foreground leading-relaxed">
@@ -255,8 +244,7 @@ const Companies = () => {
                           <div className="space-y-3">
                             <div className="flex items-center gap-3">
                               <Globe className="w-5 h-5 text-primary" />
-                              <a href={`https://${selectedCompany.website}`} target="_blank" rel="noopener noreferrer" 
-                                 className="text-primary hover:underline">
+                              <a href={`https://${selectedCompany.website}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                                 {selectedCompany.website}
                               </a>
                             </div>
@@ -284,24 +272,13 @@ const Companies = () => {
                             </div>
                           </div>
                         </div>
-                      </>
-                    ) : (
-                      <div className="h-[600px] overflow-hidden">
-                        <JobListings
-                          selectedJob={selectedJob}
-                          onJobSelect={handleJobSelect}
-                          selectedCategory=""
-                          companyFilter={selectedCompany.name}
-                          showHeader={false}
-                        />
-                      </div>
-                    )}
+                      </> : <div className="h-[600px] overflow-hidden">
+                        <JobListings selectedJob={selectedJob} onJobSelect={handleJobSelect} selectedCategory="" companyFilter={selectedCompany.name} showHeader={false} />
+                      </div>}
                   </div>
                 </div>
               </div>
-            </div>
-          ) : (
-            <div className="h-full flex items-center justify-center p-8">
+            </div> : <div className="h-full flex items-center justify-center p-8">
               <div className="text-center">
                 <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4">
                   <Building className="w-8 h-8 text-white" />
@@ -311,12 +288,9 @@ const Companies = () => {
                   Sol tərəfdən bir şirkət seçin və şirkət haqqında ətraflı məlumat alın
                 </p>
               </div>
-            </div>
-          )}
+            </div>}
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Companies;
