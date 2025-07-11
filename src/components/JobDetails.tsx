@@ -1,8 +1,10 @@
 
-import { Job } from '@/types/job';
+import React, { useEffect, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import { supabase } from '@/integrations/supabase/client';
+import { useDynamicSEO } from '@/hooks/useSEO';
 import { 
   MapPin, 
   Calendar, 
@@ -21,10 +23,58 @@ import {
 import VerifyBadge from '@/components/ui/verify-badge';
 
 interface JobDetailsProps {
-  job: Job | null;
+  jobId: string | null;
 }
 
-const JobDetails = ({ job }: JobDetailsProps) => {
+const JobDetails = ({ jobId }: JobDetailsProps) => {
+  const [job, setJob] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+
+  // Dynamic SEO for job page
+  useDynamicSEO('job', job);
+
+  useEffect(() => {
+    if (jobId) {
+      fetchJobDetails(jobId);
+    }
+  }, [jobId]);
+
+  const fetchJobDetails = async (id: string) => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('jobs')
+        .select(`
+          *,
+          companies:company_id(name, logo, website, email, phone, is_verified),
+          categories:category_id(name)
+        `)
+        .eq('id', id)
+        .single();
+
+      if (error) throw error;
+      
+      // Increment view count
+      await supabase
+        .from('jobs')
+        .update({ views: (data.views || 0) + 1 })
+        .eq('id', id);
+
+      setJob(data);
+    } catch (error) {
+      console.error('Error fetching job:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  if (loading) {
+    return (
+      <div className="h-full flex items-center justify-center bg-gradient-to-br from-job-details to-primary/3">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
   if (!job) {
     return (
       <div className="h-full flex items-center justify-center bg-gradient-to-br from-job-details to-primary/3">
@@ -52,11 +102,6 @@ const JobDetails = ({ job }: JobDetailsProps) => {
     );
   }
 
-  const isVerifiedCompany = (company: string) => {
-    const verifiedCompanies = ['Google', 'Apple', 'Microsoft', 'Meta', 'Amazon', 'Netflix', 'Tesla', 'Spotify'];
-    return verifiedCompanies.includes(company);
-  };
-
   return (
     <div className="h-full overflow-y-auto bg-gradient-to-br from-job-details to-primary/3">
       {/* Hero Section with Company Logo */}
@@ -68,9 +113,17 @@ const JobDetails = ({ job }: JobDetailsProps) => {
         {/* Company Logo in Center */}
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="w-24 h-24 rounded-2xl bg-white/95 backdrop-blur-md shadow-2xl flex items-center justify-center">
-            <span className="text-3xl font-bold text-primary">
-              {job.company.charAt(0)}
-            </span>
+            {job.companies?.logo ? (
+              <img 
+                src={job.companies.logo} 
+                alt={job.companies?.name || 'Company'} 
+                className="w-20 h-20 rounded-xl object-cover"
+              />
+            ) : (
+              <span className="text-3xl font-bold text-primary">
+                {(job.companies?.name || job.title).charAt(0)}
+              </span>
+            )}
           </div>
         </div>
       </div>
@@ -79,17 +132,28 @@ const JobDetails = ({ job }: JobDetailsProps) => {
         {/* Job Title and Company */}
         <div className="text-center space-y-3">
           <div className="flex items-center justify-center gap-2">
-            <h1 className="text-2xl font-bold text-foreground">{job.company}</h1>
-            {isVerifiedCompany(job.company) && <VerifyBadge size={20} />}
+            <h1 className="text-2xl font-bold text-foreground">{job.companies?.name || 'Şirkət'}</h1>
+            {job.companies?.is_verified && <VerifyBadge size={20} />}
           </div>
           <h2 className="text-xl font-semibold text-muted-foreground">{job.title}</h2>
+          <Badge variant="outline">{job.categories?.name || 'Kateqoriya'}</Badge>
         </div>
 
         {/* Action Buttons */}
         <div className="flex flex-wrap gap-3 justify-center">
-          <Button size="lg" className="bg-gradient-primary hover:opacity-90 text-white font-semibold px-6">
-            Müraciət Et
-          </Button>
+          {job.application_url ? (
+            <Button 
+              size="lg" 
+              className="bg-gradient-primary hover:opacity-90 text-white font-semibold px-6"
+              onClick={() => window.open(job.application_url, '_blank')}
+            >
+              Müraciət Et
+            </Button>
+          ) : (
+            <Button size="lg" className="bg-gradient-primary hover:opacity-90 text-white font-semibold px-6">
+              Müraciət Et
+            </Button>
+          )}
           <Button variant="outline" size="lg" className="border-primary/30 text-primary hover:bg-primary hover:text-white">
             <Bookmark className="w-4 h-4 mr-2" />
             Saxla
@@ -117,7 +181,9 @@ const JobDetails = ({ job }: JobDetailsProps) => {
               <Calendar className="w-5 h-5 text-primary flex-shrink-0" />
               <div>
                 <p className="text-sm font-medium text-foreground">Yayımlanma Tarixi</p>
-                <p className="text-sm text-muted-foreground">{job.postedAt}</p>
+                <p className="text-sm text-muted-foreground">
+                  {new Date(job.created_at).toLocaleDateString('az-AZ')}
+                </p>
               </div>
             </div>
 
@@ -125,7 +191,7 @@ const JobDetails = ({ job }: JobDetailsProps) => {
               <Eye className="w-5 h-5 text-primary flex-shrink-0" />
               <div>
                 <p className="text-sm font-medium text-foreground">Baxış Sayı</p>
-                <p className="text-sm text-muted-foreground">{job.views}</p>
+                <p className="text-sm text-muted-foreground">{job.views || 0}</p>
               </div>
             </div>
           </div>
@@ -135,7 +201,7 @@ const JobDetails = ({ job }: JobDetailsProps) => {
               <Building className="w-5 h-5 text-primary flex-shrink-0" />
               <div>
                 <p className="text-sm font-medium text-foreground">Şirkət</p>
-                <p className="text-sm text-muted-foreground">{job.company}</p>
+                <p className="text-sm text-muted-foreground">{job.companies?.name || 'Şirkət'}</p>
               </div>
             </div>
 
@@ -151,7 +217,7 @@ const JobDetails = ({ job }: JobDetailsProps) => {
               <Clock className="w-5 h-5 text-primary flex-shrink-0" />
               <div>
                 <p className="text-sm font-medium text-foreground">İş Növü</p>
-                <p className="text-sm text-muted-foreground">Tam məşğul</p>
+                <p className="text-sm text-muted-foreground">{job.type}</p>
               </div>
             </div>
           </div>
@@ -163,13 +229,8 @@ const JobDetails = ({ job }: JobDetailsProps) => {
         <div className="space-y-4">
           <h3 className="text-xl font-bold text-foreground">İş Təsviri</h3>
           <div className="prose prose-sm max-w-none text-muted-foreground">
-            <p className="leading-relaxed">
-              Bu pozisiya üçün axtarılan namizəd yüksək səviyyədə professional bacarıqlara malik olmalı, 
-              komanda işində səriştəli və innovativ həllərlə gəlmək qabiliyyətinə sahib olmalıdır.
-            </p>
-            <p className="leading-relaxed mt-4">
-              Məsuliyyətlər arasında layihələrin idarə edilməsi, müştəri münasibətlərinin qurulması 
-              və dəstəklənməsi, həmçinin strateji planlaşdırma işləri daxildir.
+            <p className="leading-relaxed whitespace-pre-wrap">
+              {job.description}
             </p>
           </div>
         </div>
@@ -177,56 +238,111 @@ const JobDetails = ({ job }: JobDetailsProps) => {
         <Separator />
 
         {/* Requirements */}
-        <div className="space-y-4">
-          <h3 className="text-xl font-bold text-foreground">Tələblər</h3>
-          <ul className="space-y-2 text-muted-foreground">
-            <li className="flex items-start gap-2">
-              <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></div>
-              <span>Sahədə ən azı 3 il iş təcrübəsi</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></div>
-              <span>Yüksək səviyyədə ingilis dili bilikləri</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></div>
-              <span>Komanda işində bacarıqlı olmaq</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></div>
-              <span>Analitik düşüncə qabiliyyəti</span>
-            </li>
-          </ul>
-        </div>
+        {job.requirements && job.requirements.length > 0 && (
+          <>
+            <div className="space-y-4">
+              <h3 className="text-xl font-bold text-foreground">Tələblər</h3>
+              <ul className="space-y-2 text-muted-foreground">
+                {job.requirements.map((requirement: string, index: number) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></div>
+                    <span>{requirement}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <Separator />
+          </>
+        )}
+
+        {/* Benefits */}
+        {job.benefits && job.benefits.length > 0 && (
+          <>
+            <div className="space-y-4">
+              <h3 className="text-xl font-bold text-foreground">Üstünlüklər</h3>
+              <ul className="space-y-2 text-muted-foreground">
+                {job.benefits.map((benefit: string, index: number) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <div className="w-2 h-2 rounded-full bg-green-500 mt-2 flex-shrink-0"></div>
+                    <span>{benefit}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <Separator />
+          </>
+        )}
 
         <Separator />
 
         {/* Contact Information */}
-        <div className="space-y-4">
-          <h3 className="text-xl font-bold text-foreground">Əlaqə Məlumatları</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
-              <Mail className="w-5 h-5 text-primary flex-shrink-0" />
-              <div>
-                <p className="text-sm font-medium text-foreground">E-mail</p>
-                <p className="text-sm text-muted-foreground">hr@{job.company.toLowerCase()}.com</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
-              <Phone className="w-5 h-5 text-primary flex-shrink-0" />
-              <div>
-                <p className="text-sm font-medium text-foreground">Telefon</p>
-                <p className="text-sm text-muted-foreground">+994 XX XXX XX XX</p>
-              </div>
+        {(job.companies?.email || job.companies?.phone || job.companies?.website) && (
+          <div className="space-y-4">
+            <h3 className="text-xl font-bold text-foreground">Əlaqə Məlumatları</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {job.companies?.email && (
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
+                  <Mail className="w-5 h-5 text-primary flex-shrink-0" />
+                  <div>
+                    <p className="text-sm font-medium text-foreground">E-mail</p>
+                    <a 
+                      href={`mailto:${job.companies.email}`}
+                      className="text-sm text-muted-foreground hover:text-primary"
+                    >
+                      {job.companies.email}
+                    </a>
+                  </div>
+                </div>
+              )}
+              {job.companies?.phone && (
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
+                  <Phone className="w-5 h-5 text-primary flex-shrink-0" />
+                  <div>
+                    <p className="text-sm font-medium text-foreground">Telefon</p>
+                    <a 
+                      href={`tel:${job.companies.phone}`}
+                      className="text-sm text-muted-foreground hover:text-primary"
+                    >
+                      {job.companies.phone}
+                    </a>
+                  </div>
+                </div>
+              )}
+              {job.companies?.website && (
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
+                  <Globe className="w-5 h-5 text-primary flex-shrink-0" />
+                  <div>
+                    <p className="text-sm font-medium text-foreground">Veb Sayt</p>
+                    <a 
+                      href={job.companies.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-muted-foreground hover:text-primary"
+                    >
+                      {job.companies.website.replace(/^https?:\/\//, '')}
+                    </a>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
-        </div>
+        )}
 
         {/* Bottom Action */}
         <div className="sticky bottom-0 bg-job-details/90 backdrop-blur-md p-4 -mx-6 border-t border-border">
-          <Button size="lg" className="w-full bg-gradient-primary hover:opacity-90 text-white font-semibold">
-            Bu İşə Müraciət Et
-          </Button>
+          {job.application_url ? (
+            <Button 
+              size="lg" 
+              className="w-full bg-gradient-primary hover:opacity-90 text-white font-semibold"
+              onClick={() => window.open(job.application_url, '_blank')}
+            >
+              Bu İşə Müraciət Et
+            </Button>
+          ) : (
+            <Button size="lg" className="w-full bg-gradient-primary hover:opacity-90 text-white font-semibold">
+              Bu İşə Müraciət Et
+            </Button>
+          )}
         </div>
       </div>
     </div>

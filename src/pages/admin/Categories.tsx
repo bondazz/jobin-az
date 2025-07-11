@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
+import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
+import AdminLayout from '@/components/AdminLayout';
 import { 
   Plus, 
   Edit, 
   Trash2, 
   Search, 
-  ArrowLeft,
   Tag,
   Briefcase
 } from 'lucide-react';
@@ -229,25 +229,17 @@ export default function AdminCategories() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="border-b bg-card">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" onClick={() => navigate('/admin/dashboard')}>
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Geri
+    <AdminLayout>
+      <div className="p-6">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold">Kateqoriyalar</h1>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button onClick={resetForm}>
+                <Plus className="h-4 w-4 mr-2" />
+                Yeni Kateqoriya
               </Button>
-              <h1 className="text-2xl font-bold text-foreground">Kateqoriyalar</h1>
-            </div>
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-              <DialogTrigger asChild>
-                <Button onClick={resetForm}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Yeni Kateqoriya
-                </Button>
-              </DialogTrigger>
+            </DialogTrigger>
               <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                   <DialogTitle>
@@ -350,14 +342,10 @@ export default function AdminCategories() {
                     </Button>
                   </div>
                 </form>
-              </DialogContent>
-            </Dialog>
-          </div>
+            </DialogContent>
+          </Dialog>
         </div>
-      </div>
 
-      {/* Search */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="relative mb-6">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
@@ -368,63 +356,48 @@ export default function AdminCategories() {
           />
         </div>
 
-        {/* Categories Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {/* Categories List */}
+        <div className="space-y-4">
           {filteredCategories.map((category) => (
-            <Card key={category.id} className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="flex justify-between items-start">
-                  <div className="flex items-center gap-3 flex-1">
-                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <Tag className="h-6 w-6 text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <CardTitle className="text-lg line-clamp-1">{category.name}</CardTitle>
-                      <div className="flex items-center gap-1 mt-1 text-sm text-muted-foreground">
-                        <Briefcase className="h-4 w-4" />
+            <div key={category.id} className="bg-card rounded-lg border p-6 hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4 flex-1">
+                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <Tag className="h-6 w-6 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <h3 className="text-lg font-semibold">{category.name}</h3>
+                      <Badge variant={category.is_active ? "default" : "secondary"}>
+                        {category.is_active ? 'Aktiv' : 'Deaktiv'}
+                      </Badge>
+                      <Badge variant="outline" className="flex items-center gap-1">
+                        <Briefcase className="h-3 w-3" />
                         {category.job_count} vakansiya
-                      </div>
+                      </Badge>
                     </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button size="sm" variant="outline" onClick={() => handleEdit(category)}>
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <Button size="sm" variant="outline" onClick={() => handleDelete(category.id)}>
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                    <div className="flex items-center gap-6 text-sm text-muted-foreground">
+                      <span>Slug: {category.slug}</span>
+                      {category.icon && <span>İkon: {category.icon}</span>}
+                      <span>Yaradılıb: {new Date(category.created_at).toLocaleDateString('az-AZ')}</span>
+                    </div>
+                    {category.description && (
+                      <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
+                        {category.description}
+                      </p>
+                    )}
                   </div>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {category.description && (
-                    <p className="text-sm text-muted-foreground line-clamp-3">
-                      {category.description}
-                    </p>
-                  )}
-
-                  {category.icon && (
-                    <div className="text-sm text-muted-foreground">
-                      <span className="font-medium">İkon:</span> {category.icon}
-                    </div>
-                  )}
-
-                  <div className="flex items-center justify-between pt-2 border-t">
-                    <span className={`text-xs px-2 py-1 rounded-full ${
-                      category.is_active 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-red-100 text-red-800'
-                    }`}>
-                      {category.is_active ? 'Aktiv' : 'Deaktiv'}
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      {new Date(category.created_at).toLocaleDateString('az-AZ')}
-                    </span>
-                  </div>
+                <div className="flex gap-2">
+                  <Button size="sm" variant="outline" onClick={() => handleEdit(category)}>
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => handleDelete(category.id)}>
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           ))}
         </div>
 
@@ -434,6 +407,6 @@ export default function AdminCategories() {
           </div>
         )}
       </div>
-    </div>
+    </AdminLayout>
   );
 }

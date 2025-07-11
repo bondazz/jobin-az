@@ -77,7 +77,7 @@ const Index = () => {
 
         {/* Job Details - Desktop Only */}
         <div className="hidden lg:block flex-1 bg-gradient-to-br from-job-details to-primary/3 animate-slide-in-right">
-          <JobDetails job={selectedJob} />
+                  <JobDetails jobId={selectedJob?.id || null} />
         </div>
       </div>
 
@@ -93,7 +93,7 @@ const Index = () => {
               ×
             </button>
           </div>
-          <JobDetails job={selectedJob} />
+          <JobDetails jobId={selectedJob?.id || null} />
         </div>
       )}
 

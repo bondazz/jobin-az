@@ -131,7 +131,7 @@ const Categories = () => {
 
         {/* Right Section - Filtered Jobs or Job Details */}
         <div className="hidden lg:block flex-1 bg-gradient-to-br from-job-details to-primary/3 animate-slide-in-right">
-          {selectedJob ? <JobDetails job={selectedJob} /> : selectedCategory ? <JobListings selectedJob={null} onJobSelect={handleJobSelect} selectedCategory={selectedCategory} showHeader={false} /> : <div className="h-full flex items-center justify-center p-8">
+          {selectedJob ? <JobDetails jobId={selectedJob.id} /> : selectedCategory ? <JobListings selectedJob={null} onJobSelect={handleJobSelect} selectedCategory={selectedCategory} showHeader={false} /> : <div className="h-full flex items-center justify-center p-8">
               <div className="text-center">
                 <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4">
                   <Tag className="w-8 h-8 text-white" />

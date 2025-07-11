@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -10,18 +9,20 @@ import { Switch } from '@/components/ui/switch';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
+import AdminLayout from '@/components/AdminLayout';
+import ImageUpload from '@/components/ImageUpload';
 import { 
   Plus, 
   Edit, 
   Trash2, 
   Search, 
-  ArrowLeft,
   Building2,
   Globe,
   Mail,
   Phone,
   MapPin,
-  Briefcase
+  Briefcase,
+  CheckCircle
 } from 'lucide-react';
 
 interface Company {
@@ -259,76 +260,60 @@ export default function AdminCompanies() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="border-b bg-card">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" onClick={() => navigate('/admin/dashboard')}>
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Geri
+    <AdminLayout>
+      <div className="p-6">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold">Şirkətlər</h1>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button onClick={resetForm}>
+                <Plus className="h-4 w-4 mr-2" />
+                Yeni Şirkət
               </Button>
-              <h1 className="text-2xl font-bold text-foreground">Şirkətlər</h1>
-            </div>
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-              <DialogTrigger asChild>
-                <Button onClick={resetForm}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Yeni Şirkət
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                <DialogHeader>
-                  <DialogTitle>
-                    {editingCompany ? 'Şirkət Redaktə Et' : 'Yeni Şirkət Əlavə Et'}
-                  </DialogTitle>
-                </DialogHeader>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="name">Şirkət Adı</Label>
-                      <Input
-                        id="name"
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="slug">URL Slug</Label>
-                      <Input
-                        id="slug"
-                        value={formData.slug}
-                        onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                        placeholder="sirket-adi"
-                        required
-                      />
-                    </div>
+            </DialogTrigger>
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>
+                  {editingCompany ? 'Şirkət Redaktə Et' : 'Yeni Şirkət Əlavə Et'}
+                </DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Şirkət Adı</Label>
+                    <Input
+                      id="name"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      required
+                    />
                   </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="slug">URL Slug</Label>
+                    <Input
+                      id="slug"
+                      value={formData.slug}
+                      onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                      placeholder="sirket-adi"
+                      required
+                    />
+                  </div>
+                </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="logo">Logo URL</Label>
-                      <Input
-                        id="logo"
-                        type="url"
-                        value={formData.logo}
-                        onChange={(e) => setFormData({ ...formData, logo: e.target.value })}
-                        placeholder="https://example.com/logo.png"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="background_image">Arxa Fon Şəkli URL</Label>
-                      <Input
-                        id="background_image"
-                        type="url"
-                        value={formData.background_image}
-                        onChange={(e) => setFormData({ ...formData, background_image: e.target.value })}
-                        placeholder="https://example.com/background.jpg"
-                      />
-                    </div>
-                  </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <ImageUpload
+                    value={formData.logo}
+                    onChange={(url) => setFormData({ ...formData, logo: url })}
+                    label="Logo"
+                    placeholder="https://example.com/logo.png"
+                  />
+                  <ImageUpload
+                    value={formData.background_image}
+                    onChange={(url) => setFormData({ ...formData, background_image: url })}
+                    label="Arxa Fon Şəkli"
+                    placeholder="https://example.com/background.jpg"
+                  />
+                </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="description">Təsvir</Label>
@@ -449,14 +434,10 @@ export default function AdminCompanies() {
                     </Button>
                   </div>
                 </form>
-              </DialogContent>
-            </Dialog>
-          </div>
+            </DialogContent>
+          </Dialog>
         </div>
-      </div>
 
-      {/* Search */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="relative mb-6">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
@@ -467,119 +448,73 @@ export default function AdminCompanies() {
           />
         </div>
 
-        {/* Companies Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+        {/* Companies List */}
+        <div className="space-y-4">
           {filteredCompanies.map((company) => (
-            <Card key={company.id} className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="flex justify-between items-start">
-                  <div className="flex items-center gap-3 flex-1">
-                    {company.logo ? (
-                      <img 
-                        src={company.logo} 
-                        alt={company.name}
-                        className="w-12 h-12 rounded-lg object-cover"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                        <Building2 className="h-6 w-6 text-primary" />
-                      </div>
-                    )}
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <CardTitle className="text-lg line-clamp-1">{company.name}</CardTitle>
-                        {company.is_verified && (
-                          <Badge variant="secondary" className="text-xs">
-                            Təsdiqlənmiş
-                          </Badge>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-1 mt-1 text-sm text-muted-foreground">
-                        <Briefcase className="h-4 w-4" />
-                        {company.job_count} vakansiya
-                      </div>
+            <div key={company.id} className="bg-card rounded-lg border p-6 hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4 flex-1">
+                  {company.logo ? (
+                    <img 
+                      src={company.logo} 
+                      alt={company.name}
+                      className="w-16 h-16 rounded-lg object-cover"
+                    />
+                  ) : (
+                    <div className="w-16 h-16 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Building2 className="h-8 w-8 text-primary" />
                     </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button size="sm" variant="outline" onClick={() => handleEdit(company)}>
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <Button size="sm" variant="outline" onClick={() => handleDelete(company.id)}>
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {company.description && (
-                    <p className="text-sm text-muted-foreground line-clamp-2">
-                      {company.description}
-                    </p>
                   )}
-
-                  <div className="space-y-2">
-                    {company.website && (
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Globe className="h-4 w-4" />
-                        <a 
-                          href={company.website} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="hover:text-primary truncate"
-                        >
-                          {company.website.replace(/^https?:\/\//, '')}
-                        </a>
-                      </div>
-                    )}
-                    
-                    {company.email && (
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Mail className="h-4 w-4" />
-                        <a 
-                          href={`mailto:${company.email}`}
-                          className="hover:text-primary truncate"
-                        >
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <h3 className="text-xl font-semibold">{company.name}</h3>
+                      <Badge variant={company.is_active ? "default" : "secondary"}>
+                        {company.is_active ? 'Aktiv' : 'Deaktiv'}
+                      </Badge>
+                      {company.is_verified && (
+                        <Badge variant="outline" className="flex items-center gap-1">
+                          <CheckCircle className="h-3 w-3" />
+                          Təsdiqlənmiş
+                        </Badge>
+                      )}
+                      <Badge variant="outline" className="flex items-center gap-1">
+                        <Briefcase className="h-3 w-3" />
+                        {company.job_count} vakansiya
+                      </Badge>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-muted-foreground">
+                      <span>Slug: {company.slug}</span>
+                      {company.email && (
+                        <div className="flex items-center gap-1">
+                          <Mail className="h-3 w-3" />
                           {company.email}
-                        </a>
-                      </div>
-                    )}
-                    
-                    {company.phone && (
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Phone className="h-4 w-4" />
-                        <a 
-                          href={`tel:${company.phone}`}
-                          className="hover:text-primary"
-                        >
+                        </div>
+                      )}
+                      {company.phone && (
+                        <div className="flex items-center gap-1">
+                          <Phone className="h-3 w-3" />
                           {company.phone}
-                        </a>
-                      </div>
+                        </div>
+                      )}
+                      <span>Yaradılıb: {new Date(company.created_at).toLocaleDateString('az-AZ')}</span>
+                    </div>
+                    {company.description && (
+                      <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
+                        {company.description}
+                      </p>
                     )}
-                    
-                    {company.address && (
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <MapPin className="h-4 w-4" />
-                        <span className="truncate">{company.address}</span>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="flex items-center justify-between pt-2 border-t">
-                    <span className={`text-xs px-2 py-1 rounded-full ${
-                      company.is_active 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-red-100 text-red-800'
-                    }`}>
-                      {company.is_active ? 'Aktiv' : 'Deaktiv'}
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      {new Date(company.created_at).toLocaleDateString('az-AZ')}
-                    </span>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+                <div className="flex gap-2">
+                  <Button size="sm" variant="outline" onClick={() => handleEdit(company)}>
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => handleDelete(company.id)}>
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
           ))}
         </div>
 
@@ -589,6 +524,6 @@ export default function AdminCompanies() {
           </div>
         )}
       </div>
-    </div>
+    </AdminLayout>
   );
 }

@@ -193,7 +193,7 @@ const SavedJobs = () => {
         <div className="hidden lg:block flex-1 bg-gradient-to-br from-job-details to-primary/3 animate-slide-in-right">
           {selectedJob ? (
             <div className="h-full overflow-y-auto">
-              <JobDetails job={selectedJob} />
+              <JobDetails jobId={selectedJob.id} />
             </div>
           ) : (
             <div className="h-full flex items-center justify-center p-8">
@@ -226,7 +226,7 @@ const SavedJobs = () => {
               ×
             </button>
           </div>
-          <JobDetails job={selectedJob} />
+          <JobDetails jobId={selectedJob.id} />
         </div>
       )}
 
