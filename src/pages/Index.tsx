@@ -1,17 +1,24 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
 import { Job } from '@/types/job';
-import { mockCategories } from '@/data/mockJobs';
 import JobListings from '@/components/JobListings';
 import JobDetails from '@/components/JobDetails';
 import MobileMenu from '@/components/MobileMenu';
 import BottomNavigation from '@/components/BottomNavigation';
 import { generatePageSEO, updatePageMeta } from '@/utils/seo';
 
+interface Category {
+  id: string;
+  name: string;
+  slug: string;
+}
+
 const Index = () => {
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [categories, setCategories] = useState<Category[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
 
   // SEO setup
@@ -20,16 +27,31 @@ const Index = () => {
     updatePageMeta(seoData);
   }, []);
 
+  // Fetch categories
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const { data } = await supabase
+        .from('categories')
+        .select('id, name, slug')
+        .eq('is_active', true)
+        .order('name');
+      
+      if (data) setCategories(data);
+    };
+    
+    fetchCategories();
+  }, []);
+
   // Check for category filter from URL
   useEffect(() => {
     const categorySlug = searchParams.get('category');
-    if (categorySlug) {
-      const category = mockCategories.find(c => c.slug === categorySlug);
+    if (categorySlug && categories.length > 0) {
+      const category = categories.find(c => c.slug === categorySlug);
       if (category) {
         setSelectedCategory(category.name);
       }
     }
-  }, [searchParams]);
+  }, [searchParams, categories]);
 
   const handleJobSelect = (job: Job) => {
     setSelectedJob(job);

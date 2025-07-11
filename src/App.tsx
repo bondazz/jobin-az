@@ -17,6 +17,7 @@ import AdminJobs from "./pages/admin/Jobs";
 import AdminCompanies from "./pages/admin/Companies";
 import AdminCategories from "./pages/admin/Categories";
 import AdminSettings from "./pages/admin/Settings";
+import AdminSetup from "./pages/admin/Setup";
 
 // Lazy load SavedJobs to avoid circular dependency issues
 import { lazy, Suspense } from "react";
@@ -54,6 +55,7 @@ const App = () => (
             <Route path="/about" element={<About />} />
           </Route>
           {/* Admin routes - outside Layout */}
+          <Route path="/admin/setup" element={<AdminSetup />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/jobs" element={<AdminJobs />} />
