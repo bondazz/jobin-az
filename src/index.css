@@ -168,28 +168,42 @@ All colors MUST be HSL.
   }
 }
 
-/* Custom Scrollbar Styles */
-::-webkit-scrollbar {
-  width: 3px;
+/* Hide scrollbars for app-like appearance on mobile/tablet */
+@media (max-width: 1279px) {
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  
+  * {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
 }
 
-::-webkit-scrollbar-track {
-  background: transparent;
-}
+/* Custom Scrollbar Styles for desktop */
+@media (min-width: 1280px) {
+  ::-webkit-scrollbar {
+    width: 3px;
+  }
 
-::-webkit-scrollbar-thumb {
-  background: hsl(var(--primary));
-  border-radius: 4px;
-}
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
 
-::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--primary-hover));
-}
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary));
+    border-radius: 4px;
+  }
 
-/* Firefox */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: hsl(var(--primary)) transparent;
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary-hover));
+  }
+
+  /* Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--primary)) transparent;
+  }
 }
 
 /* Premium Job Card Animation */

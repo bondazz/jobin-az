@@ -191,6 +191,26 @@ const JobDetails = ({ jobId, isMobile = false }: JobDetailsProps) => {
       </div>
 
       <div className={`${isMobile ? 'p-4' : 'p-6'} space-y-4`}>
+        {/* Apply Button */}
+        <div className="mb-4">
+          {job.application_url ? (
+            <Button 
+              size="sm"
+              className="bg-gradient-primary hover:opacity-90 text-white font-semibold"
+              onClick={() => window.open(job.application_url, '_blank')}
+            >
+              Bu İşə Müraciət Et
+            </Button>
+          ) : (
+            <Button 
+              size="sm"
+              className="bg-gradient-primary hover:opacity-90 text-white font-semibold"
+            >
+              Bu İşə Müraciət Et
+            </Button>
+          )}
+        </div>
+
         {/* Compact Action Buttons */}
         <div className={`flex gap-2 ${isMobile ? 'flex-col' : 'flex-wrap'}`}>
           <Button 
@@ -352,25 +372,8 @@ const JobDetails = ({ jobId, isMobile = false }: JobDetailsProps) => {
           </div>
         )}
 
-        {/* Sticky Apply Button */}
-        <div className={`fixed ${isMobile ? 'bottom-16 left-4 right-4' : 'bottom-4 left-4 right-4 max-w-md mx-auto'} z-10`}>
-          {job.application_url ? (
-            <Button 
-              size={isMobile ? "sm" : "default"}
-              className={`w-full bg-gradient-primary hover:opacity-90 text-white font-semibold shadow-lg ${isMobile ? 'py-2 text-sm' : ''}`}
-              onClick={() => window.open(job.application_url, '_blank')}
-            >
-              Bu İşə Müraciət Et
-            </Button>
-          ) : (
-            <Button 
-              size={isMobile ? "sm" : "default"}
-              className={`w-full bg-gradient-primary hover:opacity-90 text-white font-semibold shadow-lg ${isMobile ? 'py-2 text-sm' : ''}`}
-            >
-              Bu İşə Müraciət Et
-            </Button>
-          )}
-        </div>
+        {/* Additional spacing for mobile bottom navigation */}
+        {isMobile && <div className="h-16"></div>}
       </div>
     </div>
   );

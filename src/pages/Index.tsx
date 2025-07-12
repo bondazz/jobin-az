@@ -7,6 +7,7 @@ import JobListings from '@/components/JobListings';
 import JobDetails from '@/components/JobDetails';
 import MobileMenu from '@/components/MobileMenu';
 import BottomNavigation from '@/components/BottomNavigation';
+import MobileHeader from '@/components/MobileHeader';
 import { generatePageSEO, updatePageMeta } from '@/utils/seo';
 
 interface Category {
@@ -143,8 +144,11 @@ const Index = () => {
 
   return (
     <div className="h-full flex bg-gradient-to-br from-background via-primary/3 to-background overflow-hidden">
-      {/* Main Content Area - No mobile header needed */}
-      <div className="flex-1 flex min-w-0 pb-16 xl:pb-0">
+      {/* Mobile Header */}
+      <MobileHeader />
+      
+      {/* Main Content Area */}
+      <div className="flex-1 flex min-w-0 pb-16 xl:pb-0 pt-14 xl:pt-0">
         {/* Job Listings - Responsive Column */}
         <div className="w-full lg:w-[400px] xl:w-[450px] border-r border-border animate-fade-in">
           {/* Active Filters */}
@@ -200,16 +204,12 @@ const Index = () => {
       {/* Mobile Job Details Modal */}
       {selectedJob && (
         <div className="lg:hidden fixed inset-0 bg-background z-50 overflow-y-auto animate-slide-in-right">
-          <div className="sticky top-0 bg-gradient-to-r from-background to-primary/8 border-b border-border p-4 flex items-center justify-between shadow-sm">
-            <h2 className="font-bold text-lg text-foreground">İş Təfərrüatları</h2>
-            <button
-              onClick={() => setSelectedJob(null)}
-              className="w-8 h-8 rounded-lg bg-muted/50 hover:bg-destructive/20 hover:text-destructive text-muted-foreground transition-all duration-300 flex items-center justify-center text-lg font-bold"
-            >
-              ×
-            </button>
-          </div>
-          <JobDetails jobId={selectedJob?.id || null} />
+          {/* Mobile Header with Logo */}
+          <MobileHeader 
+            showCloseButton={true} 
+            onClose={() => setSelectedJob(null)} 
+          />
+          <JobDetails jobId={selectedJob?.id || null} isMobile={true} />
         </div>
       )}
 

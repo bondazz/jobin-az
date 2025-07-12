@@ -8,6 +8,7 @@ import JobDetails from '@/components/JobDetails';
 import { Job } from '@/types/job';
 import { generateCategorySEO, generateJobSEO, generatePageSEO, updatePageMeta } from '@/utils/seo';
 import BottomNavigation from '@/components/BottomNavigation';
+import MobileHeader from '@/components/MobileHeader';
 import { supabase } from '@/integrations/supabase/client';
 import { Tables } from '@/integrations/supabase/types';
 
@@ -86,19 +87,16 @@ const Categories = () => {
       </div>
     );
   }
-  return <div className="h-full flex bg-gradient-to-br from-background via-primary/3 to-background overflow-hidden">
-      <div className="flex-1 flex min-w-0 pb-16 xl:pb-0">
+  
+  return (
+    <div className="h-full flex bg-gradient-to-br from-background via-primary/3 to-background overflow-hidden">
+      {/* Mobile Header */}
+      <MobileHeader />
+      
+      <div className="flex-1 flex min-w-0 pb-16 xl:pb-0 pt-14 xl:pt-0">
         {/* Categories List */}
         <div className="w-full lg:w-[400px] xl:w-[450px] border-r border-border animate-fade-in">
           <div className="flex-1 flex flex-col h-full bg-background">
-            {/* Mobile/Tablet Sticky Header with Logo */}
-            <div className="lg:hidden sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border/50 shadow-sm">
-              <div className="flex justify-center items-center py-3 px-4">
-                <Link to="/">
-                  <img src="/lovable-uploads/e888818f-70b8-405b-a5e8-f62f8e842525.png" alt="Logo" className="h-12 w-auto object-contain" />
-                </Link>
-              </div>
-            </div>
 
             {/* Header with Search */}
             <div className="relative overflow-hidden bg-gradient-to-br from-background via-primary/8 to-accent/5 border-b border-border/30">
@@ -181,6 +179,8 @@ const Categories = () => {
         selectedCategory={selectedCategory}
         onCategorySelect={() => {}}
       />
-    </div>;
+    </div>
+  );
 };
+
 export default Categories;
