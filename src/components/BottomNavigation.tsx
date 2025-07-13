@@ -133,8 +133,8 @@ const BottomNavigation = ({
           {mainNavItems.map(item => <Link key={item.label} to={item.path} className={`flex flex-col items-center gap-1 h-auto py-2 px-3 rounded-lg transition-colors ${isActivePath(item.path) ? 'text-primary bg-primary/10' : 'text-muted-foreground hover:text-foreground'}`}>
               <div className="relative">
                 <item.icon className="w-5 h-5" />
-                {item.path === '/favorites' && item.count > 0 && <Badge variant="secondary" className="absolute -top-2 -right-2 h-4 min-w-4 text-[10px] px-1 bg-primary text-white">
-                    {item.count > 99 ? '99+' : item.count}
+                {item.path === '/favorites' && savedJobsCount > 0 && <Badge variant="secondary" className="absolute -top-2 -right-2 h-4 min-w-4 text-[10px] px-1 bg-primary text-white">
+                    {savedJobsCount > 99 ? '99+' : savedJobsCount}
                   </Badge>}
               </div>
               <span className="text-[10px] font-medium">{item.label}</span>
