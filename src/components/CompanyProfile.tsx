@@ -36,9 +36,9 @@ const CompanyProfile = ({ company, onClose, isMobile = false }: CompanyProfilePr
 
   if (isMobile) {
     return (
-      <div className="fixed inset-0 bg-background z-30 overflow-y-auto pb-20">
+      <div className="fixed inset-x-0 bottom-0 top-1/4 bg-background z-30 overflow-y-auto pb-20 rounded-t-xl border-t border-border shadow-2xl">
         {/* Mobile Header */}
-        <div className="sticky top-0 bg-background/95 backdrop-blur-md border-b border-border p-3 flex items-center justify-between z-10">
+        <div className="sticky top-0 bg-background/95 backdrop-blur-md border-b border-border p-3 flex items-center justify-between z-10 rounded-t-xl">
           <div className="flex items-center gap-3">
             {company.logo ? (
               <img src={company.logo} alt={company.name} className="w-8 h-8 rounded-md object-cover" />

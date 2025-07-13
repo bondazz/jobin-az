@@ -1,36 +1,48 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 export const useSavedJobs = () => {
   const [savedJobs, setSavedJobs] = useState<string[]>([]);
 
-  useEffect(() => {
-    // Load saved jobs from localStorage
-    const saved = localStorage.getItem('savedJobs');
-    if (saved) {
-      setSavedJobs(JSON.parse(saved));
+  const loadSavedJobs = useCallback(() => {
+    try {
+      const saved = localStorage.getItem('savedJobs');
+      if (saved) {
+        const parsedJobs = JSON.parse(saved);
+        if (Array.isArray(parsedJobs)) {
+          setSavedJobs(parsedJobs);
+          return;
+        }
+      }
+      // If no saved jobs or invalid data, reset to empty
+      setSavedJobs([]);
+      localStorage.setItem('savedJobs', JSON.stringify([]));
+    } catch (error) {
+      console.error('Error loading saved jobs:', error);
+      setSavedJobs([]);
+      localStorage.setItem('savedJobs', JSON.stringify([]));
     }
   }, []);
 
-  const saveJob = (jobId: string) => {
-    const updatedSavedJobs = [...savedJobs, jobId];
-    setSavedJobs(updatedSavedJobs);
-    localStorage.setItem('savedJobs', JSON.stringify(updatedSavedJobs));
-  };
+  useEffect(() => {
+    loadSavedJobs();
+  }, [loadSavedJobs]);
 
-  const unsaveJob = (jobId: string) => {
-    const updatedSavedJobs = savedJobs.filter(id => id !== jobId);
-    setSavedJobs(updatedSavedJobs);
-    localStorage.setItem('savedJobs', JSON.stringify(updatedSavedJobs));
-  };
+  const toggleSaveJob = useCallback((jobId: string) => {
+    setSavedJobs(prevSavedJobs => {
+      const newSavedJobs = prevSavedJobs.includes(jobId)
+        ? prevSavedJobs.filter(id => id !== jobId)
+        : [...prevSavedJobs, jobId];
+      
+      localStorage.setItem('savedJobs', JSON.stringify(newSavedJobs));
+      return newSavedJobs;
+    });
+  }, []);
 
-  const isJobSaved = (jobId: string) => {
-    return savedJobs.includes(jobId);
-  };
+  const isJobSaved = useCallback((jobId: string) => savedJobs.includes(jobId), [savedJobs]);
 
   return {
     savedJobs,
-    saveJob,
-    unsaveJob,
+    toggleSaveJob,
     isJobSaved,
     savedJobsCount: savedJobs.length
   };
