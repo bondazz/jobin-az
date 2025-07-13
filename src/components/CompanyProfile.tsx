@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { MapPin, Globe, Phone, Mail, Briefcase, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -8,8 +8,8 @@ import { Tables } from '@/integrations/supabase/types';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { useDynamicSEO } from '@/hooks/useSEO';
-import { updatePageMeta } from '@/utils/seo';
 import VerifyBadge from '@/components/ui/verify-badge';
+import { useCompanyProfile } from '@/hooks/useCompanyProfile';
 
 type Company = Tables<'companies'>;
 
@@ -20,32 +20,15 @@ interface CompanyProfileProps {
 }
 
 const CompanyProfile = ({ company, onClose, isMobile = false }: CompanyProfileProps) => {
-  const [activeTab, setActiveTab] = useState('about');
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [isClosing, setIsClosing] = useState(false);
   const navigate = useNavigate();
 
+  // Use unified company profile hook for consistent behavior across all devices
+  const { activeTab, handleTabChange } = useCompanyProfile(company);
+
   // SEO for company
   useDynamicSEO('company', company);
-
-  // Update SEO when tab changes
-  useEffect(() => {
-    if (activeTab === 'about') {
-      updatePageMeta({
-        title: company.seo_title || `${company.name} - Haqqında | Şirkət Profili`,
-        description: company.seo_description || `${company.name} şirkəti haqqında məlumat və ətraflı təfərrüatlar.`,
-        keywords: company.seo_keywords?.join(', ') || `${company.name}, şirkət, haqqında, Azərbaycan`,
-        url: `/companies/${company.slug}`
-      });
-    } else if (activeTab === 'jobs') {
-      updatePageMeta({
-        title: company.seo_title || `${company.name} - İş Elanları | Vakansiyalar`,
-        description: company.seo_description || `${company.name} şirkətində aktiv vakansiyalar və iş elanları.`,
-        keywords: company.seo_keywords?.join(', ') || `${company.name}, şirkət, vakansiya, iş elanları, Azərbaycan`,
-        url: `/companies/${company.slug}/vacancies`
-      });
-    }
-  }, [activeTab, company]);
 
   const handleJobSelect = async (job: Job) => {
     // Get job slug from database
@@ -140,17 +123,7 @@ const CompanyProfile = ({ company, onClose, isMobile = false }: CompanyProfilePr
             <Button 
               variant={activeTab === 'about' ? 'default' : 'outline'}
               size="sm"
-              onClick={() => {
-                setActiveTab('about');
-                // Update URL on mobile/tablet too
-                window.history.pushState({}, '', `/companies/${company.slug}`);
-                updatePageMeta({
-                  title: company.seo_title || `${company.name} - Haqqında | Şirkət Profili`,
-                  description: company.seo_description || `${company.name} şirkəti haqqında məlumat və ətraflı təfərrüatlar.`,
-                  keywords: company.seo_keywords?.join(', ') || `${company.name}, şirkət, haqqında, Azərbaycan`,
-                  url: `/companies/${company.slug}`
-                });
-              }}
+              onClick={() => handleTabChange('about')}
               className="flex-1"
             >
               Haqqında
@@ -158,17 +131,7 @@ const CompanyProfile = ({ company, onClose, isMobile = false }: CompanyProfilePr
             <Button 
               variant={activeTab === 'jobs' ? 'default' : 'outline'}
               size="sm"
-              onClick={() => {
-                setActiveTab('jobs');
-                // Update URL on mobile/tablet too
-                window.history.pushState({}, '', `/companies/${company.slug}/vacancies`);
-                updatePageMeta({
-                  title: company.seo_title || `${company.name} - İş Elanları | Vakansiyalar`,
-                  description: company.seo_description || `${company.name} şirkətində aktiv vakansiyalar və iş elanları.`,
-                  keywords: company.seo_keywords?.join(', ') || `${company.name}, şirkət, vakansiya, iş elanları, Azərbaycan`,
-                  url: `/companies/${company.slug}/vacancies`
-                });
-              }}
+              onClick={() => handleTabChange('jobs')}
               className="flex-1"
             >
               <Briefcase className="w-4 h-4 mr-1" />
