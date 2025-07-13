@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Briefcase, Tag, Building, Bookmark, Bell, Menu, Home, TrendingUp, Info, DollarSign } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -8,12 +7,10 @@ import ThemeToggle from '@/components/ThemeToggle';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
 import { useSavedJobs } from '@/hooks/useSavedJobs';
 import { supabase } from '@/integrations/supabase/client';
-
 interface BottomNavigationProps {
   selectedCategory?: string;
   onCategorySelect: (category: string) => void;
 }
-
 const BottomNavigation = ({
   selectedCategory,
   onCategorySelect
@@ -23,20 +20,21 @@ const BottomNavigation = ({
   const [companiesCount, setCompaniesCount] = useState(0);
   const [categoriesCount, setCategoriesCount] = useState(0);
   const location = useLocation();
-  const { savedJobsCount } = useSavedJobs();
-
+  const {
+    savedJobsCount
+  } = useSavedJobs();
   useEffect(() => {
     fetchCounts();
   }, []);
-
   const fetchCounts = async () => {
     try {
-      const [jobsResult, companiesResult, categoriesResult] = await Promise.all([
-        supabase.from('jobs').select('id', { count: 'exact' }).eq('is_active', true),
-        supabase.from('companies').select('id', { count: 'exact' }).eq('is_active', true),
-        supabase.from('categories').select('id', { count: 'exact' }).eq('is_active', true)
-      ]);
-
+      const [jobsResult, companiesResult, categoriesResult] = await Promise.all([supabase.from('jobs').select('id', {
+        count: 'exact'
+      }).eq('is_active', true), supabase.from('companies').select('id', {
+        count: 'exact'
+      }).eq('is_active', true), supabase.from('categories').select('id', {
+        count: 'exact'
+      }).eq('is_active', true)]);
       setJobsCount(jobsResult.count || 0);
       setCompaniesCount(companiesResult.count || 0);
       setCategoriesCount(categoriesResult.count || 0);
@@ -44,7 +42,6 @@ const BottomNavigation = ({
       console.error('Error fetching counts:', error);
     }
   };
-
   const mainNavItems = [{
     icon: Briefcase,
     label: 'İşlər',
@@ -66,7 +63,6 @@ const BottomNavigation = ({
     count: savedJobsCount,
     path: '/favorites'
   }];
-
   const allMenuItems = [{
     icon: Home,
     label: 'Ana Səhifə',
@@ -108,7 +104,6 @@ const BottomNavigation = ({
     path: '/about',
     count: null
   }];
-
   const categories = [{
     name: 'Technology',
     count: 234
@@ -122,18 +117,15 @@ const BottomNavigation = ({
     name: 'Healthcare',
     count: 98
   }];
-
   const handleCategorySelect = (category: string) => {
     onCategorySelect(category);
     setIsMenuOpen(false);
   };
-
   const isActivePath = (path: string) => {
     if (path === '/') return location.pathname === '/';
     if (path === '/vacancies') return location.pathname === '/' || location.pathname === '/vacancies';
     return location.pathname.startsWith(path);
   };
-
   return <>
       {/* Bottom Navigation Bar */}
       <div className="xl:hidden fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-t border-border">
@@ -158,9 +150,7 @@ const BottomNavigation = ({
             </DrawerTrigger>
             
             <DrawerContent className="max-h-[75vh] bg-gradient-to-b from-background to-primary/5 z-50">
-              <DrawerHeader className="text-center border-b border-border/40 bg-gradient-to-r from-background to-primary/10 mx-0 py-4 px-0 my-0">
-                <DrawerTitle className="sr-only">Menyu</DrawerTitle>
-              </DrawerHeader>
+              
               
               <div className="p-4 space-y-6 overflow-y-auto">
                 {/* All Navigation Items */}
@@ -224,5 +214,4 @@ const BottomNavigation = ({
       </div>
     </>;
 };
-
 export default BottomNavigation;
