@@ -203,13 +203,16 @@ const Index = () => {
 
       {/* Mobile Job Details Modal */}
       {selectedJob && (
-        <div className="lg:hidden fixed inset-0 bg-background z-50 overflow-y-auto animate-slide-in-right">
+        <div className="lg:hidden fixed inset-0 bg-background z-50 flex flex-col animate-slide-in-right">
           {/* Mobile Header with Logo */}
           <MobileHeader 
             showCloseButton={true} 
             onClose={() => setSelectedJob(null)} 
           />
-          <JobDetails jobId={selectedJob?.id || null} isMobile={true} />
+          {/* Job Details with proper spacing */}
+          <div className="flex-1 overflow-y-auto pb-20">
+            <JobDetails jobId={selectedJob?.id || null} isMobile={true} />
+          </div>
         </div>
       )}
 
