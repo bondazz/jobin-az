@@ -12,6 +12,7 @@ import CompanyProfile from '@/components/CompanyProfile';
 import { supabase } from '@/integrations/supabase/client';
 import { Tables } from '@/integrations/supabase/types';
 import { useIsMobile } from '@/hooks/use-mobile';
+import VerifyBadge from '@/components/ui/verify-badge';
 
 type Company = Tables<'companies'>;
 const Companies = () => {
@@ -46,6 +47,13 @@ const Companies = () => {
       const company = companies.find(c => c.slug === companySlug);
       if (company) {
         setSelectedCompany(company);
+        // Check if we're on the vacancies route
+        const currentPath = window.location.pathname;
+        if (currentPath.includes('/vacancies')) {
+          setActiveTab('jobs');
+        } else {
+          setActiveTab('about');
+        }
         const seoData = generateCompanySEO(company.name, 0); // Job count will be fetched separately
         updatePageMeta(seoData);
       }
@@ -77,6 +85,17 @@ const Companies = () => {
       setShowMobileProfile(true);
     } else {
       navigate(`/companies/${company.slug}`);
+    }
+  };
+
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+    if (selectedCompany) {
+      if (tab === 'jobs') {
+        navigate(`/companies/${selectedCompany.slug}/vacancies`);
+      } else {
+        navigate(`/companies/${selectedCompany.slug}`);
+      }
     }
   };
   const handleJobSelect = async (job: Job) => {
@@ -152,13 +171,7 @@ const Companies = () => {
                           <h3 className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors duration-200 truncate">
                             {company.name}
                           </h3>
-                          {company.is_verified && (
-                            <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
-                              <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                              </svg>
-                            </div>
-                          )}
+                           {company.is_verified && <VerifyBadge size={16} />}
                         </div>
                         <div className="flex items-center gap-2 mt-0">
                           <div className="flex items-center gap-1">
@@ -196,11 +209,7 @@ const Companies = () => {
                           {selectedCompany.name.charAt(0)}
                         </div>
                       )}
-                      {selectedCompany.is_verified && <div className="absolute -top-2 -right-2 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                          <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                        </div>}
+                       {selectedCompany.is_verified && <VerifyBadge size={32} className="absolute -top-2 -right-2" />}
                     </div>
                   </div>
                 </div>
@@ -222,15 +231,15 @@ const Companies = () => {
                     </div>
                   </div>
 
-                  {/* Navigation Tabs */}
-                  <div className="flex gap-4 mb-6 border-b border-border">
-                    <button onClick={() => setActiveTab('about')} className={`pb-3 px-1 border-b-2 font-medium text-sm transition-colors ${activeTab === 'about' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>
-                      Şirkət Haqqında
-                    </button>
-                    <button onClick={() => setActiveTab('jobs')} className={`pb-3 px-1 border-b-2 font-medium text-sm transition-colors ${activeTab === 'jobs' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>
-                      İş Elanları
-                    </button>
-                  </div>
+                   {/* Navigation Tabs */}
+                   <div className="flex gap-4 mb-6 border-b border-border">
+                     <button onClick={() => handleTabChange('about')} className={`pb-3 px-1 border-b-2 font-medium text-sm transition-colors ${activeTab === 'about' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>
+                       Şirkət Haqqında
+                     </button>
+                     <button onClick={() => handleTabChange('jobs')} className={`pb-3 px-1 border-b-2 font-medium text-sm transition-colors ${activeTab === 'jobs' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>
+                       İş Elanları
+                     </button>
+                   </div>
 
                   {/* Tab Content */}
                   <div className="space-y-6">

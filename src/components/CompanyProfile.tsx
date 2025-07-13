@@ -140,7 +140,15 @@ const CompanyProfile = ({ company, onClose, isMobile = false }: CompanyProfilePr
             <Button 
               variant={activeTab === 'about' ? 'default' : 'outline'}
               size="sm"
-              onClick={() => setActiveTab('about')}
+              onClick={() => {
+                setActiveTab('about');
+                updatePageMeta({
+                  title: company.seo_title || `${company.name} - Haqqında | Şirkət Profili`,
+                  description: company.seo_description || `${company.name} şirkəti haqqında məlumat və ətraflı təfərrüatlar.`,
+                  keywords: company.seo_keywords?.join(', ') || `${company.name}, şirkət, haqqında, Azərbaycan`,
+                  url: `/sirketler/${company.slug}`
+                });
+              }}
               className="flex-1"
             >
               Haqqında
@@ -148,7 +156,15 @@ const CompanyProfile = ({ company, onClose, isMobile = false }: CompanyProfilePr
             <Button 
               variant={activeTab === 'jobs' ? 'default' : 'outline'}
               size="sm"
-              onClick={() => setActiveTab('jobs')}
+              onClick={() => {
+                setActiveTab('jobs');
+                updatePageMeta({
+                  title: company.seo_title || `${company.name} - İş Elanları | Vakansiyalar`,
+                  description: company.seo_description || `${company.name} şirkətində aktiv vakansiyalar və iş elanları.`,
+                  keywords: company.seo_keywords?.join(', ') || `${company.name}, şirkət, vakansiya, iş elanları, Azərbaycan`,
+                  url: `/sirketler/${company.slug}/vakansiyalar`
+                });
+              }}
               className="flex-1"
             >
               <Briefcase className="w-4 h-4 mr-1" />
