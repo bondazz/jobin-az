@@ -200,7 +200,7 @@ const Companies = () => {
                 </div>
 
                 {/* Company Info */}
-                <div className="pt-16 px-6 pb-6">
+                <div className="pt-12 px-6 pb-6">
                   <div className="mb-6">
                     <h1 className="text-3xl font-bold text-foreground mb-2">{selectedCompany.name}</h1>
                     <div className="flex items-center gap-4 text-muted-foreground">
