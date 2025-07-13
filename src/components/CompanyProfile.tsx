@@ -8,6 +8,7 @@ import { Tables } from '@/integrations/supabase/types';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { useDynamicSEO } from '@/hooks/useSEO';
+import { updatePageMeta } from '@/utils/seo';
 import VerifyBadge from '@/components/ui/verify-badge';
 
 type Company = Tables<'companies'>;
@@ -30,16 +31,18 @@ const CompanyProfile = ({ company, onClose, isMobile = false }: CompanyProfilePr
   // Update SEO when tab changes
   useEffect(() => {
     if (activeTab === 'about') {
-      useDynamicSEO('company', {
-        ...company,
-        seo_title: company.seo_title || `${company.name} - Haqqında | Şirkət Profili`,
-        seo_description: company.seo_description || `${company.name} şirkəti haqqında məlumat və ətraflı təfərrüatlar.`
+      updatePageMeta({
+        title: company.seo_title || `${company.name} - Haqqında | Şirkət Profili`,
+        description: company.seo_description || `${company.name} şirkəti haqqında məlumat və ətraflı təfərrüatlar.`,
+        keywords: company.seo_keywords?.join(', ') || `${company.name}, şirkət, haqqında, Azərbaycan`,
+        url: `/sirketler/${company.slug}`
       });
     } else if (activeTab === 'jobs') {
-      useDynamicSEO('company', {
-        ...company,
-        seo_title: company.seo_title || `${company.name} - İş Elanları | Vakansiyalar`,
-        seo_description: company.seo_description || `${company.name} şirkətində aktiv vakansiyalar və iş elanları.`
+      updatePageMeta({
+        title: company.seo_title || `${company.name} - İş Elanları | Vakansiyalar`,
+        description: company.seo_description || `${company.name} şirkətində aktiv vakansiyalar və iş elanları.`,
+        keywords: company.seo_keywords?.join(', ') || `${company.name}, şirkət, vakansiya, iş elanları, Azərbaycan`,
+        url: `/sirketler/${company.slug}`
       });
     }
   }, [activeTab, company]);
