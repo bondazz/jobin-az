@@ -159,7 +159,7 @@ const JobDetails = ({ jobId, isMobile = false }: JobDetailsProps) => {
   return (
     <div className="h-full overflow-y-auto bg-background">
       {/* Minimalist Header with Company Logo */}
-      <div className={`${isMobile ? 'p-4' : 'p-6'} border-b border-border`}>
+      <div className={`${isMobile ? 'p-4 pt-6' : 'p-6'} border-b border-border`}>
         <div className="flex items-center gap-4">
           {/* Company Logo */}
           <div className={`${isMobile ? 'w-12 h-12' : 'w-16 h-16'} rounded-lg bg-muted/30 flex items-center justify-center flex-shrink-0`}>
