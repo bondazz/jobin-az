@@ -5,12 +5,14 @@ import { Tables } from '@/integrations/supabase/types';
 
 type Company = Tables<'companies'>;
 
-export const useCompanyProfile = (company: Company) => {
+export const useCompanyProfile = (company: Company | null) => {
   const [activeTab, setActiveTab] = useState<'about' | 'jobs'>('about');
   const navigate = useNavigate();
 
   // Unified function to handle tab changes across all devices
   const handleTabChange = (tab: 'about' | 'jobs') => {
+    if (!company) return;
+    
     setActiveTab(tab);
     
     // Update URL consistently across all devices
@@ -27,6 +29,8 @@ export const useCompanyProfile = (company: Company) => {
 
   // Unified SEO update function
   const updateSEO = (tab: 'about' | 'jobs') => {
+    if (!company) return;
+    
     if (tab === 'about') {
       updatePageMeta({
         title: company.seo_title || `${company.name} - Haqqında | Şirkət Profili`,
@@ -46,7 +50,9 @@ export const useCompanyProfile = (company: Company) => {
 
   // Initialize SEO on mount and when activeTab changes
   useEffect(() => {
-    updateSEO(activeTab);
+    if (company) {
+      updateSEO(activeTab);
+    }
   }, [activeTab, company]);
 
   // Detect initial tab from URL

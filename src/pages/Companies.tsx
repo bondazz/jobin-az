@@ -32,7 +32,7 @@ const Companies = () => {
   const isMobileOrTablet = useIsMobileOrTablet();
   
   // Use unified company profile hook for consistent behavior across all devices
-  const { activeTab, handleTabChange } = selectedCompany ? useCompanyProfile(selectedCompany) : { activeTab: 'about', handleTabChange: () => {} };
+  const { activeTab, handleTabChange } = useCompanyProfile(selectedCompany);
 
   // Fetch companies from database
   useEffect(() => {
