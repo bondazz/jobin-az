@@ -142,6 +142,8 @@ const CompanyProfile = ({ company, onClose, isMobile = false }: CompanyProfilePr
               size="sm"
               onClick={() => {
                 setActiveTab('about');
+                // Update URL on mobile/tablet too
+                window.history.pushState({}, '', `/companies/${company.slug}`);
                 updatePageMeta({
                   title: company.seo_title || `${company.name} - Haqqında | Şirkət Profili`,
                   description: company.seo_description || `${company.name} şirkəti haqqında məlumat və ətraflı təfərrüatlar.`,
@@ -158,6 +160,8 @@ const CompanyProfile = ({ company, onClose, isMobile = false }: CompanyProfilePr
               size="sm"
               onClick={() => {
                 setActiveTab('jobs');
+                // Update URL on mobile/tablet too
+                window.history.pushState({}, '', `/companies/${company.slug}/vacancies`);
                 updatePageMeta({
                   title: company.seo_title || `${company.name} - İş Elanları | Vakansiyalar`,
                   description: company.seo_description || `${company.name} şirkətində aktiv vakansiyalar və iş elanları.`,

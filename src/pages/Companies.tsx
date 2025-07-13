@@ -81,10 +81,11 @@ const Companies = () => {
     setActiveTab('about');
     setSelectedJob(null);
     
+    // Always navigate to update URL, regardless of device type
+    navigate(`/companies/${company.slug}`);
+    
     if (isMobile) {
       setShowMobileProfile(true);
-    } else {
-      navigate(`/companies/${company.slug}`);
     }
   };
 
