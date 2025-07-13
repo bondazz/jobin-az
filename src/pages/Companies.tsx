@@ -13,6 +13,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Tables } from '@/integrations/supabase/types';
 import { useIsMobile, useIsMobileOrTablet } from '@/hooks/use-mobile';
 import VerifyBadge from '@/components/ui/verify-badge';
+import { useCompanyProfile } from '@/hooks/useCompanyProfile';
 
 type Company = Tables<'companies'>;
 const Companies = () => {
@@ -22,7 +23,6 @@ const Companies = () => {
     job: jobSlug
   } = useParams();
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
-  const [activeTab, setActiveTab] = useState('about');
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [companies, setCompanies] = useState<Company[]>([]);
@@ -30,6 +30,9 @@ const Companies = () => {
   const [showMobileProfile, setShowMobileProfile] = useState(false);
   const isMobile = useIsMobile();
   const isMobileOrTablet = useIsMobileOrTablet();
+  
+  // Use unified company profile hook for consistent behavior across all devices
+  const { activeTab, handleTabChange } = selectedCompany ? useCompanyProfile(selectedCompany) : { activeTab: 'about', handleTabChange: () => {} };
 
   // Fetch companies from database
   useEffect(() => {
@@ -48,15 +51,7 @@ const Companies = () => {
       const company = companies.find(c => c.slug === companySlug);
       if (company) {
         setSelectedCompany(company);
-        // Check if we're on the vacancies route
-        const currentPath = window.location.pathname;
-        if (currentPath.includes('/vacancies')) {
-          setActiveTab('jobs');
-        } else {
-          setActiveTab('about');
-        }
-        const seoData = generateCompanySEO(company.name, 0); // Job count will be fetched separately
-        updatePageMeta(seoData);
+        // SEO will be handled by useCompanyProfile hook
       }
     }
   }, [companySlug, companies]);
@@ -79,7 +74,6 @@ const Companies = () => {
   };
   const handleCompanyClick = (company: Company) => {
     setSelectedCompany(company);
-    setActiveTab('about');
     setSelectedJob(null);
     
     // Always navigate to update URL, regardless of device type
@@ -87,17 +81,6 @@ const Companies = () => {
     
     if (isMobileOrTablet) {
       setShowMobileProfile(true);
-    }
-  };
-
-  const handleTabChange = (tab: string) => {
-    setActiveTab(tab);
-    if (selectedCompany) {
-      if (tab === 'jobs') {
-        navigate(`/companies/${selectedCompany.slug}/vacancies`);
-      } else {
-        navigate(`/companies/${selectedCompany.slug}`);
-      }
     }
   };
   const handleJobSelect = async (job: Job) => {
