@@ -1,11 +1,13 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Briefcase, Tag, Building, Bookmark, Bell, Menu, Home, TrendingUp, Info, DollarSign } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Link, useLocation } from 'react-router-dom';
 import ThemeToggle from '@/components/ThemeToggle';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
+import { useSavedJobs } from '@/hooks/useSavedJobs';
+import { supabase } from '@/integrations/supabase/client';
 
 interface BottomNavigationProps {
   selectedCategory?: string;
@@ -17,27 +19,51 @@ const BottomNavigation = ({
   onCategorySelect
 }: BottomNavigationProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [jobsCount, setJobsCount] = useState(0);
+  const [companiesCount, setCompaniesCount] = useState(0);
+  const [categoriesCount, setCategoriesCount] = useState(0);
   const location = useLocation();
+  const { savedJobsCount } = useSavedJobs();
+
+  useEffect(() => {
+    fetchCounts();
+  }, []);
+
+  const fetchCounts = async () => {
+    try {
+      const [jobsResult, companiesResult, categoriesResult] = await Promise.all([
+        supabase.from('jobs').select('id', { count: 'exact' }).eq('is_active', true),
+        supabase.from('companies').select('id', { count: 'exact' }).eq('is_active', true),
+        supabase.from('categories').select('id', { count: 'exact' }).eq('is_active', true)
+      ]);
+
+      setJobsCount(jobsResult.count || 0);
+      setCompaniesCount(companiesResult.count || 0);
+      setCategoriesCount(categoriesResult.count || 0);
+    } catch (error) {
+      console.error('Error fetching counts:', error);
+    }
+  };
 
   const mainNavItems = [{
     icon: Briefcase,
     label: 'İşlər',
-    count: 1247,
+    count: jobsCount,
     path: '/vacancies'
   }, {
     icon: Tag,
     label: 'Kateqoriyalar',
-    count: 8,
+    count: categoriesCount,
     path: '/categories'
   }, {
     icon: Building,
     label: 'Şirkətlər',
-    count: 156,
+    count: companiesCount,
     path: '/companies'
   }, {
     icon: Bookmark,
     label: 'Saxlanmış',
-    count: 23,
+    count: savedJobsCount,
     path: '/favorites'
   }];
 
@@ -65,7 +91,7 @@ const BottomNavigation = ({
     icon: Bookmark,
     label: 'Saxlanılan İşlər',
     path: '/favorites',
-    count: 23
+    count: savedJobsCount
   }, {
     icon: Bell,
     label: 'İş Bildirişləri',
@@ -133,9 +159,7 @@ const BottomNavigation = ({
             
             <DrawerContent className="max-h-[75vh] bg-gradient-to-b from-background to-primary/5 z-50">
               <DrawerHeader className="text-center border-b border-border/40 bg-gradient-to-r from-background to-primary/10 mx-0 py-4 px-0 my-0">
-                <div className="flex items-center justify-center mb-2">
-                  <img src="/lovable-uploads/e888818f-70b8-405b-a5e8-f62f8e842525.png" alt="Jooble" className="w-16 h-16 object-contain dark:invert transition-all duration-300" />
-                </div>
+                <DrawerTitle className="sr-only">Menyu</DrawerTitle>
               </DrawerHeader>
               
               <div className="p-4 space-y-6 overflow-y-auto">
@@ -146,7 +170,7 @@ const BottomNavigation = ({
                     Əsas Bölümlər
                   </h3>
                   <div className="grid grid-cols-1 gap-2">
-                    {allMenuItems.map((item, index) => <Link key={item.path} to={item.path} className={`flex items-center justify-between p-3 rounded-lg transition-all duration-300 animate-fade-in ${isActivePath(item.path) ? 'bg-gradient-to-r from-primary/20 to-primary/10 text-primary border border-primary/30' : 'bg-card hover:bg-accent/60 border border-border/40'}`} style={{
+                    {allMenuItems.filter(item => ['/services', '/about'].includes(item.path) || item.path === '/').map((item, index) => <Link key={item.path} to={item.path} className={`flex items-center justify-between p-3 rounded-lg transition-all duration-300 animate-fade-in ${isActivePath(item.path) ? 'bg-gradient-to-r from-primary/20 to-primary/10 text-primary border border-primary/30' : 'bg-card hover:bg-accent/60 border border-border/40'}`} style={{
                     animationDelay: `${index * 30}ms`
                   }} onClick={() => setIsMenuOpen(false)}>
                         <div className="flex items-center gap-3">
@@ -162,21 +186,22 @@ const BottomNavigation = ({
                   </div>
                 </div>
 
-                {/* Categories */}
+                {/* Language and Theme Options */}
                 <div>
                   <h3 className="font-bold text-base text-foreground mb-3 flex items-center gap-2">
                     <div className="w-2 h-2 bg-primary rounded-full"></div>
-                    Populyar Kateqoriyalar
+                    Tənzimləmələr
                   </h3>
-                  <div className="grid grid-cols-2 gap-2">
-                    {categories.map((category, index) => <Button key={category.name} variant={selectedCategory === category.name ? "default" : "outline"} className={`h-auto p-3 flex flex-col items-center gap-1 transition-all duration-300 animate-fade-in text-xs ${selectedCategory === category.name ? 'bg-primary text-white border-primary' : 'bg-card hover:bg-accent border-border/40'}`} onClick={() => handleCategorySelect(category.name)} style={{
-                    animationDelay: `${(index + allMenuItems.length) * 30}ms`
-                  }}>
-                        <span className="font-medium">{category.name}</span>
-                        <Badge variant="secondary" className={`text-[10px] px-1.5 py-0 ${selectedCategory === category.name ? 'bg-white/20 text-white' : 'bg-primary/10 text-primary'}`}>
-                          {category.count}
-                        </Badge>
-                      </Button>)}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between p-3 bg-card rounded-lg border border-border/40">
+                      <div className="flex items-center gap-3">
+                        <div className="w-6 h-6 rounded-lg bg-primary/10 flex items-center justify-center">
+                          <span className="text-xs">🌐</span>
+                        </div>
+                        <span className="font-medium text-foreground text-sm">Dil</span>
+                      </div>
+                      <Badge variant="outline" className="text-xs">AZ</Badge>
+                    </div>
                   </div>
                 </div>
 

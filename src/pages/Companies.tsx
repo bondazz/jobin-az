@@ -8,8 +8,10 @@ import { Job } from '@/types/job';
 import { generateCompanySEO, generateJobSEO, generatePageSEO, updatePageMeta } from '@/utils/seo';
 import BottomNavigation from '@/components/BottomNavigation';
 import MobileHeader from '@/components/MobileHeader';
+import CompanyProfile from '@/components/CompanyProfile';
 import { supabase } from '@/integrations/supabase/client';
 import { Tables } from '@/integrations/supabase/types';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 type Company = Tables<'companies'>;
 const Companies = () => {
@@ -24,6 +26,8 @@ const Companies = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [companies, setCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showMobileProfile, setShowMobileProfile] = useState(false);
+  const isMobile = useIsMobile();
 
   // Fetch companies from database
   useEffect(() => {
@@ -68,7 +72,12 @@ const Companies = () => {
     setSelectedCompany(company);
     setActiveTab('about');
     setSelectedJob(null);
-    navigate(`/companies/${company.slug}`);
+    
+    if (isMobile) {
+      setShowMobileProfile(true);
+    } else {
+      navigate(`/companies/${company.slug}`);
+    }
   };
   const handleJobSelect = async (job: Job) => {
     // Get job slug from database
@@ -280,6 +289,15 @@ const Companies = () => {
             </div>}
         </div>
       </div>
+
+      {/* Mobile Company Profile */}
+      {showMobileProfile && selectedCompany && (
+        <CompanyProfile 
+          company={selectedCompany}
+          onClose={() => setShowMobileProfile(false)}
+          isMobile={true}
+        />
+      )}
 
       {/* Bottom Navigation */}
       <BottomNavigation 

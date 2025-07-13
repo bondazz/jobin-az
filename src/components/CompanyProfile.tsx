@@ -1,0 +1,166 @@
+import React, { useState } from 'react';
+import { MapPin, Globe, Phone, Mail, Briefcase, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import JobListings from '@/components/JobListings';
+import { Job } from '@/types/job';
+import { Tables } from '@/integrations/supabase/types';
+import { supabase } from '@/integrations/supabase/client';
+import { useNavigate } from 'react-router-dom';
+
+type Company = Tables<'companies'>;
+
+interface CompanyProfileProps {
+  company: Company;
+  onClose: () => void;
+  isMobile?: boolean;
+}
+
+const CompanyProfile = ({ company, onClose, isMobile = false }: CompanyProfileProps) => {
+  const [activeTab, setActiveTab] = useState('about');
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  const navigate = useNavigate();
+
+  const handleJobSelect = async (job: Job) => {
+    // Get job slug from database
+    const { data } = await supabase
+      .from('jobs')
+      .select('slug')
+      .eq('id', job.id)
+      .single();
+    
+    if (data?.slug) {
+      navigate(`/vacancies/${data.slug}?company=${company.slug}`);
+    }
+  };
+
+  if (isMobile) {
+    return (
+      <div className="fixed inset-0 bg-background z-50 overflow-y-auto">
+        {/* Mobile Header */}
+        <div className="sticky top-0 bg-background/95 backdrop-blur-md border-b border-border p-3 flex items-center justify-between z-10">
+          <div className="flex items-center gap-3">
+            {company.logo ? (
+              <img src={company.logo} alt={company.name} className="w-8 h-8 rounded-md object-cover" />
+            ) : (
+              <div className="w-8 h-8 rounded-md bg-gradient-primary flex items-center justify-center text-white font-bold text-sm">
+                {company.name.charAt(0)}
+              </div>
+            )}
+            <h1 className="text-lg font-bold text-foreground truncate">{company.name}</h1>
+          </div>
+          <Button variant="ghost" size="sm" onClick={onClose} className="p-2">
+            <X className="w-5 h-5" />
+          </Button>
+        </div>
+
+        <div className="p-4 pb-20">
+          {/* Company Info Card */}
+          <div className="bg-card rounded-lg border border-border p-4 mb-4">
+            <div className="flex items-start gap-4 mb-4">
+              {company.logo ? (
+                <img src={company.logo} alt={company.name} className="w-16 h-16 rounded-lg object-cover" />
+              ) : (
+                <div className="w-16 h-16 rounded-lg bg-gradient-primary flex items-center justify-center text-white font-bold text-xl">
+                  {company.name.charAt(0)}
+                </div>
+              )}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <h2 className="text-xl font-bold text-foreground">{company.name}</h2>
+                  {company.is_verified && (
+                    <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
+                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                  )}
+                </div>
+                {company.address && (
+                  <div className="flex items-center gap-1 text-muted-foreground text-sm">
+                    <MapPin className="w-3 h-3" />
+                    <span className="truncate">{company.address}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Contact Info */}
+            <div className="space-y-2">
+              {company.website && (
+                <div className="flex items-center gap-2">
+                  <Globe className="w-4 h-4 text-primary" />
+                  <a href={company.website.startsWith('http') ? company.website : `https://${company.website}`} 
+                     target="_blank" rel="noopener noreferrer" 
+                     className="text-primary hover:underline text-sm truncate">
+                    {company.website}
+                  </a>
+                </div>
+              )}
+              {company.phone && (
+                <div className="flex items-center gap-2">
+                  <Phone className="w-4 h-4 text-primary" />
+                  <span className="text-foreground text-sm">{company.phone}</span>
+                </div>
+              )}
+              {company.email && (
+                <div className="flex items-center gap-2">
+                  <Mail className="w-4 h-4 text-primary" />
+                  <span className="text-foreground text-sm">{company.email}</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Tab Navigation */}
+          <div className="flex gap-2 mb-4">
+            <Button 
+              variant={activeTab === 'about' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setActiveTab('about')}
+              className="flex-1"
+            >
+              Haqqında
+            </Button>
+            <Button 
+              variant={activeTab === 'jobs' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setActiveTab('jobs')}
+              className="flex-1"
+            >
+              <Briefcase className="w-4 h-4 mr-1" />
+              İş Elanları
+            </Button>
+          </div>
+
+          {/* Tab Content */}
+          {activeTab === 'about' ? (
+            <div className="bg-card rounded-lg border border-border p-4">
+              <h3 className="text-lg font-semibold text-foreground mb-3">Şirkət Haqqında</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                {company.description || `${company.name} Azərbaycanın aparıcı şirkətlərindən biridir. 
+                Bizim missiyamız keyfiyyətli xidmətlər təqdim etmək və müştərilərimizin 
+                ehtiyaclarını qarşılamaqdır.`}
+              </p>
+            </div>
+          ) : (
+            <div>
+              <JobListings 
+                selectedJob={selectedJob} 
+                onJobSelect={handleJobSelect} 
+                selectedCategory="" 
+                companyFilter={company.id} 
+                showHeader={false}
+              />
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Desktop version remains the same
+  return null;
+};
+
+export default CompanyProfile;
