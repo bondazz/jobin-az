@@ -36,7 +36,7 @@ const CompanyProfile = ({ company, onClose, isMobile = false }: CompanyProfilePr
 
   if (isMobile) {
     return (
-      <div className="fixed inset-0 bg-background z-50 overflow-y-auto">
+      <div className="fixed inset-0 bg-background z-30 overflow-y-auto pb-20">
         {/* Mobile Header */}
         <div className="sticky top-0 bg-background/95 backdrop-blur-md border-b border-border p-3 flex items-center justify-between z-10">
           <div className="flex items-center gap-3">
