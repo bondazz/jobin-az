@@ -269,6 +269,10 @@ export type Database = {
         Args: { user_uuid: string }
         Returns: string
       }
+      increment_job_views: {
+        Args: { job_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

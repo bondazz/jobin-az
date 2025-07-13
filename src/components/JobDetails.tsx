@@ -41,8 +41,18 @@ const JobDetails = ({ jobId, isMobile = false }: JobDetailsProps) => {
       // Check if job is saved
       const savedJobs = JSON.parse(localStorage.getItem('savedJobs') || '[]');
       setIsSaved(savedJobs.includes(jobId));
+      // Increment view count
+      incrementViewCount(jobId);
     }
   }, [jobId]);
+
+  const incrementViewCount = async (id: string) => {
+    try {
+      await supabase.rpc('increment_job_views', { job_id: id });
+    } catch (error) {
+      console.error('Error incrementing view count:', error);
+    }
+  };
 
   const fetchJobDetails = async (id: string) => {
     setLoading(true);
@@ -75,12 +85,6 @@ const JobDetails = ({ jobId, isMobile = false }: JobDetailsProps) => {
       }
 
       if (error) throw error;
-      
-      // Increment view count
-      await supabase
-        .from('jobs')
-        .update({ views: (data.views || 0) + 1 })
-        .eq('id', data.id);
 
       setJob(data);
       
