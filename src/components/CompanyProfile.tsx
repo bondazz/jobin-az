@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MapPin, Globe, Phone, Mail, Briefcase, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -7,6 +7,8 @@ import { Job } from '@/types/job';
 import { Tables } from '@/integrations/supabase/types';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
+import { useDynamicSEO } from '@/hooks/useSEO';
+import VerifyBadge from '@/components/ui/verify-badge';
 
 type Company = Tables<'companies'>;
 
@@ -19,7 +21,28 @@ interface CompanyProfileProps {
 const CompanyProfile = ({ company, onClose, isMobile = false }: CompanyProfileProps) => {
   const [activeTab, setActiveTab] = useState('about');
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  const [isClosing, setIsClosing] = useState(false);
   const navigate = useNavigate();
+
+  // SEO for company
+  useDynamicSEO('company', company);
+
+  // Update SEO when tab changes
+  useEffect(() => {
+    if (activeTab === 'about') {
+      useDynamicSEO('company', {
+        ...company,
+        seo_title: company.seo_title || `${company.name} - Haqqında | Şirkət Profili`,
+        seo_description: company.seo_description || `${company.name} şirkəti haqqında məlumat və ətraflı təfərrüatlar.`
+      });
+    } else if (activeTab === 'jobs') {
+      useDynamicSEO('company', {
+        ...company,
+        seo_title: company.seo_title || `${company.name} - İş Elanları | Vakansiyalar`,
+        seo_description: company.seo_description || `${company.name} şirkətində aktiv vakansiyalar və iş elanları.`
+      });
+    }
+  }, [activeTab, company]);
 
   const handleJobSelect = async (job: Job) => {
     // Get job slug from database
@@ -36,7 +59,7 @@ const CompanyProfile = ({ company, onClose, isMobile = false }: CompanyProfilePr
 
   if (isMobile) {
     return (
-      <div className="fixed inset-x-0 bottom-0 top-1/4 bg-background z-30 overflow-y-auto pb-20 rounded-t-xl border-t border-border shadow-2xl transform transition-transform duration-300 ease-out animate-slide-in-bottom">
+      <div className={`fixed inset-x-0 bottom-0 top-1/4 bg-background z-30 overflow-y-auto pb-20 rounded-t-xl border-t border-border shadow-2xl transform transition-transform duration-300 ease-out ${isClosing ? 'animate-slide-out-bottom' : 'animate-slide-in-bottom'}`}>
         {/* Mobile Header */}
         <div className="sticky top-0 bg-background/95 backdrop-blur-md border-b border-border p-3 flex items-center justify-between z-10 rounded-t-xl">
           <div className="flex items-center gap-3">
@@ -49,7 +72,10 @@ const CompanyProfile = ({ company, onClose, isMobile = false }: CompanyProfilePr
             )}
             <h1 className="text-lg font-bold text-foreground truncate">{company.name}</h1>
           </div>
-          <Button variant="ghost" size="sm" onClick={onClose} className="p-2">
+          <Button variant="ghost" size="sm" onClick={() => {
+            setIsClosing(true);
+            setTimeout(onClose, 300); // Wait for animation to complete
+          }} className="p-2">
             <X className="w-5 h-5" />
           </Button>
         </div>
@@ -68,13 +94,7 @@ const CompanyProfile = ({ company, onClose, isMobile = false }: CompanyProfilePr
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
                   <h2 className="text-xl font-bold text-foreground">{company.name}</h2>
-                  {company.is_verified && (
-                    <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
-                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                  )}
+                  {company.is_verified && <VerifyBadge size={20} />}
                 </div>
                 {company.address && (
                   <div className="flex items-center gap-1 text-muted-foreground text-sm">
