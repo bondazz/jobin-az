@@ -185,12 +185,12 @@ const Companies = () => {
                   <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/20"></div>
                   
                   {/* Company Logo - Floating */}
-                  <div className="absolute bottom-0 left-6 transform translate-y-1/2">
+                  <div className="absolute bottom-0 left-6 transform translate-y-1/3 z-10">
                     <div className="relative">
                       {selectedCompany.logo ? (
-                        <img src={selectedCompany.logo} alt={selectedCompany.name} className="w-24 h-24 rounded-2xl object-cover shadow-2xl border-4 border-background" />
+                        <img src={selectedCompany.logo} alt={selectedCompany.name} className="w-28 h-28 rounded-2xl object-cover shadow-2xl border-4 border-background" />
                       ) : (
-                        <div className="w-24 h-24 bg-gradient-primary rounded-2xl flex items-center justify-center text-white font-bold text-2xl shadow-2xl border-4 border-background">
+                        <div className="w-28 h-28 bg-gradient-primary rounded-2xl flex items-center justify-center text-white font-bold text-2xl shadow-2xl border-4 border-background">
                           {selectedCompany.name.charAt(0)}
                         </div>
                       )}
