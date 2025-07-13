@@ -7,7 +7,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { Job } from '@/types/job';
 import JobCard from './JobCard';
 import { Search, MapPin } from 'lucide-react';
-
 interface JobListingsProps {
   selectedJob: Job | null;
   onJobSelect: (job: Job) => void;
@@ -16,7 +15,6 @@ interface JobListingsProps {
   showHeader?: boolean;
   showOnlySaved?: boolean;
 }
-
 const JobListings = ({
   selectedJob,
   onJobSelect,
@@ -34,16 +32,16 @@ const JobListings = ({
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const { data, error } = await supabase
-          .from('jobs')
-          .select(`
+        const {
+          data,
+          error
+        } = await supabase.from('jobs').select(`
             *,
             companies (name, logo, is_verified),
             categories (name)
-          `)
-          .eq('is_active', true)
-          .order('created_at', { ascending: false });
-
+          `).eq('is_active', true).order('created_at', {
+          ascending: false
+        });
         if (error) throw error;
 
         // Transform data to match Job interface
@@ -59,15 +57,12 @@ const JobListings = ({
           description: job.description,
           requirements: job.requirements || [],
           benefits: job.benefits || [],
-          tags: (job.tags || []).filter((tag: string) => 
-            ['premium', 'new', 'urgent', 'remote'].includes(tag)
-          ) as ('premium' | 'new' | 'urgent' | 'remote')[],
+          tags: (job.tags || []).filter((tag: string) => ['premium', 'new', 'urgent', 'remote'].includes(tag)) as ('premium' | 'new' | 'urgent' | 'remote')[],
           views: job.views,
           postedAt: formatDate(job.created_at),
           category: job.categories?.name || '',
           applicationUrl: job.application_url
         })) || [];
-
         setJobs(transformedJobs);
       } catch (error) {
         console.error('Error fetching jobs:', error);
@@ -75,38 +70,30 @@ const JobListings = ({
         setLoading(false);
       }
     };
-
     fetchJobs();
   }, []);
-
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
     const diffTime = Math.abs(now.getTime() - date.getTime());
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
     if (diffDays === 1) return 'Today';
     if (diffDays === 2) return 'Yesterday';
     if (diffDays <= 7) return `${diffDays - 1} days ago`;
     if (diffDays <= 30) return `${Math.ceil(diffDays / 7)} weeks ago`;
     return `${Math.ceil(diffDays / 30)} months ago`;
   };
-
   const filteredJobs = useMemo(() => {
     let jobsToFilter = jobs;
-    
+
     // If showing only saved jobs, filter by saved job IDs first
     if (showOnlySaved) {
       const savedJobIds = JSON.parse(localStorage.getItem('savedJobs') || '[]');
       jobsToFilter = jobs.filter(job => savedJobIds.includes(job.id));
     }
-    
     const filtered = jobsToFilter.filter(job => {
-      const matchesSearch = searchQuery === '' || 
-        job.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        job.company.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesLocation = locationFilter === '' || 
-        job.location.toLowerCase().includes(locationFilter.toLowerCase());
+      const matchesSearch = searchQuery === '' || job.title.toLowerCase().includes(searchQuery.toLowerCase()) || job.company.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesLocation = locationFilter === '' || job.location.toLowerCase().includes(locationFilter.toLowerCase());
       const matchesCategory = !selectedCategory || job.category === selectedCategory;
       const matchesCompany = !companyFilter || job.company_id === companyFilter;
       return matchesSearch && matchesLocation && matchesCategory && matchesCompany;
@@ -129,9 +116,8 @@ const JobListings = ({
         const match = postedAt.match(/(\d+) (days?|weeks?|months?) ago/);
         if (match) {
           const [, num, unit] = match;
-          const multiplier = unit.includes('day') ? 1 : 
-                           unit.includes('week') ? 7 : 30;
-          return Date.now() - (parseInt(num) * multiplier * 86400000);
+          const multiplier = unit.includes('day') ? 1 : unit.includes('week') ? 7 : 30;
+          return Date.now() - parseInt(num) * multiplier * 86400000;
         }
         return Date.now() - parseInt(postedAt) * 86400000;
       };
@@ -140,7 +126,6 @@ const JobListings = ({
     sortedJobs = [...shuffledPremium, ...sortedRegular];
     return sortedJobs.slice(0, 20);
   }, [jobs, searchQuery, locationFilter, selectedCategory, companyFilter, showOnlySaved]);
-
   const getCategoryLabel = (category: string) => {
     const categoryMap: Record<string, string> = {
       'Technology': 'Texnologiya',
@@ -154,22 +139,14 @@ const JobListings = ({
     };
     return categoryMap[category] || category;
   };
-
   return <div className="flex-1 flex flex-col h-full bg-background">
       {/* Mobile/Tablet Sticky Header with Logo */}
-      {showHeader && (
-        <div className="lg:hidden sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border/50 shadow-sm">
-          <div className="flex justify-center items-center py-3 px-4">
-            <Link to="/">
-              <img src="/lovable-uploads/e888818f-70b8-405b-a5e8-f62f8e842525.png" alt="Logo" className="h-12 w-auto object-contain" />
-            </Link>
-          </div>
-        </div>
-      )}
+      {showHeader && <div className="lg:hidden sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border/50 shadow-sm">
+          
+        </div>}
 
       {/* Compact Search Section - Max height 73px */}
-      {showHeader && (
-        <div className="relative overflow-hidden bg-gradient-to-br from-background via-primary/8 to-accent/5 border-b border-border/30 max-h-[73px]">
+      {showHeader && <div className="relative overflow-hidden bg-gradient-to-br from-background via-primary/8 to-accent/5 border-b border-border/30 max-h-[73px]">
           <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-60"></div>
           
           <div className="relative px-4 py-2 h-[73px] flex items-center justify-center">
@@ -198,17 +175,14 @@ const JobListings = ({
               </div>
             </div>
           </div>
-        </div>
-      )}
+        </div>}
 
       {/* Job List - Responsive Container */}
       <div className="flex-1 overflow-y-auto p-2 bg-gradient-to-b from-transparent to-primary/5 w-full max-w-[100%] mx-auto">
         <div className="flex flex-col gap-2 justify-center items-center w-full max-w-full px-2">
-          {loading ? (
-            <div className="flex items-center justify-center py-16">
+          {loading ? <div className="flex items-center justify-center py-16">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-            </div>
-          ) : filteredJobs.length > 0 ? filteredJobs.map((job, index) => <div key={`job-${job.id}`} className="w-full max-w-full min-w-0">
+            </div> : filteredJobs.length > 0 ? filteredJobs.map((job, index) => <div key={`job-${job.id}`} className="w-full max-w-full min-w-0">
                 {/* Advertisement Banner every 6 jobs */}
                 {index > 0 && index % 6 === 0 && <div className="w-full max-w-full h-[60px] bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 rounded-xl mb-2 flex items-center justify-center animate-fade-in">
                     <div className="text-center">
@@ -242,5 +216,4 @@ const JobListings = ({
       </div>
     </div>;
 };
-
 export default JobListings;
