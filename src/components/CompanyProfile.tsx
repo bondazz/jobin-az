@@ -35,14 +35,14 @@ const CompanyProfile = ({ company, onClose, isMobile = false }: CompanyProfilePr
         title: company.seo_title || `${company.name} - Haqqında | Şirkət Profili`,
         description: company.seo_description || `${company.name} şirkəti haqqında məlumat və ətraflı təfərrüatlar.`,
         keywords: company.seo_keywords?.join(', ') || `${company.name}, şirkət, haqqında, Azərbaycan`,
-        url: `/sirketler/${company.slug}`
+        url: `/companies/${company.slug}`
       });
     } else if (activeTab === 'jobs') {
       updatePageMeta({
         title: company.seo_title || `${company.name} - İş Elanları | Vakansiyalar`,
         description: company.seo_description || `${company.name} şirkətində aktiv vakansiyalar və iş elanları.`,
         keywords: company.seo_keywords?.join(', ') || `${company.name}, şirkət, vakansiya, iş elanları, Azərbaycan`,
-        url: `/sirketler/${company.slug}`
+        url: `/companies/${company.slug}/vacancies`
       });
     }
   }, [activeTab, company]);
@@ -148,7 +148,7 @@ const CompanyProfile = ({ company, onClose, isMobile = false }: CompanyProfilePr
                   title: company.seo_title || `${company.name} - Haqqında | Şirkət Profili`,
                   description: company.seo_description || `${company.name} şirkəti haqqında məlumat və ətraflı təfərrüatlar.`,
                   keywords: company.seo_keywords?.join(', ') || `${company.name}, şirkət, haqqında, Azərbaycan`,
-                  url: `/sirketler/${company.slug}`
+                  url: `/companies/${company.slug}`
                 });
               }}
               className="flex-1"
@@ -166,7 +166,7 @@ const CompanyProfile = ({ company, onClose, isMobile = false }: CompanyProfilePr
                   title: company.seo_title || `${company.name} - İş Elanları | Vakansiyalar`,
                   description: company.seo_description || `${company.name} şirkətində aktiv vakansiyalar və iş elanları.`,
                   keywords: company.seo_keywords?.join(', ') || `${company.name}, şirkət, vakansiya, iş elanları, Azərbaycan`,
-                  url: `/sirketler/${company.slug}/vakansiyalar`
+                  url: `/companies/${company.slug}/vacancies`
                 });
               }}
               className="flex-1"

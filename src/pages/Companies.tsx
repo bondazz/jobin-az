@@ -11,7 +11,7 @@ import MobileHeader from '@/components/MobileHeader';
 import CompanyProfile from '@/components/CompanyProfile';
 import { supabase } from '@/integrations/supabase/client';
 import { Tables } from '@/integrations/supabase/types';
-import { useIsMobile } from '@/hooks/use-mobile';
+import { useIsMobile, useIsMobileOrTablet } from '@/hooks/use-mobile';
 import VerifyBadge from '@/components/ui/verify-badge';
 
 type Company = Tables<'companies'>;
@@ -29,6 +29,7 @@ const Companies = () => {
   const [loading, setLoading] = useState(true);
   const [showMobileProfile, setShowMobileProfile] = useState(false);
   const isMobile = useIsMobile();
+  const isMobileOrTablet = useIsMobileOrTablet();
 
   // Fetch companies from database
   useEffect(() => {
@@ -84,7 +85,7 @@ const Companies = () => {
     // Always navigate to update URL, regardless of device type
     navigate(`/companies/${company.slug}`);
     
-    if (isMobile) {
+    if (isMobileOrTablet) {
       setShowMobileProfile(true);
     }
   };
@@ -300,12 +301,12 @@ const Companies = () => {
         </div>
       </div>
 
-      {/* Mobile Company Profile */}
+      {/* Mobile/Tablet Company Profile */}
       {showMobileProfile && selectedCompany && (
         <CompanyProfile 
           company={selectedCompany}
           onClose={() => setShowMobileProfile(false)}
-          isMobile={true}
+          isMobile={isMobileOrTablet}
         />
       )}
 
