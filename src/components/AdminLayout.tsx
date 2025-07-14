@@ -10,7 +10,8 @@ import {
   Settings, 
   LogOut,
   Menu,
-  X
+  X,
+  DollarSign
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -48,6 +49,11 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
       name: 'Kateqoriyalar',
       path: '/admin/categories',
       icon: Tag,
+    },
+    {
+      name: 'Qiymətlər',
+      path: '/admin/pricing',
+      icon: DollarSign,
     },
     {
       name: 'Tənzimləmələr',
