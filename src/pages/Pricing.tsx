@@ -8,39 +8,25 @@ import { generatePageSEO, updatePageMeta } from '@/utils/seo';
 import BottomNavigation from '@/components/BottomNavigation';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-
 const Pricing = () => {
   const [plans, setPlans] = useState<any[]>([]);
   const [features, setFeatures] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
-
+  const {
+    toast
+  } = useToast();
   useEffect(() => {
     const seoData = generatePageSEO('services');
     updatePageMeta(seoData);
     fetchPricingData();
   }, []);
-
   const fetchPricingData = async () => {
     try {
-      const [plansResponse, featuresResponse] = await Promise.all([
-        supabase
-          .from('pricing_plans')
-          .select('*')
-          .eq('is_active', true)
-          .order('display_order'),
-        supabase
-          .from('pricing_features')
-          .select('*')
-          .eq('is_active', true)
-          .order('category, display_order')
-      ]);
-
+      const [plansResponse, featuresResponse] = await Promise.all([supabase.from('pricing_plans').select('*').eq('is_active', true).order('display_order'), supabase.from('pricing_features').select('*').eq('is_active', true).order('category, display_order')]);
       if (plansResponse.error) throw plansResponse.error;
       if (featuresResponse.error) throw featuresResponse.error;
-
       setPlans(plansResponse.data || []);
-      
+
       // Group features by category
       const groupedFeatures = (featuresResponse.data || []).reduce((acc: any, feature: any) => {
         if (!acc[feature.category]) {
@@ -54,12 +40,10 @@ const Pricing = () => {
         });
         return acc;
       }, {});
-
       const featuresArray = Object.entries(groupedFeatures).map(([category, items]) => ({
         category,
         items
       }));
-
       setFeatures(featuresArray);
     } catch (error) {
       console.error('Error fetching pricing data:', error);
@@ -72,7 +56,6 @@ const Pricing = () => {
       setLoading(false);
     }
   };
-
   const getIconComponent = (iconName: string) => {
     switch (iconName) {
       case 'Zap':
@@ -83,17 +66,12 @@ const Pricing = () => {
         return Star;
     }
   };
-
   if (loading) {
-    return (
-      <div className="h-full flex items-center justify-center">
+    return <div className="h-full flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-      </div>
-    );
+      </div>;
   }
-
-  return (
-    <div className="h-full overflow-y-auto bg-gradient-to-br from-background to-primary/5">
+  return <div className="h-full overflow-y-auto bg-gradient-to-br from-background to-primary/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="text-center mb-16 animate-fade-in">
@@ -111,26 +89,17 @@ const Pricing = () => {
 
         {/* Pricing Cards */}
         <div className="max-w-4xl mx-auto space-y-4 mb-20">
-          {plans.map((plan, index) => (
-            <Card 
-              key={plan.id} 
-              className={`border-2 hover:border-primary/50 transition-all duration-300 animate-fade-in ${
-                plan.is_popular 
-                  ? 'border-primary bg-gradient-to-r from-primary/5 to-primary/10' 
-                  : 'border-border hover:bg-accent/30'
-              }`}
-              style={{ animationDelay: `${index * 150}ms` }}
-            >
+          {plans.map((plan, index) => <Card key={plan.id} className={`border-2 hover:border-primary/50 transition-all duration-300 animate-fade-in ${plan.is_popular ? 'border-primary bg-gradient-to-r from-primary/5 to-primary/10' : 'border-border hover:bg-accent/30'}`} style={{
+          animationDelay: `${index * 150}ms`
+        }}>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
                       <h3 className="text-xl font-bold text-foreground">{plan.name}</h3>
-                      {plan.is_popular && (
-                        <Badge variant="premium" className="px-3 py-1 text-xs font-semibold">
+                      {plan.is_popular && <Badge variant="premium" className="px-3 py-1 text-xs font-semibold">
                           PREMIUM
-                        </Badge>
-                      )}
+                        </Badge>}
                     </div>
                     <p className="text-muted-foreground leading-relaxed">{plan.description}</p>
                   </div>
@@ -138,16 +107,13 @@ const Pricing = () => {
                     <div className="text-3xl font-bold text-primary mb-1">
                       {plan.price} AZN
                     </div>
-                    {plan.price !== '0' && (
-                      <div className="text-sm text-muted-foreground">
+                    {plan.price !== '0' && <div className="text-sm text-muted-foreground">
                         / {plan.period}
-                      </div>
-                    )}
+                      </div>}
                   </div>
                 </div>
               </CardContent>
-            </Card>
-          ))}
+            </Card>)}
         </div>
 
 
@@ -213,7 +179,7 @@ const Pricing = () => {
                 </h3>
                 <div className="space-y-4 text-muted-foreground leading-relaxed">
                   <p>
-                    <strong className="text-foreground">JobSearch.az</strong> rəsmi qeydiyyatdan keçmiş hüquqi şəxsdir və bütün ödənişlər 
+                    <strong className="text-foreground">Jooble.az</strong> rəsmi qeydiyyatdan keçmiş hüquqi şəxsdir və bütün ödənişlər 
                     bank köçürməsi ilə qəbul olunur. Xidmətlərimizə görə bütün vergi və rəsmi sənədlər qanunvericiliyə uyğun təqdim edilir.
                   </p>
                   <p>
@@ -228,12 +194,7 @@ const Pricing = () => {
       </div>
 
       {/* Bottom Navigation */}
-      <BottomNavigation 
-        selectedCategory=""
-        onCategorySelect={() => {}}
-      />
-    </div>
-  );
+      <BottomNavigation selectedCategory="" onCategorySelect={() => {}} />
+    </div>;
 };
-
 export default Pricing;
