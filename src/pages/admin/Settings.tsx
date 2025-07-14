@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import AdminLayout from '@/components/AdminLayout';
+import ImageUpload from '@/components/ImageUpload';
 import { 
   Save,
   Globe,
@@ -18,7 +19,9 @@ import {
   Facebook,
   Twitter,
   Instagram,
-  Linkedin
+  Linkedin,
+  Sun,
+  Moon
 } from 'lucide-react';
 
 interface SiteSetting {
@@ -31,7 +34,8 @@ export default function AdminSettings() {
   const [settings, setSettings] = useState<{ [key: string]: any }>({
     site_title: '',
     site_description: '',
-    site_logo: '',
+    site_logo_light: '',
+    site_logo_dark: '',
     contact_email: '',
     contact_phone: '',
     contact_address: '',
@@ -137,7 +141,8 @@ export default function AdminSettings() {
     const descriptions: { [key: string]: string } = {
       site_title: 'Saytın əsas başlığı',
       site_description: 'Saytın təsviri',
-      site_logo: 'Saytın loqosu URL',
+      site_logo_light: 'Gündüz rejimi üçün sayt loqosu',
+      site_logo_dark: 'Gecə rejimi üçün sayt loqosu',
       contact_email: 'Əlaqə email adresi',
       contact_phone: 'Əlaqə telefon nömrəsi',
       contact_address: 'Əlaqə ünvanı',
@@ -185,27 +190,16 @@ export default function AdminSettings() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="site_title">Sayt Başlığı</Label>
-                  <Input
-                    id="site_title"
-                    value={settings.site_title || ''}
-                    onChange={(e) => handleInputChange('site_title', e.target.value)}
-                    placeholder="İş Portalı"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="site_logo">Loqo URL</Label>
-                  <Input
-                    id="site_logo"
-                    type="url"
-                    value={settings.site_logo || ''}
-                    onChange={(e) => handleInputChange('site_logo', e.target.value)}
-                    placeholder="https://example.com/logo.png"
-                  />
-                </div>
+              <div className="space-y-2">
+                <Label htmlFor="site_title">Sayt Başlığı</Label>
+                <Input
+                  id="site_title"
+                  value={settings.site_title || ''}
+                  onChange={(e) => handleInputChange('site_title', e.target.value)}
+                  placeholder="İş Portalı"
+                />
               </div>
+              
               <div className="space-y-2">
                 <Label htmlFor="site_description">Sayt Təsviri</Label>
                 <Textarea
@@ -215,6 +209,48 @@ export default function AdminSettings() {
                   rows={3}
                   placeholder="Ən yaxşı iş imkanları burada..."
                 />
+              </div>
+
+              {/* Logo Upload Section */}
+              <div className="space-y-6">
+                <div className="border-t pt-6">
+                  <h3 className="text-lg font-medium mb-4 flex items-center gap-2">
+                    <Sun className="h-5 w-5" />
+                    Sayt Loqoları
+                  </h3>
+                  
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Light Mode Logo */}
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Sun className="h-4 w-4 text-yellow-500" />
+                        <Label className="text-sm font-medium">Gündüz Rejimi Loqosu</Label>
+                      </div>
+                      <ImageUpload
+                        value={settings.site_logo_light || ''}
+                        onChange={(url) => handleInputChange('site_logo_light', url)}
+                        label=""
+                        placeholder="Gündüz rejimi üçün loqo yükləyin"
+                        className="w-full"
+                      />
+                    </div>
+
+                    {/* Dark Mode Logo */}
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Moon className="h-4 w-4 text-blue-400" />
+                        <Label className="text-sm font-medium">Gecə Rejimi Loqosu</Label>
+                      </div>
+                      <ImageUpload
+                        value={settings.site_logo_dark || ''}
+                        onChange={(url) => handleInputChange('site_logo_dark', url)}
+                        label=""
+                        placeholder="Gecə rejimi üçün loqo yükləyin"
+                        className="w-full"
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
