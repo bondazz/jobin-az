@@ -110,137 +110,46 @@ const Pricing = () => {
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-20">
-          {plans.map((plan, index) => {
-            const IconComponent = getIconComponent(plan.icon);
-            return (
-              <Card 
-                key={plan.id} 
-                className={`relative group border-2 hover:border-primary/50 shadow-lg hover:shadow-2xl transition-all duration-500 animate-fade-in ${
-                  plan.is_popular 
-                    ? 'lg:scale-110 border-primary shadow-2xl bg-gradient-to-br from-primary/5 to-primary/10' 
-                    : 'border-border hover:bg-accent/30'
-                }`}
-                style={{ animationDelay: `${index * 200}ms` }}
-              >
-                {plan.is_popular && (
-                  <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 z-10">
-                    <Badge variant="premium" className="px-6 py-2 text-sm font-semibold shadow-xl">
-                      <PremiumIcon size={16} className="mr-2" />
-                      Ən Populyar Seçim
-                    </Badge>
-                  </div>
-                )}
-                
-                <CardHeader className="text-center pb-6 pt-8">
-                  <div className="flex items-center justify-center mb-6">
-                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110 ${
-                      plan.is_popular 
-                        ? 'bg-gradient-to-br from-primary to-primary/80 text-white shadow-lg' 
-                        : 'bg-primary/10 text-primary group-hover:bg-primary/20'
-                    }`}>
-                      <IconComponent className="w-8 h-8" />
+        <div className="max-w-4xl mx-auto space-y-4 mb-20">
+          {plans.map((plan, index) => (
+            <Card 
+              key={plan.id} 
+              className={`border-2 hover:border-primary/50 transition-all duration-300 animate-fade-in ${
+                plan.is_popular 
+                  ? 'border-primary bg-gradient-to-r from-primary/5 to-primary/10' 
+                  : 'border-border hover:bg-accent/30'
+              }`}
+              style={{ animationDelay: `${index * 150}ms` }}
+            >
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <h3 className="text-xl font-bold text-foreground">{plan.name}</h3>
+                      {plan.is_popular && (
+                        <Badge variant="premium" className="px-3 py-1 text-xs font-semibold">
+                          PREMIUM
+                        </Badge>
+                      )}
                     </div>
+                    <p className="text-muted-foreground leading-relaxed">{plan.description}</p>
                   </div>
-                  <CardTitle className="text-3xl font-bold mb-2">{plan.name}</CardTitle>
-                  <div className="flex items-baseline justify-center gap-2 mb-4">
-                    <span className="text-5xl font-bold text-foreground">{plan.price}</span>
-                    <div className="text-left">
-                      <span className="text-lg text-muted-foreground block">AZN</span>
-                      <span className="text-sm text-muted-foreground">/ {plan.period}</span>
+                  <div className="text-right ml-6">
+                    <div className="text-3xl font-bold text-primary mb-1">
+                      {plan.price} AZN
                     </div>
-                  </div>
-                  <p className="text-muted-foreground text-lg leading-relaxed">{plan.description}</p>
-                </CardHeader>
-                
-                <CardContent className="px-8 pb-8">
-                  <ul className="space-y-4 mb-10">
-                    {plan.features?.map((feature: string, idx: number) => (
-                      <li key={idx} className="flex items-start gap-4">
-                        <div className="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center mt-1 flex-shrink-0">
-                          <Check className="w-4 h-4 text-primary" />
-                        </div>
-                        <span className="text-muted-foreground leading-relaxed">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  
-                  <Button 
-                    variant={plan.is_popular ? "default" : "outline"}
-                    size="lg"
-                    className={`w-full py-4 text-lg font-semibold rounded-2xl transition-all duration-300 ${
-                      plan.is_popular 
-                        ? 'bg-gradient-primary hover:opacity-90 shadow-xl hover:shadow-2xl hover:scale-105' 
-                        : 'hover:bg-primary hover:text-white hover:scale-105'
-                    }`}
-                  >
-                    {plan.price === '0' ? 'Pulsuz Başla' : 'Planı Seç'}
-                  </Button>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-
-        {/* Feature Comparison */}
-        {features.length > 0 && (
-          <Card className="border-2 border-border/50 shadow-xl animate-fade-in mb-20">
-            <CardHeader className="bg-gradient-to-r from-primary/5 to-primary/10">
-              <CardTitle className="text-3xl text-center font-bold">Xüsusiyyətlərin Müqayisəsi</CardTitle>
-              <p className="text-center text-muted-foreground mt-2">Planların ətraflı müqayisəsi</p>
-            </CardHeader>
-            <CardContent className="p-8">
-              {features.map((category: any) => (
-                <div key={category.category} className="mb-10 last:mb-0">
-                  <h3 className="text-xl font-bold text-foreground mb-6 flex items-center gap-3">
-                    <div className="w-3 h-3 bg-primary rounded-full"></div>
-                    {category.category}
-                  </h3>
-                  <div className="overflow-x-auto rounded-xl border border-border">
-                    <table className="w-full">
-                      <thead>
-                        <tr className="bg-accent/30 border-b border-border">
-                          <th className="text-left py-4 px-6 font-semibold text-foreground">Xüsusiyyət</th>
-                          <th className="text-center py-4 px-6 font-semibold text-foreground">Əsas</th>
-                          <th className="text-center py-4 px-6 font-semibold text-foreground">Premium</th>
-                          <th className="text-center py-4 px-6 font-semibold text-foreground">Şirkət</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {category.items.map((item: any, idx: number) => (
-                          <tr key={idx} className="border-b border-border/30 hover:bg-accent/20 transition-colors">
-                            <td className="py-4 px-6 text-muted-foreground font-medium">{item.name}</td>
-                            <td className="py-4 px-6 text-center">
-                              {item.basic ? (
-                                <Check className="w-6 h-6 text-primary mx-auto" />
-                              ) : (
-                                <span className="text-muted-foreground text-lg">—</span>
-                              )}
-                            </td>
-                            <td className="py-4 px-6 text-center">
-                              {item.premium ? (
-                                <Check className="w-6 h-6 text-primary mx-auto" />
-                              ) : (
-                                <span className="text-muted-foreground text-lg">—</span>
-                              )}
-                            </td>
-                            <td className="py-4 px-6 text-center">
-                              {item.enterprise ? (
-                                <Check className="w-6 h-6 text-primary mx-auto" />
-                              ) : (
-                                <span className="text-muted-foreground text-lg">—</span>
-                              )}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                    {plan.price !== '0' && (
+                      <div className="text-sm text-muted-foreground">
+                        / {plan.period}
+                      </div>
+                    )}
                   </div>
                 </div>
-              ))}
-            </CardContent>
-          </Card>
-        )}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
 
         {/* Service Information */}
         <div className="prose prose-lg max-w-none">
