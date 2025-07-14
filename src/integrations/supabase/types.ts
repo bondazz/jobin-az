@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      about_content: {
+        Row: {
+          content: Json | null
+          created_at: string
+          description: string | null
+          display_order: number
+          id: string
+          is_active: boolean
+          section_type: string
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          content?: Json | null
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          section_type: string
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          content?: Json | null
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          section_type?: string
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string
@@ -199,6 +235,90 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      pricing_features: {
+        Row: {
+          basic_plan: boolean
+          category: string
+          created_at: string
+          display_order: number
+          enterprise_plan: boolean
+          feature_name: string
+          id: string
+          is_active: boolean
+          premium_plan: boolean
+          updated_at: string
+        }
+        Insert: {
+          basic_plan?: boolean
+          category: string
+          created_at?: string
+          display_order?: number
+          enterprise_plan?: boolean
+          feature_name: string
+          id?: string
+          is_active?: boolean
+          premium_plan?: boolean
+          updated_at?: string
+        }
+        Update: {
+          basic_plan?: boolean
+          category?: string
+          created_at?: string
+          display_order?: number
+          enterprise_plan?: boolean
+          feature_name?: string
+          id?: string
+          is_active?: boolean
+          premium_plan?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      pricing_plans: {
+        Row: {
+          created_at: string
+          description: string
+          display_order: number
+          features: string[]
+          icon: string
+          id: string
+          is_active: boolean
+          is_popular: boolean
+          name: string
+          period: string
+          price: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          display_order?: number
+          features?: string[]
+          icon?: string
+          id?: string
+          is_active?: boolean
+          is_popular?: boolean
+          name: string
+          period: string
+          price: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          display_order?: number
+          features?: string[]
+          icon?: string
+          id?: string
+          is_active?: boolean
+          is_popular?: boolean
+          name?: string
+          period?: string
+          price?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
