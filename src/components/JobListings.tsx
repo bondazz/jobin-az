@@ -77,11 +77,11 @@ const JobListings = ({
     const now = new Date();
     const diffTime = Math.abs(now.getTime() - date.getTime());
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    if (diffDays === 1) return 'Today';
-    if (diffDays === 2) return 'Yesterday';
-    if (diffDays <= 7) return `${diffDays - 1} days ago`;
-    if (diffDays <= 30) return `${Math.ceil(diffDays / 7)} weeks ago`;
-    return `${Math.ceil(diffDays / 30)} months ago`;
+    if (diffDays === 1) return 'Bu gün';
+    if (diffDays === 2) return 'Dünən';
+    if (diffDays <= 7) return `${diffDays - 1} gün əvvəl`;
+    if (diffDays <= 30) return `${Math.ceil(diffDays / 7)} həftə əvvəl`;
+    return `${Math.ceil(diffDays / 30)} ay əvvəl`;
   };
   const filteredJobs = useMemo(() => {
     let jobsToFilter = jobs;

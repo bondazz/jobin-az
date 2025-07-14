@@ -6,6 +6,7 @@ import { Check, Star, Zap, Crown } from 'lucide-react';
 import PremiumIcon from '@/components/ui/premium-icon';
 import { generatePageSEO, updatePageMeta } from '@/utils/seo';
 import BottomNavigation from '@/components/BottomNavigation';
+import MobileHeader from '@/components/MobileHeader';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 const Pricing = () => {
@@ -72,7 +73,10 @@ const Pricing = () => {
       </div>;
   }
   return <div className="h-full overflow-y-auto bg-gradient-to-br from-background to-primary/5">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Mobile Header */}
+      <MobileHeader />
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-20 xl:pt-8 pb-24 xl:pb-8">
         {/* Header */}
         <div className="text-center mb-16 animate-fade-in">
           <div className="flex items-center justify-center gap-2 mb-6">

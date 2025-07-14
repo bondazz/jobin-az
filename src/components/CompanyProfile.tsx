@@ -68,7 +68,19 @@ const CompanyProfile = ({ company, onClose, isMobile = false }: CompanyProfilePr
 
         <div className="p-4 pb-20">
           {/* Company Info Card */}
-          <div className="bg-card rounded-lg border border-border p-4 mb-4">
+          <div className="bg-card rounded-lg border border-border p-4 mb-4 relative overflow-hidden">
+            {/* Background Image */}
+            {company.background_image && (
+              <div 
+                className="absolute inset-0 bg-cover bg-center opacity-20"
+                style={{ 
+                  backgroundImage: `url(${company.background_image})`,
+                  backgroundPosition: 'center',
+                  backgroundSize: 'cover'
+                }}
+              />
+            )}
+            <div className="relative z-10">
             <div className="flex items-start gap-4 mb-4">
               {company.logo ? (
                 <img src={company.logo} alt={company.name} className="w-16 h-16 rounded-lg object-cover" />
@@ -116,6 +128,7 @@ const CompanyProfile = ({ company, onClose, isMobile = false }: CompanyProfilePr
                 </div>
               )}
             </div>
+          </div>
           </div>
 
           {/* Tab Navigation */}

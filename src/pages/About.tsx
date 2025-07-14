@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Users, Target, Award, Globe } from 'lucide-react';
 import { generatePageSEO, updatePageMeta } from '@/utils/seo';
 import BottomNavigation from '@/components/BottomNavigation';
+import MobileHeader from '@/components/MobileHeader';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 const About = () => {
@@ -65,7 +66,10 @@ const About = () => {
   const featuresData = aboutData.features?.content || [];
   const contactData = aboutData.contact?.content || [];
   return <div className="h-full overflow-y-auto bg-gradient-to-br from-background to-primary/5">
-      <div className="p-8">
+      {/* Mobile Header */}
+      <MobileHeader />
+      
+      <div className="p-8 pt-20 xl:pt-8 pb-24 xl:pb-8">
         {/* Header */}
         <div className="text-center mb-12 animate-fade-in">
           <div className="flex items-center justify-center gap-3 mb-4">
