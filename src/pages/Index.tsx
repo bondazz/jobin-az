@@ -8,6 +8,7 @@ import JobDetails from '@/components/JobDetails';
 import MobileMenu from '@/components/MobileMenu';
 import BottomNavigation from '@/components/BottomNavigation';
 import MobileHeader from '@/components/MobileHeader';
+import AdBanner from '@/components/AdBanner';
 import { generatePageSEO, updatePageMeta } from '@/utils/seo';
 
 interface Category {
@@ -147,8 +148,11 @@ const Index = () => {
       {/* Mobile Header */}
       <MobileHeader />
       
+      {/* Header Advertisement */}
+      <AdBanner position="header" className="hidden lg:block absolute top-0 left-72 right-0 p-3 z-10" />
+      
       {/* Main Content Area */}
-      <div className="flex-1 flex min-w-0 pb-16 xl:pb-0 pt-14 xl:pt-0">
+      <div className="flex-1 flex min-w-0 pb-16 xl:pb-0 pt-14 xl:pt-0 lg:pt-20">
         {/* Job Listings - Responsive Column */}
         <div className="w-full lg:w-[400px] xl:w-[450px] border-r border-border animate-fade-in">
           {/* Active Filters */}
@@ -197,7 +201,12 @@ const Index = () => {
 
         {/* Job Details - Desktop Only */}
         <div className="hidden lg:block flex-1 bg-gradient-to-br from-job-details to-primary/3 animate-slide-in-right">
-                  <JobDetails jobId={selectedJob?.id || null} />
+          <JobDetails jobId={selectedJob?.id || null} />
+          
+          {/* Content Advertisement */}
+          <div className="p-4">
+            <AdBanner position="content" />
+          </div>
         </div>
       </div>
 
@@ -215,6 +224,9 @@ const Index = () => {
           </div>
         </div>
       )}
+
+      {/* Footer Advertisement */}
+      <AdBanner position="footer" className="hidden lg:block absolute bottom-0 left-72 right-0 p-3 bg-background/90 backdrop-blur-sm border-t border-border" />
 
       {/* Bottom Navigation - Mobile Only */}
       <BottomNavigation 

@@ -11,7 +11,8 @@ import {
   LogOut,
   Menu,
   X,
-  DollarSign
+  DollarSign,
+  Megaphone
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -54,6 +55,11 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
       name: 'Qiymətlər',
       path: '/admin/pricing',
       icon: DollarSign,
+    },
+    {
+      name: 'Reklamlar',
+      path: '/admin/advertisements',
+      icon: Megaphone,
     },
     {
       name: 'Tənzimləmələr',

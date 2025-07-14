@@ -17,6 +17,7 @@ import AdminJobs from "./pages/admin/Jobs";
 import AdminCompanies from "./pages/admin/Companies";
 import AdminCategories from "./pages/admin/Categories";
 import AdminPricing from "./pages/admin/Pricing";
+import AdminAdvertisements from "./pages/admin/Advertisements";
 import AdminSettings from "./pages/admin/Settings";
 
 // Lazy load SavedJobs to avoid circular dependency issues
@@ -62,6 +63,7 @@ const App = () => (
           <Route path="/admin/companies" element={<AdminCompanies />} />
           <Route path="/admin/categories" element={<AdminCategories />} />
           <Route path="/admin/pricing" element={<AdminPricing />} />
+          <Route path="/admin/advertisements" element={<AdminAdvertisements />} />
           <Route path="/admin/settings" element={<AdminSettings />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

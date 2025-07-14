@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import ThemeToggle from '@/components/ThemeToggle';
 import LanguageToggle from '@/components/LanguageToggle';
+import AdBanner from '@/components/AdBanner';
 import { Briefcase, Tag, Building, Bookmark, Bell, TrendingUp, Info, DollarSign, Calendar, BarChart3 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -192,6 +193,9 @@ const MainSidebar = () => {
             </div>
           </div>
         </div>
+        
+        {/* Sidebar Advertisements */}
+        <AdBanner position="sidebar" className="mt-3" />
       </div>
 
       {/* Footer */}
