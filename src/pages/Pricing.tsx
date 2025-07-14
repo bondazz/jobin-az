@@ -6,7 +6,6 @@ import { Check, Star, Zap, Crown } from 'lucide-react';
 import PremiumIcon from '@/components/ui/premium-icon';
 import { generatePageSEO, updatePageMeta } from '@/utils/seo';
 import BottomNavigation from '@/components/BottomNavigation';
-import MobileHeader from '@/components/MobileHeader';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 const Pricing = () => {
@@ -73,10 +72,7 @@ const Pricing = () => {
       </div>;
   }
   return <div className="h-full overflow-y-auto bg-gradient-to-br from-background to-primary/5">
-      {/* Mobile Header */}
-      <MobileHeader />
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-20 xl:pt-8 pb-24 xl:pb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="text-center mb-16 animate-fade-in">
           <div className="flex items-center justify-center gap-2 mb-6">
@@ -86,8 +82,7 @@ const Pricing = () => {
             </h1>
           </div>
           <p className="text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
-            Ehtiyaclarınıza uyğun planı seçin və karyeranızı yeni səviyyəyə çıxarın. 
-            Ən müasir texnologiyalar və professional xidmətlər ilə.
+            İşəgötürənlər üçün ideal həll: vakansiyalarınızı yerləşdirin, ən uyğun namizədləri tez tapın. Effektiv elanlarla vaxtınıza və büdcənizə qənaət edin.
           </p>
         </div>
 
@@ -102,7 +97,7 @@ const Pricing = () => {
                     <div className="flex items-center gap-3 mb-2">
                       <h3 className="text-xl font-bold text-foreground">{plan.name}</h3>
                       {plan.is_popular && <Badge variant="premium" className="px-3 py-1 text-xs font-semibold">
-                          POPULYAR
+                          PREMIUM
                         </Badge>}
                     </div>
                     <p className="text-muted-foreground leading-relaxed">{plan.description}</p>
