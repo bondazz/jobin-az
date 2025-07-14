@@ -21,6 +21,7 @@ import {
   Phone
 } from 'lucide-react';
 import VerifyBadge from '@/components/ui/verify-badge';
+import AdBanner from './AdBanner';
 
 interface JobDetailsProps {
   jobId: string | null;
@@ -133,16 +134,9 @@ const JobDetails = ({ jobId, isMobile = false }: JobDetailsProps) => {
     return (
       <div className="h-full flex items-center justify-center bg-gradient-to-br from-job-details to-primary/3">
         <div className="text-center p-8 animate-fade-in">
-          {/* 500x500px Banner Advertisement */}
-          <div className="w-[500px] h-[500px] bg-gradient-to-br from-primary/20 to-accent/20 border-2 border-dashed border-primary/30 rounded-xl flex items-center justify-center mx-auto mb-6">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Star className="w-8 h-8 text-primary" />
-              </div>
-              <h3 className="text-xl font-bold text-primary mb-2">Reklam Yeri</h3>
-              <p className="text-muted-foreground text-sm">500x500px Banner Reklamı</p>
-              <p className="text-muted-foreground text-xs mt-2">İlana toxunduqda bu yerə iş təfərrüatları gələcək</p>
-            </div>
+          {/* Banner Advertisement */}
+          <div className="max-w-[500px] mx-auto mb-6">
+            <AdBanner position="job_details" />
           </div>
           
           <div className="space-y-3">

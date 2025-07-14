@@ -57,7 +57,9 @@ const AdminAdvertisements = () => {
     { value: 'header', label: 'Header' },
     { value: 'sidebar', label: 'Sidebar' },
     { value: 'footer', label: 'Footer' },
-    { value: 'content', label: 'Content' }
+    { value: 'content', label: 'Content' },
+    { value: 'job_listing', label: 'İş Elanları Arası' },
+    { value: 'job_details', label: 'İş Təfərrüatları' }
   ];
 
   useEffect(() => {

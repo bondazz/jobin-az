@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { Job } from '@/types/job';
 import JobCard from './JobCard';
+import AdBanner from './AdBanner';
 import { Search, MapPin } from 'lucide-react';
 interface JobListingsProps {
   selectedJob: Job | null;
@@ -184,12 +185,7 @@ const JobListings = ({
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
             </div> : filteredJobs.length > 0 ? filteredJobs.map((job, index) => <div key={`job-${job.id}`} className="w-full max-w-full min-w-0">
                 {/* Advertisement Banner every 6 jobs */}
-                {index > 0 && index % 6 === 0 && <div className="w-full max-w-full h-[60px] bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 rounded-xl mb-2 flex items-center justify-center animate-fade-in">
-                    <div className="text-center">
-                      <p className="text-sm font-bold text-primary">Reklam Yeri</p>
-                      <p className="text-xs text-muted-foreground">Banner Reklamı</p>
-                    </div>
-                  </div>}
+                {index > 0 && index % 6 === 0 && <AdBanner position="job_listing" className="mb-2 animate-fade-in" />}
                 
                 <div className="animate-fade-in w-full" style={{
             animationDelay: `${index * 50}ms`
