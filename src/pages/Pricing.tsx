@@ -98,7 +98,7 @@ const Pricing = () => {
                     <div className="flex items-center gap-3 mb-2">
                       <h3 className="text-xl font-bold text-foreground">{plan.name}</h3>
                       {plan.is_popular && <Badge variant="premium" className="px-3 py-1 text-xs font-semibold">
-                          PREMIUM
+                          POPULYAR
                         </Badge>}
                     </div>
                     <p className="text-muted-foreground leading-relaxed">{plan.description}</p>

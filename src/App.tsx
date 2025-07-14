@@ -42,12 +42,12 @@ const App = () => (
            <Route path="/companies/:company/vacancies" element={<Companies />} />
            <Route path="/companies/:company/vacancy/:jobSlug" element={<Companies />} />
             <Route path="/favorites" element={
-              <Suspense fallback={<div>Loading...</div>}>
+              <Suspense fallback={<div>Yüklənir...</div>}>
                 <SavedJobs />
               </Suspense>
             } />
             <Route path="/favorites/:jobId" element={
-              <Suspense fallback={<div>Loading...</div>}>
+              <Suspense fallback={<div>Yüklənir...</div>}>
                 <SavedJobs />
               </Suspense>
             } />
