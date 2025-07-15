@@ -279,8 +279,8 @@ const JobDetails = ({
         </div>
       </div>
 
-      {/* Sticky Apply Button - Small and positioned like in the image */}
-      <div className="fixed bottom-6 right-6 md:bottom-6 md:right-6 sm:bottom-20 sm:left-1/2 sm:transform sm:-translate-x-1/2 z-50 no-print">
+      {/* Sticky Apply Button - Positioned as shown in the image */}
+      <div className="fixed bottom-24 right-6 md:bottom-6 md:right-6 lg:bottom-8 lg:right-8 z-50 no-print">
         {job.application_type === 'website' && job.application_url ? (
           <Button 
             size="sm" 
