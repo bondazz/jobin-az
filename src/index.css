@@ -438,4 +438,25 @@ All colors MUST be HSL.
     orphans: 3;
     widows: 3;
   }
+
+  /* Hide all other elements during print */
+  .xl\\:hidden,
+  .lg\\:hidden,
+  .md\\:hidden,
+  .sm\\:hidden,
+  [class*="fixed"]:not(#job-details-printable),
+  [class*="absolute"]:not(#job-details-printable) {
+    display: none !important;
+  }
+  
+  /* Show only the printable job details */
+  #job-details-printable {
+    display: block !important;
+    position: static !important;
+    z-index: auto !important;
+    background: white !important;
+    height: auto !important;
+    overflow: visible !important;
+    padding: 20px !important;
+  }
 }
