@@ -148,6 +148,123 @@ All colors MUST be HSL.
     --shadow-premium: 0 0 15px hsl(20 100% 52% / 0.5);
     
     --sidebar-background: 210 15 8;
+  }
+}
+
+/* Rich Text Editor Styles */
+.rich-text-editor .ql-toolbar {
+  border-top: 1px solid hsl(var(--border));
+  border-left: 1px solid hsl(var(--border));
+  border-right: 1px solid hsl(var(--border));
+  border-bottom: none;
+  background: hsl(var(--muted));
+  border-radius: calc(var(--radius) - 2px) calc(var(--radius) - 2px) 0 0;
+}
+
+.rich-text-editor .ql-container {
+  border-left: 1px solid hsl(var(--border));
+  border-right: 1px solid hsl(var(--border));
+  border-bottom: 1px solid hsl(var(--border));
+  border-top: none;
+  border-radius: 0 0 calc(var(--radius) - 2px) calc(var(--radius) - 2px);
+  background: hsl(var(--background));
+}
+
+.rich-text-editor .ql-editor {
+  color: hsl(var(--foreground));
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 120px;
+}
+
+.rich-text-editor .ql-editor.ql-blank::before {
+  color: hsl(var(--muted-foreground));
+  font-style: normal;
+}
+
+.rich-text-editor .ql-toolbar button {
+  color: hsl(var(--foreground));
+}
+
+.rich-text-editor .ql-toolbar button:hover {
+  color: hsl(var(--primary));
+}
+
+.rich-text-editor .ql-toolbar button.ql-active {
+  color: hsl(var(--primary));
+}
+
+.rich-text-editor .ql-stroke {
+  stroke: hsl(var(--foreground));
+}
+
+.rich-text-editor .ql-fill {
+  fill: hsl(var(--foreground));
+}
+
+.rich-text-editor .ql-picker {
+  color: hsl(var(--foreground));
+}
+
+.rich-text-editor .ql-picker-options {
+  background: hsl(var(--background));
+  border: 1px solid hsl(var(--border));
+}
+
+.rich-text-editor .ql-picker-item:hover {
+  background: hsl(var(--muted));
+}
+
+/* Rich Text Content Display */
+.rich-text-content {
+  line-height: 1.6;
+}
+
+.rich-text-content h1,
+.rich-text-content h2,
+.rich-text-content h3 {
+  font-weight: 600;
+  margin: 1rem 0 0.5rem 0;
+}
+
+.rich-text-content h1 {
+  font-size: 1.5em;
+}
+
+.rich-text-content h2 {
+  font-size: 1.3em;
+}
+
+.rich-text-content h3 {
+  font-size: 1.1em;
+}
+
+.rich-text-content p {
+  margin: 0.5rem 0;
+}
+
+.rich-text-content strong {
+  font-weight: 600;
+}
+
+.rich-text-content ul,
+.rich-text-content ol {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.rich-text-content li {
+  margin: 0.25rem 0;
+}
+
+.rich-text-content a {
+  color: hsl(var(--primary));
+  text-decoration: underline;
+}
+
+.rich-text-content a:hover {
+  opacity: 0.8;
     --sidebar-foreground: 240 100 98;
     --sidebar-primary: 20 100 52;
     --sidebar-primary-foreground: 0 0 100;
