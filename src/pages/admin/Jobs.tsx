@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { RichTextEditor } from '@/components/ui/rich-text-editor';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -405,11 +404,12 @@ export default function AdminJobs() {
 
                   <div className="space-y-2">
                     <Label htmlFor="description">Təsvir</Label>
-                    <RichTextEditor
+                    <Textarea
+                      id="description"
                       value={formData.description}
-                      onChange={(value) => setFormData({ ...formData, description: value })}
-                      placeholder="Vakansiya təsvirini yazın..."
-                      className="min-h-[200px]"
+                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                      rows={4}
+                      required
                     />
                   </div>
 

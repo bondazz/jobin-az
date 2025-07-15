@@ -289,10 +289,9 @@ const JobDetails = ({ jobId, isMobile = false }: JobDetailsProps) => {
         {/* Job Description */}
         <div className="space-y-3">
           <h3 className={`${isMobile ? 'text-lg' : 'text-xl'} font-bold text-foreground`}>Təsvir</h3>
-          <div 
-            className={`${isMobile ? 'text-sm' : 'text-base'} text-muted-foreground leading-relaxed rich-text-content`}
-            dangerouslySetInnerHTML={{ __html: job.description }}
-          />
+          <div className={`${isMobile ? 'text-sm' : 'text-base'} text-muted-foreground leading-relaxed whitespace-pre-wrap`}>
+            {job.description}
+          </div>
         </div>
 
         <Separator />
