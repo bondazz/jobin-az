@@ -221,7 +221,7 @@ const Index = () => {
 
       {/* Mobile Job Details Modal */}
       {selectedJob && (
-        <div className="lg:hidden fixed inset-0 bg-background z-50 flex flex-col animate-slide-in-right">
+        <div className="lg:hidden fixed inset-0 bg-background z-40 flex flex-col animate-slide-in-right">
           {/* Mobile Header with Logo */}
           <MobileHeader 
             showCloseButton={true} 
