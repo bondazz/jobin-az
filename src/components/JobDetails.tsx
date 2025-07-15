@@ -361,21 +361,21 @@ const JobDetails = ({ jobId, isMobile = false }: JobDetailsProps) => {
         </div>
       </div>
 
-      {/* Sticky Apply Button */}
-      <div className={`fixed ${isMobile ? 'bottom-16 left-0 right-0' : 'bottom-0 left-0 right-0'} bg-background/95 backdrop-blur-sm border-t border-border p-4 z-50 no-print`}>
-        <div className="max-w-4xl mx-auto">
+      {/* Sticky Apply Button - Compact for job details section */}
+      <div className={`fixed ${isMobile ? 'bottom-16 left-4 right-4' : 'bottom-4 left-4 right-4'} z-50 no-print`}>
+        <div className="max-w-sm mx-auto">
           {job.application_type === 'website' && job.application_url ? (
             <Button 
-              size={isMobile ? 'default' : 'lg'}
-              className="bg-gradient-primary hover:opacity-90 text-white font-semibold w-full"
+              size="sm"
+              className="bg-gradient-primary hover:opacity-90 text-white font-semibold w-full shadow-lg text-xs"
               onClick={() => window.open(job.application_url, '_blank')}
             >
               Bu İşə Müraciət Et
             </Button>
           ) : job.application_type === 'email' && job.application_email ? (
             <Button 
-              size={isMobile ? 'default' : 'lg'}
-              className="bg-gradient-primary hover:opacity-90 text-white font-semibold w-full"
+              size="sm"
+              className="bg-gradient-primary hover:opacity-90 text-white font-semibold w-full shadow-lg text-xs"
               onClick={() => {
                 navigator.clipboard.writeText(job.application_email);
                 toast({
@@ -388,8 +388,8 @@ const JobDetails = ({ jobId, isMobile = false }: JobDetailsProps) => {
             </Button>
           ) : (
             <Button 
-              size={isMobile ? 'default' : 'lg'}
-              className="bg-gradient-primary hover:opacity-90 text-white font-semibold w-full"
+              size="sm"
+              className="bg-gradient-primary hover:opacity-90 text-white font-semibold w-full shadow-lg text-xs"
               disabled
             >
               Müraciət Məlumatı Yoxdur
