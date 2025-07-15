@@ -281,7 +281,9 @@ All colors MUST be HSL.
 .dark .rich-text-content p,
 .dark .rich-text-content span,
 .dark .rich-text-content div,
-.dark .rich-text-content li {
+.dark .rich-text-content li,
+.dark .rich-text-content strong,
+.dark .rich-text-content b {
   color: hsl(var(--foreground)) !important;
 }
 
