@@ -279,23 +279,39 @@ const JobDetails = ({
         </div>
       </div>
 
-      {/* Sticky Apply Button - Compact for job details section */}
-      <div className={`fixed ${isMobile ? 'bottom-16 left-4 right-4' : 'bottom-4 left-4 right-4'} z-50 no-print`}>
-        <div className="max-w-sm mx-auto">
-          {job.application_type === 'website' && job.application_url ? <Button size="sm" onClick={() => window.open(job.application_url, '_blank')} className="bg-gradient-primary hover:opacity-90 text-white font-semibold w-full shadow-lg text-xs mx-[500px] px-0 my-[10px] py-0">
-              Bu İşə Müraciət Et
-            </Button> : job.application_type === 'email' && job.application_email ? <Button size="sm" className="bg-gradient-primary hover:opacity-90 text-white font-semibold w-full shadow-lg text-xs" onClick={() => {
-          navigator.clipboard.writeText(job.application_email);
-          toast({
-            title: 'E-mail kopyalandı',
-            description: `${job.application_email} panoya kopyalandı`
-          });
-        }}>
-              Bu İşə Müraciət Et
-            </Button> : <Button size="sm" className="bg-gradient-primary hover:opacity-90 text-white font-semibold w-full shadow-lg text-xs" disabled>
-              Müraciət Məlumatı Yoxdur
-            </Button>}
-        </div>
+      {/* Sticky Apply Button - Small and positioned like in the image */}
+      <div className="fixed bottom-6 right-6 md:bottom-6 md:right-6 sm:bottom-20 sm:left-1/2 sm:transform sm:-translate-x-1/2 z-50 no-print">
+        {job.application_type === 'website' && job.application_url ? (
+          <Button 
+            size="sm" 
+            onClick={() => window.open(job.application_url, '_blank')} 
+            className="bg-primary hover:bg-primary/90 text-white font-medium shadow-lg text-sm px-4 py-2 rounded-md"
+          >
+            Müraciət et
+          </Button>
+        ) : job.application_type === 'email' && job.application_email ? (
+          <Button 
+            size="sm" 
+            className="bg-primary hover:bg-primary/90 text-white font-medium shadow-lg text-sm px-4 py-2 rounded-md" 
+            onClick={() => {
+              navigator.clipboard.writeText(job.application_email);
+              toast({
+                title: 'E-mail kopyalandı',
+                description: `${job.application_email} panoya kopyalandı`
+              });
+            }}
+          >
+            Müraciət et
+          </Button>
+        ) : (
+          <Button 
+            size="sm" 
+            className="bg-muted hover:bg-muted/90 text-muted-foreground font-medium shadow-lg text-sm px-4 py-2 rounded-md" 
+            disabled
+          >
+            Müraciət et
+          </Button>
+        )}
       </div>
     </>;
 };
