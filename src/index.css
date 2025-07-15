@@ -265,6 +265,61 @@ All colors MUST be HSL.
 
 .rich-text-content a:hover {
   opacity: 0.8;
+}
+
+/* Bullet points to use site colors */
+.rich-text-content ul li::marker {
+  color: hsl(var(--primary));
+}
+
+.rich-text-content ol li::marker {
+  color: hsl(var(--primary));
+}
+
+/* Quill editor styling to match site theme */
+.ql-toolbar.ql-snow {
+  border-top: 1px solid hsl(var(--border));
+  border-left: 1px solid hsl(var(--border));
+  border-right: 1px solid hsl(var(--border));
+  background-color: hsl(var(--background));
+}
+
+.ql-container.ql-snow {
+  border-bottom: 1px solid hsl(var(--border));
+  border-left: 1px solid hsl(var(--border));
+  border-right: 1px solid hsl(var(--border));
+  background-color: hsl(var(--background));
+}
+
+.ql-editor {
+  color: hsl(var(--foreground));
+  font-family: inherit;
+}
+
+.ql-editor.ql-blank::before {
+  color: hsl(var(--muted-foreground));
+  font-style: normal;
+}
+
+.ql-toolbar.ql-snow .ql-picker-label {
+  color: hsl(var(--foreground));
+}
+
+.ql-toolbar.ql-snow .ql-picker-options {
+  background-color: hsl(var(--background));
+  border: 1px solid hsl(var(--border));
+}
+
+.ql-toolbar.ql-snow .ql-picker-item {
+  color: hsl(var(--foreground));
+}
+
+.ql-toolbar.ql-snow .ql-picker-item:hover {
+  background-color: hsl(var(--accent));
+}
+
+.dark {
+    --sidebar-background: 210 15 8;
     --sidebar-foreground: 240 100 98;
     --sidebar-primary: 20 100 52;
     --sidebar-primary-foreground: 0 0 100;
@@ -273,7 +328,6 @@ All colors MUST be HSL.
     --sidebar-border: 210 20 20;
     --sidebar-ring: 20 100 52;
   }
-}
 
 @layer base {
   * {

@@ -408,8 +408,8 @@ export default function AdminJobs() {
                     <RichTextEditor
                       value={formData.description}
                       onChange={(value) => setFormData({ ...formData, description: value })}
-                      placeholder="Vakansiya təsvirini yazın..."
-                      className="min-h-[200px]"
+                      placeholder="Vakansiya təsvirini yazın... (qalin hərf, başlıq, nöqtələr və s. əlavə edə bilərsiniz)"
+                      className="min-h-[300px]"
                     />
                   </div>
 
