@@ -19,7 +19,8 @@ import {
   DollarSign,
   Globe,
   Mail,
-  Phone
+  Phone,
+  Printer
 } from 'lucide-react';
 import VerifyBadge from '@/components/ui/verify-badge';
 import AdBanner from './AdBanner';
@@ -124,6 +125,26 @@ const JobDetails = ({ jobId, isMobile = false }: JobDetailsProps) => {
       newValue: JSON.stringify(updatedSavedJobs)
     }));
   };
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: job.title,
+        text: `${job.companies?.name} şirkətində ${job.title} iş elanı`,
+        url: window.location.href
+      });
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      toast({
+        title: 'Link kopyalandı',
+        description: 'İş elanının linki panoya kopyalandı',
+      });
+    }
+  };
   if (loading) {
     return (
       <div className="h-full flex items-center justify-center bg-gradient-to-br from-job-details to-primary/3">
@@ -153,7 +174,7 @@ const JobDetails = ({ jobId, isMobile = false }: JobDetailsProps) => {
   }
 
   return (
-    <div className="h-full overflow-y-auto bg-background">
+    <div id="job-details-printable" className={`h-full overflow-y-auto bg-background ${isMobile ? 'pt-16' : ''}`}>
       {/* Minimalist Header with Company Logo */}
       <div className={`${isMobile ? 'p-4 pt-6' : 'p-6'} border-b border-border`}>
         <div className="flex items-center gap-4">
@@ -196,7 +217,7 @@ const JobDetails = ({ jobId, isMobile = false }: JobDetailsProps) => {
           {job.application_type === 'website' && job.application_url ? (
             <Button 
               size="sm"
-              className="bg-gradient-primary hover:opacity-90 text-white font-semibold"
+              className="bg-gradient-primary hover:opacity-90 text-white font-semibold w-full sm:w-auto"
               onClick={() => window.open(job.application_url, '_blank')}
             >
               Bu İşə Müraciət Et
@@ -204,7 +225,7 @@ const JobDetails = ({ jobId, isMobile = false }: JobDetailsProps) => {
           ) : job.application_type === 'email' && job.application_email ? (
             <Button 
               size="sm"
-              className="bg-gradient-primary hover:opacity-90 text-white font-semibold"
+              className="bg-gradient-primary hover:opacity-90 text-white font-semibold w-full sm:w-auto"
               onClick={() => {
                 navigator.clipboard.writeText(job.application_email);
                 toast({
@@ -218,7 +239,7 @@ const JobDetails = ({ jobId, isMobile = false }: JobDetailsProps) => {
           ) : (
             <Button 
               size="sm"
-              className="bg-gradient-primary hover:opacity-90 text-white font-semibold"
+              className="bg-gradient-primary hover:opacity-90 text-white font-semibold w-full sm:w-auto"
               disabled
             >
               Müraciət Məlumatı Yoxdur
@@ -226,61 +247,72 @@ const JobDetails = ({ jobId, isMobile = false }: JobDetailsProps) => {
           )}
         </div>
 
-        {/* Compact Action Buttons */}
-        <div className={`flex gap-2 ${isMobile ? 'flex-col' : 'flex-wrap'}`}>
-          <Button 
-            variant="outline" 
-            size={isMobile ? "sm" : "default"}
-            className={`border-primary/30 hover:bg-primary hover:text-white ${isSaved ? 'bg-primary text-white' : 'text-primary'} ${isMobile ? 'justify-start' : ''}`}
-            onClick={handleSaveJob}
-          >
-            <Bookmark className={`w-4 h-4 ${isMobile ? 'mr-2' : 'mr-1'} ${isSaved ? 'fill-current' : ''}`} />
-            {isSaved ? 'Saxlanıldı' : 'Saxla'}
-          </Button>
-          <Button 
-            variant="outline" 
-            size={isMobile ? "sm" : "default"}
-            className={`border-primary/30 text-primary hover:bg-primary hover:text-white ${isMobile ? 'justify-start' : ''}`}
-          >
-            <Share2 className={`w-4 h-4 ${isMobile ? 'mr-2' : 'mr-1'}`} />
-            Paylaş
-          </Button>
-        </div>
+        {/* Job Info and Action Buttons Combined Layout */}
+        <div className={`${isMobile ? 'space-y-4' : 'flex items-start gap-6'}`}>
+          {/* Job Info Grid */}
+          <div className={`${isMobile ? 'w-full' : 'flex-1'} grid ${isMobile ? 'grid-cols-2' : 'grid-cols-2 lg:grid-cols-4'} gap-2`}>
+            <div className={`flex items-center gap-2 ${isMobile ? 'p-2' : 'p-3'} rounded-lg bg-muted/30`}>
+              <MapPin className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} text-primary flex-shrink-0`} />
+              <div className="min-w-0 flex-1">
+                <p className={`${isMobile ? 'text-xs' : 'text-xs'} font-medium text-foreground`}>Məkan</p>
+                <p className={`${isMobile ? 'text-xs' : 'text-xs'} text-muted-foreground truncate`}>{job.location}</p>
+              </div>
+            </div>
 
-        <Separator />
+            <div className={`flex items-center gap-2 ${isMobile ? 'p-2' : 'p-3'} rounded-lg bg-muted/30`}>
+              <Clock className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} text-primary flex-shrink-0`} />
+              <div className="min-w-0 flex-1">
+                <p className={`${isMobile ? 'text-xs' : 'text-xs'} font-medium text-foreground`}>İş Növü</p>
+                <p className={`${isMobile ? 'text-xs' : 'text-xs'} text-muted-foreground truncate`}>{job.type}</p>
+              </div>
+            </div>
 
-        {/* Compact Job Info */}
-        <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-2'} gap-3`}>
-          <div className={`flex items-center gap-2 ${isMobile ? 'p-2' : 'p-3'} rounded-lg bg-muted/30`}>
-            <MapPin className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} text-primary flex-shrink-0`} />
-            <div className="min-w-0 flex-1">
-              <p className={`${isMobile ? 'text-xs' : 'text-sm'} font-medium text-foreground`}>Məkan</p>
-              <p className={`${isMobile ? 'text-xs' : 'text-sm'} text-muted-foreground truncate`}>{job.location}</p>
+            <div className={`flex items-center gap-2 ${isMobile ? 'p-2' : 'p-3'} rounded-lg bg-muted/30`}>
+              <DollarSign className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} text-primary flex-shrink-0`} />
+              <div className="min-w-0 flex-1">
+                <p className={`${isMobile ? 'text-xs' : 'text-xs'} font-medium text-foreground`}>Maaş</p>
+                <p className={`${isMobile ? 'text-xs' : 'text-xs'} text-muted-foreground truncate`}>{job.salary || 'Müzakirə'}</p>
+              </div>
+            </div>
+
+            <div className={`flex items-center gap-2 ${isMobile ? 'p-2' : 'p-3'} rounded-lg bg-muted/30`}>
+              <Eye className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} text-primary flex-shrink-0`} />
+              <div className="min-w-0 flex-1">
+                <p className={`${isMobile ? 'text-xs' : 'text-xs'} font-medium text-foreground`}>Baxış</p>
+                <p className={`${isMobile ? 'text-xs' : 'text-xs'} text-muted-foreground`}>{((job.views || 0) + 1)}</p>
+              </div>
             </div>
           </div>
 
-          <div className={`flex items-center gap-2 ${isMobile ? 'p-2' : 'p-3'} rounded-lg bg-muted/30`}>
-            <DollarSign className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} text-primary flex-shrink-0`} />
-            <div className="min-w-0 flex-1">
-              <p className={`${isMobile ? 'text-xs' : 'text-sm'} font-medium text-foreground`}>Maaş</p>
-              <p className={`${isMobile ? 'text-xs' : 'text-sm'} text-muted-foreground truncate`}>{job.salary || 'Müzakirə ediləcək'}</p>
-            </div>
-          </div>
-
-          <div className={`flex items-center gap-2 ${isMobile ? 'p-2' : 'p-3'} rounded-lg bg-muted/30`}>
-            <Clock className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} text-primary flex-shrink-0`} />
-            <div className="min-w-0 flex-1">
-              <p className={`${isMobile ? 'text-xs' : 'text-sm'} font-medium text-foreground`}>İş Növü</p>
-              <p className={`${isMobile ? 'text-xs' : 'text-sm'} text-muted-foreground truncate`}>{job.type}</p>
-            </div>
-          </div>
-
-          <div className={`flex items-center gap-2 ${isMobile ? 'p-2' : 'p-3'} rounded-lg bg-muted/30`}>
-            <Eye className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} text-primary flex-shrink-0`} />
-            <div className="min-w-0 flex-1">
-              <p className={`${isMobile ? 'text-xs' : 'text-sm'} font-medium text-foreground`}>Baxış</p>
-              <p className={`${isMobile ? 'text-xs' : 'text-sm'} text-muted-foreground`}>{((job.views || 0) + 1)}</p>
-            </div>
+          {/* Action Buttons */}
+          <div className={`${isMobile ? 'flex flex-row gap-2' : 'flex flex-col gap-2 min-w-[180px]'}`}>
+            <Button 
+              variant="outline" 
+              size="sm"
+              className={`${isMobile ? 'flex-1' : 'w-full'} border-primary/30 hover:bg-primary hover:text-white ${isSaved ? 'bg-primary text-white' : 'text-primary'} ${isMobile ? 'justify-center' : 'justify-start'}`}
+              onClick={handleSaveJob}
+            >
+              <Bookmark className={`w-4 h-4 ${isMobile ? 'mr-1' : 'mr-2'} ${isSaved ? 'fill-current' : ''}`} />
+              {isSaved ? 'Saxlanıldı' : 'Saxla'}
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm"
+              className={`${isMobile ? 'flex-1' : 'w-full'} border-primary/30 text-primary hover:bg-primary hover:text-white ${isMobile ? 'justify-center' : 'justify-start'}`}
+              onClick={handleShare}
+            >
+              <Share2 className={`w-4 h-4 ${isMobile ? 'mr-1' : 'mr-2'}`} />
+              Paylaş
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm"
+              className={`${isMobile ? 'flex-1' : 'w-full'} border-primary/30 text-primary hover:bg-primary hover:text-white ${isMobile ? 'justify-center' : 'justify-start'}`}
+              onClick={handlePrint}
+            >
+              <Printer className={`w-4 h-4 ${isMobile ? 'mr-1' : 'mr-2'}`} />
+              Çap Et
+            </Button>
           </div>
         </div>
 
@@ -351,7 +383,7 @@ const JobDetails = ({ jobId, isMobile = false }: JobDetailsProps) => {
         )}
 
         {/* Additional spacing for mobile bottom navigation */}
-        {isMobile && <div className="h-16"></div>}
+        {isMobile && <div className="h-20"></div>}
       </div>
     </div>
   );

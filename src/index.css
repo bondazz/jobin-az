@@ -383,3 +383,48 @@ All colors MUST be HSL.
   50% { transform: translateX(400%); }
   100% { transform: translateX(-100%); }
 }
+
+/* Print styles - only show job details when printing */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  
+  #job-details-printable,
+  #job-details-printable * {
+    visibility: visible;
+  }
+  
+  #job-details-printable {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding-top: 0 !important;
+  }
+  
+  /* Hide action buttons and navigation during print */
+  button,
+  .fixed,
+  .sticky,
+  .no-print {
+    display: none !important;
+  }
+  
+  /* Ensure good print formatting */
+  .rich-text-content {
+    color: black !important;
+    font-size: 12pt !important;
+    line-height: 1.5 !important;
+  }
+  
+  h1, h2, h3 {
+    color: black !important;
+    page-break-after: avoid;
+  }
+  
+  p {
+    orphans: 3;
+    widows: 3;
+  }
+}
