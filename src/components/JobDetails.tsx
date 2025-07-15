@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/integrations/supabase/client';
-import { useDynamicSEO } from '@/hooks/useSEO';
+
 import { useToast } from '@/hooks/use-toast';
 import { 
   MapPin, 
@@ -36,8 +36,6 @@ const JobDetails = ({ jobId, isMobile = false }: JobDetailsProps) => {
   const [isSaved, setIsSaved] = useState(false);
   const { toast } = useToast();
 
-  // Dynamic SEO for job page
-  useDynamicSEO('job', job);
 
   useEffect(() => {
     if (jobId) {

@@ -10,6 +10,7 @@ import BottomNavigation from '@/components/BottomNavigation';
 import MobileHeader from '@/components/MobileHeader';
 import AdBanner from '@/components/AdBanner';
 import { generatePageSEO, updatePageMeta } from '@/utils/seo';
+import { useDynamicSEO } from '@/hooks/useSEO';
 
 interface Category {
   id: string;
@@ -21,15 +22,21 @@ const Index = () => {
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [categories, setCategories] = useState<Category[]>([]);
+  const [jobData, setJobData] = useState<any>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const { jobSlug } = useParams();
   const navigate = useNavigate();
 
-  // SEO setup
+  // Dynamic SEO for job pages
+  useDynamicSEO('job', jobSlug ? jobData : null);
+
+  // Default SEO setup for main page
   useEffect(() => {
-    const seoData = generatePageSEO('vacancies');
-    updatePageMeta(seoData);
-  }, []);
+    if (!jobSlug) {
+      const seoData = generatePageSEO('vacancies');
+      updatePageMeta(seoData);
+    }
+  }, [jobSlug]);
 
   // Fetch categories
   useEffect(() => {
@@ -81,6 +88,9 @@ const Index = () => {
           .single();
 
         if (data && !error) {
+          // Store raw data for SEO
+          setJobData(data);
+          
           const transformedJob = {
             id: data.id,
             title: data.title,
@@ -106,6 +116,7 @@ const Index = () => {
       fetchJobBySlug();
     } else {
       setSelectedJob(null);
+      setJobData(null);
     }
   }, [jobSlug]);
 

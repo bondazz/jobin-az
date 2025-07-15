@@ -7,6 +7,7 @@ import JobListings from '@/components/JobListings';
 import JobDetails from '@/components/JobDetails';
 import { Job } from '@/types/job';
 import { generateCategorySEO, generateJobSEO, generatePageSEO, updatePageMeta } from '@/utils/seo';
+import { useDynamicSEO } from '@/hooks/useSEO';
 import BottomNavigation from '@/components/BottomNavigation';
 import MobileHeader from '@/components/MobileHeader';
 import { supabase } from '@/integrations/supabase/client';
@@ -23,17 +24,25 @@ const Categories = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentCategory, setCurrentCategory] = useState<Category | null>(null);
+  const [jobData, setJobData] = useState<any>(null);
+
+  // Dynamic SEO
+  useDynamicSEO('category', categorySlug ? currentCategory : null);
+  useDynamicSEO('job', jobSlug ? jobData : null);
 
   // Fetch categories from database
   useEffect(() => {
     fetchCategories();
   }, []);
 
-  // SEO setup
+  // Default SEO setup for main categories page
   useEffect(() => {
-    const seoData = generatePageSEO('categories');
-    updatePageMeta(seoData);
-  }, []);
+    if (!categorySlug && !jobSlug) {
+      const seoData = generatePageSEO('categories');
+      updatePageMeta(seoData);
+    }
+  }, [categorySlug, jobSlug]);
 
   const fetchCategories = async () => {
     try {
@@ -57,16 +66,41 @@ const Categories = () => {
     ? categories.find(cat => cat.slug === categorySlug)?.name || '' 
     : '';
 
-  // SEO for selected category
+  // Set current category for dynamic SEO
   useEffect(() => {
-    if (selectedCategory && categories.length > 0) {
-      const category = categories.find(cat => cat.name === selectedCategory);
-      if (category) {
-        const seoData = generateCategorySEO(category.name, 0); // Job count will be fetched from backend
-        updatePageMeta(seoData);
-      }
+    if (categorySlug && categories.length > 0) {
+      const category = categories.find(cat => cat.slug === categorySlug);
+      setCurrentCategory(category || null);
+    } else {
+      setCurrentCategory(null);
     }
-  }, [selectedCategory, categories]);
+  }, [categorySlug, categories]);
+
+  // Fetch job by slug for SEO
+  useEffect(() => {
+    if (jobSlug) {
+      const fetchJobBySlug = async () => {
+        const { data, error } = await supabase
+          .from('jobs')
+          .select(`
+            *,
+            companies (name, logo, is_verified),
+            categories (name)
+          `)
+          .eq('slug', jobSlug)
+          .eq('is_active', true)
+          .single();
+
+        if (data && !error) {
+          setJobData(data);
+        }
+      };
+      
+      fetchJobBySlug();
+    } else {
+      setJobData(null);
+    }
+  }, [jobSlug]);
   const handleCategoryClick = (category: Category) => {
     navigate(`/vacancies?category=${category.slug}`);
   };

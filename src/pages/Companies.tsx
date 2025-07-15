@@ -6,6 +6,7 @@ import { Building, MapPin, Users, Briefcase, Globe, Phone, Mail, Search } from '
 import JobListings from '@/components/JobListings';
 import { Job } from '@/types/job';
 import { generateCompanySEO, generateJobSEO, generatePageSEO, updatePageMeta } from '@/utils/seo';
+import { useDynamicSEO } from '@/hooks/useSEO';
 import BottomNavigation from '@/components/BottomNavigation';
 import MobileHeader from '@/components/MobileHeader';
 import CompanyProfile from '@/components/CompanyProfile';
@@ -28,22 +29,29 @@ const Companies = () => {
   const [companies, setCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState(true);
   const [showMobileProfile, setShowMobileProfile] = useState(false);
+  const [jobData, setJobData] = useState<any>(null);
   const isMobile = useIsMobile();
   const isMobileOrTablet = useIsMobileOrTablet();
   
   // Use unified company profile hook for consistent behavior across all devices
   const { activeTab, handleTabChange } = useCompanyProfile(selectedCompany);
 
+  // Dynamic SEO
+  useDynamicSEO('company', companySlug ? selectedCompany : null);
+  useDynamicSEO('job', jobSlug ? jobData : null);
+
   // Fetch companies from database
   useEffect(() => {
     fetchCompanies();
   }, []);
 
-  // SEO setup
+  // Default SEO setup for main companies page
   useEffect(() => {
-    const seoData = generatePageSEO('companies');
-    updatePageMeta(seoData);
-  }, []);
+    if (!companySlug && !jobSlug) {
+      const seoData = generatePageSEO('companies');
+      updatePageMeta(seoData);
+    }
+  }, [companySlug, jobSlug]);
 
   // Find company from URL slug
   useEffect(() => {
@@ -51,10 +59,35 @@ const Companies = () => {
       const company = companies.find(c => c.slug === companySlug);
       if (company) {
         setSelectedCompany(company);
-        // SEO will be handled by useCompanyProfile hook
       }
     }
   }, [companySlug, companies]);
+
+  // Fetch job by slug for SEO
+  useEffect(() => {
+    if (jobSlug) {
+      const fetchJobBySlug = async () => {
+        const { data, error } = await supabase
+          .from('jobs')
+          .select(`
+            *,
+            companies (name, logo, is_verified),
+            categories (name)
+          `)
+          .eq('slug', jobSlug)
+          .eq('is_active', true)
+          .single();
+
+        if (data && !error) {
+          setJobData(data);
+        }
+      };
+      
+      fetchJobBySlug();
+    } else {
+      setJobData(null);
+    }
+  }, [jobSlug]);
 
   const fetchCompanies = async () => {
     try {
