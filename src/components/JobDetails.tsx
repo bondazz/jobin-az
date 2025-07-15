@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/integrations/supabase/client';
 import { useDynamicSEO } from '@/hooks/useSEO';
+import { useToast } from '@/hooks/use-toast';
 import { 
   MapPin, 
   Calendar, 
@@ -32,6 +33,7 @@ const JobDetails = ({ jobId, isMobile = false }: JobDetailsProps) => {
   const [job, setJob] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const { toast } = useToast();
 
   // Dynamic SEO for job page
   useDynamicSEO('job', job);
@@ -191,7 +193,7 @@ const JobDetails = ({ jobId, isMobile = false }: JobDetailsProps) => {
       <div className={`${isMobile ? 'p-4' : 'p-6'} space-y-4`}>
         {/* Apply Button */}
         <div className="mb-4">
-          {job.application_url ? (
+          {job.application_type === 'website' && job.application_url ? (
             <Button 
               size="sm"
               className="bg-gradient-primary hover:opacity-90 text-white font-semibold"
@@ -199,12 +201,27 @@ const JobDetails = ({ jobId, isMobile = false }: JobDetailsProps) => {
             >
               Bu İşə Müraciət Et
             </Button>
+          ) : job.application_type === 'email' && job.application_email ? (
+            <Button 
+              size="sm"
+              className="bg-gradient-primary hover:opacity-90 text-white font-semibold"
+              onClick={() => {
+                navigator.clipboard.writeText(job.application_email);
+                toast({
+                  title: 'E-mail kopyalandı',
+                  description: `${job.application_email} panoya kopyalandı`,
+                });
+              }}
+            >
+              Bu İşə Müraciət Et
+            </Button>
           ) : (
             <Button 
               size="sm"
               className="bg-gradient-primary hover:opacity-90 text-white font-semibold"
+              disabled
             >
-              Bu İşə Müraciət Et
+              Müraciət Məlumatı Yoxdur
             </Button>
           )}
         </div>
@@ -271,49 +288,11 @@ const JobDetails = ({ jobId, isMobile = false }: JobDetailsProps) => {
 
         {/* Job Description */}
         <div className="space-y-3">
-          <h3 className={`${isMobile ? 'text-lg' : 'text-xl'} font-bold text-foreground`}>İş Təsviri</h3>
+          <h3 className={`${isMobile ? 'text-lg' : 'text-xl'} font-bold text-foreground`}>Təsvir</h3>
           <div className={`${isMobile ? 'text-sm' : 'text-base'} text-muted-foreground leading-relaxed whitespace-pre-wrap`}>
             {job.description}
           </div>
         </div>
-
-        <Separator />
-
-        {/* Requirements */}
-        {job.requirements && job.requirements.length > 0 && (
-          <>
-            <div className="space-y-3">
-              <h3 className={`${isMobile ? 'text-lg' : 'text-xl'} font-bold text-foreground`}>Tələblər</h3>
-              <ul className={`space-y-2 ${isMobile ? 'text-sm' : 'text-base'} text-muted-foreground`}>
-                {job.requirements.map((requirement: string, index: number) => (
-                  <li key={index} className="flex items-start gap-2">
-                    <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></div>
-                    <span>{requirement}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <Separator />
-          </>
-        )}
-
-        {/* Benefits */}
-        {job.benefits && job.benefits.length > 0 && (
-          <>
-            <div className="space-y-3">
-              <h3 className={`${isMobile ? 'text-lg' : 'text-xl'} font-bold text-foreground`}>Üstünlüklər</h3>
-              <ul className={`space-y-2 ${isMobile ? 'text-sm' : 'text-base'} text-muted-foreground`}>
-                {job.benefits.map((benefit: string, index: number) => (
-                  <li key={index} className="flex items-start gap-2">
-                    <div className="w-2 h-2 rounded-full bg-green-500 mt-2 flex-shrink-0"></div>
-                    <span>{benefit}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <Separator />
-          </>
-        )}
 
         <Separator />
 

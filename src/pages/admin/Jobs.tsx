@@ -32,12 +32,12 @@ interface Job {
   type: string;
   salary?: string;
   description: string;
-  requirements: string[];
-  benefits?: string[];
   tags: string[];
   views: number;
   category_id: string;
   application_url?: string;
+  application_type: 'website' | 'email';
+  application_email?: string;
   slug: string;
   seo_title?: string;
   seo_description?: string;
@@ -73,11 +73,11 @@ export default function AdminJobs() {
     type: 'full-time',
     salary: '',
     description: '',
-    requirements: '',
-    benefits: '',
     tags: '',
     category_id: '',
     application_url: '',
+    application_type: 'website' as 'website' | 'email',
+    application_email: '',
     slug: '',
     seo_title: '',
     seo_description: '',
@@ -126,7 +126,7 @@ export default function AdminJobs() {
         supabase.from('categories').select('id, name').eq('is_active', true),
       ]);
 
-      if (jobsResponse.data) setJobs(jobsResponse.data);
+      if (jobsResponse.data) setJobs(jobsResponse.data as Job[]);
       if (companiesResponse.data) setCompanies(companiesResponse.data);
       if (categoriesResponse.data) setCategories(categoriesResponse.data);
     } catch (error) {
@@ -148,8 +148,6 @@ export default function AdminJobs() {
     try {
       const jobData = {
         ...formData,
-        requirements: formData.requirements.split('\n').filter(r => r.trim()),
-        benefits: formData.benefits.split('\n').filter(b => b.trim()),
         tags: formData.tags.split(',').map(t => t.trim()).filter(t => t),
         seo_keywords: formData.seo_keywords.split(',').map(k => k.trim()).filter(k => k),
       };
@@ -203,11 +201,11 @@ export default function AdminJobs() {
       type: job.type,
       salary: job.salary || '',
       description: job.description,
-      requirements: job.requirements.join('\n'),
-      benefits: job.benefits?.join('\n') || '',
       tags: job.tags.join(', '),
       category_id: job.category_id,
       application_url: job.application_url || '',
+      application_type: job.application_type || 'website',
+      application_email: job.application_email || '',
       slug: job.slug,
       seo_title: job.seo_title || '',
       seo_description: job.seo_description || '',
@@ -253,11 +251,11 @@ export default function AdminJobs() {
       type: 'full-time',
       salary: '',
       description: '',
-      requirements: '',
-      benefits: '',
       tags: '',
       category_id: '',
       application_url: '',
+      application_type: 'website' as 'website' | 'email',
+      application_email: '',
       slug: '',
       seo_title: '',
       seo_description: '',
@@ -417,25 +415,32 @@ export default function AdminJobs() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="requirements">Tələblər (hər sətirdə bir)</Label>
-                      <Textarea
-                        id="requirements"
-                        value={formData.requirements}
-                        onChange={(e) => setFormData({ ...formData, requirements: e.target.value })}
-                        rows={4}
-                        placeholder="Tələb 1&#10;Tələb 2&#10;Tələb 3"
-                      />
+                      <Label htmlFor="application_type">Müraciət Növü</Label>
+                      <Select 
+                        value={formData.application_type} 
+                        onValueChange={(value: 'website' | 'email') => setFormData({ ...formData, application_type: value })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="website">Veb Sayt</SelectItem>
+                          <SelectItem value="email">E-mail</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="benefits">Üstünlüklər (hər sətirdə bir)</Label>
-                      <Textarea
-                        id="benefits"
-                        value={formData.benefits}
-                        onChange={(e) => setFormData({ ...formData, benefits: e.target.value })}
-                        rows={4}
-                        placeholder="Üstünlük 1&#10;Üstünlük 2&#10;Üstünlük 3"
-                      />
-                    </div>
+                    {formData.application_type === 'email' && (
+                      <div className="space-y-2">
+                        <Label htmlFor="application_email">Müraciət E-mail</Label>
+                        <Input
+                          id="application_email"
+                          type="email"
+                          value={formData.application_email}
+                          onChange={(e) => setFormData({ ...formData, application_email: e.target.value })}
+                          placeholder="jobs@company.com"
+                        />
+                      </div>
+                    )}
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

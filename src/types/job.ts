@@ -8,13 +8,13 @@ export interface Job {
   type: 'full-time' | 'part-time' | 'contract' | 'internship';
   salary?: string;
   description: string;
-  requirements: string[];
-  benefits?: string[];
   tags: ('premium' | 'new' | 'urgent' | 'remote')[];
   views: number;
   postedAt: string;
   category: string;
   applicationUrl?: string;
+  applicationType?: 'website' | 'email';
+  applicationEmail?: string;
 }
 
 export interface JobCategory {

@@ -202,8 +202,9 @@ export type Database = {
       }
       jobs: {
         Row: {
+          application_email: string | null
+          application_type: string | null
           application_url: string | null
-          benefits: string[] | null
           category_id: string | null
           company_id: string | null
           created_at: string
@@ -211,7 +212,6 @@ export type Database = {
           id: string
           is_active: boolean
           location: string
-          requirements: string[]
           salary: string | null
           seo_description: string | null
           seo_keywords: string[] | null
@@ -224,8 +224,9 @@ export type Database = {
           views: number
         }
         Insert: {
+          application_email?: string | null
+          application_type?: string | null
           application_url?: string | null
-          benefits?: string[] | null
           category_id?: string | null
           company_id?: string | null
           created_at?: string
@@ -233,7 +234,6 @@ export type Database = {
           id?: string
           is_active?: boolean
           location: string
-          requirements?: string[]
           salary?: string | null
           seo_description?: string | null
           seo_keywords?: string[] | null
@@ -246,8 +246,9 @@ export type Database = {
           views?: number
         }
         Update: {
+          application_email?: string | null
+          application_type?: string | null
           application_url?: string | null
-          benefits?: string[] | null
           category_id?: string | null
           company_id?: string | null
           created_at?: string
@@ -255,7 +256,6 @@ export type Database = {
           id?: string
           is_active?: boolean
           location?: string
-          requirements?: string[]
           salary?: string | null
           seo_description?: string | null
           seo_keywords?: string[] | null

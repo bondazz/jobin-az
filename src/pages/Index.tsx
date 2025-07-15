@@ -91,8 +91,6 @@ const Index = () => {
             type: data.type as 'full-time' | 'part-time' | 'contract' | 'internship',
             salary: data.salary,
             description: data.description,
-            requirements: data.requirements || [],
-            benefits: data.benefits || [],
             tags: (data.tags || []).filter((tag: string) => 
               ['premium', 'new', 'urgent', 'remote'].includes(tag)
             ) as ('premium' | 'new' | 'urgent' | 'remote')[],

@@ -56,13 +56,13 @@ const JobListings = ({
           type: job.type as 'full-time' | 'part-time' | 'contract' | 'internship',
           salary: job.salary,
           description: job.description,
-          requirements: job.requirements || [],
-          benefits: job.benefits || [],
           tags: (job.tags || []).filter((tag: string) => ['premium', 'new', 'urgent', 'remote'].includes(tag)) as ('premium' | 'new' | 'urgent' | 'remote')[],
           views: job.views,
           postedAt: formatDate(job.created_at),
           category: job.categories?.name || '',
-          applicationUrl: job.application_url
+          applicationUrl: job.application_url,
+          applicationType: job.application_type as 'website' | 'email',
+          applicationEmail: job.application_email
         })) || [];
         setJobs(transformedJobs);
       } catch (error) {
