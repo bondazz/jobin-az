@@ -276,6 +276,15 @@ All colors MUST be HSL.
   color: hsl(var(--primary));
 }
 
+/* Dark mode text color override for rich text content */
+.dark .rich-text-content,
+.dark .rich-text-content p,
+.dark .rich-text-content span,
+.dark .rich-text-content div,
+.dark .rich-text-content li {
+  color: hsl(var(--foreground)) !important;
+}
+
 /* Quill editor styling to match site theme */
 .ql-toolbar.ql-snow {
   border-top: 1px solid hsl(var(--border));
