@@ -51,9 +51,9 @@ interface CVData {
 
 const CVBuilder = () => {
   useSEO({
-    title: "CV Builder - Create Professional Resume",
-    description: "Create a professional CV/Resume with our free online builder. No login required.",
-    keywords: "cv builder, resume builder, free cv, professional resume"
+    title: "CV Builder - Peşəkar CV Hazırlayın",
+    description: "Pulsuz onlayn CV düzəldən vasitəsilə peşəkar CV/Resume hazırlayın. Qeydiyyat tələb olunmur.",
+    keywords: "cv builder, resume builder, pulsuz cv, peşəkar resume"
   });
 
   const [cvData, setCvData] = useState<CVData>({
@@ -272,7 +272,7 @@ const CVBuilder = () => {
 
   const downloadPDF = () => {
     // PDF download functionality would go here
-    alert('PDF download functionality would be implemented here');
+    alert('PDF yükləmə funksiyası burada tətbiq olunacaq');
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -294,7 +294,7 @@ const CVBuilder = () => {
         <div className="container mx-auto px-4 py-6">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-foreground mb-2">CV Builder</h1>
-            <p className="text-lg text-muted-foreground">Create a professional resume in minutes</p>
+            <p className="text-lg text-muted-foreground">Dəqiqələr ərzində peşəkar CV hazırlayın</p>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
@@ -304,27 +304,27 @@ const CVBuilder = () => {
                 <TabsList className="grid w-full grid-cols-4 lg:grid-cols-6">
                   <TabsTrigger value="personal" className="text-xs">
                     <User className="w-4 h-4 mr-1" />
-                    <span className="hidden sm:inline">Personal</span>
+                    <span className="hidden sm:inline">Şəxsi</span>
                   </TabsTrigger>
                   <TabsTrigger value="experience" className="text-xs">
                     <Briefcase className="w-4 h-4 mr-1" />
-                    <span className="hidden sm:inline">Experience</span>
+                    <span className="hidden sm:inline">Təcrübə</span>
                   </TabsTrigger>
                   <TabsTrigger value="education" className="text-xs">
                     <GraduationCap className="w-4 h-4 mr-1" />
-                    <span className="hidden sm:inline">Education</span>
+                    <span className="hidden sm:inline">Təhsil</span>
                   </TabsTrigger>
                   <TabsTrigger value="skills" className="text-xs">
                     <Award className="w-4 h-4 mr-1" />
-                    <span className="hidden sm:inline">Skills</span>
+                    <span className="hidden sm:inline">Bacarıqlar</span>
                   </TabsTrigger>
                   <TabsTrigger value="social" className="text-xs">
                     <Globe className="w-4 h-4 mr-1" />
-                    <span className="hidden sm:inline">Social</span>
+                    <span className="hidden sm:inline">Sosial</span>
                   </TabsTrigger>
                   <TabsTrigger value="hobbies" className="text-xs">
                     <Heart className="w-4 h-4 mr-1" />
-                    <span className="hidden sm:inline">Hobbies</span>
+                    <span className="hidden sm:inline">Hobbilər</span>
                   </TabsTrigger>
                 </TabsList>
 
@@ -333,7 +333,7 @@ const CVBuilder = () => {
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
                         <User className="w-5 h-5" />
-                        Personal Information
+                        Şəxsi Məlumatlar
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
@@ -361,12 +361,12 @@ const CVBuilder = () => {
                             />
                           </label>
                         </div>
-                        <p className="text-sm text-muted-foreground">Recommended: 150x150px</p>
+                        <p className="text-sm text-muted-foreground">Tövsiyə olunan: 150x150px</p>
                       </div>
 
                       <div className="grid md:grid-cols-2 gap-4">
                         <div>
-                          <label className="text-sm font-medium">Full Name *</label>
+                          <label className="text-sm font-medium">Tam Ad *</label>
                           <Input
                             value={cvData.personalInfo.fullName}
                             onChange={(e) => handlePersonalInfoChange('fullName', e.target.value)}
@@ -374,32 +374,32 @@ const CVBuilder = () => {
                           />
                         </div>
                         <div>
-                          <label className="text-sm font-medium">Job Title *</label>
+                          <label className="text-sm font-medium">İş Başlığı *</label>
                           <Input
                             value={cvData.personalInfo.jobTitle}
                             onChange={(e) => handlePersonalInfoChange('jobTitle', e.target.value)}
-                            placeholder="Software Developer"
+                            placeholder="Proqram Tərtibatçısı"
                           />
                         </div>
                       </div>
 
                       <div>
-                        <label className="text-sm font-medium">Summary/About Me</label>
+                        <label className="text-sm font-medium">Xülasə/Haqqımda</label>
                         <Textarea
                           value={cvData.personalInfo.summary}
                           onChange={(e) => handlePersonalInfoChange('summary', e.target.value)}
-                          placeholder="Brief description about yourself..."
+                          placeholder="Özünüz haqqında qısa məlumat..."
                           rows={4}
                         />
                       </div>
 
                       <div className="grid md:grid-cols-3 gap-4">
                         <div>
-                          <label className="text-sm font-medium">Phone</label>
+                          <label className="text-sm font-medium">Telefon</label>
                           <Input
                             value={cvData.personalInfo.phone}
                             onChange={(e) => handlePersonalInfoChange('phone', e.target.value)}
-                            placeholder="+1 234 567 8900"
+                            placeholder="+994 50 123 45 67"
                           />
                         </div>
                         <div>
@@ -412,11 +412,11 @@ const CVBuilder = () => {
                           />
                         </div>
                         <div>
-                          <label className="text-sm font-medium">Location</label>
+                          <label className="text-sm font-medium">Yer</label>
                           <Input
                             value={cvData.personalInfo.location}
                             onChange={(e) => handlePersonalInfoChange('location', e.target.value)}
-                            placeholder="New York, NY"
+                            placeholder="Bakı, Azərbaycan"
                           />
                         </div>
                       </div>
@@ -429,14 +429,14 @@ const CVBuilder = () => {
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
                         <Briefcase className="w-5 h-5" />
-                        Work Experience
+                        İş Təcrübəsi
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       {cvData.workExperience.map((exp) => (
                         <div key={exp.id} className="p-4 border rounded-lg space-y-3">
                           <div className="flex justify-between items-start">
-                            <h4 className="font-medium">Experience Entry</h4>
+                            <h4 className="font-medium">Təcrübə Girişi</h4>
                             <Button
                               variant="ghost"
                               size="sm"
@@ -448,28 +448,28 @@ const CVBuilder = () => {
                           </div>
                           <div className="grid md:grid-cols-2 gap-3">
                             <Input
-                              placeholder="Job Title"
+                              placeholder="İş Başlığı"
                               value={exp.jobTitle}
                               onChange={(e) => updateWorkExperience(exp.id, 'jobTitle', e.target.value)}
                             />
                             <Input
-                              placeholder="Company"
+                              placeholder="Şirkət"
                               value={exp.company}
                               onChange={(e) => updateWorkExperience(exp.id, 'company', e.target.value)}
                             />
                             <Input
-                              placeholder="Start Year"
+                              placeholder="Başlama İli"
                               value={exp.startYear}
                               onChange={(e) => updateWorkExperience(exp.id, 'startYear', e.target.value)}
                             />
                             <Input
-                              placeholder="End Year (or Present)"
+                              placeholder="Bitiş İli (və ya Hazırda)"
                               value={exp.endYear}
                               onChange={(e) => updateWorkExperience(exp.id, 'endYear', e.target.value)}
                             />
                           </div>
                           <Textarea
-                            placeholder="Job description and achievements..."
+                            placeholder="İş təsviri və nailiyyətlər..."
                             value={exp.description}
                             onChange={(e) => updateWorkExperience(exp.id, 'description', e.target.value)}
                             rows={3}
@@ -478,7 +478,7 @@ const CVBuilder = () => {
                       ))}
                       <Button onClick={addWorkExperience} variant="outline" className="w-full">
                         <Plus className="w-4 h-4 mr-2" />
-                        Add Work Experience
+                        İş Təcrübəsi Əlavə Et
                       </Button>
                     </CardContent>
                   </Card>
@@ -489,14 +489,14 @@ const CVBuilder = () => {
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
                         <GraduationCap className="w-5 h-5" />
-                        Education
+                        Təhsil
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       {cvData.education.map((edu) => (
                         <div key={edu.id} className="p-4 border rounded-lg space-y-3">
                           <div className="flex justify-between items-start">
-                            <h4 className="font-medium">Education Entry</h4>
+                            <h4 className="font-medium">Təhsil Girişi</h4>
                             <Button
                               variant="ghost"
                               size="sm"
@@ -508,22 +508,22 @@ const CVBuilder = () => {
                           </div>
                           <div className="grid md:grid-cols-2 gap-3">
                             <Input
-                              placeholder="Degree"
+                              placeholder="Dərəcə"
                               value={edu.degree}
                               onChange={(e) => updateEducation(edu.id, 'degree', e.target.value)}
                             />
                             <Input
-                              placeholder="Institution"
+                              placeholder="Müəssisə"
                               value={edu.institution}
                               onChange={(e) => updateEducation(edu.id, 'institution', e.target.value)}
                             />
                             <Input
-                              placeholder="Start Year"
+                              placeholder="Başlama İli"
                               value={edu.startYear}
                               onChange={(e) => updateEducation(edu.id, 'startYear', e.target.value)}
                             />
                             <Input
-                              placeholder="End Year"
+                              placeholder="Bitiş İli"
                               value={edu.endYear}
                               onChange={(e) => updateEducation(edu.id, 'endYear', e.target.value)}
                             />
@@ -532,7 +532,7 @@ const CVBuilder = () => {
                       ))}
                       <Button onClick={addEducation} variant="outline" className="w-full">
                         <Plus className="w-4 h-4 mr-2" />
-                        Add Education
+                        Təhsil Əlavə Et
                       </Button>
                     </CardContent>
                   </Card>
@@ -543,12 +543,12 @@ const CVBuilder = () => {
                     {/* Skills */}
                     <Card>
                       <CardHeader>
-                        <CardTitle>Skills</CardTitle>
+                        <CardTitle>Bacarıqlar</CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-4">
                         <div className="flex gap-2">
                           <Input
-                            placeholder="Add a skill"
+                            placeholder="Bacarıq əlavə et"
                             value={newSkill}
                             onChange={(e) => setNewSkill(e.target.value)}
                             onKeyPress={(e) => e.key === 'Enter' && addSkill()}
@@ -573,12 +573,12 @@ const CVBuilder = () => {
                     {/* Certifications */}
                     <Card>
                       <CardHeader>
-                        <CardTitle>Certifications</CardTitle>
+                        <CardTitle>Sertifikatlar</CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-4">
                         <div className="flex gap-2">
                           <Input
-                            placeholder="Add a certification"
+                            placeholder="Sertifikat əlavə et"
                             value={newCertification}
                             onChange={(e) => setNewCertification(e.target.value)}
                             onKeyPress={(e) => e.key === 'Enter' && addCertification()}
@@ -608,12 +608,12 @@ const CVBuilder = () => {
                     {/* Languages */}
                     <Card>
                       <CardHeader>
-                        <CardTitle>Languages</CardTitle>
+                        <CardTitle>Dillər</CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-4">
                         <div className="flex gap-2">
                           <Input
-                            placeholder="Add a language"
+                            placeholder="Dil əlavə et"
                             value={newLanguage}
                             onChange={(e) => setNewLanguage(e.target.value)}
                             onKeyPress={(e) => e.key === 'Enter' && addLanguage()}
@@ -642,13 +642,13 @@ const CVBuilder = () => {
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
                         <Globe className="w-5 h-5" />
-                        Social Media Links
+                        Sosial Media Linklər
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <div className="grid md:grid-cols-3 gap-2">
                         <Input
-                          placeholder="Platform (LinkedIn, GitHub, etc.)"
+                          placeholder="Platforma (LinkedIn, GitHub və s.)"
                           value={newSocialLink.platform}
                           onChange={(e) => setNewSocialLink(prev => ({ ...prev, platform: e.target.value }))}
                         />
@@ -688,13 +688,13 @@ const CVBuilder = () => {
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
                         <Heart className="w-5 h-5" />
-                        Hobbies & Interests
+                        Hobbilər və Maraqlar
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <div className="flex gap-2">
                         <Input
-                          placeholder="Add a hobby or interest"
+                          placeholder="Hobbi və ya maraq əlavə et"
                           value={newHobby}
                           onChange={(e) => setNewHobby(e.target.value)}
                           onKeyPress={(e) => e.key === 'Enter' && addHobby()}
@@ -723,7 +723,7 @@ const CVBuilder = () => {
             <div className="lg:sticky lg:top-6 h-fit">
               <Card className="min-h-[800px]">
                 <CardHeader>
-                  <CardTitle>Live Preview</CardTitle>
+                  <CardTitle>Canlı Önizləmə</CardTitle>
                   <div className="flex gap-2">
                     {[1, 2, 3].map((template) => (
                       <Button
@@ -732,176 +732,278 @@ const CVBuilder = () => {
                         size="sm"
                         onClick={() => setCvData(prev => ({ ...prev, selectedTemplate: template }))}
                       >
-                        Template {template}
+                        Şablon {template}
                       </Button>
                     ))}
                   </div>
                 </CardHeader>
                 <CardContent className="p-6">
-                  {/* CV Preview */}
-                  <div className="bg-white text-black p-8 rounded-lg shadow-lg min-h-[700px] text-sm">
-                    {/* Header */}
-                    <div className="flex items-start gap-6 mb-6">
-                      {cvData.personalInfo.profilePhoto && (
-                        <img
-                          src={cvData.personalInfo.profilePhoto}
-                          alt="Profile"
-                          className="w-24 h-24 rounded-full object-cover"
-                        />
-                      )}
-                      <div className="flex-1">
-                        <h1 className="text-3xl font-bold text-gray-900 mb-1">
-                          {cvData.personalInfo.fullName || 'Your Name'}
-                        </h1>
-                        <h2 className="text-xl text-gray-600 mb-3">
-                          {cvData.personalInfo.jobTitle || 'Your Job Title'}
-                        </h2>
-                        <div className="flex flex-wrap gap-4 text-gray-600">
-                          {cvData.personalInfo.phone && (
-                            <div className="flex items-center gap-1">
-                              <Phone className="w-4 h-4" />
-                              {cvData.personalInfo.phone}
+                  {/* CV Preview - Template 1 exactly matching the uploaded image */}
+                  {cvData.selectedTemplate === 1 && (
+                    <div className="bg-white text-black rounded-lg shadow-lg min-h-[700px] text-sm overflow-hidden">
+                      <div className="flex min-h-[700px]">
+                        {/* Left Sidebar */}
+                        <div className="w-1/3 bg-gray-100 p-6 space-y-6">
+                          {/* Contacts */}
+                          <div>
+                            <h3 className="text-sm font-semibold text-gray-900 mb-3 uppercase tracking-wider">01 Əlaqələr</h3>
+                            <div className="space-y-2 text-xs text-gray-700">
+                              {cvData.socialLinks.map((link, index) => (
+                                <div key={index}>{link.platform.toUpperCase()}.COM/USERNAME</div>
+                              ))}
+                              <div>{cvData.personalInfo.email || 'USERNAME@GMAIL.COM'}</div>
+                              <div>{cvData.personalInfo.phone || '+0 000 000 0000'}</div>
                             </div>
-                          )}
-                          {cvData.personalInfo.email && (
-                            <div className="flex items-center gap-1">
-                              <Mail className="w-4 h-4" />
-                              {cvData.personalInfo.email}
+                          </div>
+
+                          {/* Skills */}
+                          <div>
+                            <h3 className="text-sm font-semibold text-gray-900 mb-3 uppercase tracking-wider">04 Bacarıqlar</h3>
+                            <div className="space-y-1">
+                              {cvData.skills.map((skill, index) => (
+                                <div key={index} className="text-xs text-gray-700">{skill}</div>
+                              ))}
                             </div>
-                          )}
-                          {cvData.personalInfo.location && (
-                            <div className="flex items-center gap-1">
-                              <MapPin className="w-4 h-4" />
-                              {cvData.personalInfo.location}
+                          </div>
+
+                          {/* Languages */}
+                          <div>
+                            <h3 className="text-sm font-semibold text-gray-900 mb-3 uppercase tracking-wider">05 Dillər</h3>
+                            <div className="space-y-1">
+                              {cvData.languages.map((language, index) => (
+                                <div key={index} className="flex justify-between text-xs">
+                                  <span className="text-gray-700">{language}</span>
+                                  <span className="text-gray-600">C2</span>
+                                </div>
+                              ))}
                             </div>
-                          )}
+                          </div>
+                        </div>
+
+                        {/* Right Content */}
+                        <div className="flex-1 p-6">
+                          {/* Header */}
+                          <div className="mb-6">
+                            <h1 className="text-2xl font-normal text-gray-900 mb-1">
+                              {cvData.personalInfo.fullName || 'John Doe'}, {cvData.personalInfo.jobTitle || 'Full Stack Developer'}
+                            </h1>
+                          </div>
+
+                          {/* Experience */}
+                          <div className="mb-6">
+                            <h3 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wider">02 Təcrübə</h3>
+                            <div className="space-y-6">
+                              {cvData.workExperience.map((exp, index) => (
+                                <div key={exp.id}>
+                                  <div className="border-l-4 border-yellow-400 pl-4">
+                                    <div className="flex justify-between items-start mb-1">
+                                      <span className="text-xs text-gray-600">{exp.startYear}.09 - {exp.endYear === 'Present' ? 'Hazırda' : exp.endYear}</span>
+                                    </div>
+                                    <h4 className="font-medium text-gray-900 text-sm mb-1">{exp.company || 'Şirkət adı'}</h4>
+                                     <p className="text-xs text-gray-700 leading-relaxed mb-3">
+                                       {exp.description || 'Android və iOS appların dizaynında təcrübə. Layout, tipografiya və vizual ierarxiyanın başa düşülməsi.'}
+                                     </p>
+                                     <p className="text-xs text-gray-700 leading-relaxed mb-3">
+                                       Redaksiya, biznes və istifadəçinin ehtiyacları arasında balansın başa düşülməsi. Responsiv veb platformlar üçün dizayn təcrübəsi.
+                                     </p>
+                                     <p className="text-xs text-gray-700 leading-relaxed">
+                                       Layout, tipografiya və vizual ierarxiya.
+                                     </p>
+                                     <p className="text-xs text-gray-700 leading-relaxed mt-3">
+                                       Redaksiya, biznes və istifadəçinin ehtiyacları arasında balansın başa düşülməsi. Responsiv veb platformlar üçün dizayn təcrübəsi.
+                                     </p>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Education */}
+                          <div>
+                            <h3 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wider">03 Təhsil</h3>
+                            <div className="space-y-3">
+                              {cvData.education.map((edu) => (
+                                <div key={edu.id}>
+                                  <div className="flex justify-between items-start">
+                                    <div>
+                                      <span className="text-xs text-gray-600">{edu.startYear}-{edu.endYear}</span>
+                                      <h4 className="font-medium text-gray-900 text-sm">{edu.institution || 'Idaho State University'}</h4>
+                                      <p className="text-xs text-gray-700">{edu.degree || 'Business Informatics'}</p>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
+                  )}
 
-                    {/* Summary */}
-                    {cvData.personalInfo.summary && (
-                      <div className="mb-6">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2">Summary</h3>
-                        <p className="text-gray-700 leading-relaxed">{cvData.personalInfo.summary}</p>
-                      </div>
-                    )}
-
-                    {/* Work Experience */}
-                    {cvData.workExperience.length > 0 && (
-                      <div className="mb-6">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-3">Work Experience</h3>
-                        <div className="space-y-4">
-                          {cvData.workExperience.map((exp) => (
-                            <div key={exp.id}>
-                              <div className="flex justify-between items-start mb-1">
-                                <h4 className="font-medium text-gray-900">{exp.jobTitle}</h4>
-                                <span className="text-gray-600 text-sm">{exp.startYear} - {exp.endYear}</span>
+                  {/* Other templates */}
+                  {cvData.selectedTemplate !== 1 && (
+                    <div className="bg-white text-black p-8 rounded-lg shadow-lg min-h-[700px] text-sm">
+                      {/* Header */}
+                      <div className="flex items-start gap-6 mb-6">
+                        {cvData.personalInfo.profilePhoto && (
+                          <img
+                            src={cvData.personalInfo.profilePhoto}
+                            alt="Profile"
+                            className="w-24 h-24 rounded-full object-cover"
+                          />
+                        )}
+                        <div className="flex-1">
+                          <h1 className="text-3xl font-bold text-gray-900 mb-1">
+                            {cvData.personalInfo.fullName || 'Sizin Adınız'}
+                          </h1>
+                          <h2 className="text-xl text-gray-600 mb-3">
+                            {cvData.personalInfo.jobTitle || 'Sizin İş Başlığınız'}
+                          </h2>
+                          <div className="flex flex-wrap gap-4 text-gray-600">
+                            {cvData.personalInfo.phone && (
+                              <div className="flex items-center gap-1">
+                                <Phone className="w-4 h-4" />
+                                {cvData.personalInfo.phone}
                               </div>
-                              <p className="text-gray-700 font-medium mb-2">{exp.company}</p>
-                              {exp.description && (
-                                <p className="text-gray-600 text-sm leading-relaxed">{exp.description}</p>
-                              )}
-                            </div>
-                          ))}
+                            )}
+                            {cvData.personalInfo.email && (
+                              <div className="flex items-center gap-1">
+                                <Mail className="w-4 h-4" />
+                                {cvData.personalInfo.email}
+                              </div>
+                            )}
+                            {cvData.personalInfo.location && (
+                              <div className="flex items-center gap-1">
+                                <MapPin className="w-4 h-4" />
+                                {cvData.personalInfo.location}
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    )}
 
-                    {/* Education */}
-                    {cvData.education.length > 0 && (
-                      <div className="mb-6">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-3">Education</h3>
-                        <div className="space-y-3">
-                          {cvData.education.map((edu) => (
-                            <div key={edu.id}>
-                              <div className="flex justify-between items-start">
-                                <div>
-                                  <h4 className="font-medium text-gray-900">{edu.degree}</h4>
-                                  <p className="text-gray-700">{edu.institution}</p>
+                      {/* Summary */}
+                      {cvData.personalInfo.summary && (
+                        <div className="mb-6">
+                          <h3 className="text-lg font-semibold text-gray-900 mb-2">Xülasə</h3>
+                          <p className="text-gray-700 leading-relaxed">{cvData.personalInfo.summary}</p>
+                        </div>
+                      )}
+
+                      {/* Work Experience */}
+                      {cvData.workExperience.length > 0 && (
+                        <div className="mb-6">
+                          <h3 className="text-lg font-semibold text-gray-900 mb-3">İş Təcrübəsi</h3>
+                          <div className="space-y-4">
+                            {cvData.workExperience.map((exp) => (
+                              <div key={exp.id}>
+                                <div className="flex justify-between items-start mb-1">
+                                  <h4 className="font-medium text-gray-900">{exp.jobTitle}</h4>
+                                  <span className="text-gray-600 text-sm">{exp.startYear} - {exp.endYear}</span>
                                 </div>
-                                <span className="text-gray-600 text-sm">{edu.startYear} - {edu.endYear}</span>
+                                <p className="text-gray-700 font-medium mb-2">{exp.company}</p>
+                                {exp.description && (
+                                  <p className="text-gray-600 text-sm leading-relaxed">{exp.description}</p>
+                                )}
                               </div>
-                            </div>
-                          ))}
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
 
-                    {/* Skills */}
-                    {cvData.skills.length > 0 && (
-                      <div className="mb-6">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-3">Skills</h3>
-                        <div className="flex flex-wrap gap-2">
-                          {cvData.skills.map((skill, index) => (
-                            <span key={index} className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
-                              {skill}
-                            </span>
-                          ))}
+                      {/* Education */}
+                      {cvData.education.length > 0 && (
+                        <div className="mb-6">
+                          <h3 className="text-lg font-semibold text-gray-900 mb-3">Təhsil</h3>
+                          <div className="space-y-3">
+                            {cvData.education.map((edu) => (
+                              <div key={edu.id}>
+                                <div className="flex justify-between items-start">
+                                  <div>
+                                    <h4 className="font-medium text-gray-900">{edu.degree}</h4>
+                                    <p className="text-gray-700">{edu.institution}</p>
+                                  </div>
+                                  <span className="text-gray-600 text-sm">{edu.startYear} - {edu.endYear}</span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
 
-                    {/* Certifications */}
-                    {cvData.certifications.length > 0 && (
-                      <div className="mb-6">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-3">Certifications</h3>
-                        <div className="space-y-2">
-                          {cvData.certifications.map((cert, index) => (
-                            <div key={index} className="flex items-center gap-2">
-                              <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
-                              <span className="text-gray-700">{cert}</span>
-                            </div>
-                          ))}
+                      {/* Skills */}
+                      {cvData.skills.length > 0 && (
+                        <div className="mb-6">
+                          <h3 className="text-lg font-semibold text-gray-900 mb-3">Bacarıqlar</h3>
+                          <div className="flex flex-wrap gap-2">
+                            {cvData.skills.map((skill, index) => (
+                              <span key={index} className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
+                                {skill}
+                              </span>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
 
-                    {/* Languages */}
-                    {cvData.languages.length > 0 && (
-                      <div className="mb-6">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-3">Languages</h3>
-                        <div className="flex flex-wrap gap-2">
-                          {cvData.languages.map((language, index) => (
-                            <span key={index} className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
-                              {language}
-                            </span>
-                          ))}
+                      {/* Certifications */}
+                      {cvData.certifications.length > 0 && (
+                        <div className="mb-6">
+                          <h3 className="text-lg font-semibold text-gray-900 mb-3">Sertifikatlar</h3>
+                          <div className="space-y-2">
+                            {cvData.certifications.map((cert, index) => (
+                              <div key={index} className="flex items-center gap-2">
+                                <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                                <span className="text-gray-700">{cert}</span>
+                              </div>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
+                      {/* Languages */}
+                      {cvData.languages.length > 0 && (
+                        <div className="mb-6">
+                          <h3 className="text-lg font-semibold text-gray-900 mb-3">Dillər</h3>
+                          <div className="flex flex-wrap gap-2">
+                            {cvData.languages.map((language, index) => (
+                              <span key={index} className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
+                                {language}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
 
-                    {/* Social Links */}
-                    {cvData.socialLinks.length > 0 && (
-                      <div className="mb-6">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-3">Social Links</h3>
-                        <div className="space-y-2">
-                          {cvData.socialLinks.map((link, index) => (
-                            <div key={index} className="flex items-center gap-2">
-                              <Globe className="w-4 h-4 text-gray-600" />
-                              <span className="text-gray-700 font-medium">{link.platform}:</span>
-                              <span className="text-blue-600 hover:underline cursor-pointer">{link.url}</span>
-                            </div>
-                          ))}
+                      {/* Social Links */}
+                      {cvData.socialLinks.length > 0 && (
+                        <div className="mb-6">
+                          <h3 className="text-lg font-semibold text-gray-900 mb-3">Sosial Linklər</h3>
+                          <div className="space-y-2">
+                            {cvData.socialLinks.map((link, index) => (
+                              <div key={index} className="flex items-center gap-2">
+                                <Globe className="w-4 h-4 text-gray-600" />
+                                <span className="text-gray-700 font-medium">{link.platform}:</span>
+                                <span className="text-blue-600 hover:underline cursor-pointer">{link.url}</span>
+                              </div>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
 
-                    {/* Hobbies */}
-                    {cvData.hobbies.length > 0 && (
-                      <div className="mb-6">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-3">Hobbies & Interests</h3>
-                        <div className="flex flex-wrap gap-2">
-                          {cvData.hobbies.map((hobby, index) => (
-                            <span key={index} className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
-                              {hobby}
-                            </span>
-                          ))}
+                      {/* Hobbies */}
+                      {cvData.hobbies.length > 0 && (
+                        <div className="mb-6">
+                          <h3 className="text-lg font-semibold text-gray-900 mb-3">Hobbilər və Maraqlar</h3>
+                          <div className="flex flex-wrap gap-2">
+                            {cvData.hobbies.map((hobby, index) => (
+                              <span key={index} className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
+                                {hobby}
+                              </span>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    )}
-                    
-                  </div>
+                      )}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </div>
@@ -914,6 +1016,7 @@ const CVBuilder = () => {
         <Button
           onClick={downloadPDF}
           className="rounded-full w-14 h-14 shadow-lg hover:shadow-xl transition-all"
+          title="PDF Yüklə"
         >
           <Download className="w-5 h-5" />
         </Button>
@@ -921,6 +1024,7 @@ const CVBuilder = () => {
           onClick={resetAll}
           variant="destructive"
           className="rounded-full w-14 h-14 shadow-lg hover:shadow-xl transition-all"
+          title="Hamısını Sıfırla"
         >
           <RefreshCw className="w-5 h-5" />
         </Button>
