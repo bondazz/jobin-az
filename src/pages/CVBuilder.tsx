@@ -738,101 +738,207 @@ const CVBuilder = () => {
                   </div>
                 </CardHeader>
                 <CardContent className="p-6">
-                  {/* CV Preview - Template 1 exactly matching the uploaded image */}
+                   {/* CV Preview - Template 1 Modern Design */}
                   {cvData.selectedTemplate === 1 && (
-                    <div className="bg-white text-black rounded-lg shadow-lg min-h-[700px] text-sm overflow-hidden">
-                      <div className="flex min-h-[700px]">
-                        {/* Left Sidebar */}
-                        <div className="w-1/3 bg-gray-100 p-6 space-y-6">
+                    <div className="bg-stone-50 shadow-xl rounded-lg overflow-hidden min-h-[842px] max-w-[595px] mx-auto relative">
+                      {/* Background grain texture */}
+                      <div 
+                        className="absolute inset-0 opacity-20"
+                        style={{
+                          backgroundImage: 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23000000" fill-opacity="0.1"%3E%3Ccircle cx="7" cy="7" r="1"/%3E%3Ccircle cx="27" cy="7" r="1"/%3E%3Ccircle cx="47" cy="7" r="1"/%3E%3Ccircle cx="7" cy="27" r="1"/%3E%3Ccircle cx="27" cy="27" r="1"/%3E%3Ccircle cx="47" cy="27" r="1"/%3E%3Ccircle cx="7" cy="47" r="1"/%3E%3Ccircle cx="27" cy="47" r="1"/%3E%3Ccircle cx="47" cy="47" r="1"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+                          backgroundSize: '15px 15px'
+                        }}
+                      ></div>
+                      
+                      {/* Blur overlay */}
+                      <div className="absolute inset-0 bg-stone-50/80 backdrop-blur-sm"></div>
+                      
+                      <div className="flex h-full relative z-10">
+                        {/* Left Sidebar - Dark Blue/Gray */}
+                        <div className="w-2/5 bg-slate-800 text-white p-8 space-y-8">
+                          {/* Profile Photo */}
+                          <div className="flex justify-center mb-8">
+                            {cvData.personalInfo.profilePhoto ? (
+                              <img
+                                src={cvData.personalInfo.profilePhoto}
+                                alt="Profile"
+                                className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg"
+                              />
+                            ) : (
+                              <div className="w-32 h-32 rounded-full bg-slate-600 border-4 border-white shadow-lg flex items-center justify-center">
+                                <Camera className="w-12 h-12 text-slate-300" />
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Name and Title Header */}
+                          <div className="text-center border-b border-slate-600 pb-6">
+                            <h1 className="text-xl font-light text-white mb-2">
+                              {cvData.personalInfo.fullName || 'John Doe'}
+                            </h1>
+                            <p className="text-sm text-slate-300 uppercase tracking-wider">
+                              {cvData.personalInfo.jobTitle || 'Full Stack Developer'}
+                            </p>
+                          </div>
+
                           {/* Contacts */}
                           <div>
-                            <h3 className="text-sm font-semibold text-gray-900 mb-3 uppercase tracking-wider">01 Əlaqələr</h3>
-                            <div className="space-y-2 text-xs text-gray-700">
+                            <h3 className="text-base font-light text-white mb-4 uppercase tracking-widest flex items-center">
+                              <span className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white text-sm font-bold mr-3">01</span>
+                              Əlaqə
+                            </h3>
+                            <div className="space-y-3 text-sm text-slate-200 ml-11">
                               {cvData.socialLinks.map((link, index) => (
-                                <div key={index}>{link.platform.toUpperCase()}.COM/USERNAME</div>
+                                <div key={index} className="flex items-center">
+                                  <span className="text-orange-400 mr-2">▶</span>
+                                  {link.platform.toLowerCase()}.com/username
+                                </div>
                               ))}
-                              <div>{cvData.personalInfo.email || 'USERNAME@GMAIL.COM'}</div>
-                              <div>{cvData.personalInfo.phone || '+0 000 000 0000'}</div>
+                              <div className="flex items-center">
+                                <span className="text-orange-400 mr-2">▶</span>
+                                {cvData.personalInfo.email || 'username@email.com'}
+                              </div>
+                              <div className="flex items-center">
+                                <span className="text-orange-400 mr-2">▶</span>
+                                {cvData.personalInfo.phone || '+0 000 000 0000'}
+                              </div>
                             </div>
                           </div>
 
                           {/* Skills */}
                           <div>
-                            <h3 className="text-sm font-semibold text-gray-900 mb-3 uppercase tracking-wider">04 Bacarıqlar</h3>
-                            <div className="space-y-1">
-                              {cvData.skills.map((skill, index) => (
-                                <div key={index} className="text-xs text-gray-700">{skill}</div>
-                              ))}
+                            <h3 className="text-base font-light text-white mb-4 uppercase tracking-widest flex items-center">
+                              <span className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white text-sm font-bold mr-3">04</span>
+                              Bacarıqlar
+                            </h3>
+                            <div className="space-y-2 ml-11">
+                              {cvData.skills.length > 0 ? cvData.skills.map((skill, index) => (
+                                <div key={index} className="flex items-center">
+                                  <span className="w-2 h-2 bg-orange-400 rounded-full mr-3"></span>
+                                  <span className="text-sm text-slate-200">{skill}</span>
+                                </div>
+                              )) : (
+                                <>
+                                  <div className="flex items-center">
+                                    <span className="w-2 h-2 bg-orange-400 rounded-full mr-3"></span>
+                                    <span className="text-sm text-slate-200">React Native</span>
+                                  </div>
+                                  <div className="flex items-center">
+                                    <span className="w-2 h-2 bg-orange-400 rounded-full mr-3"></span>
+                                    <span className="text-sm text-slate-200">JavaScript</span>
+                                  </div>
+                                  <div className="flex items-center">
+                                    <span className="w-2 h-2 bg-orange-400 rounded-full mr-3"></span>
+                                    <span className="text-sm text-slate-200">TypeScript</span>
+                                  </div>
+                                </>
+                              )}
                             </div>
                           </div>
 
                           {/* Languages */}
                           <div>
-                            <h3 className="text-sm font-semibold text-gray-900 mb-3 uppercase tracking-wider">05 Dillər</h3>
-                            <div className="space-y-1">
-                              {cvData.languages.map((language, index) => (
-                                <div key={index} className="flex justify-between text-xs">
-                                  <span className="text-gray-700">{language}</span>
-                                  <span className="text-gray-600">C2</span>
+                            <h3 className="text-base font-light text-white mb-4 uppercase tracking-widest flex items-center">
+                              <span className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white text-sm font-bold mr-3">05</span>
+                              Dillər
+                            </h3>
+                            <div className="space-y-3 ml-11">
+                              {cvData.languages.length > 0 ? cvData.languages.map((language, index) => (
+                                <div key={index} className="flex justify-between items-center">
+                                  <span className="text-sm text-slate-200">{language}</span>
+                                  <span className="text-sm text-orange-400 font-semibold">C2</span>
                                 </div>
-                              ))}
+                              )) : (
+                                <>
+                                  <div className="flex justify-between items-center">
+                                    <span className="text-sm text-slate-200">İngilis</span>
+                                    <span className="text-sm text-orange-400 font-semibold">C2</span>
+                                  </div>
+                                  <div className="flex justify-between items-center">
+                                    <span className="text-sm text-slate-200">İtalyan</span>
+                                    <span className="text-sm text-orange-400 font-semibold">C1</span>
+                                  </div>
+                                  <div className="flex justify-between items-center">
+                                    <span className="text-sm text-slate-200">İspan</span>
+                                    <span className="text-sm text-orange-400 font-semibold">B2</span>
+                                  </div>
+                                </>
+                              )}
                             </div>
                           </div>
                         </div>
 
                         {/* Right Content */}
-                        <div className="flex-1 p-6">
-                          {/* Header */}
-                          <div className="mb-6">
-                            <h1 className="text-2xl font-normal text-gray-900 mb-1">
-                              {cvData.personalInfo.fullName || 'John Doe'}, {cvData.personalInfo.jobTitle || 'Full Stack Developer'}
-                            </h1>
-                          </div>
-
+                        <div className="flex-1 p-8 bg-white relative">
                           {/* Experience */}
-                          <div className="mb-6">
-                            <h3 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wider">02 Təcrübə</h3>
-                            <div className="space-y-6">
-                              {cvData.workExperience.map((exp, index) => (
-                                <div key={exp.id}>
-                                  <div className="border-l-4 border-yellow-400 pl-4">
-                                    <div className="flex justify-between items-start mb-1">
-                                      <span className="text-xs text-gray-600">{exp.startYear}.09 - {exp.endYear === 'Present' ? 'Hazırda' : exp.endYear}</span>
+                          <div className="mb-8">
+                            <h3 className="text-lg font-light text-gray-900 mb-6 uppercase tracking-widest flex items-center">
+                              <span className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white text-sm font-bold mr-4">02</span>
+                              Təcrübə
+                            </h3>
+                            <div className="space-y-8 ml-12">
+                              {cvData.workExperience.length > 0 ? cvData.workExperience.map((exp, index) => (
+                                <div key={exp.id} className="relative">
+                                  <div className="mb-3">
+                                    <div className="text-sm text-gray-600 mb-2">
+                                      {exp.startYear}.09 - {exp.endYear === 'Present' ? 'Hazırda' : exp.endYear}
                                     </div>
-                                    <h4 className="font-medium text-gray-900 text-sm mb-1">{exp.company || 'Şirkət adı'}</h4>
-                                     <p className="text-xs text-gray-700 leading-relaxed mb-3">
-                                       {exp.description || 'Android və iOS appların dizaynında təcrübə. Layout, tipografiya və vizual ierarxiyanın başa düşülməsi.'}
-                                     </p>
-                                     <p className="text-xs text-gray-700 leading-relaxed mb-3">
-                                       Redaksiya, biznes və istifadəçinin ehtiyacları arasında balansın başa düşülməsi. Responsiv veb platformlar üçün dizayn təcrübəsi.
-                                     </p>
-                                     <p className="text-xs text-gray-700 leading-relaxed">
-                                       Layout, tipografiya və vizual ierarxiya.
-                                     </p>
-                                     <p className="text-xs text-gray-700 leading-relaxed mt-3">
-                                       Redaksiya, biznes və istifadəçinin ehtiyacları arasında balansın başa düşülməsi. Responsiv veb platformlar üçün dizayn təcrübəsi.
-                                     </p>
+                                    <h4 className="font-semibold text-gray-900 text-base mb-3">{exp.company || 'Şirkət adı'}</h4>
+                                    <div className="space-y-3 text-sm text-gray-700 leading-relaxed">
+                                      <p>{exp.description || 'Android və iOS appların dizaynında təcrübə. Layout, tipografiya və vizual ierarxiyanın başa düşülməsi.'}</p>
+                                      <p>Redaksiya, biznes və istifadəçinin ehtiyacları arasında balansın başa düşülməsi.</p>
+                                      <p>Responsiv veb platformlar üçün dizayn təcrübəsi.</p>
+                                    </div>
                                   </div>
                                 </div>
-                              ))}
+                              )) : (
+                                <>
+                                  <div className="relative">
+                                    <div className="mb-3">
+                                      <div className="text-sm text-gray-600 mb-2">2016.09 - Hazırda</div>
+                                      <h4 className="font-semibold text-gray-900 text-base mb-3">Şirkət adı</h4>
+                                      <div className="space-y-3 text-sm text-gray-700 leading-relaxed">
+                                        <p>Android və iOS appların dizaynında təcrübə. Layout, tipografiya və vizual ierarxiyanın başa düşülməsi.</p>
+                                        <p>Redaksiya, biznes və istifadəçinin ehtiyacları arasında balansın başa düşülməsi.</p>
+                                        <p>Responsiv veb platformlar üçün dizayn təcrübəsi.</p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="relative">
+                                    <div className="mb-3">
+                                      <div className="text-sm text-gray-600 mb-2">2014.09 - 2016.08</div>
+                                      <h4 className="font-semibold text-gray-900 text-base mb-3">Şirkət adı</h4>
+                                      <div className="space-y-3 text-sm text-gray-700 leading-relaxed">
+                                        <p>Layout, tipografiya və vizual ierarxiya bacarıqlarının inkişafı.</p>
+                                        <p>İstifadəçi təcrübəsi dizaynı və məhsul strategiyası.</p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </>
+                              )}
                             </div>
                           </div>
 
                           {/* Education */}
                           <div>
-                            <h3 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wider">03 Təhsil</h3>
-                            <div className="space-y-3">
-                              {cvData.education.map((edu) => (
+                            <h3 className="text-lg font-light text-gray-900 mb-6 uppercase tracking-widest flex items-center">
+                              <span className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white text-sm font-bold mr-4">03</span>
+                              Təhsil
+                            </h3>
+                            <div className="space-y-4 ml-12">
+                              {cvData.education.length > 0 ? cvData.education.map((edu) => (
                                 <div key={edu.id}>
-                                  <div className="flex justify-between items-start">
-                                    <div>
-                                      <span className="text-xs text-gray-600">{edu.startYear}-{edu.endYear}</span>
-                                      <h4 className="font-medium text-gray-900 text-sm">{edu.institution || 'Idaho State University'}</h4>
-                                      <p className="text-xs text-gray-700">{edu.degree || 'Business Informatics'}</p>
-                                    </div>
-                                  </div>
+                                  <div className="text-sm text-gray-600 mb-1">{edu.startYear}-{edu.endYear}</div>
+                                  <h4 className="font-semibold text-gray-900 text-base">{edu.institution || 'Idaho State University'}</h4>
+                                  <p className="text-sm text-gray-700">{edu.degree || 'Business Informatics'}</p>
                                 </div>
-                              ))}
+                              )) : (
+                                <div>
+                                  <div className="text-sm text-gray-600 mb-1">2014-2019</div>
+                                  <h4 className="font-semibold text-gray-900 text-base">Idaho State University</h4>
+                                  <p className="text-sm text-gray-700">Business Informatics</p>
+                                </div>
+                              )}
                             </div>
                           </div>
                         </div>
