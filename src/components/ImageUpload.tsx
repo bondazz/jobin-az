@@ -53,19 +53,25 @@ export default function ImageUpload({
 
     setUploading(true);
     try {
-      // Create form data for FTP upload
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('type', imageType);
+      // Upload to Supabase storage for now
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+      
+      // Use folder based on image type
+      const folderPath = imageType === 'advertising' ? 'advertising' : 'companies';
+      const filePath = `${folderPath}/${fileName}`;
 
-      const { data, error } = await supabase.functions.invoke('upload-to-ftp', {
-        body: formData,
-      });
+      const { error: uploadError } = await supabase.storage
+        .from('images')
+        .upload(filePath, file);
 
-      if (error) throw error;
-      if (!data.success) throw new Error(data.error);
+      if (uploadError) throw uploadError;
 
-      const imageUrl = data.publicUrl;
+      const { data: urlData } = supabase.storage
+        .from('images')
+        .getPublicUrl(filePath);
+
+      const imageUrl = urlData.publicUrl;
       setPreviewUrl(imageUrl);
       onChange(imageUrl);
 
