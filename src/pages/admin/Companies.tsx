@@ -340,12 +340,14 @@ export default function AdminCompanies() {
                     onChange={(url) => setFormData({ ...formData, logo: url })}
                     label="Logo"
                     placeholder="https://example.com/logo.png"
+                    imageType="companies"
                   />
                   <ImageUpload
                     value={formData.background_image}
                     onChange={(url) => setFormData({ ...formData, background_image: url })}
                     label="Arxa Fon Şəkli"
                     placeholder="https://example.com/background.jpg"
+                    imageType="companies"
                   />
                 </div>
 

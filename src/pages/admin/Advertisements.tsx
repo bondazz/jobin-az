@@ -288,6 +288,7 @@ const AdminAdvertisements = () => {
                     label="Reklam Şəkli *"
                     value={formData.image_url}
                     onChange={(url) => setFormData({ ...formData, image_url: url })}
+                    imageType="advertising"
                     placeholder="Reklam şəklinin URL-ni daxil edin"
                   />
                 </div>

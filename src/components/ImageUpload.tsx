@@ -12,6 +12,7 @@ interface ImageUploadProps {
   label: string;
   placeholder?: string;
   className?: string;
+  imageType?: 'companies' | 'advertising'; // Add image type prop
 }
 
 export default function ImageUpload({ 
@@ -19,7 +20,8 @@ export default function ImageUpload({
   onChange, 
   label, 
   placeholder,
-  className = ""
+  className = "",
+  imageType = 'companies'
 }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(value || '');
@@ -54,6 +56,7 @@ export default function ImageUpload({
       // Create form data for FTP upload
       const formData = new FormData();
       formData.append('file', file);
+      formData.append('type', imageType);
 
       const { data, error } = await supabase.functions.invoke('upload-to-ftp', {
         body: formData,

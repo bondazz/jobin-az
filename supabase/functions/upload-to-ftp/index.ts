@@ -15,6 +15,7 @@ serve(async (req) => {
   try {
     const formData = await req.formData();
     const file = formData.get('file') as File;
+    const imageType = formData.get('type') as string || 'companies'; // Default to companies
     
     if (!file) {
       return new Response(JSON.stringify({ error: 'No file provided' }), {
@@ -37,6 +38,15 @@ serve(async (req) => {
     const ftpPass = 'Samir_1155!';
     const ftpPort = 21;
 
+    // Determine upload path based on image type
+    let uploadPath = '/public_html/jooble/images/companies/';
+    let publicUrlPath = 'jooble/images/companies';
+    
+    if (imageType === 'advertising') {
+      uploadPath = '/public_html/jooble/images/advertising/';
+      publicUrlPath = 'jooble/images/advertising';
+    }
+
     // Use Node.js FTP client approach with Deno
     const response = await fetch('https://api.ftpjs.org/upload', {
       method: 'POST',
@@ -50,7 +60,7 @@ serve(async (req) => {
         password: ftpPass,
         filename: fileName,
         data: Array.from(fileBytes),
-        path: '/public_html/' // Adjust this path as needed
+        path: uploadPath
       })
     });
 
@@ -59,7 +69,7 @@ serve(async (req) => {
     }
 
     // Return the public URL where the image can be accessed
-    const publicUrl = `https://storage.jooble.az/${fileName}`;
+    const publicUrl = `https://storage.jooble.az/${publicUrlPath}/${fileName}`;
 
     return new Response(JSON.stringify({ 
       publicUrl,
