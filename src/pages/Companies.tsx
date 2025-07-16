@@ -100,7 +100,7 @@ const Companies = () => {
         .select('*', { count: 'exact' })
         .eq('is_active', true)
         .order('name')
-        .range(0, 50000);
+        .limit(10000);
 
       console.log('Companies fetched:', data?.length || 0);
       console.log('Total companies in DB:', count);
