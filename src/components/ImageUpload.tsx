@@ -51,21 +51,18 @@ export default function ImageUpload({
 
     setUploading(true);
     try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-      const filePath = `${fileName}`;
+      // Create form data for FTP upload
+      const formData = new FormData();
+      formData.append('file', file);
 
-      const { error: uploadError } = await supabase.storage
-        .from('images')
-        .upload(filePath, file);
+      const { data, error } = await supabase.functions.invoke('upload-to-ftp', {
+        body: formData,
+      });
 
-      if (uploadError) throw uploadError;
+      if (error) throw error;
+      if (!data.success) throw new Error(data.error);
 
-      const { data: urlData } = supabase.storage
-        .from('images')
-        .getPublicUrl(filePath);
-
-      const imageUrl = urlData.publicUrl;
+      const imageUrl = data.publicUrl;
       setPreviewUrl(imageUrl);
       onChange(imageUrl);
 
