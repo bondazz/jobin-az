@@ -215,6 +215,13 @@ const Companies = () => {
               <div className="relative">
                 {/* Company Header with Background */}
                 <div className="relative h-48 bg-gradient-to-br from-primary/20 via-primary/10 to-accent/10 overflow-hidden">
+                  {selectedCompany.background_image && (
+                    <img 
+                      src={selectedCompany.background_image} 
+                      alt={selectedCompany.name} 
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/20"></div>
                   
                   {/* Company Logo - Floating */}
