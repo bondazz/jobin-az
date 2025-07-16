@@ -8,6 +8,7 @@ import Categories from "./pages/Categories";
 import Companies from "./pages/Companies";
 import About from "./pages/About";
 import Pricing from "./pages/Pricing";
+import CVBuilder from "./pages/CVBuilder";
 import NotFound from "./pages/NotFound";
 
 // Admin components
@@ -53,6 +54,7 @@ const App = () => (
               </Suspense>
             } />
             <Route path="/bildirisler" element={<Index />} />
+            <Route path="/cv-builder" element={<CVBuilder />} />
             <Route path="/services" element={<Pricing />} />
             <Route path="/about" element={<About />} />
           </Route>

@@ -7,7 +7,7 @@ import { Separator } from '@/components/ui/separator';
 import ThemeToggle from '@/components/ThemeToggle';
 import LanguageToggle from '@/components/LanguageToggle';
 import AdBanner from '@/components/AdBanner';
-import { Briefcase, Tag, Building, Bookmark, Bell, TrendingUp, Info, DollarSign, Calendar, BarChart3 } from 'lucide-react';
+import { Briefcase, Tag, Building, Bookmark, Bell, TrendingUp, Info, DollarSign, Calendar, BarChart3, FileText } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 const MainSidebar = () => {
@@ -49,6 +49,11 @@ const MainSidebar = () => {
     label: 'Seçilmiş elanlar',
     path: '/favorites',
     count: savedJobsCount
+  }, {
+    icon: FileText,
+    label: 'CV Builder',
+    path: '/cv-builder',
+    count: null
   }, {
     icon: DollarSign,
     label: 'Qiymətlər',

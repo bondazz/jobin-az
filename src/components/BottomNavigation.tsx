@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Briefcase, Tag, Building, Bookmark, Bell, Menu, Home, TrendingUp, Info, DollarSign } from 'lucide-react';
+import { Briefcase, Tag, Building, Bookmark, Bell, Menu, Home, TrendingUp, Info, DollarSign, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Link, useLocation } from 'react-router-dom';
@@ -92,6 +92,11 @@ const BottomNavigation = ({
     icon: Bell,
     label: 'İş Bildirişləri',
     path: '/bildirisler',
+    count: null
+  }, {
+    icon: FileText,
+    label: 'CV Builder',
+    path: '/cv-builder',
     count: null
   }, {
     icon: DollarSign,
