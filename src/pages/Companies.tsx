@@ -94,12 +94,17 @@ const Companies = () => {
 
   const fetchCompanies = async () => {
     try {
-      const { data, error } = await supabase
+      console.log('Fetching companies...');
+      const { data, error, count } = await supabase
         .from('companies')
-        .select('*')
+        .select('*', { count: 'exact' })
         .eq('is_active', true)
         .order('name')
         .range(0, 50000);
+
+      console.log('Companies fetched:', data?.length || 0);
+      console.log('Total companies in DB:', count);
+      console.log('Error:', error);
 
       if (error) throw error;
       setCompanies(data || []);
