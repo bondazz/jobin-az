@@ -179,7 +179,7 @@ const JobListings = ({
         </div>}
 
       {/* Job List - Responsive Container */}
-      <div className="flex-1 overflow-y-auto p-2 bg-gradient-to-b from-transparent to-primary/5 w-full max-w-[100%] lg:max-w-[calc(100%+40px)] mx-auto lg:min-h-[calc(100vh-200px)] lg:px-6">
+      <div className="flex-1 overflow-y-auto p-2 bg-gradient-to-b from-transparent to-primary/5 w-full max-w-[100%] lg:max-w-[calc(100%+80px)] mx-auto lg:min-h-[calc(100vh-200px)] lg:px-8">
         <div className="flex flex-col gap-2 justify-center items-center w-full max-w-full px-2">
           {loading ? <div className="flex items-center justify-center py-16">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
