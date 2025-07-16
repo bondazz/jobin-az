@@ -24,43 +24,48 @@ export const useCompanyProfile = (company: Company | null) => {
     navigate(newUrl, { replace: true });
     
     // Update SEO consistently
-    updateSEO(tab);
+    updateSEO(company, tab);
   };
 
   // Unified SEO update function
-  const updateSEO = (tab: 'about' | 'jobs') => {
-    if (!company) return;
+  const updateSEO = (companyData: Company, tab: 'about' | 'jobs') => {
+    if (!companyData) return;
     
     if (tab === 'about') {
       updatePageMeta({
-        title: company.about_seo_title || company.seo_title || `${company.name} - Haqqında | Şirkət Profili`,
-        description: company.about_seo_description || company.seo_description || `${company.name} şirkəti haqqında məlumat və ətraflı təfərrüatlar.`,
-        keywords: company.seo_keywords?.join(', ') || `${company.name}, şirkət, haqqında, Azərbaycan`,
-        url: `/companies/${company.slug}`
+        title: companyData.about_seo_title || companyData.seo_title || `${companyData.name} - Haqqında | Şirkət Profili`,
+        description: companyData.about_seo_description || companyData.seo_description || `${companyData.name} şirkəti haqqında məlumat və ətraflı təfərrüatlar.`,
+        keywords: companyData.seo_keywords?.join(', ') || `${companyData.name}, şirkət, haqqında, Azərbaycan`,
+        url: `/companies/${companyData.slug}`
       });
     } else {
       updatePageMeta({
-        title: company.jobs_seo_title || `${company.name} - İş Elanları | Vakansiyalar`,
-        description: company.jobs_seo_description || `${company.name} şirkətində aktiv vakansiyalar və iş elanları.`,
-        keywords: company.seo_keywords?.join(', ') || `${company.name}, şirkət, vakansiya, iş elanları, Azərbaycan`,
-        url: `/companies/${company.slug}/vacancies`
+        title: companyData.jobs_seo_title || `${companyData.name} - İş Elanları | Vakansiyalar`,
+        description: companyData.jobs_seo_description || `${companyData.name} şirkətində aktiv vakansiyalar və iş elanları.`,
+        keywords: companyData.seo_keywords?.join(', ') || `${companyData.name}, şirkət, vakansiya, iş elanları, Azərbaycan`,
+        url: `/companies/${companyData.slug}/vacancies`
       });
     }
   };
 
-  // Detect initial tab from URL
+  // Detect initial tab from URL and initialize SEO immediately
   useEffect(() => {
+    if (!company) return;
+    
     const currentPath = window.location.pathname;
     const initialTab = currentPath.includes('/vacancies') ? 'jobs' as const : 'about' as const;
     setActiveTab(initialTab);
-  }, []);
+    
+    // Set SEO immediately when company data is available
+    updateSEO(company, initialTab);
+  }, [company]);
 
-  // Initialize SEO on mount and when activeTab or company changes
+  // Update SEO when tab changes
   useEffect(() => {
     if (company) {
-      updateSEO(activeTab);
+      updateSEO(company, activeTab);
     }
-  }, [activeTab, company]);
+  }, [activeTab]);
 
   return {
     activeTab,
