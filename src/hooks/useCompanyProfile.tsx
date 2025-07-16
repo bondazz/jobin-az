@@ -33,16 +33,16 @@ export const useCompanyProfile = (company: Company | null) => {
     
     if (tab === 'about') {
       updatePageMeta({
-        title: company.seo_title || `${company.name} - Haqqında | Şirkət Profili`,
-        description: company.seo_description || `${company.name} şirkəti haqqında məlumat və ətraflı təfərrüatlar.`,
-        keywords: company.seo_keywords?.join(', ') || `${company.name}, şirkət, haqqında, Azərbaycan`,
+        title: company.about_seo_title || company.seo_title || `${company.name} - Haqqında | Şirkət Profili`,
+        description: company.about_seo_description || company.seo_description || `${company.name} şirkəti haqqında məlumat və ətraflı təfərrüatlar.`,
+        keywords: company.about_seo_keywords?.join(', ') || company.seo_keywords?.join(', ') || `${company.name}, şirkət, haqqında, Azərbaycan`,
         url: `/companies/${company.slug}`
       });
     } else {
       updatePageMeta({
-        title: company.seo_title || `${company.name} - İş Elanları | Vakansiyalar`,
-        description: company.seo_description || `${company.name} şirkətində aktiv vakansiyalar və iş elanları.`,
-        keywords: company.seo_keywords?.join(', ') || `${company.name}, şirkət, vakansiya, iş elanları, Azərbaycan`,
+        title: company.jobs_seo_title || `${company.name} - İş Elanları | Vakansiyalar`,
+        description: company.jobs_seo_description || `${company.name} şirkətində aktiv vakansiyalar və iş elanları.`,
+        keywords: company.jobs_seo_keywords?.join(', ') || `${company.name}, şirkət, vakansiya, iş elanları, Azərbaycan`,
         url: `/companies/${company.slug}/vacancies`
       });
     }

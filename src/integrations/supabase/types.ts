@@ -142,6 +142,9 @@ export type Database = {
       }
       companies: {
         Row: {
+          about_seo_description: string | null
+          about_seo_keywords: string[] | null
+          about_seo_title: string | null
           address: string | null
           background_image: string | null
           created_at: string
@@ -150,6 +153,9 @@ export type Database = {
           id: string
           is_active: boolean
           is_verified: boolean
+          jobs_seo_description: string | null
+          jobs_seo_keywords: string[] | null
+          jobs_seo_title: string | null
           logo: string | null
           name: string
           phone: string | null
@@ -161,6 +167,9 @@ export type Database = {
           website: string | null
         }
         Insert: {
+          about_seo_description?: string | null
+          about_seo_keywords?: string[] | null
+          about_seo_title?: string | null
           address?: string | null
           background_image?: string | null
           created_at?: string
@@ -169,6 +178,9 @@ export type Database = {
           id?: string
           is_active?: boolean
           is_verified?: boolean
+          jobs_seo_description?: string | null
+          jobs_seo_keywords?: string[] | null
+          jobs_seo_title?: string | null
           logo?: string | null
           name: string
           phone?: string | null
@@ -180,6 +192,9 @@ export type Database = {
           website?: string | null
         }
         Update: {
+          about_seo_description?: string | null
+          about_seo_keywords?: string[] | null
+          about_seo_title?: string | null
           address?: string | null
           background_image?: string | null
           created_at?: string
@@ -188,6 +203,9 @@ export type Database = {
           id?: string
           is_active?: boolean
           is_verified?: boolean
+          jobs_seo_description?: string | null
+          jobs_seo_keywords?: string[] | null
+          jobs_seo_title?: string | null
           logo?: string | null
           name?: string
           phone?: string | null

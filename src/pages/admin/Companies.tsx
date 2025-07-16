@@ -39,6 +39,12 @@ interface Company {
   seo_title?: string;
   seo_description?: string;
   seo_keywords?: string[];
+  about_seo_title?: string;
+  about_seo_description?: string;
+  about_seo_keywords?: string[];
+  jobs_seo_title?: string;
+  jobs_seo_description?: string;
+  jobs_seo_keywords?: string[];
   is_verified: boolean;
   is_active: boolean;
   created_at: string;
@@ -64,6 +70,12 @@ export default function AdminCompanies() {
     seo_title: '',
     seo_description: '',
     seo_keywords: '',
+    about_seo_title: '',
+    about_seo_description: '',
+    about_seo_keywords: '',
+    jobs_seo_title: '',
+    jobs_seo_description: '',
+    jobs_seo_keywords: '',
     is_verified: false,
     is_active: true,
   });
@@ -132,9 +144,31 @@ export default function AdminCompanies() {
     setLoading(true);
 
     try {
+      const keywordsArray = formData.seo_keywords ? formData.seo_keywords.split(',').map(k => k.trim()).filter(k => k) : [];
+      const aboutKeywordsArray = formData.about_seo_keywords ? formData.about_seo_keywords.split(',').map(k => k.trim()).filter(k => k) : [];
+      const jobsKeywordsArray = formData.jobs_seo_keywords ? formData.jobs_seo_keywords.split(',').map(k => k.trim()).filter(k => k) : [];
+      
       const companyData = {
-        ...formData,
-        seo_keywords: formData.seo_keywords.split(',').map(k => k.trim()).filter(k => k),
+        name: formData.name,
+        slug: formData.slug,
+        logo: formData.logo || null,
+        background_image: formData.background_image || null,
+        description: formData.description || null,
+        website: formData.website || null,
+        email: formData.email || null,
+        phone: formData.phone || null,
+        address: formData.address || null,
+        seo_title: formData.seo_title || null,
+        seo_description: formData.seo_description || null,
+        seo_keywords: keywordsArray.length > 0 ? keywordsArray : null,
+        about_seo_title: formData.about_seo_title || null,
+        about_seo_description: formData.about_seo_description || null,
+        about_seo_keywords: aboutKeywordsArray.length > 0 ? aboutKeywordsArray : null,
+        jobs_seo_title: formData.jobs_seo_title || null,
+        jobs_seo_description: formData.jobs_seo_description || null,
+        jobs_seo_keywords: jobsKeywordsArray.length > 0 ? jobsKeywordsArray : null,
+        is_verified: formData.is_verified,
+        is_active: formData.is_active
       };
 
       if (editingCompany) {
@@ -192,6 +226,12 @@ export default function AdminCompanies() {
       seo_title: company.seo_title || '',
       seo_description: company.seo_description || '',
       seo_keywords: company.seo_keywords?.join(', ') || '',
+      about_seo_title: company.about_seo_title || '',
+      about_seo_description: company.about_seo_description || '',
+      about_seo_keywords: company.about_seo_keywords?.join(', ') || '',
+      jobs_seo_title: company.jobs_seo_title || '',
+      jobs_seo_description: company.jobs_seo_description || '',
+      jobs_seo_keywords: company.jobs_seo_keywords?.join(', ') || '',
       is_verified: company.is_verified,
       is_active: company.is_active,
     });
@@ -240,6 +280,12 @@ export default function AdminCompanies() {
       seo_title: '',
       seo_description: '',
       seo_keywords: '',
+      about_seo_title: '',
+      about_seo_description: '',
+      about_seo_keywords: '',
+      jobs_seo_title: '',
+      jobs_seo_description: '',
+      jobs_seo_keywords: '',
       is_verified: false,
       is_active: true,
     });
@@ -372,7 +418,10 @@ export default function AdminCompanies() {
                   {/* SEO Section */}
                   <div className="border-t pt-6">
                     <h3 className="text-lg font-semibold mb-4">SEO Tənzimləmələri</h3>
-                    <div className="space-y-4">
+                    
+                    {/* General SEO */}
+                    <div className="space-y-4 mb-6">
+                      <h4 className="text-md font-medium text-muted-foreground">Ümumi SEO</h4>
                       <div className="space-y-2">
                         <Label htmlFor="seo_title">SEO Başlıq</Label>
                         <Input
@@ -399,6 +448,72 @@ export default function AdminCompanies() {
                           value={formData.seo_keywords}
                           onChange={(e) => setFormData({ ...formData, seo_keywords: e.target.value })}
                           placeholder="açar söz 1, açar söz 2, açar söz 3"
+                        />
+                      </div>
+                    </div>
+
+                    {/* About Tab SEO */}
+                    <div className="space-y-4 mb-6 border-t pt-4">
+                      <h4 className="text-md font-medium text-muted-foreground">"Haqqında" Səhifəsi SEO</h4>
+                      <div className="space-y-2">
+                        <Label htmlFor="about_seo_title">Haqqında SEO Başlıq</Label>
+                        <Input
+                          id="about_seo_title"
+                          value={formData.about_seo_title}
+                          onChange={(e) => setFormData({ ...formData, about_seo_title: e.target.value })}
+                          placeholder="Haqqında səhifəsi meta title"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="about_seo_description">Haqqında SEO Təsvir</Label>
+                        <Textarea
+                          id="about_seo_description"
+                          value={formData.about_seo_description}
+                          onChange={(e) => setFormData({ ...formData, about_seo_description: e.target.value })}
+                          rows={2}
+                          placeholder="Haqqında səhifəsi meta description"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="about_seo_keywords">Haqqında SEO Açar Sözlər</Label>
+                        <Input
+                          id="about_seo_keywords"
+                          value={formData.about_seo_keywords}
+                          onChange={(e) => setFormData({ ...formData, about_seo_keywords: e.target.value })}
+                          placeholder="haqqında, şirkət, məlumat"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Jobs Tab SEO */}
+                    <div className="space-y-4 border-t pt-4">
+                      <h4 className="text-md font-medium text-muted-foreground">"İş Elanları" Səhifəsi SEO</h4>
+                      <div className="space-y-2">
+                        <Label htmlFor="jobs_seo_title">İş Elanları SEO Başlıq</Label>
+                        <Input
+                          id="jobs_seo_title"
+                          value={formData.jobs_seo_title}
+                          onChange={(e) => setFormData({ ...formData, jobs_seo_title: e.target.value })}
+                          placeholder="İş elanları səhifəsi meta title"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="jobs_seo_description">İş Elanları SEO Təsvir</Label>
+                        <Textarea
+                          id="jobs_seo_description"
+                          value={formData.jobs_seo_description}
+                          onChange={(e) => setFormData({ ...formData, jobs_seo_description: e.target.value })}
+                          rows={2}
+                          placeholder="İş elanları səhifəsi meta description"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="jobs_seo_keywords">İş Elanları SEO Açar Sözlər</Label>
+                        <Input
+                          id="jobs_seo_keywords"
+                          value={formData.jobs_seo_keywords}
+                          onChange={(e) => setFormData({ ...formData, jobs_seo_keywords: e.target.value })}
+                          placeholder="vakansiya, iş elanları, iş imkanları"
                         />
                       </div>
                     </div>
