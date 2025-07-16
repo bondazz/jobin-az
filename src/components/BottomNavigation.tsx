@@ -94,11 +94,6 @@ const BottomNavigation = ({
     path: '/bildirisler',
     count: null
   }, {
-    icon: FileText,
-    label: 'CV Builder',
-    path: '/cv-builder',
-    count: null
-  }, {
     icon: DollarSign,
     label: 'Qiymətlər',
     path: '/services',

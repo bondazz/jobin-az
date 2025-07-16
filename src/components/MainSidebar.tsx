@@ -50,11 +50,6 @@ const MainSidebar = () => {
     path: '/favorites',
     count: savedJobsCount
   }, {
-    icon: FileText,
-    label: 'CV Builder',
-    path: '/cv-builder',
-    count: null
-  }, {
     icon: DollarSign,
     label: 'Qiymətlər',
     path: '/services',
