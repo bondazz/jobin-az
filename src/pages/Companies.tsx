@@ -98,7 +98,8 @@ const Companies = () => {
         .from('companies')
         .select('*')
         .eq('is_active', true)
-        .order('name');
+        .order('name')
+        .range(0, 50000);
 
       if (error) throw error;
       setCompanies(data || []);
