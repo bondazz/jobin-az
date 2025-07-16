@@ -143,7 +143,6 @@ export type Database = {
       companies: {
         Row: {
           about_seo_description: string | null
-          about_seo_keywords: string[] | null
           about_seo_title: string | null
           address: string | null
           background_image: string | null
@@ -154,7 +153,6 @@ export type Database = {
           is_active: boolean
           is_verified: boolean
           jobs_seo_description: string | null
-          jobs_seo_keywords: string[] | null
           jobs_seo_title: string | null
           logo: string | null
           name: string
@@ -168,7 +166,6 @@ export type Database = {
         }
         Insert: {
           about_seo_description?: string | null
-          about_seo_keywords?: string[] | null
           about_seo_title?: string | null
           address?: string | null
           background_image?: string | null
@@ -179,7 +176,6 @@ export type Database = {
           is_active?: boolean
           is_verified?: boolean
           jobs_seo_description?: string | null
-          jobs_seo_keywords?: string[] | null
           jobs_seo_title?: string | null
           logo?: string | null
           name: string
@@ -193,7 +189,6 @@ export type Database = {
         }
         Update: {
           about_seo_description?: string | null
-          about_seo_keywords?: string[] | null
           about_seo_title?: string | null
           address?: string | null
           background_image?: string | null
@@ -204,7 +199,6 @@ export type Database = {
           is_active?: boolean
           is_verified?: boolean
           jobs_seo_description?: string | null
-          jobs_seo_keywords?: string[] | null
           jobs_seo_title?: string | null
           logo?: string | null
           name?: string

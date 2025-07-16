@@ -35,35 +35,32 @@ export const useCompanyProfile = (company: Company | null) => {
       updatePageMeta({
         title: company.about_seo_title || company.seo_title || `${company.name} - Haqqında | Şirkət Profili`,
         description: company.about_seo_description || company.seo_description || `${company.name} şirkəti haqqında məlumat və ətraflı təfərrüatlar.`,
-        keywords: company.about_seo_keywords?.join(', ') || company.seo_keywords?.join(', ') || `${company.name}, şirkət, haqqında, Azərbaycan`,
+        keywords: company.seo_keywords?.join(', ') || `${company.name}, şirkət, haqqında, Azərbaycan`,
         url: `/companies/${company.slug}`
       });
     } else {
       updatePageMeta({
         title: company.jobs_seo_title || `${company.name} - İş Elanları | Vakansiyalar`,
         description: company.jobs_seo_description || `${company.name} şirkətində aktiv vakansiyalar və iş elanları.`,
-        keywords: company.jobs_seo_keywords?.join(', ') || `${company.name}, şirkət, vakansiya, iş elanları, Azərbaycan`,
+        keywords: company.seo_keywords?.join(', ') || `${company.name}, şirkət, vakansiya, iş elanları, Azərbaycan`,
         url: `/companies/${company.slug}/vacancies`
       });
     }
   };
 
-  // Initialize SEO on mount and when activeTab changes
+  // Detect initial tab from URL
+  useEffect(() => {
+    const currentPath = window.location.pathname;
+    const initialTab = currentPath.includes('/vacancies') ? 'jobs' as const : 'about' as const;
+    setActiveTab(initialTab);
+  }, []);
+
+  // Initialize SEO on mount and when activeTab or company changes
   useEffect(() => {
     if (company) {
       updateSEO(activeTab);
     }
   }, [activeTab, company]);
-
-  // Detect initial tab from URL
-  useEffect(() => {
-    const currentPath = window.location.pathname;
-    if (currentPath.includes('/vacancies')) {
-      setActiveTab('jobs' as const);
-    } else {
-      setActiveTab('about' as const);
-    }
-  }, []);
 
   return {
     activeTab,
