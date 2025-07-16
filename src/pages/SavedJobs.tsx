@@ -14,8 +14,12 @@ const SavedJobs = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const seoData = generatePageSEO('favorites');
-    updatePageMeta(seoData);
+    const updateSEO = async () => {
+      const seoData = await generatePageSEO('favorites');
+      updatePageMeta(seoData);
+    };
+    
+    updateSEO();
   }, []);
 
   useEffect(() => {

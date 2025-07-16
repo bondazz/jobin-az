@@ -48,8 +48,11 @@ const Companies = () => {
   // Default SEO setup for main companies page
   useEffect(() => {
     if (!companySlug && !jobSlug) {
-      const seoData = generatePageSEO('companies');
-      updatePageMeta(seoData);
+      const updateSEO = async () => {
+        const seoData = await generatePageSEO('companies');
+        updatePageMeta(seoData);
+      };
+      updateSEO();
     }
   }, [companySlug, jobSlug]);
 

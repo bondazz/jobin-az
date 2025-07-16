@@ -39,8 +39,11 @@ const Categories = () => {
   // Default SEO setup for main categories page
   useEffect(() => {
     if (!categorySlug && !jobSlug) {
-      const seoData = generatePageSEO('categories');
-      updatePageMeta(seoData);
+      const updateSEO = async () => {
+        const seoData = await generatePageSEO('categories');
+        updatePageMeta(seoData);
+      };
+      updateSEO();
     }
   }, [categorySlug, jobSlug]);
 

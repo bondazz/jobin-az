@@ -14,8 +14,12 @@ const About = () => {
     toast
   } = useToast();
   useEffect(() => {
-    const seoData = generatePageSEO('about');
-    updatePageMeta(seoData);
+    const updateSEO = async () => {
+      const seoData = await generatePageSEO('about');
+      updatePageMeta(seoData);
+    };
+    
+    updateSEO();
     fetchAboutContent();
   }, []);
   const fetchAboutContent = async () => {

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { updatePageMeta, SEOMetadata } from '@/utils/seo';
+import { updatePageMeta, SEOMetadata, getSiteSettings } from '@/utils/seo';
 
 interface UseSEOProps {
   title: string;
@@ -10,14 +10,20 @@ interface UseSEOProps {
 
 export const useSEO = ({ title, description, keywords = '', url }: UseSEOProps) => {
   useEffect(() => {
-    const metadata: SEOMetadata = {
-      title,
-      description,
-      keywords,
-      url: url || window.location.pathname
+    const updateSEO = async () => {
+      const settings = await getSiteSettings();
+      
+      const metadata: SEOMetadata = {
+        title: title || settings.site_title || 'Jooble Azərbaycan',
+        description: description || settings.site_description || 'İş elanları və vakansiyalar',
+        keywords: keywords || settings.site_keywords || 'iş elanları, vakansiya, Azərbaycan',
+        url: url || window.location.pathname
+      };
+      
+      updatePageMeta(metadata);
     };
     
-    updatePageMeta(metadata);
+    updateSEO();
   }, [title, description, keywords, url]);
 };
 

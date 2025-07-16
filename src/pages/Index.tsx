@@ -33,8 +33,11 @@ const Index = () => {
   // Default SEO setup for main page
   useEffect(() => {
     if (!jobSlug) {
-      const seoData = generatePageSEO('vacancies');
-      updatePageMeta(seoData);
+      const updateSEO = async () => {
+        const seoData = await generatePageSEO('home');
+        updatePageMeta(seoData);
+      };
+      updateSEO();
     }
   }, [jobSlug]);
 

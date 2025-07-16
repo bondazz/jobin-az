@@ -17,8 +17,12 @@ const Pricing = () => {
     toast
   } = useToast();
   useEffect(() => {
-    const seoData = generatePageSEO('services');
-    updatePageMeta(seoData);
+    const updateSEO = async () => {
+      const seoData = await generatePageSEO('services');
+      updatePageMeta(seoData);
+    };
+    
+    updateSEO();
     fetchPricingData();
   }, []);
   const fetchPricingData = async () => {

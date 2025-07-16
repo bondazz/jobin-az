@@ -1,9 +1,44 @@
+import { supabase } from '@/integrations/supabase/client';
+
 export interface SEOMetadata {
   title: string;
   description: string;
   keywords: string;
   url: string;
 }
+
+// Cache for site settings
+let siteSettingsCache: { [key: string]: string } | null = null;
+
+export const getSiteSettings = async () => {
+  if (siteSettingsCache) {
+    return siteSettingsCache;
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('site_settings')
+      .select('key, value');
+
+    if (error) {
+      console.error('Error fetching site settings:', error);
+      return {};
+    }
+
+    const settings: { [key: string]: string } = {};
+    data?.forEach((setting) => {
+      if (setting.value) {
+        settings[setting.key] = typeof setting.value === 'string' ? setting.value : String(setting.value);
+      }
+    });
+
+    siteSettingsCache = settings;
+    return settings;
+  } catch (error) {
+    console.error('Error:', error);
+    return {};
+  }
+};
 
 export const generateJobSEO = (jobTitle: string, company: string, category: string): SEOMetadata => {
   return {
@@ -32,12 +67,14 @@ export const generateCompanySEO = (companyName: string, jobCount: number): SEOMe
   };
 };
 
-export const generatePageSEO = (page: string, additionalInfo?: string): SEOMetadata => {
-  const seoData: Record<string, SEOMetadata> = {
+export const generatePageSEO = async (page: string, additionalInfo?: string): Promise<SEOMetadata> => {
+  const settings = await getSiteSettings();
+  
+  const defaultSeoData: Record<string, SEOMetadata> = {
     home: {
-      title: 'İş Elanları | Jooble Azərbaycan - Ən Yaxşı İş İmkanları',
-      description: 'Azərbaycanda ən yaxşı iş elanları və vakansiyalar. Minlərlə şirkət və iş imkanı bir yerdə. İndi qeydiyyatdan keçin və arzuladığınız işi tapın.',
-      keywords: 'iş elanları, vakansiya, Azərbaycan, iş axtarışı, karyera, şirkət, maaş',
+      title: settings.site_title || 'İş Elanları | Jooble Azərbaycan - Ən Yaxşı İş İmkanları',
+      description: settings.site_description || 'Azərbaycanda ən yaxşı iş elanları və vakansiyalar. Minlərlə şirkət və iş imkanı bir yerdə. İndi qeydiyyatdan keçin və arzuladığınız işi tapın.',
+      keywords: settings.site_keywords || 'iş elanları, vakansiya, Azərbaycan, iş axtarışı, karyera, şirkət, maaş',
       url: '/'
     },
     vacancies: {
@@ -78,7 +115,7 @@ export const generatePageSEO = (page: string, additionalInfo?: string): SEOMetad
     }
   };
 
-  const baseSEO = seoData[page] || seoData.home;
+  const baseSEO = defaultSeoData[page] || defaultSeoData.home;
   
   if (additionalInfo) {
     return {
