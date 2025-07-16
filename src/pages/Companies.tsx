@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Building, MapPin, Users, Briefcase, Globe, Phone, Mail, Search } from 'lucide-react';
+import { Building, MapPin, Users, Briefcase, Globe, Phone, Mail, Search, Loader2 } from 'lucide-react';
 import JobListings from '@/components/JobListings';
 import { Job } from '@/types/job';
 import { generateCompanySEO, generateJobSEO, generatePageSEO, updatePageMeta } from '@/utils/seo';
@@ -28,6 +28,9 @@ const Companies = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [companies, setCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(0);
   const [showMobileProfile, setShowMobileProfile] = useState(false);
   const [jobData, setJobData] = useState<any>(null);
   const isMobile = useIsMobile();
@@ -40,10 +43,20 @@ const Companies = () => {
   useDynamicSEO('company', companySlug ? selectedCompany : null);
   useDynamicSEO('job', jobSlug ? jobData : null);
 
-  // Fetch companies from database
+  // Load initial companies and search
   useEffect(() => {
-    fetchCompanies();
-  }, []);
+    loadCompanies(true);
+  }, [searchTerm]);
+
+  // Find company from URL slug
+  useEffect(() => {
+    if (companySlug && companies.length > 0) {
+      const company = companies.find(c => c.slug === companySlug);
+      if (company) {
+        setSelectedCompany(company);
+      }
+    }
+  }, [companySlug, companies]);
 
   // Default SEO setup for main companies page
   useEffect(() => {
@@ -55,16 +68,6 @@ const Companies = () => {
       updateSEO();
     }
   }, [companySlug, jobSlug]);
-
-  // Find company from URL slug
-  useEffect(() => {
-    if (companySlug && companies.length > 0) {
-      const company = companies.find(c => c.slug === companySlug);
-      if (company) {
-        setSelectedCompany(company);
-      }
-    }
-  }, [companySlug, companies]);
 
   // Fetch job by slug for SEO
   useEffect(() => {
@@ -92,28 +95,77 @@ const Companies = () => {
     }
   }, [jobSlug]);
 
-  const fetchCompanies = async () => {
+  // Infinite scroll effect
+  useEffect(() => {
+    const handleScroll = (e: Event) => {
+      const target = e.target as HTMLElement;
+      if (target.scrollTop + target.clientHeight >= target.scrollHeight - 100) {
+        if (!loadingMore && hasMore && !searchTerm) {
+          loadMoreCompanies();
+        }
+      }
+    };
+
+    const scrollContainer = document.querySelector('.companies-scroll-container');
+    if (scrollContainer) {
+      scrollContainer.addEventListener('scroll', handleScroll);
+      return () => scrollContainer.removeEventListener('scroll', handleScroll);
+    }
+  }, [loadingMore, hasMore, searchTerm]);
+
+  const loadCompanies = async (reset = false) => {
     try {
-      console.log('Fetching companies...');
-      const { data, error, count } = await supabase
+      if (reset) {
+        setLoading(true);
+        setPage(0);
+        setHasMore(true);
+      } else {
+        setLoadingMore(true);
+      }
+
+      const ITEMS_PER_PAGE = 50;
+      const currentPage = reset ? 0 : page;
+      
+      let query = supabase
         .from('companies')
         .select('*', { count: 'exact' })
         .eq('is_active', true)
         .order('name')
-        .limit(10000);
+        .range(currentPage * ITEMS_PER_PAGE, (currentPage + 1) * ITEMS_PER_PAGE - 1);
 
-      console.log('Companies fetched:', data?.length || 0);
-      console.log('Total companies in DB:', count);
-      console.log('Error:', error);
+      // Add search filter
+      if (searchTerm.trim()) {
+        query = query.ilike('name', `%${searchTerm.trim()}%`);
+      }
+
+      const { data, error, count } = await query;
 
       if (error) throw error;
-      setCompanies(data || []);
+
+      if (reset) {
+        setCompanies(data || []);
+      } else {
+        setCompanies(prev => [...prev, ...(data || [])]);
+      }
+
+      // Check if there are more items
+      const totalLoaded = reset ? (data?.length || 0) : companies.length + (data?.length || 0);
+      setHasMore(totalLoaded < (count || 0));
+      setPage(currentPage + 1);
+
     } catch (error) {
       console.error('Error fetching companies:', error);
     } finally {
       setLoading(false);
+      setLoadingMore(false);
     }
   };
+
+  const loadMoreCompanies = useCallback(() => {
+    if (!loadingMore && hasMore && !searchTerm) {
+      loadCompanies(false);
+    }
+  }, [loadingMore, hasMore, searchTerm, page]);
   const handleCompanyClick = (company: Company) => {
     setSelectedCompany(company);
     setSelectedJob(null);
@@ -137,9 +189,6 @@ const Companies = () => {
       navigate(`/vacancies/${data.slug}?company=${selectedCompany?.slug}`);
     }
   };
-  const filteredCompanies = companies.filter(company => 
-    company.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   if (loading) {
     return (
@@ -173,14 +222,20 @@ const Companies = () => {
             </div>
 
             {/* Companies List */}
-            <div className="flex-1 overflow-y-auto p-2 bg-gradient-to-b from-transparent to-primary/5 w-full max-w-[100%] mx-auto">
+            <div className="companies-scroll-container flex-1 overflow-y-auto p-2 bg-gradient-to-b from-transparent to-primary/5 w-full max-w-[100%] mx-auto">
               <div className="flex flex-col gap-2 justify-center items-center w-full max-w-full px-2">
-                {filteredCompanies.map((company, index) => <div key={company.id} onClick={() => handleCompanyClick(company)} className={`group cursor-pointer p-3 rounded-lg border transition-all duration-200 ease-smooth
+                {companies.map((company, index) => (
+                  <div 
+                    key={company.id} 
+                    onClick={() => handleCompanyClick(company)} 
+                    className={`group cursor-pointer p-3 rounded-lg border transition-all duration-200 ease-smooth
                       hover:shadow-card-hover hover:-translate-y-0.5 animate-fade-in
                       w-full max-w-full min-w-0 h-[60px] flex flex-row items-center justify-between backdrop-blur-sm
-                      ${selectedCompany?.id === company.id ? 'border-primary bg-gradient-to-r from-primary/20 to-primary/5 shadow-elegant ring-1 ring-primary/50' : 'bg-job-card border-border/50 hover:border-primary/40 hover:shadow-card-hover'}`} style={{
-                animationDelay: `${index * 50}ms`
-              }}>
+                      ${selectedCompany?.id === company.id ? 'border-primary bg-gradient-to-r from-primary/20 to-primary/5 shadow-elegant ring-1 ring-primary/50' : 'bg-job-card border-border/50 hover:border-primary/40 hover:shadow-card-hover'}`} 
+                    style={{
+                      animationDelay: `${index * 50}ms`
+                    }}
+                  >
                     {/* Left Section - Company Info */}
                     <div className="flex items-center gap-3 flex-1 min-w-0">
                       <div className="relative flex-shrink-0">
@@ -198,7 +253,7 @@ const Companies = () => {
                           <h3 className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors duration-200 truncate">
                             {company.name}
                           </h3>
-                           {company.is_verified && <VerifyBadge size={16} />}
+                          {company.is_verified && <VerifyBadge size={16} />}
                         </div>
                         <div className="flex items-center gap-2 mt-0">
                           <div className="flex items-center gap-1">
@@ -212,7 +267,33 @@ const Companies = () => {
                     {/* Right Section - Empty for cleaner look */}
                     <div className="flex items-center gap-2 flex-shrink-0 text-xs text-muted-foreground">
                     </div>
-                  </div>)}
+                  </div>
+                ))}
+
+                {/* Loading More Indicator */}
+                {loadingMore && (
+                  <div className="flex items-center justify-center py-4">
+                    <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                    <span className="ml-2 text-sm text-muted-foreground">Daha çox şirkət yüklənir...</span>
+                  </div>
+                )}
+
+                {/* No More Results */}
+                {!hasMore && !searchTerm && companies.length > 0 && (
+                  <div className="flex items-center justify-center py-4">
+                    <span className="text-sm text-muted-foreground">Bütün şirkətlər göstərildi</span>
+                  </div>
+                )}
+
+                {/* No Results for Search */}
+                {searchTerm && companies.length === 0 && !loading && (
+                  <div className="flex items-center justify-center py-8">
+                    <div className="text-center">
+                      <Search className="w-12 h-12 text-muted-foreground mx-auto mb-2" />
+                      <span className="text-sm text-muted-foreground">"{searchTerm}" üçün heç bir şirkət tapılmadı</span>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
