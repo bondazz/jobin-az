@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -26,6 +26,7 @@ const Companies = () => {
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
   const [companies, setCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -33,6 +34,7 @@ const Companies = () => {
   const [page, setPage] = useState(0);
   const [showMobileProfile, setShowMobileProfile] = useState(false);
   const [jobData, setJobData] = useState<any>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
   const isMobileOrTablet = useIsMobileOrTablet();
   
@@ -43,10 +45,19 @@ const Companies = () => {
   useDynamicSEO('company', companySlug ? selectedCompany : null);
   useDynamicSEO('job', jobSlug ? jobData : null);
 
-  // Load initial companies and search
+  // Debouncing for search - 500ms delay
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  // Load initial companies and handle search
   useEffect(() => {
     loadCompanies(true);
-  }, [searchTerm]);
+  }, [debouncedSearchTerm]);
 
   // Find company from URL slug
   useEffect(() => {
@@ -95,23 +106,28 @@ const Companies = () => {
     }
   }, [jobSlug]);
 
-  // Infinite scroll effect
+  // Infinite scroll effect with ref
   useEffect(() => {
     const handleScroll = (e: Event) => {
       const target = e.target as HTMLElement;
-      if (target.scrollTop + target.clientHeight >= target.scrollHeight - 100) {
-        if (!loadingMore && hasMore && !searchTerm) {
+      const scrollTop = target.scrollTop;
+      const scrollHeight = target.scrollHeight;
+      const clientHeight = target.clientHeight;
+      
+      // Check if near bottom (within 200px)
+      if (scrollTop + clientHeight >= scrollHeight - 200) {
+        if (!loadingMore && hasMore && !debouncedSearchTerm.trim()) {
           loadMoreCompanies();
         }
       }
     };
 
-    const scrollContainer = document.querySelector('.companies-scroll-container');
+    const scrollContainer = scrollContainerRef.current;
     if (scrollContainer) {
       scrollContainer.addEventListener('scroll', handleScroll);
       return () => scrollContainer.removeEventListener('scroll', handleScroll);
     }
-  }, [loadingMore, hasMore, searchTerm]);
+  }, [loadingMore, hasMore, debouncedSearchTerm]);
 
   const loadCompanies = async (reset = false) => {
     try {
@@ -134,8 +150,8 @@ const Companies = () => {
         .range(currentPage * ITEMS_PER_PAGE, (currentPage + 1) * ITEMS_PER_PAGE - 1);
 
       // Add search filter
-      if (searchTerm.trim()) {
-        query = query.ilike('name', `%${searchTerm.trim()}%`);
+      if (debouncedSearchTerm.trim()) {
+        query = query.ilike('name', `%${debouncedSearchTerm.trim()}%`);
       }
 
       const { data, error, count } = await query;
@@ -162,10 +178,10 @@ const Companies = () => {
   };
 
   const loadMoreCompanies = useCallback(() => {
-    if (!loadingMore && hasMore && !searchTerm) {
+    if (!loadingMore && hasMore && !debouncedSearchTerm.trim()) {
       loadCompanies(false);
     }
-  }, [loadingMore, hasMore, searchTerm, page]);
+  }, [loadingMore, hasMore, debouncedSearchTerm, page]);
   const handleCompanyClick = (company: Company) => {
     setSelectedCompany(company);
     setSelectedJob(null);
@@ -222,7 +238,7 @@ const Companies = () => {
             </div>
 
             {/* Companies List */}
-            <div className="companies-scroll-container flex-1 overflow-y-auto p-2 bg-gradient-to-b from-transparent to-primary/5 w-full max-w-[100%] mx-auto">
+            <div ref={scrollContainerRef} className="companies-scroll-container flex-1 overflow-y-auto p-2 bg-gradient-to-b from-transparent to-primary/5 w-full max-w-[100%] mx-auto">
               <div className="flex flex-col gap-2 justify-center items-center w-full max-w-full px-2">
                 {companies.map((company, index) => (
                   <div 
@@ -279,18 +295,18 @@ const Companies = () => {
                 )}
 
                 {/* No More Results */}
-                {!hasMore && !searchTerm && companies.length > 0 && (
+                {!hasMore && !debouncedSearchTerm && companies.length > 0 && (
                   <div className="flex items-center justify-center py-4">
                     <span className="text-sm text-muted-foreground">Bütün şirkətlər göstərildi</span>
                   </div>
                 )}
 
                 {/* No Results for Search */}
-                {searchTerm && companies.length === 0 && !loading && (
+                {debouncedSearchTerm && companies.length === 0 && !loading && (
                   <div className="flex items-center justify-center py-8">
                     <div className="text-center">
                       <Search className="w-12 h-12 text-muted-foreground mx-auto mb-2" />
-                      <span className="text-sm text-muted-foreground">"{searchTerm}" üçün heç bir şirkət tapılmadı</span>
+                      <span className="text-sm text-muted-foreground">"{debouncedSearchTerm}" üçün heç bir şirkət tapılmadı</span>
                     </div>
                   </div>
                 )}
