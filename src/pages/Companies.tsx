@@ -114,8 +114,8 @@ const Companies = () => {
       const scrollHeight = target.scrollHeight;
       const clientHeight = target.clientHeight;
       
-      // Check if near bottom (within 200px)
-      if (scrollTop + clientHeight >= scrollHeight - 200) {
+      // Check if near bottom (within 100px) for more sensitive detection
+      if (scrollTop + clientHeight >= scrollHeight - 100) {
         if (!loadingMore && hasMore && !debouncedSearchTerm.trim()) {
           loadMoreCompanies();
         }
@@ -160,14 +160,19 @@ const Companies = () => {
 
       if (reset) {
         setCompanies(data || []);
+        setPage(1);
       } else {
         setCompanies(prev => [...prev, ...(data || [])]);
+        setPage(currentPage + 1);
       }
 
-      // Check if there are more items
-      const totalLoaded = reset ? (data?.length || 0) : companies.length + (data?.length || 0);
-      setHasMore(totalLoaded < (count || 0));
-      setPage(currentPage + 1);
+      // Check if there are more items to load
+      const totalLoaded = (data?.length || 0);
+      if (reset) {
+        setHasMore(totalLoaded === ITEMS_PER_PAGE && totalLoaded < (count || 0));
+      } else {
+        setHasMore(totalLoaded === ITEMS_PER_PAGE);
+      }
 
     } catch (error) {
       console.error('Error fetching companies:', error);

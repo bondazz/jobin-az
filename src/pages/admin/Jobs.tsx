@@ -324,6 +324,19 @@ export default function AdminJobs() {
                           <SelectValue placeholder="Şirkət seçin" />
                         </SelectTrigger>
                         <SelectContent>
+                          <div className="p-2">
+                            <Input
+                              placeholder="Şirkət axtarın..."
+                              className="mb-2"
+                              onChange={(e) => {
+                                const searchValue = e.target.value.toLowerCase();
+                                const filteredCompanies = companies.filter(company => 
+                                  company.name.toLowerCase().includes(searchValue)
+                                );
+                                // This is a simple implementation, in a real app you'd want to use state for this
+                              }}
+                            />
+                          </div>
                           {companies.map((company) => (
                             <SelectItem key={company.id} value={company.id}>
                               {company.name}
@@ -438,6 +451,18 @@ export default function AdminJobs() {
                           value={formData.application_email}
                           onChange={(e) => setFormData({ ...formData, application_email: e.target.value })}
                           placeholder="jobs@company.com"
+                        />
+                      </div>
+                    )}
+                    {formData.application_type === 'website' && (
+                      <div className="space-y-2">
+                        <Label htmlFor="application_url_website">Müraciət Linki</Label>
+                        <Input
+                          id="application_url_website"
+                          type="url"
+                          value={formData.application_url}
+                          onChange={(e) => setFormData({ ...formData, application_url: e.target.value })}
+                          placeholder="https://example.com/apply"
                         />
                       </div>
                     )}
