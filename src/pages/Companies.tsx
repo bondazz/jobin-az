@@ -28,10 +28,12 @@ const Companies = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
   const [companies, setCompanies] = useState<Company[]>([]);
+  const [allCompanies, setAllCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [page, setPage] = useState(0);
+  const [displayPage, setDisplayPage] = useState(0);
+  const COMPANIES_PER_PAGE = 50;
   const [showMobileProfile, setShowMobileProfile] = useState(false);
   const [jobData, setJobData] = useState<any>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -56,18 +58,18 @@ const Companies = () => {
 
   // Load initial companies and handle search
   useEffect(() => {
-    loadCompanies(true);
+    loadCompanies();
   }, [debouncedSearchTerm]);
 
   // Find company from URL slug
   useEffect(() => {
-    if (companySlug && companies.length > 0) {
-      const company = companies.find(c => c.slug === companySlug);
+    if (companySlug && allCompanies.length > 0) {
+      const company = allCompanies.find(c => c.slug === companySlug);
       if (company) {
         setSelectedCompany(company);
       }
     }
-  }, [companySlug, companies]);
+  }, [companySlug, allCompanies]);
 
   // Default SEO setup for main companies page
   useEffect(() => {
@@ -106,6 +108,30 @@ const Companies = () => {
     }
   }, [jobSlug]);
 
+  const loadMoreDisplayedCompanies = useCallback(() => {
+    if (loadingMore || !hasMore || debouncedSearchTerm.trim()) return;
+    
+    setLoadingMore(true);
+    console.log('⏳ 50 şirkət əlavə edilir...');
+    
+    setTimeout(() => {
+      const nextPage = displayPage + 1;
+      const startIndex = nextPage * COMPANIES_PER_PAGE;
+      const endIndex = startIndex + COMPANIES_PER_PAGE;
+      
+      const nextBatch = allCompanies.slice(startIndex, endIndex);
+      const newDisplayed = [...companies, ...nextBatch];
+      
+      setCompanies(newDisplayed);
+      setDisplayPage(nextPage);
+      setHasMore(endIndex < allCompanies.length);
+      setLoadingMore(false);
+      
+      console.log(`✅ YENİ BATCH: ${nextBatch.length} şirkət əlavə edildi`);
+      console.log(`📱 CƏMİ GÖSTƏRƏN: ${newDisplayed.length}/${allCompanies.length}`);
+    }, 300);
+  }, [loadingMore, hasMore, debouncedSearchTerm, displayPage, allCompanies, companies]);
+
   // Infinite scroll effect with ref
   useEffect(() => {
     const handleScroll = (e: Event) => {
@@ -116,8 +142,8 @@ const Companies = () => {
       
       // Check if near bottom (within 100px) for more sensitive detection
       if (scrollTop + clientHeight >= scrollHeight - 100) {
-        if (!loadingMore && hasMore && !debouncedSearchTerm.trim()) {
-          loadMoreCompanies();
+        if (!loadingMore && hasMore) {
+          loadMoreDisplayedCompanies();
         }
       }
     };
@@ -127,15 +153,15 @@ const Companies = () => {
       scrollContainer.addEventListener('scroll', handleScroll);
       return () => scrollContainer.removeEventListener('scroll', handleScroll);
     }
-  }, [loadingMore, hasMore, debouncedSearchTerm]);
+  }, [loadMoreDisplayedCompanies]);
 
-  const loadCompanies = async (reset = false) => {
+  const loadCompanies = async () => {
     try {
       setLoading(true);
-      console.log('🔄 PAGINATION İLƏ BÜTÜN ŞİRKƏTLƏRİ YÜKLƏYİRİK');
+      console.log('🚀 PERFORMANCE YAXŞILAŞDIRILMASı - İnfinite Scroll');
       
       if (debouncedSearchTerm.trim()) {
-        console.log('Axtarış edilir:', debouncedSearchTerm);
+        console.log('🔍 Axtarış edilir:', debouncedSearchTerm);
         const { data, error } = await supabase
           .from('companies')
           .select('*')
@@ -144,18 +170,22 @@ const Companies = () => {
           .order('name');
         
         if (error) throw error;
-        console.log('Axtarış nəticəsi:', data?.length || 0);
-        setCompanies(data || []);
-      } else {
-        console.log('📊 PAGINATION BAŞLAYIR - BÜTÜN VERİLƏRİ YÜKLƏYİRİK');
+        console.log('✅ Axtarış nəticəsi:', data?.length || 0);
         
-        let allCompanies: Company[] = [];
+        // Search zamanı bütün nəticələri göstər
+        setAllCompanies(data || []);
+        setCompanies(data || []);
+        setHasMore(false);
+      } else {
+        console.log('📊 BÜTÜN ŞİRKƏTLƏRİ PAGINATION İLƏ YÜKLƏYİRİK');
+        
+        let allCompaniesData: Company[] = [];
         let pageSize = 1000;
         let currentPage = 0;
         let hasMoreData = true;
         
         while (hasMoreData) {
-          console.log(`📖 Səhifə ${currentPage + 1} yüklənir... (${currentPage * pageSize} - ${(currentPage + 1) * pageSize})`);
+          console.log(`📖 Səhifə ${currentPage + 1} yüklənir...`);
           
           const { data, error } = await supabase
             .from('companies')
@@ -164,41 +194,42 @@ const Companies = () => {
             .order('name')
             .range(currentPage * pageSize, (currentPage + 1) * pageSize - 1);
           
-          if (error) {
-            console.error('Səhifə yükləmə xətası:', error);
-            throw error;
-          }
+          if (error) throw error;
           
-          console.log(`✅ Səhifə ${currentPage + 1} yükləndi: ${data?.length || 0} şirkət`);
+          console.log(`✅ Səhifə ${currentPage + 1}: ${data?.length || 0} şirkət`);
           
           if (data && data.length > 0) {
-            allCompanies = [...allCompanies, ...data];
-            console.log(`📈 Cəmi yüklənən: ${allCompanies.length} şirkət`);
+            allCompaniesData = [...allCompaniesData, ...data];
+            console.log(`📈 Cəmi: ${allCompaniesData.length} şirkət`);
             
-            // If we got less than pageSize, we've reached the end
             if (data.length < pageSize) {
               hasMoreData = false;
-              console.log('🏁 SON SƏHİFƏYƏ ÇATDIQ');
             } else {
               currentPage++;
             }
           } else {
             hasMoreData = false;
-            console.log('📭 BOŞ SƏHİFƏ - BITDI');
           }
         }
         
-        console.log(`🎉 UĞURLA BİTDİ! Cəmi yüklənən şirkət sayı: ${allCompanies.length}`);
-        console.log(`🥇 İlk şirkət: ${allCompanies[0]?.name || 'Yoxdur'}`);
-        console.log(`🥉 Son şirkət: ${allCompanies[allCompanies.length - 1]?.name || 'Yoxdur'}`);
+        console.log(`🎉 TAMAMLANDI! ${allCompaniesData.length} şirkət yükləndi`);
+        console.log(`🥇 İlk şirkət: ${allCompaniesData[0]?.name}`);
+        console.log(`🥉 Son şirkət: ${allCompaniesData[allCompaniesData.length - 1]?.name}`);
         
-        setCompanies(allCompanies);
+        // İlk 50 şirkəti göstər
+        const initialDisplayed = allCompaniesData.slice(0, COMPANIES_PER_PAGE);
+        
+        setAllCompanies(allCompaniesData);
+        setCompanies(initialDisplayed);
+        setDisplayPage(0);
+        setHasMore(allCompaniesData.length > COMPANIES_PER_PAGE);
+        
+        console.log(`📱 İLK GÖSTƏRƏN: ${initialDisplayed.length} şirkət (${allCompaniesData.length} təklifindən)`);
       }
-      
-      setHasMore(false);
 
     } catch (error) {
-      console.error('❌ PAGINATION XƏTASI:', error);
+      console.error('❌ XƏTA:', error);
+      setAllCompanies([]);
       setCompanies([]);
     } finally {
       setLoading(false);
@@ -206,11 +237,6 @@ const Companies = () => {
     }
   };
 
-  const loadMoreCompanies = useCallback(() => {
-    if (!loadingMore && hasMore && !debouncedSearchTerm.trim()) {
-      loadCompanies(false);
-    }
-  }, [loadingMore, hasMore, debouncedSearchTerm, page]);
   const handleCompanyClick = (company: Company) => {
     setSelectedCompany(company);
     setSelectedJob(null);
@@ -222,6 +248,7 @@ const Companies = () => {
       setShowMobileProfile(true);
     }
   };
+
   const handleJobSelect = async (job: Job) => {
     // Get job slug from database
     const { data } = await supabase
@@ -323,10 +350,21 @@ const Companies = () => {
                   </div>
                 )}
 
+                {/* Display Statistics */}
+                {!debouncedSearchTerm && companies.length > 0 && hasMore && allCompanies.length > 0 && (
+                  <div className="flex items-center justify-center py-2">
+                    <span className="text-xs text-muted-foreground">
+                      {companies.length} / {allCompanies.length} şirkət göstərildi
+                    </span>
+                  </div>
+                )}
+
                 {/* No More Results */}
-                {!hasMore && !debouncedSearchTerm && companies.length > 0 && (
+                {!hasMore && !debouncedSearchTerm && companies.length > 0 && allCompanies.length > 0 && (
                   <div className="flex items-center justify-center py-4">
-                    <span className="text-sm text-muted-foreground">Bütün şirkətlər göstərildi</span>
+                    <span className="text-sm text-muted-foreground">
+                      Bütün şirkətlər göstərildi ({allCompanies.length} şirkət)
+                    </span>
                   </div>
                 )}
 
