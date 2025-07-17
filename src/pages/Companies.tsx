@@ -137,17 +137,25 @@ const Companies = () => {
       
       let data, error;
 
-      // Axtarış varsa search funksiyası, yoxsa get_all funksiyası
+      // Direct table query - bütün şirkətləri birbaşa cədvəldən yüklə
       if (debouncedSearchTerm.trim()) {
         console.log('Axtarış funksiyası tətbiq edilir:', debouncedSearchTerm);
-        const response = await supabase.rpc('search_companies', {
-          search_term: debouncedSearchTerm.trim()
-        });
+        const response = await supabase
+          .from('companies')
+          .select('*')
+          .eq('is_active', true)
+          .ilike('name', `%${debouncedSearchTerm.trim()}%`)
+          .order('name');
         data = response.data;
         error = response.error;
       } else {
-        console.log('Bütün şirkətləri yükləyən funksiya çağırılır');
-        const response = await supabase.rpc('get_all_companies');
+        console.log('Bütün şirkətləri birbaşa cədvəldən yüklənir - limit yoxdur');
+        const response = await supabase
+          .from('companies')
+          .select('*')
+          .eq('is_active', true)
+          .order('name')
+          .range(0, 100000); // Çox böyük range - bütün məlumatları yükləmək üçün
         data = response.data;
         error = response.error;
       }
