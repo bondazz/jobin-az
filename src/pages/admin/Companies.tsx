@@ -104,29 +104,38 @@ export default function AdminCompanies() {
 
   const fetchCompanies = async () => {
     try {
-      console.log('Admin paneldə şirkətlər yüklənir...');
+      console.log('Admin paneldə RPC ilə şirkətlər yüklənir...');
       
-      // Bütün şirkətləri yüklə (limit yoxdur)
-      const { data: companiesData, error } = await supabase
-        .from('companies')
-        .select(`
-          *,
-          jobs!jobs_company_id_fkey(id)
-        `)
-        .order('name', { ascending: true });
+      // RPC funksiyası ilə bütün şirkətləri yüklə
+      const { data: companiesData, error } = await supabase.rpc('get_all_companies');
 
       if (error) {
-        console.error('Admin şirkət yükləmə xətası:', error);
+        console.error('Admin RPC şirkət yükləmə xətası:', error);
         throw error;
       }
 
-      console.log('Admin paneldə yüklənən şirkət sayı:', companiesData?.length || 0);
+      console.log('Admin paneldə RPC ilə yüklənən şirkət sayı:', companiesData?.length || 0);
+
+      // Job count əlavə etmək üçün ayrıca sorğu
+      const { data: jobCounts, error: jobError } = await supabase
+        .from('jobs')
+        .select('company_id')
+        .eq('is_active', true);
+
+      if (jobError) {
+        console.error('Job count yükləmə xətası:', jobError);
+      }
+
+      // Job count hesabla
+      const jobCountMap = jobCounts?.reduce((acc, job) => {
+        acc[job.company_id] = (acc[job.company_id] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>) || {};
 
       // Process the data to include job count
       const companiesWithJobCount = companiesData?.map(company => ({
         ...company,
-        job_count: company.jobs?.length || 0,
-        jobs: undefined // Remove the jobs array to clean up the object
+        job_count: jobCountMap[company.id] || 0
       })) || [];
 
       setCompanies(companiesWithJobCount);

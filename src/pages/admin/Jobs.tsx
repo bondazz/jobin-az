@@ -125,9 +125,11 @@ export default function AdminJobs() {
             categories (name)
           `)
           .order('created_at', { ascending: false }),
-        supabase.from('companies').select('id, name').order('name'),
+        supabase.rpc('get_all_companies'), // RPC funksiyası ilə bütün şirkətləri gətir
         supabase.from('categories').select('id, name').eq('is_active', true),
       ]);
+
+      console.log('İş elanları bölməsində yüklənən şirkət sayı:', companiesResponse.data?.length || 0);
 
       if (jobsResponse.data) setJobs(jobsResponse.data as Job[]);
       if (companiesResponse.data) {

@@ -445,6 +445,32 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_all_companies: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          name: string
+          slug: string
+          logo: string
+          background_image: string
+          description: string
+          website: string
+          email: string
+          phone: string
+          address: string
+          seo_title: string
+          seo_description: string
+          seo_keywords: string[]
+          about_seo_title: string
+          about_seo_description: string
+          jobs_seo_title: string
+          jobs_seo_description: string
+          is_verified: boolean
+          is_active: boolean
+          created_at: string
+          updated_at: string
+        }[]
+      }
       get_user_role: {
         Args: { user_uuid: string }
         Returns: string
@@ -456,6 +482,32 @@ export type Database = {
       increment_job_views: {
         Args: { job_id: string }
         Returns: undefined
+      }
+      search_companies: {
+        Args: { search_term: string }
+        Returns: {
+          id: string
+          name: string
+          slug: string
+          logo: string
+          background_image: string
+          description: string
+          website: string
+          email: string
+          phone: string
+          address: string
+          seo_title: string
+          seo_description: string
+          seo_keywords: string[]
+          about_seo_title: string
+          about_seo_description: string
+          jobs_seo_title: string
+          jobs_seo_description: string
+          is_verified: boolean
+          is_active: boolean
+          created_at: string
+          updated_at: string
+        }[]
       }
     }
     Enums: {

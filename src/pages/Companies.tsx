@@ -133,33 +133,36 @@ const Companies = () => {
     try {
       setLoading(true);
       
-      console.log('Şirkətlər yüklənməyə başlanır...');
+      console.log('RPC funksiyası ilə şirkətlər yüklənir...');
       
-      let query = supabase
-        .from('companies')
-        .select('*')
-        .eq('is_active', true)
-        .order('name');
+      let data, error;
 
-      // Axtarış varsa filtr əlavə et
+      // Axtarış varsa search funksiyası, yoxsa get_all funksiyası
       if (debouncedSearchTerm.trim()) {
-        console.log('Axtarış tətbiq edilir:', debouncedSearchTerm);
-        query = query.ilike('name', `%${debouncedSearchTerm.trim()}%`);
+        console.log('Axtarış funksiyası tətbiq edilir:', debouncedSearchTerm);
+        const response = await supabase.rpc('search_companies', {
+          search_term: debouncedSearchTerm.trim()
+        });
+        data = response.data;
+        error = response.error;
+      } else {
+        console.log('Bütün şirkətləri yükləyən funksiya çağırılır');
+        const response = await supabase.rpc('get_all_companies');
+        data = response.data;
+        error = response.error;
       }
 
-      const { data, error } = await query;
-
       if (error) {
-        console.error('Şirkət yükləmə xətası:', error);
+        console.error('RPC funksiya xətası:', error);
         throw error;
       }
 
-      console.log('Yüklənən şirkət sayı:', data?.length || 0);
+      console.log('RPC ilə yüklənən şirkət sayı:', data?.length || 0);
       console.log('İlk şirkət:', data?.[0]?.name || 'Heç biri');
       console.log('Son şirkət:', data?.[data.length - 1]?.name || 'Heç biri');
 
       setCompanies(data || []);
-      setHasMore(false); // Pagination yoxdur, hamısı yükləndi
+      setHasMore(false); // RPC funksiyası bütün məlumatları qaytarır
 
     } catch (error) {
       console.error('Error fetching companies:', error);
