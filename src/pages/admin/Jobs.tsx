@@ -126,47 +126,24 @@ export default function AdminJobs() {
         `)
         .order('created_at', { ascending: false });
 
-      // Şirkətləri pagination ilə yüklə
-      console.log('📊 VAKANSIYA PANEL - BÜTÜN ŞİRKƏTLƏRİ PAGINATION İLƏ YÜKLƏYİRİK');
+      // Şirkətləri bir dəfəlik yüklə və loading-i azalt
+      console.log('📊 VAKANSIYA PANEL - ŞİRKƏTLƏRİ YÜKLƏYİRİK');
       
-      const allCompanies: any[] = [];
-      let page = 0;
-      const pageSize = 1000;
-      let hasMore = true;
+      // Use database function for better performance
+      const { data: companiesData, error: companiesError } = await supabase
+        .rpc('get_all_companies');
 
-      while (hasMore) {
-        page++;
-        console.log(`📖 VAKANSIYA - Səhifə ${page} yüklənir...`);
-        
-        const start = (page - 1) * pageSize;
-        const end = start + pageSize - 1;
-
-        const { data: pageData, error } = await supabase
-          .from('companies')
-          .select('id, name')
-          .eq('is_active', true)
-          .range(start, end)
-          .order('name');
-
-        if (error) {
-          console.error('Vakansiya panel şirkət yükləmə xətası:', error);
-          throw error;
-        }
-
-        if (pageData && pageData.length > 0) {
-          allCompanies.push(...pageData);
-          console.log(`✅ VAKANSIYA - Səhifə ${page}: ${pageData.length} şirkət`);
-          console.log(`📈 VAKANSIYA - Cəmi: ${allCompanies.length} şirkət`);
-          
-          if (pageData.length < pageSize) {
-            hasMore = false;
-          }
-        } else {
-          hasMore = false;
-        }
+      if (companiesError) {
+        console.error('Vakansiya panel şirkət yükləmə xətası:', companiesError);
+        throw companiesError;
       }
 
-      console.log(`🎉 VAKANSIYA TAMAMLANDI! ${allCompanies.length} şirkət yükləndi`);
+      const formattedCompanies = companiesData?.map(company => ({
+        id: company.id,
+        name: company.name
+      })) || [];
+
+      console.log(`🎉 VAKANSIYA TAMAMLANDI! ${formattedCompanies.length} şirkət yükləndi`);
 
       // Kateqoriyaları yüklə
       const categoriesResponse = await supabase
@@ -175,9 +152,9 @@ export default function AdminJobs() {
         .eq('is_active', true);
 
       if (jobsResponse.data) setJobs(jobsResponse.data as Job[]);
-      if (allCompanies.length > 0) {
-        setCompanies(allCompanies);
-        setFilteredCompanies(allCompanies);
+      if (formattedCompanies.length > 0) {
+        setCompanies(formattedCompanies);
+        setFilteredCompanies(formattedCompanies);
       }
       if (categoriesResponse.data) setCategories(categoriesResponse.data);
     } catch (error) {

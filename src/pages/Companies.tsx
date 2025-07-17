@@ -525,6 +525,7 @@ const Companies = () => {
         <CompanyProfile 
           company={selectedCompany}
           onClose={() => setShowMobileProfile(false)}
+          isMobile={true}
         />
       )}
 

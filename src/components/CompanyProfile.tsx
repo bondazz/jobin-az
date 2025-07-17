@@ -128,7 +128,7 @@ const CompanyProfile = ({ company, onClose, isMobile = false }: CompanyProfilePr
                 </div>
               )}
             </div>
-          </div>
+            </div>
           </div>
 
           {/* Tab Navigation */}
