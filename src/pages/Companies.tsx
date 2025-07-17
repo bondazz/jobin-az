@@ -132,8 +132,7 @@ const Companies = () => {
   const loadCompanies = async (reset = false) => {
     try {
       setLoading(true);
-      
-      console.log('KÖKLÜ HƏLL: Supabase range(0, 50000) ilə');
+      console.log('🔄 PAGINATION İLƏ BÜTÜN ŞİRKƏTLƏRİ YÜKLƏYİRİK');
       
       if (debouncedSearchTerm.trim()) {
         console.log('Axtarış edilir:', debouncedSearchTerm);
@@ -144,37 +143,62 @@ const Companies = () => {
           .ilike('name', `%${debouncedSearchTerm.trim()}%`)
           .order('name');
         
-        if (error) {
-          console.error('Axtarış xətası:', error);
-          throw error;
-        }
-        
+        if (error) throw error;
         console.log('Axtarış nəticəsi:', data?.length || 0);
         setCompanies(data || []);
       } else {
-        console.log('BÜTÜN ŞİRKƏTLƏRİ YÜKLƏYƏK - range(0, 50000)');
-        const { data, error } = await supabase
-          .from('companies')
-          .select('*')
-          .eq('is_active', true)
-          .order('name')
-          .range(0, 50000);
+        console.log('📊 PAGINATION BAŞLAYIR - BÜTÜN VERİLƏRİ YÜKLƏYİRİK');
         
-        if (error) {
-          console.error('Şirkət yükləmə xətası:', error);
-          throw error;
+        let allCompanies: Company[] = [];
+        let pageSize = 1000;
+        let currentPage = 0;
+        let hasMoreData = true;
+        
+        while (hasMoreData) {
+          console.log(`📖 Səhifə ${currentPage + 1} yüklənir... (${currentPage * pageSize} - ${(currentPage + 1) * pageSize})`);
+          
+          const { data, error } = await supabase
+            .from('companies')
+            .select('*')
+            .eq('is_active', true)
+            .order('name')
+            .range(currentPage * pageSize, (currentPage + 1) * pageSize - 1);
+          
+          if (error) {
+            console.error('Səhifə yükləmə xətası:', error);
+            throw error;
+          }
+          
+          console.log(`✅ Səhifə ${currentPage + 1} yükləndi: ${data?.length || 0} şirkət`);
+          
+          if (data && data.length > 0) {
+            allCompanies = [...allCompanies, ...data];
+            console.log(`📈 Cəmi yüklənən: ${allCompanies.length} şirkət`);
+            
+            // If we got less than pageSize, we've reached the end
+            if (data.length < pageSize) {
+              hasMoreData = false;
+              console.log('🏁 SON SƏHİFƏYƏ ÇATDIQ');
+            } else {
+              currentPage++;
+            }
+          } else {
+            hasMoreData = false;
+            console.log('📭 BOŞ SƏHİFƏ - BITDI');
+          }
         }
         
-        console.log('✅ MÜVƏFFƏQİYYƏT! Yüklənən şirkət sayı:', data?.length || 0);
-        console.log('İlk şirkət:', data?.[0]?.name || 'Yoxdur');
-        console.log('Son şirkət:', data?.[data?.length - 1]?.name || 'Yoxdur');
-        setCompanies(data || []);
+        console.log(`🎉 UĞURLA BİTDİ! Cəmi yüklənən şirkət sayı: ${allCompanies.length}`);
+        console.log(`🥇 İlk şirkət: ${allCompanies[0]?.name || 'Yoxdur'}`);
+        console.log(`🥉 Son şirkət: ${allCompanies[allCompanies.length - 1]?.name || 'Yoxdur'}`);
+        
+        setCompanies(allCompanies);
       }
       
       setHasMore(false);
 
     } catch (error) {
-      console.error('XƏTA:', error);
+      console.error('❌ PAGINATION XƏTASI:', error);
       setCompanies([]);
     } finally {
       setLoading(false);
