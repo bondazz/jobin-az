@@ -131,52 +131,25 @@ const Companies = () => {
 
   const loadCompanies = async (reset = false) => {
     try {
-      if (reset) {
-        setLoading(true);
-        setPage(0);
-        setHasMore(true);
-      } else {
-        setLoadingMore(true);
-      }
-
-      const ITEMS_PER_PAGE = 100; // Daha çox şirkət yüklə
-      const currentPage = reset ? 0 : page;
+      setLoading(true);
       
       let query = supabase
         .from('companies')
-        .select('*', { count: 'exact' })
+        .select('*')
         .eq('is_active', true)
         .order('name');
 
-      // Axtarış varsa pagination-ı dayandır və hamısını yüklə
+      // Axtarış varsa filtr əlavə et
       if (debouncedSearchTerm.trim()) {
         query = query.ilike('name', `%${debouncedSearchTerm.trim()}%`);
-      } else {
-        // Yalnız axtarış yoxdursa pagination istifadə et
-        query = query.range(currentPage * ITEMS_PER_PAGE, (currentPage + 1) * ITEMS_PER_PAGE - 1);
       }
 
-      const { data, error, count } = await query;
+      const { data, error } = await query;
 
       if (error) throw error;
 
-      if (reset) {
-        setCompanies(data || []);
-        setPage(1);
-      } else {
-        setCompanies(prev => [...prev, ...(data || [])]);
-        setPage(currentPage + 1);
-      }
-
-      // Daha çox şirkət var mı yoxla
-      if (debouncedSearchTerm.trim()) {
-        // Axtarış zamanı pagination yoxdur
-        setHasMore(false);
-      } else {
-        // Normal pagination
-        const totalLoaded = reset ? (data?.length || 0) : companies.length + (data?.length || 0);
-        setHasMore(totalLoaded < (count || 0) && (data?.length || 0) === ITEMS_PER_PAGE);
-      }
+      setCompanies(data || []);
+      setHasMore(false); // Pagination yoxdur, hamısı yükləndi
 
     } catch (error) {
       console.error('Error fetching companies:', error);

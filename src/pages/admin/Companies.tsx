@@ -104,7 +104,7 @@ export default function AdminCompanies() {
 
   const fetchCompanies = async () => {
     try {
-      // Fetch companies with job count
+      // Bütün şirkətləri yüklə (limit yoxdur)
       const { data: companiesData, error } = await supabase
         .from('companies')
         .select(`
