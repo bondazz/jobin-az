@@ -133,12 +133,10 @@ const Companies = () => {
     try {
       setLoading(true);
       
-      console.log('YENİ METOD: XMLHttpRequest və async/await');
+      console.log('KÖKLÜ HƏLL: Supabase range(0, 50000) ilə');
       
-      let companiesData = [];
-
       if (debouncedSearchTerm.trim()) {
-        console.log('Axtarış funksiyası:', debouncedSearchTerm);
+        console.log('Axtarış edilir:', debouncedSearchTerm);
         const { data, error } = await supabase
           .from('companies')
           .select('*')
@@ -146,54 +144,37 @@ const Companies = () => {
           .ilike('name', `%${debouncedSearchTerm.trim()}%`)
           .order('name');
         
-        if (error) throw error;
-        companiesData = data || [];
-        console.log('Axtarış nəticəsi:', companiesData.length);
-      } else {
-        console.log('BÜTÜN ŞİRKƏTLƏRİ YÜKLƏMƏK - XMLHttpRequest');
+        if (error) {
+          console.error('Axtarış xətası:', error);
+          throw error;
+        }
         
-        companiesData = await new Promise((resolve, reject) => {
-          const xhr = new XMLHttpRequest();
-          xhr.open('GET', 'https://igrtzfvphltnoiwedbtz.supabase.co/rest/v1/companies?select=*&is_active=eq.true&order=name', true);
-          xhr.setRequestHeader('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlncnR6ZnZwaGx0bm9pd2VkYnR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIyMTQzMDYsImV4cCI6MjA2Nzc5MDMwNn0.afoeynzfpIZMqMRgpD0fDQ_NdULXEML-LZ-SocnYKp0');
-          xhr.setRequestHeader('apikey', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlncnR6ZnZwaGx0bm9pd2VkYnR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIyMTQzMDYsImV4cCI6MjA2Nzc5MDMwNn0.afoeynzfpIZMqMRgpD0fDQ_NdULXEML-LZ-SocnYKp0');
-          xhr.setRequestHeader('Content-Type', 'application/json');
-          
-          xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4) {
-              if (xhr.status === 200) {
-                try {
-                  const result = JSON.parse(xhr.responseText);
-                  console.log('XMLHttpRequest MÜVƏFFƏQİYYƏTLƏ! Şirkət sayı:', result.length);
-                  console.log('İlk şirkət:', result[0]?.name);
-                  console.log('Son şirkət:', result[result.length - 1]?.name);
-                  resolve(result);
-                } catch (e) {
-                  console.error('JSON parse error:', e);
-                  reject(e);
-                }
-              } else {
-                console.error('XHR Error:', xhr.status, xhr.statusText);
-                reject(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
-              }
-            }
-          };
-          
-          xhr.onerror = function() {
-            console.error('Network error');
-            reject(new Error('Network error'));
-          };
-          
-          xhr.send();
-        });
+        console.log('Axtarış nəticəsi:', data?.length || 0);
+        setCompanies(data || []);
+      } else {
+        console.log('BÜTÜN ŞİRKƏTLƏRİ YÜKLƏYƏK - range(0, 50000)');
+        const { data, error } = await supabase
+          .from('companies')
+          .select('*')
+          .eq('is_active', true)
+          .order('name')
+          .range(0, 50000);
+        
+        if (error) {
+          console.error('Şirkət yükləmə xətası:', error);
+          throw error;
+        }
+        
+        console.log('✅ MÜVƏFFƏQİYYƏT! Yüklənən şirkət sayı:', data?.length || 0);
+        console.log('İlk şirkət:', data?.[0]?.name || 'Yoxdur');
+        console.log('Son şirkət:', data?.[data?.length - 1]?.name || 'Yoxdur');
+        setCompanies(data || []);
       }
-
-      console.log('FINAL: Yüklənən şirkət sayı:', companiesData.length);
-      setCompanies(companiesData);
+      
       setHasMore(false);
 
     } catch (error) {
-      console.error('Error loading companies:', error);
+      console.error('XƏTA:', error);
       setCompanies([]);
     } finally {
       setLoading(false);
