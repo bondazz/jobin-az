@@ -104,17 +104,52 @@ export default function AdminCompanies() {
 
   const fetchCompanies = async () => {
     try {
-      console.log('Admin paneldə RPC ilə şirkətlər yüklənir...');
+      console.log('📊 ADMİN PANEL - BÜTÜN ŞİRKƏTLƏRİ PAGINATION İLƏ YÜKLƏYİRİK');
       
-      // RPC funksiyası ilə bütün şirkətləri yüklə
-      const { data: companiesData, error } = await supabase.rpc('get_all_companies');
+      const allCompanies: any[] = [];
+      let page = 0;
+      const pageSize = 1000;
+      let hasMore = true;
 
-      if (error) {
-        console.error('Admin RPC şirkət yükləmə xətası:', error);
-        throw error;
+      // Pagination ilə bütün şirkətləri yüklə
+      while (hasMore) {
+        page++;
+        console.log(`📖 ADMİN - Səhifə ${page} yüklənir...`);
+        
+        const start = (page - 1) * pageSize;
+        const end = start + pageSize - 1;
+
+        const { data: pageData, error } = await supabase
+          .from('companies')
+          .select('*')
+          .eq('is_active', true)
+          .range(start, end)
+          .order('name');
+
+        if (error) {
+          console.error('Admin şirkət yükləmə xətası:', error);
+          throw error;
+        }
+
+        if (pageData && pageData.length > 0) {
+          allCompanies.push(...pageData);
+          console.log(`✅ ADMİN - Səhifə ${page}: ${pageData.length} şirkət`);
+          console.log(`📈 ADMİN - Cəmi: ${allCompanies.length} şirkət`);
+          
+          // Əgər geri qaytarılan məlumatlar pageSize-dan azsa, deməli son səhifə
+          if (pageData.length < pageSize) {
+            hasMore = false;
+          }
+        } else {
+          hasMore = false;
+        }
       }
 
-      console.log('Admin paneldə RPC ilə yüklənən şirkət sayı:', companiesData?.length || 0);
+      console.log(`🎉 ADMİN TAMAMLANDI! ${allCompanies.length} şirkət yükləndi`);
+      if (allCompanies.length > 0) {
+        console.log(`🥇 ADMİN İlk şirkət: ${allCompanies[0].name}`);
+        console.log(`🥉 ADMİN Son şirkət: ${allCompanies[allCompanies.length - 1].name}`);
+      }
 
       // Job count əlavə etmək üçün ayrıca sorğu
       const { data: jobCounts, error: jobError } = await supabase
@@ -133,10 +168,10 @@ export default function AdminCompanies() {
       }, {} as Record<string, number>) || {};
 
       // Process the data to include job count
-      const companiesWithJobCount = companiesData?.map(company => ({
+      const companiesWithJobCount = allCompanies.map(company => ({
         ...company,
         job_count: jobCountMap[company.id] || 0
-      })) || [];
+      }));
 
       setCompanies(companiesWithJobCount);
     } catch (error) {
