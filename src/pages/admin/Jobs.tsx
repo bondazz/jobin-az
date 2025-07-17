@@ -125,7 +125,7 @@ export default function AdminJobs() {
             categories (name)
           `)
           .order('created_at', { ascending: false }),
-        supabase.from('companies').select('id, name').eq('is_active', true).order('name'),
+        supabase.from('companies').select('id, name').order('name'),
         supabase.from('categories').select('id, name').eq('is_active', true),
       ]);
 
