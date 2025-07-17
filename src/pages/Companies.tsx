@@ -133,52 +133,68 @@ const Companies = () => {
     try {
       setLoading(true);
       
-      console.log('RPC funksiyası ilə şirkətlər yüklənir...');
+      console.log('YENİ METOD: XMLHttpRequest və async/await');
       
-      let data, error;
+      let companiesData = [];
 
-      // Tamamilə fərqli metod - REST API ilə birbaşa
       if (debouncedSearchTerm.trim()) {
-        console.log('Axtarış: REST API metodu:', debouncedSearchTerm);
+        console.log('Axtarış funksiyası:', debouncedSearchTerm);
         const { data, error } = await supabase
           .from('companies')
           .select('*')
           .eq('is_active', true)
           .ilike('name', `%${debouncedSearchTerm.trim()}%`)
           .order('name');
-        console.log('Axtarış nəticəsi:', data?.length || 0);
+        
+        if (error) throw error;
+        companiesData = data || [];
+        console.log('Axtarış nəticəsi:', companiesData.length);
       } else {
-        console.log('Tamamilə fərqli metod - Postgrest-i yan keçmək');
-        // Custom HTTP request to bypass limits
-        const response = await fetch(`https://igrtzfvphltnoiwedbtz.supabase.co/rest/v1/companies?is_active=eq.true&order=name`, {
-          headers: {
-            'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlncnR6ZnZwaGx0bm9pd2VkYnR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIyMTQzMDYsImV4cCI6MjA2Nzc5MDMwNn0.afoeynzfpIZMqMRgpD0fDQ_NdULXEML-LZ-SocnYKp0`,
-            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlncnR6ZnZwaGx0bm9pd2VkYnR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIyMTQzMDYsImV4cCI6MjA2Nzc5MDMwNn0.afoeynzfpIZMqMRgpD0fDQ_NdULXEML-LZ-SocnYKp0',
-            'Content-Type': 'application/json',
-            'Prefer': 'count=none'
-          }
+        console.log('BÜTÜN ŞİRKƏTLƏRİ YÜKLƏMƏK - XMLHttpRequest');
+        
+        companiesData = await new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open('GET', 'https://igrtzfvphltnoiwedbtz.supabase.co/rest/v1/companies?select=*&is_active=eq.true&order=name', true);
+          xhr.setRequestHeader('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlncnR6ZnZwaGx0bm9pd2VkYnR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIyMTQzMDYsImV4cCI6MjA2Nzc5MDMwNn0.afoeynzfpIZMqMRgpD0fDQ_NdULXEML-LZ-SocnYKp0');
+          xhr.setRequestHeader('apikey', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlncnR6ZnZwaGx0bm9pd2VkYnR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIyMTQzMDYsImV4cCI6MjA2Nzc5MDMwNn0.afoeynzfpIZMqMRgpD0fDQ_NdULXEML-LZ-SocnYKp0');
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          
+          xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+              if (xhr.status === 200) {
+                try {
+                  const result = JSON.parse(xhr.responseText);
+                  console.log('XMLHttpRequest MÜVƏFFƏQİYYƏTLƏ! Şirkət sayı:', result.length);
+                  console.log('İlk şirkət:', result[0]?.name);
+                  console.log('Son şirkət:', result[result.length - 1]?.name);
+                  resolve(result);
+                } catch (e) {
+                  console.error('JSON parse error:', e);
+                  reject(e);
+                }
+              } else {
+                console.error('XHR Error:', xhr.status, xhr.statusText);
+                reject(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
+              }
+            }
+          };
+          
+          xhr.onerror = function() {
+            console.error('Network error');
+            reject(new Error('Network error'));
+          };
+          
+          xhr.send();
         });
-        const data = await response.json();
-        console.log('REST API ilə yüklənən şirkət sayı:', data?.length || 0);
-        console.log('İlk şirkət (REST API):', data?.[0]?.name || 'Heç biri');
-        console.log('Son şirkət (REST API):', data?.[data.length - 1]?.name || 'Heç biri');
-        const error = response.ok ? null : new Error('REST API error');
       }
 
-      if (error) {
-        console.error('Yeni metod xətası:', error);
-        throw error;
-      }
-
-      console.log('RPC ilə yüklənən şirkət sayı:', data?.length || 0);
-      console.log('İlk şirkət:', data?.[0]?.name || 'Heç biri');
-      console.log('Son şirkət:', data?.[data.length - 1]?.name || 'Heç biri');
-
-      setCompanies(data || []);
-      setHasMore(false); // RPC funksiyası bütün məlumatları qaytarır
+      console.log('FINAL: Yüklənən şirkət sayı:', companiesData.length);
+      setCompanies(companiesData);
+      setHasMore(false);
 
     } catch (error) {
-      console.error('Error fetching companies:', error);
+      console.error('Error loading companies:', error);
+      setCompanies([]);
     } finally {
       setLoading(false);
       setLoadingMore(false);
@@ -387,71 +403,90 @@ const Companies = () => {
                           <h3 className="text-lg font-semibold text-foreground mb-3">Şirkət Haqqında</h3>
                           <p className="text-muted-foreground leading-relaxed">
                             {selectedCompany.description || `${selectedCompany.name} Azərbaycanın aparıcı şirkətlərindən biridir. 
-                            Bizim missiyamız keyfiyyətli xidmətlər təqdim etmək və müştərilərimizin 
-                            ehtiyaclarını qarşılamaqdır. Komandamız təcrübəli mütəxəssislərdən ibarətdir.`}
+                            Bizim missiyamız keyfiyyətli xidmətlər təqdim etmək və müştərilərimizin tələbatlarını qarşılamaqdır. 
+                            Şirkətimiz innovativ yanaşmalar və peşəkar komanda ilə bazarda lider mövqe tutur.`}
                           </p>
                         </div>
 
-                        <div>
-                          <h3 className="text-lg font-semibold text-foreground mb-3">Əlaqə Məlumatları</h3>
-                          <div className="space-y-3">
-                            {selectedCompany.website && (
-                              <div className="flex items-center gap-3">
-                                <Globe className="w-5 h-5 text-primary" />
-                                <a href={selectedCompany.website.startsWith('http') ? selectedCompany.website : `https://${selectedCompany.website}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                        {/* Contact Info */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {selectedCompany.website && (
+                            <div className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border">
+                              <Globe className="w-5 h-5 text-primary" />
+                              <div>
+                                <p className="text-sm font-medium text-foreground">Vebsayt</p>
+                                <a href={selectedCompany.website} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline">
                                   {selectedCompany.website}
                                 </a>
                               </div>
-                            )}
-                            {selectedCompany.phone && (
-                              <div className="flex items-center gap-3">
-                                <Phone className="w-5 h-5 text-primary" />
-                                <span className="text-foreground">{selectedCompany.phone}</span>
-                              </div>
-                            )}
-                            {selectedCompany.email && (
-                              <div className="flex items-center gap-3">
-                                <Mail className="w-5 h-5 text-primary" />
-                                <span className="text-foreground">{selectedCompany.email}</span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
+                            </div>
+                          )}
 
-                      </> : <div className="h-[600px] overflow-hidden">
-                        <JobListings selectedJob={selectedJob} onJobSelect={handleJobSelect} selectedCategory="" companyFilter={selectedCompany.id} showHeader={false} />
-                      </div>}
+                          {selectedCompany.email && (
+                            <div className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border">
+                              <Mail className="w-5 h-5 text-primary" />
+                              <div>
+                                <p className="text-sm font-medium text-foreground">E-poçt</p>
+                                <a href={`mailto:${selectedCompany.email}`} className="text-sm text-primary hover:underline">
+                                  {selectedCompany.email}
+                                </a>
+                              </div>
+                            </div>
+                          )}
+
+                          {selectedCompany.phone && (
+                            <div className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border">
+                              <Phone className="w-5 h-5 text-primary" />
+                              <div>
+                                <p className="text-sm font-medium text-foreground">Telefon</p>
+                                <a href={`tel:${selectedCompany.phone}`} className="text-sm text-primary hover:underline">
+                                  {selectedCompany.phone}
+                                </a>
+                              </div>
+                            </div>
+                          )}
+
+                          {selectedCompany.address && (
+                            <div className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border">
+                              <MapPin className="w-5 h-5 text-primary" />
+                              <div>
+                                <p className="text-sm font-medium text-foreground">Ünvan</p>
+                                <p className="text-sm text-muted-foreground">{selectedCompany.address}</p>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </> : <>
+                        <JobListings 
+                          onJobSelect={handleJobSelect}
+                          selectedJob={selectedJob}
+                        />
+                      </>}
                   </div>
                 </div>
               </div>
-            </div> : <div className="h-full flex items-center justify-center p-8">
+            </div> : 
+            <div className="flex items-center justify-center h-full">
               <div className="text-center">
-                <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Building className="w-8 h-8 text-white" />
-                </div>
-                <h2 className="text-xl font-bold text-foreground mb-2">Şirkət Seçin</h2>
-                <p className="text-muted-foreground text-sm max-w-sm">
-                  Sol tərəfdən bir şirkət seçin və şirkət haqqında ətraflı məlumat alın
-                </p>
+                <Building className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-foreground mb-2">Şirkət seçin</h3>
+                <p className="text-muted-foreground">Şirkət haqqında ətraflı məlumat almaq üçün sol tərəfdən şirkət seçin</p>
               </div>
-            </div>}
+            </div>
+          }
         </div>
       </div>
 
-      {/* Mobile/Tablet Company Profile */}
-      {showMobileProfile && selectedCompany && (
+      {/* Mobile Company Profile */}
+      {isMobileOrTablet && selectedCompany && showMobileProfile && (
         <CompanyProfile 
           company={selectedCompany}
           onClose={() => setShowMobileProfile(false)}
-          isMobile={isMobileOrTablet}
         />
       )}
 
       {/* Bottom Navigation */}
-      <BottomNavigation 
-        selectedCategory=""
-        onCategorySelect={() => {}}
-      />
+      <BottomNavigation onCategorySelect={() => {}} />
     </div>
   );
 };
