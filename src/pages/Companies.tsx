@@ -167,12 +167,8 @@ const Companies = () => {
       }
 
       // Check if there are more items to load
-      const totalLoaded = (data?.length || 0);
-      if (reset) {
-        setHasMore(totalLoaded === ITEMS_PER_PAGE && totalLoaded < (count || 0));
-      } else {
-        setHasMore(totalLoaded === ITEMS_PER_PAGE);
-      }
+      const totalLoaded = reset ? (data?.length || 0) : companies.length + (data?.length || 0);
+      setHasMore(totalLoaded < (count || 0) && (data?.length || 0) === ITEMS_PER_PAGE);
 
     } catch (error) {
       console.error('Error fetching companies:', error);

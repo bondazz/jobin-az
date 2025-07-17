@@ -62,6 +62,8 @@ interface Category {
 export default function AdminJobs() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [companies, setCompanies] = useState<Company[]>([]);
+  const [filteredCompanies, setFilteredCompanies] = useState<Company[]>([]);
+  const [companySearchTerm, setCompanySearchTerm] = useState('');
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -123,12 +125,15 @@ export default function AdminJobs() {
             categories (name)
           `)
           .order('created_at', { ascending: false }),
-        supabase.from('companies').select('id, name').eq('is_active', true),
+        supabase.from('companies').select('id, name').eq('is_active', true).order('name'),
         supabase.from('categories').select('id, name').eq('is_active', true),
       ]);
 
       if (jobsResponse.data) setJobs(jobsResponse.data as Job[]);
-      if (companiesResponse.data) setCompanies(companiesResponse.data);
+      if (companiesResponse.data) {
+        setCompanies(companiesResponse.data);
+        setFilteredCompanies(companiesResponse.data);
+      }
       if (categoriesResponse.data) setCategories(categoriesResponse.data);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -141,6 +146,18 @@ export default function AdminJobs() {
       setLoading(false);
     }
   };
+
+  // Filter companies based on search term
+  useEffect(() => {
+    if (companySearchTerm.trim()) {
+      const filtered = companies.filter(company => 
+        company.name.toLowerCase().includes(companySearchTerm.toLowerCase())
+      );
+      setFilteredCompanies(filtered);
+    } else {
+      setFilteredCompanies(companies);
+    }
+  }, [companySearchTerm, companies]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -324,24 +341,22 @@ export default function AdminJobs() {
                           <SelectValue placeholder="Şirkət seçin" />
                         </SelectTrigger>
                         <SelectContent>
-                          <div className="p-2">
+                          <div className="p-2 sticky top-0 bg-background z-10">
                             <Input
                               placeholder="Şirkət axtarın..."
                               className="mb-2"
-                              onChange={(e) => {
-                                const searchValue = e.target.value.toLowerCase();
-                                const filteredCompanies = companies.filter(company => 
-                                  company.name.toLowerCase().includes(searchValue)
-                                );
-                                // This is a simple implementation, in a real app you'd want to use state for this
-                              }}
+                              value={companySearchTerm}
+                              onChange={(e) => setCompanySearchTerm(e.target.value)}
+                              onClick={(e) => e.stopPropagation()}
                             />
                           </div>
-                          {companies.map((company) => (
-                            <SelectItem key={company.id} value={company.id}>
-                              {company.name}
-                            </SelectItem>
-                          ))}
+                          <div className="max-h-60 overflow-auto">
+                            {filteredCompanies.map((company) => (
+                              <SelectItem key={company.id} value={company.id}>
+                                {company.name}
+                              </SelectItem>
+                            ))}
+                          </div>
                         </SelectContent>
                       </Select>
                     </div>
