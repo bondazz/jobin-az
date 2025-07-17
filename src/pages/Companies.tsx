@@ -137,31 +137,36 @@ const Companies = () => {
       
       let data, error;
 
-      // Direct table query - bütün şirkətləri birbaşa cədvəldən yüklə
+      // Tamamilə fərqli metod - REST API ilə birbaşa
       if (debouncedSearchTerm.trim()) {
-        console.log('Axtarış funksiyası tətbiq edilir:', debouncedSearchTerm);
-        const response = await supabase
+        console.log('Axtarış: REST API metodu:', debouncedSearchTerm);
+        const { data, error } = await supabase
           .from('companies')
           .select('*')
           .eq('is_active', true)
           .ilike('name', `%${debouncedSearchTerm.trim()}%`)
           .order('name');
-        data = response.data;
-        error = response.error;
+        console.log('Axtarış nəticəsi:', data?.length || 0);
       } else {
-        console.log('Bütün şirkətləri birbaşa cədvəldən yüklənir - limit yoxdur');
-        const response = await supabase
-          .from('companies')
-          .select('*')
-          .eq('is_active', true)
-          .order('name')
-          .range(0, 100000); // Çox böyük range - bütün məlumatları yükləmək üçün
-        data = response.data;
-        error = response.error;
+        console.log('Tamamilə fərqli metod - Postgrest-i yan keçmək');
+        // Custom HTTP request to bypass limits
+        const response = await fetch(`https://igrtzfvphltnoiwedbtz.supabase.co/rest/v1/companies?is_active=eq.true&order=name`, {
+          headers: {
+            'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlncnR6ZnZwaGx0bm9pd2VkYnR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIyMTQzMDYsImV4cCI6MjA2Nzc5MDMwNn0.afoeynzfpIZMqMRgpD0fDQ_NdULXEML-LZ-SocnYKp0`,
+            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlncnR6ZnZwaGx0bm9pd2VkYnR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIyMTQzMDYsImV4cCI6MjA2Nzc5MDMwNn0.afoeynzfpIZMqMRgpD0fDQ_NdULXEML-LZ-SocnYKp0',
+            'Content-Type': 'application/json',
+            'Prefer': 'count=none'
+          }
+        });
+        const data = await response.json();
+        console.log('REST API ilə yüklənən şirkət sayı:', data?.length || 0);
+        console.log('İlk şirkət (REST API):', data?.[0]?.name || 'Heç biri');
+        console.log('Son şirkət (REST API):', data?.[data.length - 1]?.name || 'Heç biri');
+        const error = response.ok ? null : new Error('REST API error');
       }
 
       if (error) {
-        console.error('RPC funksiya xətası:', error);
+        console.error('Yeni metod xətası:', error);
         throw error;
       }
 
