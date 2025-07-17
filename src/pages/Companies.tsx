@@ -133,6 +133,8 @@ const Companies = () => {
     try {
       setLoading(true);
       
+      console.log('Şirkətlər yüklənməyə başlanır...');
+      
       let query = supabase
         .from('companies')
         .select('*')
@@ -141,12 +143,20 @@ const Companies = () => {
 
       // Axtarış varsa filtr əlavə et
       if (debouncedSearchTerm.trim()) {
+        console.log('Axtarış tətbiq edilir:', debouncedSearchTerm);
         query = query.ilike('name', `%${debouncedSearchTerm.trim()}%`);
       }
 
       const { data, error } = await query;
 
-      if (error) throw error;
+      if (error) {
+        console.error('Şirkət yükləmə xətası:', error);
+        throw error;
+      }
+
+      console.log('Yüklənən şirkət sayı:', data?.length || 0);
+      console.log('İlk şirkət:', data?.[0]?.name || 'Heç biri');
+      console.log('Son şirkət:', data?.[data.length - 1]?.name || 'Heç biri');
 
       setCompanies(data || []);
       setHasMore(false); // Pagination yoxdur, hamısı yükləndi

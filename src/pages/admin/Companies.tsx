@@ -104,6 +104,8 @@ export default function AdminCompanies() {
 
   const fetchCompanies = async () => {
     try {
+      console.log('Admin paneldə şirkətlər yüklənir...');
+      
       // Bütün şirkətləri yüklə (limit yoxdur)
       const { data: companiesData, error } = await supabase
         .from('companies')
@@ -113,7 +115,12 @@ export default function AdminCompanies() {
         `)
         .order('name', { ascending: true });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Admin şirkət yükləmə xətası:', error);
+        throw error;
+      }
+
+      console.log('Admin paneldə yüklənən şirkət sayı:', companiesData?.length || 0);
 
       // Process the data to include job count
       const companiesWithJobCount = companiesData?.map(company => ({
