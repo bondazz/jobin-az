@@ -384,8 +384,7 @@ const Companies = () => {
 
         {/* Right Section - Company Details */}
         <div className="hidden lg:block flex-1 bg-gradient-to-br from-job-details to-primary/3 animate-slide-in-right">
-          {selectedCompany ? (
-            <div className="h-full overflow-y-auto">
+          {selectedCompany ? <div className="h-full overflow-y-auto">
               <div className="relative">
                 {/* Company Header with Background */}
                 <div className="relative h-48 bg-gradient-to-br from-primary/20 via-primary/10 to-accent/10 overflow-hidden">
@@ -398,26 +397,18 @@ const Companies = () => {
                   )}
                   <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/20"></div>
                   
-                  {/* Company Logo - Fixed Position */}
-<div className="absolute top-0 left-6 z-10">
-  <div className="relative">
-    {selectedCompany.logo ? (
-      <img
-        src={selectedCompany.logo}
-        alt={selectedCompany.name}
-        className="w-28 h-28 rounded-2xl object-cover shadow-2xl border-4 border-background"
-      />
-    ) : (
-      <div className="w-28 h-28 bg-gradient-primary rounded-2xl flex items-center justify-center text-white font-bold text-2xl shadow-2xl border-4 border-background">
-        {selectedCompany.name.charAt(0)}
-      </div>
-    )}
-    {selectedCompany.is_verified && (
-      <VerifyBadge size={32} className="absolute -top-2 -right-2" />
-    )}
-  </div>
-</div>
-
+                  {/* Company Logo - Floating */}
+                  <div className="absolute bottom-0 left-6 transform translate-y-1/2 z-10">
+                    <div className="relative">
+                      {selectedCompany.logo ? (
+                        <img src={selectedCompany.logo} alt={selectedCompany.name} className="w-28 h-28 rounded-2xl object-cover shadow-2xl border-4 border-background" />
+                      ) : (
+                        <div className="w-28 h-28 bg-gradient-primary rounded-2xl flex items-center justify-center text-white font-bold text-2xl shadow-2xl border-4 border-background">
+                          {selectedCompany.name.charAt(0)}
+                        </div>
+                      )}
+                       {selectedCompany.is_verified && <VerifyBadge size={32} className="absolute -top-2 -right-2" />}
+                    </div>
                   </div>
                 </div>
 
@@ -517,8 +508,7 @@ const Companies = () => {
                   </div>
                 </div>
               </div>
-            </div>
-          ) : (
+            </div> : 
             <div className="flex items-center justify-center h-full">
               <div className="text-center">
                 <Building className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
@@ -526,7 +516,7 @@ const Companies = () => {
                 <p className="text-muted-foreground">Şirkət haqqında ətraflı məlumat almaq üçün sol tərəfdən şirkət seçin</p>
               </div>
             </div>
-          )}
+          }
         </div>
       </div>
 
