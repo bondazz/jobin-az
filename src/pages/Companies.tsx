@@ -384,7 +384,8 @@ const Companies = () => {
 
         {/* Right Section - Company Details */}
         <div className="hidden lg:block flex-1 bg-gradient-to-br from-job-details to-primary/3 animate-slide-in-right">
-          {selectedCompany ? <div className="h-full overflow-y-auto">
+          {selectedCompany ? (
+            <div className="h-full overflow-y-auto">
               <div className="relative">
                 {/* Company Header with Background */}
                 <div className="relative h-48 bg-gradient-to-br from-primary/20 via-primary/10 to-accent/10 overflow-hidden">
@@ -516,7 +517,8 @@ const Companies = () => {
                   </div>
                 </div>
               </div>
-            </div> : 
+            </div>
+          ) : (
             <div className="flex items-center justify-center h-full">
               <div className="text-center">
                 <Building className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
@@ -524,7 +526,7 @@ const Companies = () => {
                 <p className="text-muted-foreground">Şirkət haqqında ətraflı məlumat almaq üçün sol tərəfdən şirkət seçin</p>
               </div>
             </div>
-          }
+          )}
         </div>
       </div>
 
