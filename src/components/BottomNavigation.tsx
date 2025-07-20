@@ -149,15 +149,22 @@ const BottomNavigation = ({
               </Button>
             </DrawerTrigger>
             
-            <DrawerContent className="max-h-[75vh] bg-gradient-to-b from-background to-primary/5 z-30 mb-16">
-              <DrawerHeader className="pb-2">
+            {/* Overlay */}
+            {isMenuOpen && (
+              <div 
+                className="fixed inset-0 bg-black/50 z-40" 
+                onClick={() => setIsMenuOpen(false)}
+              />
+            )}
+            
+            <DrawerContent className="fixed bottom-16 left-0 right-0 max-h-[calc(100vh-64px)] bg-gradient-to-b from-background to-primary/5 z-50 border border-border rounded-t-xl shadow-xl">
+              <DrawerHeader className="pb-2 border-b border-border/20">
                 <DrawerTitle className="text-center text-lg font-bold text-foreground">
                   Naviqasiya Menyusu
                 </DrawerTitle>
               </DrawerHeader>
               
-              
-              <div className="p-4 space-y-6 overflow-y-auto">
+              <div className="p-4 space-y-6 overflow-y-auto max-h-[calc(100vh-140px)]">
                 {/* All Navigation Items */}
                 <div>
                   <h3 className="font-bold text-base text-foreground mb-3 flex items-center gap-2">
@@ -165,19 +172,40 @@ const BottomNavigation = ({
                     Əsas Bölümlər
                   </h3>
                   <div className="grid grid-cols-1 gap-2">
-                    {allMenuItems.filter(item => ['/services', '/about'].includes(item.path) || item.path === '/').map((item, index) => <Link key={item.path} to={item.path} className={`flex items-center justify-between p-3 rounded-lg transition-all duration-300 animate-fade-in ${isActivePath(item.path) ? 'bg-gradient-to-r from-primary/20 to-primary/10 text-primary border border-primary/30' : 'bg-card hover:bg-accent/60 border border-border/40'}`} style={{
-                    animationDelay: `${index * 30}ms`
-                  }} onClick={() => setIsMenuOpen(false)}>
+                    {allMenuItems.filter(item => ['/services', '/about'].includes(item.path) || item.path === '/').map((item, index) => (
+                      <Link 
+                        key={item.path} 
+                        to={item.path} 
+                        className={`flex items-center justify-between p-3 rounded-lg transition-all duration-300 animate-fade-in ${
+                          isActivePath(item.path) 
+                            ? 'bg-gradient-to-r from-primary/20 to-primary/10 text-primary border border-primary/30' 
+                            : 'bg-card hover:bg-accent/60 border border-border/40'
+                        }`} 
+                        style={{ animationDelay: `${index * 30}ms` }} 
+                        onClick={() => setIsMenuOpen(false)}
+                      >
                         <div className="flex items-center gap-3">
-                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isActivePath(item.path) ? 'bg-primary/20' : 'bg-primary/10'}`}>
+                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                            isActivePath(item.path) ? 'bg-primary/20' : 'bg-primary/10'
+                          }`}>
                             <item.icon className="w-4 h-4" />
                           </div>
                           <span className="font-medium text-sm">{item.label}</span>
                         </div>
-                        {item.count && <Badge variant={isActivePath(item.path) ? "default" : "outline"} className={`text-xs px-2 py-0.5 ${isActivePath(item.path) ? 'bg-primary text-white' : 'bg-primary/10 text-primary border-primary/30'}`}>
+                        {item.count && (
+                          <Badge 
+                            variant={isActivePath(item.path) ? "default" : "outline"} 
+                            className={`text-xs px-2 py-0.5 ${
+                              isActivePath(item.path) 
+                                ? 'bg-primary text-white' 
+                                : 'bg-primary/10 text-primary border-primary/30'
+                            }`}
+                          >
                             {item.count}
-                          </Badge>}
-                      </Link>)}
+                          </Badge>
+                        )}
+                      </Link>
+                    ))}
                   </div>
                 </div>
 
