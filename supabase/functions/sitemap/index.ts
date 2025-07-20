@@ -18,9 +18,8 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
     )
 
-    // Get the base URL from the request
-    const url = new URL(req.url)
-    const baseUrl = `${url.protocol}//${url.hostname}${url.port ? ':' + url.port : ''}`
+    // Use the production domain
+    const baseUrl = 'https://jooble.az'
 
     // Fetch all active data
     const [jobsResult, categoriesResult, companiesResult] = await Promise.all([
