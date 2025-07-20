@@ -43,7 +43,7 @@ serve(async (req) => {
       categoryLookup.set(cat.id, cat.slug)
     })
 
-    // Generate sitemap XML
+    // Sitemap XML
     let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- Homepage -->
@@ -53,7 +53,7 @@ serve(async (req) => {
     <priority>1.0</priority>
   </url>
   
-  <!-- Static pages -->
+  <!-- Pages -->
   <url>
     <loc>${baseUrl}/about</loc>
     <changefreq>monthly</changefreq>
