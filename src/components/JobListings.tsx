@@ -158,27 +158,27 @@ const JobListings = ({
       {showHeader && !companyId && <div className="relative overflow-hidden bg-gradient-to-br from-background via-primary/8 to-accent/5 border-b border-border/30 max-h-[73px]">
           <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-60"></div>
           
-          <div className="relative z-10 p-3 sm:p-4">
-            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 items-center justify-center max-w-3xl mx-auto">
+          <div className="relative z-10 p-2 sm:p-3">
+            <div className="flex flex-row gap-2 items-center justify-center max-w-4xl mx-auto">
               {/* Job Search Input */}
-              <div className="relative flex-1 w-full sm:max-w-md">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+              <div className="relative flex-1 min-w-0">
+                <Search className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-3 h-3 sm:w-4 sm:h-4" />
                 <Input
                   placeholder="İş axtarın..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 bg-background/60 backdrop-blur-sm border-border/60 focus:border-primary/60 text-sm h-9 sm:h-10 w-full"
+                  className="pl-7 sm:pl-10 bg-background/60 backdrop-blur-sm border-border/60 focus:border-primary/60 text-xs sm:text-sm h-8 sm:h-9 w-full"
                 />
               </div>
               
               {/* Location Filter */}
-              <div className="relative flex-1 w-full sm:max-w-xs">
-                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+              <div className="relative flex-1 min-w-0">
+                <MapPin className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-3 h-3 sm:w-4 sm:h-4" />
                 <Input
                   placeholder="Şəhər"
                   value={locationFilter}
                   onChange={(e) => setLocationFilter(e.target.value)}
-                  className="pl-10 bg-background/60 backdrop-blur-sm border-border/60 focus:border-primary/60 text-sm h-9 sm:h-10 w-full"
+                  className="pl-7 sm:pl-10 bg-background/60 backdrop-blur-sm border-border/60 focus:border-primary/60 text-xs sm:text-sm h-8 sm:h-9 w-full"
                 />
               </div>
             </div>
