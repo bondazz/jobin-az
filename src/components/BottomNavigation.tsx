@@ -149,15 +149,15 @@ const BottomNavigation = ({
               </Button>
             </DrawerTrigger>
             
-            {/* Overlay */}
+            {/* Overlay - Alt menyunu örtməsin */}
             {isMenuOpen && (
               <div 
-                className="fixed inset-0 bg-black/50 z-40" 
+                className="fixed inset-0 bottom-16 bg-black/50 z-30" 
                 onClick={() => setIsMenuOpen(false)}
               />
             )}
             
-            <DrawerContent className="fixed bottom-16 left-0 right-0 max-h-[calc(100vh-64px)] bg-gradient-to-b from-background to-primary/5 z-50 border border-border rounded-t-xl shadow-xl">
+            <DrawerContent className="fixed bottom-16 left-0 right-0 max-h-[calc(100vh-64px)] bg-gradient-to-b from-background to-primary/5 z-40 border border-border rounded-t-xl shadow-xl">
               <DrawerHeader className="pb-2 border-b border-border/20">
                 <DrawerTitle className="text-center text-lg font-bold text-foreground">
                   Naviqasiya Menyusu
