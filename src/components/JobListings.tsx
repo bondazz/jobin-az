@@ -15,6 +15,7 @@ interface JobListingsProps {
   companyFilter?: string;
   showHeader?: boolean;
   showOnlySaved?: boolean;
+  companyId?: string;
 }
 const JobListings = ({
   selectedJob,
@@ -22,7 +23,8 @@ const JobListings = ({
   selectedCategory,
   companyFilter,
   showHeader = true,
-  showOnlySaved = false
+  showOnlySaved = false,
+  companyId
 }: JobListingsProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [locationFilter, setLocationFilter] = useState('');
@@ -33,16 +35,19 @@ const JobListings = ({
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const {
-          data,
-          error
-        } = await supabase.from('jobs').select(`
+        let query = supabase.from('jobs').select(`
             *,
             companies (name, logo, is_verified),
             categories (name)
-          `).eq('is_active', true).order('created_at', {
-          ascending: false
-        });
+          `).eq('is_active', true);
+
+        // Filter by company if companyId is provided
+        if (companyId) {
+          query = query.eq('company_id', companyId);
+        }
+
+        const { data, error } = await query.order('created_at', { ascending: false });
+        
         if (error) throw error;
 
         // Transform data to match Job interface
@@ -64,6 +69,7 @@ const JobListings = ({
           applicationType: job.application_type as 'website' | 'email',
           applicationEmail: job.application_email
         })) || [];
+        
         setJobs(transformedJobs);
       } catch (error) {
         console.error('Error fetching jobs:', error);
@@ -72,7 +78,7 @@ const JobListings = ({
       }
     };
     fetchJobs();
-  }, []);
+  }, [companyId]);
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
