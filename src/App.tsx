@@ -10,6 +10,7 @@ import About from "./pages/About";
 import Pricing from "./pages/Pricing";
 import CVBuilder from "./pages/CVBuilder";
 import NotFound from "./pages/NotFound";
+import Sitemap from "./pages/Sitemap";
 
 // Admin components
 import AdminLogin from "./pages/admin/Login";
@@ -58,6 +59,8 @@ const App = () => (
             <Route path="/services" element={<Pricing />} />
             <Route path="/about" element={<About />} />
           </Route>
+          {/* Sitemap route - outside Layout */}
+          <Route path="/sitemap.xml" element={<Sitemap />} />
           {/* Admin routes - outside Layout */}
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
