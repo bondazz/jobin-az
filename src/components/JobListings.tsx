@@ -45,9 +45,12 @@ const JobListings = ({
         if (companyId) {
           query = query.eq('company_id', companyId);
         }
-
-        const { data, error } = await query.order('created_at', { ascending: false });
-        
+        const {
+          data,
+          error
+        } = await query.order('created_at', {
+          ascending: false
+        });
         if (error) throw error;
 
         // Transform data to match Job interface
@@ -69,7 +72,6 @@ const JobListings = ({
           applicationType: job.application_type as 'website' | 'email',
           applicationEmail: job.application_email
         })) || [];
-        
         setJobs(transformedJobs);
       } catch (error) {
         console.error('Error fetching jobs:', error);
@@ -156,32 +158,7 @@ const JobListings = ({
       {showHeader && <div className="relative overflow-hidden bg-gradient-to-br from-background via-primary/8 to-accent/5 border-b border-border/30 max-h-[73px]">
           <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-60"></div>
           
-          <div className="relative px-4 py-2 h-[73px] flex items-center justify-center">
-            {/* Centered Search Inputs with Job Count */}
-            <div className="flex items-center gap-4 w-full max-w-4xl justify-center">
-              {/* Job Count Badge */}
-              <div className="hidden sm:flex items-center">
-                
-              </div>
-
-              {/* Responsive Search Inputs */}
-              <div className="flex gap-3 flex-1 max-w-lg">
-                <div className="relative flex-1 min-w-[160px] max-w-[240px]">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input placeholder="Axtarış..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="pl-9 pr-3 py-2 h-9 bg-background/80 backdrop-blur-sm border-border/50 rounded-lg text-sm w-full" />
-                </div>
-                <div className="relative flex-1 min-w-[140px] max-w-[200px]">
-                  <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input placeholder="Yer..." value={locationFilter} onChange={e => setLocationFilter(e.target.value)} className="pl-9 pr-3 py-2 h-9 bg-background/80 backdrop-blur-sm border-border/50 rounded-lg text-sm w-full" />
-                </div>
-              </div>
-
-              {/* Mobile Job Count */}
-              <div className="sm:hidden">
-                
-              </div>
-            </div>
-          </div>
+          
         </div>}
 
       {/* Job List - Responsive Container */}
