@@ -149,57 +149,44 @@ const BottomNavigation = ({
               </Button>
             </DrawerTrigger>
             
-            {/* Overlay - Alt menyunu örtməsin */}
-            {isMenuOpen && (
-              <div 
-                className="fixed inset-0 bottom-16 bg-black/50 z-30" 
-                onClick={() => setIsMenuOpen(false)}
-              />
-            )}
-            
-            <DrawerContent className="fixed bottom-16 left-0 right-0 max-h-[calc(100vh-64px)] bg-gradient-to-b from-background to-primary/5 z-40 border border-border rounded-t-xl shadow-xl">
-              <DrawerHeader className="pb-2 border-b border-border/20">
-                <DrawerTitle className="text-center text-lg font-bold text-foreground">
-                  Naviqasiya Menyusu
+            <DrawerContent className="h-auto max-h-[60vh] bg-background border border-border rounded-t-2xl shadow-2xl">
+              <DrawerHeader className="pb-2 pt-3">
+                <div className="w-12 h-1.5 bg-muted-foreground/30 rounded-full mx-auto mb-2"></div>
+                <DrawerTitle className="text-center text-sm font-semibold text-foreground">
+                  Naviqasiya
                 </DrawerTitle>
               </DrawerHeader>
               
-              <div className="p-4 space-y-6 overflow-y-auto max-h-[calc(100vh-140px)]">
-                {/* All Navigation Items */}
+              <div className="px-4 pb-4 space-y-4 overflow-y-auto">
+                {/* Main Navigation Items */}
                 <div>
-                  <h3 className="font-bold text-base text-foreground mb-3 flex items-center gap-2">
-                    <div className="w-2 h-2 bg-primary rounded-full"></div>
+                  <h4 className="text-xs font-medium text-muted-foreground mb-2 px-1">
                     Əsas Bölümlər
-                  </h3>
-                  <div className="grid grid-cols-1 gap-2">
+                  </h4>
+                  <div className="space-y-1">
                     {allMenuItems.filter(item => ['/services', '/about'].includes(item.path) || item.path === '/').map((item, index) => (
                       <Link 
                         key={item.path} 
                         to={item.path} 
-                        className={`flex items-center justify-between p-3 rounded-lg transition-all duration-300 animate-fade-in ${
+                        className={`flex items-center justify-between p-2.5 rounded-lg transition-all duration-200 ${
                           isActivePath(item.path) 
-                            ? 'bg-gradient-to-r from-primary/20 to-primary/10 text-primary border border-primary/30' 
-                            : 'bg-card hover:bg-accent/60 border border-border/40'
-                        }`} 
-                        style={{ animationDelay: `${index * 30}ms` }} 
+                            ? 'bg-primary/10 text-primary border border-primary/20' 
+                            : 'bg-card hover:bg-accent/80 border border-transparent'
+                        }`}
                         onClick={() => setIsMenuOpen(false)}
                       >
-                        <div className="flex items-center gap-3">
-                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                            isActivePath(item.path) ? 'bg-primary/20' : 'bg-primary/10'
+                        <div className="flex items-center gap-2.5">
+                          <div className={`w-6 h-6 rounded-md flex items-center justify-center ${
+                            isActivePath(item.path) ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground'
                           }`}>
-                            <item.icon className="w-4 h-4" />
+                            <item.icon className="w-3.5 h-3.5" />
                           </div>
-                          <span className="font-medium text-sm">{item.label}</span>
+                          <span className="font-medium text-xs">{item.label}</span>
                         </div>
                         {item.count && (
                           <Badge 
-                            variant={isActivePath(item.path) ? "default" : "outline"} 
-                            className={`text-xs px-2 py-0.5 ${
-                              isActivePath(item.path) 
-                                ? 'bg-primary text-white' 
-                                : 'bg-primary/10 text-primary border-primary/30'
-                            }`}
+                            variant="outline" 
+                            className="text-[10px] px-1.5 py-0.5 h-4 bg-primary/10 text-primary border-primary/30"
                           >
                             {item.count}
                           </Badge>
@@ -209,35 +196,31 @@ const BottomNavigation = ({
                   </div>
                 </div>
 
-                {/* Language and Theme Options */}
+                {/* Settings */}
                 <div>
-                  <h3 className="font-bold text-base text-foreground mb-3 flex items-center gap-2">
-                    <div className="w-2 h-2 bg-primary rounded-full"></div>
+                  <h4 className="text-xs font-medium text-muted-foreground mb-2 px-1">
                     Tənzimləmələr
-                  </h3>
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between p-3 bg-card rounded-lg border border-border/40">
-                      <div className="flex items-center gap-3">
-                        <div className="w-6 h-6 rounded-lg bg-primary/10 flex items-center justify-center">
-                          <span className="text-xs">🌐</span>
+                  </h4>
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between p-2.5 bg-card rounded-lg border border-transparent">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-6 h-6 rounded-md bg-muted flex items-center justify-center">
+                          <span className="text-[10px]">🌐</span>
                         </div>
-                        <span className="font-medium text-foreground text-sm">Dil</span>
+                        <span className="font-medium text-xs">Dil</span>
                       </div>
-                      <Badge variant="outline" className="text-xs">AZ</Badge>
+                      <Badge variant="outline" className="text-[10px] px-1.5 py-0.5 h-4">AZ</Badge>
                     </div>
-                  </div>
-                </div>
-
-                {/* Theme Toggle */}
-                <div className="pt-3 border-t border-border/40">
-                  <div className="flex items-center justify-between p-3 bg-card rounded-lg border border-border/40">
-                    <div className="flex items-center gap-3">
-                      <div className="w-6 h-6 rounded-lg bg-primary/10 flex items-center justify-center">
-                        <span className="text-xs">🌙</span>
+                    
+                    <div className="flex items-center justify-between p-2.5 bg-card rounded-lg border border-transparent">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-6 h-6 rounded-md bg-muted flex items-center justify-center">
+                          <span className="text-[10px]">🌙</span>
+                        </div>
+                        <span className="font-medium text-xs">Mövzu</span>
                       </div>
-                      <span className="font-medium text-foreground text-sm">Mövzu</span>
+                      <ThemeToggle />
                     </div>
-                    <ThemeToggle />
                   </div>
                 </div>
               </div>
