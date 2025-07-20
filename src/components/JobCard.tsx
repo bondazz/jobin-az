@@ -93,9 +93,9 @@ const JobCard = ({
       <div className="flex items-center gap-2 flex-1 min-w-0 relative z-10">
         <div className="relative flex-shrink-0">
           {company?.logo ? (
-            <img src={company.logo} alt={company.name} className="w-7 h-7 rounded-md object-cover" />
+            <img src={company.logo} alt={company.name} className="w-8 h-8 rounded-md object-cover" />
           ) : (
-            <div className={`w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs shadow-sm ${job.tags?.includes('premium') ? 'bg-gradient-premium' : 'bg-gradient-primary'}`}>
+            <div className={`w-8 h-8 rounded-md flex items-center justify-center text-white font-bold text-xs shadow-sm ${job.tags?.includes('premium') ? 'bg-gradient-premium' : 'bg-gradient-primary'}`}>
               {(company?.name || job.title).charAt(0)}
             </div>
           )}
@@ -110,7 +110,7 @@ const JobCard = ({
               <p className="text-muted-foreground text-xs font-medium truncate">
                 {company?.name || 'Şirkət'}
               </p>
-              {company?.is_verified && <VerifyBadge size={10} className="ml-0.5" />}
+              {company?.is_verified && <VerifyBadge size={12} className="ml-0.5" />}
             </div>
           </div>
         </div>
