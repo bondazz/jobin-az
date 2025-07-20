@@ -1,41 +1,29 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 const Sitemap = () => {
-  const [sitemapContent, setSitemapContent] = useState<string>('');
-
   useEffect(() => {
-    const fetchSitemap = async () => {
+    const fetchAndDisplaySitemap = async () => {
       try {
         const response = await fetch('https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap');
         const xmlContent = await response.text();
-        setSitemapContent(xmlContent);
         
-        // Set proper content type for XML
-        document.head.appendChild(Object.assign(document.createElement('meta'), {
-          httpEquiv: 'Content-Type',
-          content: 'application/xml; charset=utf-8'
-        }));
+        // Replace the entire document with raw XML
+        document.open();
+        document.write(xmlContent);
+        document.close();
       } catch (error) {
         console.error('Error fetching sitemap:', error);
+        document.open();
+        document.write(`<?xml version="1.0" encoding="UTF-8"?><error>Sitemap could not be loaded</error>`);
+        document.close();
       }
     };
 
-    fetchSitemap();
+    fetchAndDisplaySitemap();
   }, []);
 
-  // Render raw XML content
-  return (
-    <div 
-      style={{ 
-        fontFamily: 'monospace', 
-        whiteSpace: 'pre', 
-        fontSize: '12px',
-        padding: '20px',
-        backgroundColor: '#f5f5f5'
-      }}
-      dangerouslySetInnerHTML={{ __html: sitemapContent }}
-    />
-  );
+  // Return null since we're replacing the entire document
+  return null;
 };
 
 export default Sitemap;
