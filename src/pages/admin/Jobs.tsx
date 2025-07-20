@@ -126,25 +126,34 @@ export default function AdminJobs() {
         `)
         .order('created_at', { ascending: false });
 
-      // Şirkətləri bir dəfəlik yüklə və loading-i azalt
-      console.log('📊 VAKANSIYA PANEL - ŞİRKƏTLƏRİ YÜKLƏYİRİK');
+      // Şirkətləri optimizasiya ilə yüklə
+      console.log('⚡ VAKANSIYA PANEL - İLK 15 ŞİRKƏTİ ANINDA YÜKLƏYİRİK');
       
-      // Use database function for better performance
-      const { data: companiesData, error: companiesError } = await supabase
-        .rpc('get_all_companies');
-
-      if (companiesError) {
-        console.error('Vakansiya panel şirkət yükləmə xətası:', companiesError);
-        throw companiesError;
-      }
-
-      const formattedCompanies = companiesData?.map(company => ({
+      // İlk 15 şirkəti anında yüklə
+      const { data: initialCompanies, error: initialError } = await supabase
+        .from('companies')
+        .select('id, name')
+        .eq('is_active', true)
+        .order('name')
+        .limit(15);
+      
+      if (initialError) throw initialError;
+      
+      console.log(`✅ Vakansiya ilk batch: ${initialCompanies?.length || 0} şirkət anında yükləndi`);
+      
+      // İlk şirkətləri göstər
+      const formattedInitialCompanies = initialCompanies?.map(company => ({
         id: company.id,
         name: company.name
       })) || [];
-
-      console.log(`🎉 VAKANSIYA TAMAMLANDI! ${formattedCompanies.length} şirkət yükləndi`);
-
+      
+      setCompanies(formattedInitialCompanies);
+      setFilteredCompanies(formattedInitialCompanies);
+      
+      // Background-da qalan şirkətləri yüklə
+      console.log('🔄 Vakansiya background-da qalan şirkətlər yüklənir...');
+      loadRemainingCompaniesForJobsInBackground(formattedInitialCompanies);
+      
       // Kateqoriyaları yüklə
       const categoriesResponse = await supabase
         .from('categories')
@@ -152,10 +161,6 @@ export default function AdminJobs() {
         .eq('is_active', true);
 
       if (jobsResponse.data) setJobs(jobsResponse.data as Job[]);
-      if (formattedCompanies.length > 0) {
-        setCompanies(formattedCompanies);
-        setFilteredCompanies(formattedCompanies);
-      }
       if (categoriesResponse.data) setCategories(categoriesResponse.data);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -166,6 +171,61 @@ export default function AdminJobs() {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Background-da qalan şirkətləri yüklə (jobs üçün)
+  const loadRemainingCompaniesForJobsInBackground = async (initialCompanies: Company[]) => {
+    try {
+      console.log('📊 Jobs background-da BÜTÜN ŞİRKƏTLƏRİ YÜKLƏYİRİK');
+      
+      let allCompaniesData: Company[] = [...initialCompanies];
+      let pageSize = 1000;
+      let currentPage = 0;
+      let hasMoreData = true;
+      let offset = 15; // İlk 15-i artıq yüklədik
+      
+      while (hasMoreData) {
+        console.log(`📖 Jobs background səhifə ${currentPage + 1} yüklənir...`);
+        
+        const { data, error } = await supabase
+          .from('companies')
+          .select('id, name')
+          .eq('is_active', true)
+          .order('name')
+          .range(offset + currentPage * pageSize, offset + (currentPage + 1) * pageSize - 1);
+        
+        if (error) throw error;
+        
+        console.log(`✅ Jobs background səhifə ${currentPage + 1}: ${data?.length || 0} şirkət`);
+        
+        if (data && data.length > 0) {
+          const formattedCompanies = data.map(company => ({
+            id: company.id,
+            name: company.name
+          }));
+          
+          allCompaniesData = [...allCompaniesData, ...formattedCompanies];
+          console.log(`📈 Jobs background cəmi: ${allCompaniesData.length} şirkət`);
+          
+          if (data.length < pageSize) {
+            hasMoreData = false;
+          } else {
+            currentPage++;
+          }
+        } else {
+          hasMoreData = false;
+        }
+      }
+      
+      console.log(`🎉 JOBS BACKGROUND TAMAMLANDI! ${allCompaniesData.length} şirkət yükləndi`);
+      
+      // Background yükləmə tamamlandıqda state-i yenilə
+      setCompanies(allCompaniesData);
+      setFilteredCompanies(allCompaniesData);
+      
+    } catch (error) {
+      console.error('❌ Jobs background yükləmə xətası:', error);
     }
   };
 

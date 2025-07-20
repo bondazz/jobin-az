@@ -104,54 +104,21 @@ export default function AdminCompanies() {
 
   const fetchCompanies = async () => {
     try {
-      console.log('📊 ADMİN PANEL - BÜTÜN ŞİRKƏTLƏRİ PAGINATION İLƏ YÜKLƏYİRİK');
+      console.log('⚡ ADMİN PANEL - İLK 15 ŞİRKƏTİ ANINDA YÜKLƏYİRİK');
       
-      const allCompanies: any[] = [];
-      let page = 0;
-      const pageSize = 1000;
-      let hasMore = true;
-
-      // Pagination ilə bütün şirkətləri yüklə
-      while (hasMore) {
-        page++;
-        console.log(`📖 ADMİN - Səhifə ${page} yüklənir...`);
-        
-        const start = (page - 1) * pageSize;
-        const end = start + pageSize - 1;
-
-        const { data: pageData, error } = await supabase
-          .from('companies')
-          .select('*')
-          .eq('is_active', true)
-          .range(start, end)
-          .order('name');
-
-        if (error) {
-          console.error('Admin şirkət yükləmə xətası:', error);
-          throw error;
-        }
-
-        if (pageData && pageData.length > 0) {
-          allCompanies.push(...pageData);
-          console.log(`✅ ADMİN - Səhifə ${page}: ${pageData.length} şirkət`);
-          console.log(`📈 ADMİN - Cəmi: ${allCompanies.length} şirkət`);
-          
-          // Əgər geri qaytarılan məlumatlar pageSize-dan azsa, deməli son səhifə
-          if (pageData.length < pageSize) {
-            hasMore = false;
-          }
-        } else {
-          hasMore = false;
-        }
-      }
-
-      console.log(`🎉 ADMİN TAMAMLANDI! ${allCompanies.length} şirkət yükləndi`);
-      if (allCompanies.length > 0) {
-        console.log(`🥇 ADMİN İlk şirkət: ${allCompanies[0].name}`);
-        console.log(`🥉 ADMİN Son şirkət: ${allCompanies[allCompanies.length - 1].name}`);
-      }
-
-      // Job count əlavə etmək üçün ayrıca sorğu
+      // İlk 15 şirkəti anında yüklə
+      const { data: initialData, error: initialError } = await supabase
+        .from('companies')
+        .select('*')
+        .eq('is_active', true)
+        .order('name')
+        .limit(15);
+      
+      if (initialError) throw initialError;
+      
+      console.log(`✅ Admin ilk batch: ${initialData?.length || 0} şirkət anında yükləndi`);
+      
+      // Job count hesabla (ilk 15 üçün)
       const { data: jobCounts, error: jobError } = await supabase
         .from('jobs')
         .select('company_id')
@@ -161,19 +128,24 @@ export default function AdminCompanies() {
         console.error('Job count yükləmə xətası:', jobError);
       }
 
-      // Job count hesabla
       const jobCountMap = jobCounts?.reduce((acc, job) => {
         acc[job.company_id] = (acc[job.company_id] || 0) + 1;
         return acc;
       }, {} as Record<string, number>) || {};
 
-      // Process the data to include job count
-      const companiesWithJobCount = allCompanies.map(company => ({
+      // İlk şirkətləri job count ilə birlikdə göstər
+      const initialCompaniesWithJobCount = (initialData || []).map(company => ({
         ...company,
         job_count: jobCountMap[company.id] || 0
       }));
-
-      setCompanies(companiesWithJobCount);
+      
+      setCompanies(initialCompaniesWithJobCount);
+      setLoading(false); // Loading-i burada söndür
+      
+      // Background-da qalan şirkətləri yüklə
+      console.log('🔄 Admin background-da qalan şirkətlər yüklənir...');
+      loadRemainingCompaniesInBackground(initialCompaniesWithJobCount, jobCountMap);
+      
     } catch (error) {
       console.error('Error fetching companies:', error);
       toast({
@@ -181,8 +153,62 @@ export default function AdminCompanies() {
         description: 'Şirkətləri yükləyərkən xəta baş verdi.',
         variant: 'destructive',
       });
-    } finally {
       setLoading(false);
+    }
+  };
+
+  // Background-da qalan şirkətləri yüklə (admin üçün)
+  const loadRemainingCompaniesInBackground = async (initialCompanies: any[], jobCountMap: Record<string, number>) => {
+    try {
+      console.log('📊 Admin background-da BÜTÜN ŞİRKƏTLƏRİ YÜKLƏYİRİK');
+      
+      let allCompaniesData: any[] = [...initialCompanies];
+      let pageSize = 1000;
+      let currentPage = 0;
+      let hasMoreData = true;
+      let offset = 15; // İlk 15-i artıq yüklədik
+      
+      while (hasMoreData) {
+        console.log(`📖 Admin background səhifə ${currentPage + 1} yüklənir...`);
+        
+        const { data, error } = await supabase
+          .from('companies')
+          .select('*')
+          .eq('is_active', true)
+          .order('name')
+          .range(offset + currentPage * pageSize, offset + (currentPage + 1) * pageSize - 1);
+        
+        if (error) throw error;
+        
+        console.log(`✅ Admin background səhifə ${currentPage + 1}: ${data?.length || 0} şirkət`);
+        
+        if (data && data.length > 0) {
+          // Job count əlavə et
+          const companiesWithJobCount = data.map(company => ({
+            ...company,
+            job_count: jobCountMap[company.id] || 0
+          }));
+          
+          allCompaniesData = [...allCompaniesData, ...companiesWithJobCount];
+          console.log(`📈 Admin background cəmi: ${allCompaniesData.length} şirkət`);
+          
+          if (data.length < pageSize) {
+            hasMoreData = false;
+          } else {
+            currentPage++;
+          }
+        } else {
+          hasMoreData = false;
+        }
+      }
+      
+      console.log(`🎉 ADMİN BACKGROUND TAMAMLANDI! ${allCompaniesData.length} şirkət yükləndi`);
+      
+      // Background yükləmə tamamlandıqda state-i yenilə
+      setCompanies(allCompaniesData);
+      
+    } catch (error) {
+      console.error('❌ Admin background yükləmə xətası:', error);
     }
   };
 
