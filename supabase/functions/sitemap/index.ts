@@ -25,7 +25,7 @@ serve(async (req) => {
     // Fetch all active data
     const [jobsResult, categoriesResult, companiesResult] = await Promise.all([
       supabaseClient.from('jobs').select('slug, updated_at, category_id').eq('is_active', true),
-      supabaseClient.from('categories').select('slug, updated_at').eq('is_active', true),
+      supabaseClient.from('categories').select('id, slug, updated_at').eq('is_active', true),
       supabaseClient.from('companies').select('slug, updated_at').eq('is_active', true)
     ])
 
