@@ -149,7 +149,12 @@ const BottomNavigation = ({
               </Button>
             </DrawerTrigger>
             
-            <DrawerContent className="max-h-[75vh] bg-gradient-to-b from-background to-primary/5 z-50">
+            <DrawerContent className="max-h-[75vh] bg-gradient-to-b from-background to-primary/5 z-30 mb-16">
+              <DrawerHeader className="pb-2">
+                <DrawerTitle className="text-center text-lg font-bold text-foreground">
+                  Naviqasiya Menyusu
+                </DrawerTitle>
+              </DrawerHeader>
               
               
               <div className="p-4 space-y-6 overflow-y-auto">
