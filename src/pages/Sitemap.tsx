@@ -5,6 +5,11 @@ const Sitemap = () => {
     const fetchAndDisplaySitemap = async () => {
       try {
         const response = await fetch('https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap');
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const xmlContent = await response.text();
         
         // Replace the entire document with raw XML
@@ -14,7 +19,14 @@ const Sitemap = () => {
       } catch (error) {
         console.error('Error fetching sitemap:', error);
         document.open();
-        document.write(`<?xml version="1.0" encoding="UTF-8"?><error>Sitemap could not be loaded</error>`);
+        document.write(`<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://jooble.az</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>`);
         document.close();
       }
     };
