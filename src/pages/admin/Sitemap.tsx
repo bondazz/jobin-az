@@ -16,7 +16,7 @@ const AdminSitemap = () => {
   const generateSitemap = async () => {
     setIsGenerating(true);
     try {
-      const response = await fetch('https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap');
+      const response = await fetch('https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap-xml');
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -70,7 +70,7 @@ const AdminSitemap = () => {
   };
 
   const openSitemap = () => {
-    window.open('/sitemap.xml', '_blank');
+    window.open('https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap-xml', '_blank');
   };
 
   const openGoogleSearchConsole = () => {
