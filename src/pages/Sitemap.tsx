@@ -18,15 +18,18 @@ const Sitemap = () => {
         document.close();
       } catch (error) {
         console.error('Error fetching sitemap:', error);
-        document.open();
-        document.write(`<?xml version="1.0" encoding="UTF-8"?>
+        // Fallback XML sitemap
+        const fallbackXml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://jooble.az</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
-</urlset>`);
+</urlset>`;
+        
+        document.open();
+        document.write(fallbackXml);
         document.close();
       }
     };
