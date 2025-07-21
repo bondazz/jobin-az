@@ -23,9 +23,9 @@ serve(async (req) => {
 
     // Fetch all data in parallel with no limits
     const [jobsData, categoriesData, companiesData] = await Promise.all([
-      supabase.from('jobs').select('slug, updated_at').eq('is_active', true).order('created_at', { ascending: false }),
-      supabase.from('categories').select('slug, updated_at').eq('is_active', true).order('name'),
-      supabase.from('companies').select('slug, updated_at').eq('is_active', true).order('name')
+      supabase.from('jobs').select('slug, updated_at, category_id, company_id').eq('is_active', true).order('created_at', { ascending: false }),
+      supabase.from('categories').select('id, slug, updated_at').eq('is_active', true).order('name'),
+      supabase.from('companies').select('id, slug, updated_at').eq('is_active', true).order('name')
     ]);
 
     if (jobsData.error) {
@@ -104,7 +104,7 @@ serve(async (req) => {
   </url>`;
     });
 
-    // Add category pages - main category page and each job within category
+    // Add category pages - main category page and jobs that belong to each category
     categories.forEach(category => {
       const lastmod = category.updated_at ? new Date(category.updated_at).toISOString().split('T')[0] : today;
       xml += `
@@ -115,8 +115,9 @@ serve(async (req) => {
     <priority>0.8</priority>
   </url>`;
       
-      // Add all jobs within this category
-      jobs.forEach(job => {
+      // Add only jobs that actually belong to this category
+      const categoryJobs = jobs.filter(job => job.category_id === category.id);
+      categoryJobs.forEach(job => {
         xml += `
   <url>
     <loc>${baseUrl}/categories/${category.slug}/vacancy/${job.slug}</loc>
@@ -144,8 +145,9 @@ serve(async (req) => {
     <priority>0.7</priority>
   </url>`;
       
-      // Add all jobs within this company
-      jobs.forEach(job => {
+      // Add only jobs that actually belong to this company
+      const companyJobs = jobs.filter(job => job.company_id === company.id);
+      companyJobs.forEach(job => {
         xml += `
   <url>
     <loc>${baseUrl}/companies/${company.slug}/vacancy/${job.slug}</loc>
