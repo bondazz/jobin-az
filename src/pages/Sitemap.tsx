@@ -2,43 +2,24 @@ import { useEffect } from 'react';
 
 const Sitemap = () => {
   useEffect(() => {
-    const fetchAndDisplaySitemap = async () => {
-      try {
-        const response = await fetch('https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap');
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const xmlContent = await response.text();
-        
-        // Replace the entire document with raw XML
-        document.open();
-        document.write(xmlContent);
-        document.close();
-      } catch (error) {
-        console.error('Error fetching sitemap:', error);
-        // Fallback XML sitemap
-        const fallbackXml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://jooble.az</loc>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>
-</urlset>`;
-        
-        document.open();
-        document.write(fallbackXml);
-        document.close();
-      }
+    const fetchAndRedirect = async () => {
+      // Directly redirect to the edge function URL
+      window.location.replace('https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap');
     };
 
-    fetchAndDisplaySitemap();
+    fetchAndRedirect();
   }, []);
 
-  // Return null since we're replacing the entire document
-  return null;
+  // Show loading while redirecting
+  return (
+    <div style={{ 
+      fontFamily: 'monospace', 
+      padding: '20px', 
+      backgroundColor: '#f5f5f5' 
+    }}>
+      Sitemap yüklənir...
+    </div>
+  );
 };
 
 export default Sitemap;
