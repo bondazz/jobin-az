@@ -12,7 +12,8 @@ import {
   TrendingUp, 
   Eye,
   Plus,
-  Settings
+  Settings,
+  Globe
 } from 'lucide-react';
 
 interface DashboardStats {
@@ -180,7 +181,7 @@ export default function AdminDashboard() {
         {/* Quick Actions */}
         <div>
           <h2 className="text-xl font-semibold mb-4 text-foreground">Tez Əməliyyatlar</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
             <Card className="hover:shadow-lg transition-all duration-200 cursor-pointer hover:scale-[1.02] bg-card/50 backdrop-blur-sm border-border/50" 
                   onClick={() => navigate('/admin/jobs')}>
               <CardHeader className="text-center">
@@ -229,6 +230,19 @@ export default function AdminDashboard() {
               <CardContent className="text-center">
                 <p className="text-muted-foreground text-sm">
                   Sayt tənzimləmələri və SEO
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="hover:shadow-lg transition-all duration-200 cursor-pointer hover:scale-[1.02] bg-card/50 backdrop-blur-sm border-border/50" 
+                  onClick={() => navigate('/admin/sitemap')}>
+              <CardHeader className="text-center">
+                <Globe className="h-8 w-8 mx-auto text-primary mb-2" />
+                <CardTitle className="text-lg">Sitemap Generator</CardTitle>
+              </CardHeader>
+              <CardContent className="text-center">
+                <p className="text-muted-foreground text-sm">
+                  SEO sitemap generasiya və idarəetmə
                 </p>
               </CardContent>
             </Card>

@@ -4,7 +4,11 @@ const Sitemap = () => {
   useEffect(() => {
     const loadSitemap = async () => {
       try {
-        const response = await fetch('https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap');
+        const response = await fetch('https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap', {
+          headers: {
+            'Accept': 'application/xml',
+          }
+        });
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -12,16 +16,10 @@ const Sitemap = () => {
         
         const xmlContent = await response.text();
         
-        // Completely replace the document with XML content
+        // Set document to XML mode
         document.open();
         document.write(xmlContent);
         document.close();
-        
-        // Set proper content type header
-        const metaTag = document.createElement('meta');
-        metaTag.httpEquiv = 'Content-Type';
-        metaTag.content = 'application/xml; charset=utf-8';
-        document.head.appendChild(metaTag);
         
       } catch (error) {
         console.error('Error loading sitemap:', error);
