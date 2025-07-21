@@ -23,9 +23,9 @@ serve(async (req) => {
 
     // Fetch all data in parallel with no limits
     const [jobsData, categoriesData, companiesData] = await Promise.all([
-      supabase.from('jobs').select('slug, updated_at, category_id, company_id').eq('is_active', true).order('created_at', { ascending: false }),
-      supabase.from('categories').select('id, slug, updated_at').eq('is_active', true).order('name'),
-      supabase.from('companies').select('id, slug, updated_at').eq('is_active', true).order('name')
+      supabase.from('jobs').select('slug, updated_at, category_id, company_id').eq('is_active', true).limit(50000).order('created_at', { ascending: false }),
+      supabase.from('categories').select('id, slug, updated_at').eq('is_active', true).limit(50000).order('name'),
+      supabase.from('companies').select('id, slug, updated_at').eq('is_active', true).limit(50000).order('name')
     ]);
 
     if (jobsData.error) {
