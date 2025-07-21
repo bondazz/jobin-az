@@ -73,7 +73,7 @@ serve(async (req) => {
   
   <!-- Vacancies main page -->
   <url>
-    <loc>${baseUrl}/vacansies</loc>
+    <loc>${baseUrl}/vacancies</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
@@ -96,25 +96,25 @@ serve(async (req) => {
     // Add individual job pages
     jobs.forEach(job => {
       const lastmod = new Date(job.updated_at).toISOString().split('T')[0]
-      sitemap += `  <url>
-    <loc>${baseUrl}/vacansies/${job.slug}</loc>
+      sitemap += `
+  <url>
+    <loc>${baseUrl}/vacancies/${job.slug}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-  </url>
-`
+  </url>`
     })
 
     // Add category pages
     categories.forEach(category => {
       const lastmod = new Date(category.updated_at).toISOString().split('T')[0]
-      sitemap += `  <url>
+      sitemap += `
+  <url>
     <loc>${baseUrl}/categories/${category.slug}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
-  </url>
-`
+  </url>`
 
       // Add jobs within categories
       const categoryJobs = jobs.filter(job => {
@@ -124,20 +124,21 @@ serve(async (req) => {
 
       categoryJobs.forEach(job => {
         const jobLastmod = new Date(job.updated_at).toISOString().split('T')[0]
-        sitemap += `  <url>
+        sitemap += `
+  <url>
     <loc>${baseUrl}/categories/${category.slug}/vacancy/${job.slug}</loc>
     <lastmod>${jobLastmod}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
-  </url>
-`
+  </url>`
       })
     })
 
     // Add company pages
     companies.forEach(company => {
       const lastmod = new Date(company.updated_at).toISOString().split('T')[0]
-      sitemap += `  <url>
+      sitemap += `
+  <url>
     <loc>${baseUrl}/companies/${company.slug}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>weekly</changefreq>
@@ -148,21 +149,21 @@ serve(async (req) => {
     <lastmod>${lastmod}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
-  </url>
-`
+  </url>`
     })
 
     // Add favorites for each job
     jobs.forEach(job => {
-      sitemap += `  <url>
+      sitemap += `
+  <url>
     <loc>${baseUrl}/favorites/${job.slug}</loc>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
-  </url>
-`
+  </url>`
     })
 
-    sitemap += `</urlset>`
+    sitemap += `
+</urlset>`
 
     return new Response(sitemap, {
       headers: corsHeaders,
