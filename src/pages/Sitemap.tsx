@@ -1,10 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 const Sitemap = () => {
-  const [xmlContent, setXmlContent] = useState<string>('');
-
   useEffect(() => {
-    const fetchSitemap = async () => {
+    const loadSitemap = async () => {
       try {
         const response = await fetch('https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap');
         
@@ -12,46 +10,63 @@ const Sitemap = () => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         
-        const xml = await response.text();
-        setXmlContent(xml);
+        const xmlContent = await response.text();
         
-        // Set document content type to XML
-        document.title = 'Sitemap';
+        // Completely replace the document with XML content
+        document.open();
+        document.write(xmlContent);
+        document.close();
+        
+        // Set proper content type header
+        const metaTag = document.createElement('meta');
+        metaTag.httpEquiv = 'Content-Type';
+        metaTag.content = 'application/xml; charset=utf-8';
+        document.head.appendChild(metaTag);
+        
       } catch (error) {
-        console.error('Error fetching sitemap:', error);
-        // Fallback XML sitemap
+        console.error('Error loading sitemap:', error);
+        
+        // Fallback XML content
         const fallbackXml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://jooble.az</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
+  <url>
+    <loc>https://jooble.az/about</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jooble.az/categories</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jooble.az/companies</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jooble.az/pricing</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
 </urlset>`;
-        setXmlContent(fallbackXml);
+        
+        document.open();
+        document.write(fallbackXml);
+        document.close();
       }
     };
 
-    fetchSitemap();
+    loadSitemap();
   }, []);
 
-  // Return XML content as plain text
-  return (
-    <pre
-      style={{
-        fontFamily: 'monospace',
-        fontSize: '12px',
-        lineHeight: '1.4',
-        margin: 0,
-        padding: '10px',
-        backgroundColor: '#f8f8f8',
-        border: 'none',
-        whiteSpace: 'pre-wrap',
-        wordWrap: 'break-word'
-      }}
-      dangerouslySetInnerHTML={{ __html: xmlContent }}
-    />
-  );
+  return null;
 };
 
 export default Sitemap;
