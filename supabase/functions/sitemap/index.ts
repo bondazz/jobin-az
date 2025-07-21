@@ -42,56 +42,40 @@ serve(async (req) => {
       categoryLookup.set(cat.id, cat.slug)
     })
 
-    // Sitemap XML with proper namespaces
+    // Generate sitemap according to Google Sitemap Standard
     let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
-  <!-- Homepage -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>${baseUrl}</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
-  
-  <!-- Pages -->
   <url>
     <loc>${baseUrl}/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-  
-  <url>
-    <loc>${baseUrl}/services</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-  <url>
-    <loc>${baseUrl}/favorites</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  
-  <!-- Vacancies main page -->
-  <url>
-    <loc>${baseUrl}/vacancies</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.9</priority>
-  </url>
-  
-  <!-- Categories main page -->
   <url>
     <loc>${baseUrl}/categories</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
-  
-  <!-- Companies main page -->
   <url>
     <loc>${baseUrl}/companies</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
-`
+  <url>
+    <loc>${baseUrl}/pricing</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/saved-jobs</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>`
 
     // Add individual job pages
     jobs.forEach(job => {
