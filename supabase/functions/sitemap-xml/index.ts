@@ -18,13 +18,14 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    console.log('Fetching sitemap data...');
+    console.log('Fetching sitemap data with SUPABASE_SERVICE_ROLE_KEY...');
+    console.log('Supabase URL:', supabaseUrl);
 
-    // Fetch all data in parallel
+    // Fetch all data in parallel with no limits
     const [jobsData, categoriesData, companiesData] = await Promise.all([
-      supabase.from('jobs').select('slug, updated_at').eq('is_active', true),
-      supabase.from('categories').select('slug, updated_at').eq('is_active', true),
-      supabase.from('companies').select('slug, updated_at').eq('is_active', true)
+      supabase.from('jobs').select('slug, updated_at').eq('is_active', true).order('created_at', { ascending: false }),
+      supabase.from('categories').select('slug, updated_at').eq('is_active', true).order('name'),
+      supabase.from('companies').select('slug, updated_at').eq('is_active', true).order('name')
     ]);
 
     if (jobsData.error) {
@@ -46,7 +47,7 @@ serve(async (req) => {
     const categories = categoriesData.data || [];
     const companies = companiesData.data || [];
 
-    console.log(`Found ${jobs.length} jobs, ${categories.length} categories, ${companies.length} companies`);
+    console.log(`Found ${jobs.length} jobs, ${categories.length} categories, ${companies.length} companies - Total URLs will be approximately ${jobs.length + categories.length + (companies.length * 2) + 7}`);
 
     // Build sitemap XML
     const baseUrl = 'https://jooble.az';
@@ -91,7 +92,7 @@ serve(async (req) => {
     <priority>0.6</priority>
   </url>`;
 
-    // Add job pages
+    // Add job pages - each job gets a vacancy page
     jobs.forEach(job => {
       const lastmod = job.updated_at ? new Date(job.updated_at).toISOString().split('T')[0] : today;
       xml += `
@@ -103,7 +104,7 @@ serve(async (req) => {
   </url>`;
     });
 
-    // Add category pages
+    // Add category pages - main category page and each job within category
     categories.forEach(category => {
       const lastmod = category.updated_at ? new Date(category.updated_at).toISOString().split('T')[0] : today;
       xml += `
@@ -113,9 +114,20 @@ serve(async (req) => {
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>`;
+      
+      // Add all jobs within this category
+      jobs.forEach(job => {
+        xml += `
+  <url>
+    <loc>${baseUrl}/categories/${category.slug}/vacancy/${job.slug}</loc>
+    <lastmod>${job.updated_at ? new Date(job.updated_at).toISOString().split('T')[0] : today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>`;
+      });
     });
 
-    // Add company pages
+    // Add company pages - main company page, vacancies page, and each job within company
     companies.forEach(company => {
       const lastmod = company.updated_at ? new Date(company.updated_at).toISOString().split('T')[0] : today;
       xml += `
@@ -131,12 +143,24 @@ serve(async (req) => {
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>`;
+      
+      // Add all jobs within this company
+      jobs.forEach(job => {
+        xml += `
+  <url>
+    <loc>${baseUrl}/companies/${company.slug}/vacancy/${job.slug}</loc>
+    <lastmod>${job.updated_at ? new Date(job.updated_at).toISOString().split('T')[0] : today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>`;
+      });
     });
 
     xml += `
 </urlset>`;
 
-    console.log('Sitemap generated successfully');
+    const totalUrls = (xml.match(/<url>/g) || []).length;
+    console.log(`Sitemap generated successfully with ${totalUrls} URLs`);
     
     return new Response(xml, {
       headers: corsHeaders,
