@@ -18,6 +18,7 @@ import {
   Tag,
   Briefcase
 } from 'lucide-react';
+import { DynamicIcon } from '@/components/ui/dynamic-icon';
 
 interface Category {
   id: string;
@@ -363,7 +364,11 @@ export default function AdminCategories() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4 flex-1">
                   <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <Tag className="h-6 w-6 text-primary" />
+                    {category.icon ? (
+                      <DynamicIcon name={category.icon} className="h-6 w-6 text-primary" />
+                    ) : (
+                      <Tag className="h-6 w-6 text-primary" />
+                    )}
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">

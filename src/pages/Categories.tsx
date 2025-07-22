@@ -3,6 +3,7 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Tag, TrendingUp, Search } from 'lucide-react';
+import { DynamicIcon } from '@/components/ui/dynamic-icon';
 import JobListings from '@/components/JobListings';
 import JobDetails from '@/components/JobDetails';
 import { Job } from '@/types/job';
@@ -166,7 +167,11 @@ const Categories = () => {
                     <div className="flex items-center gap-3 flex-1 min-w-0">
                       <div className="relative flex-shrink-0">
                         <div className="w-8 h-8 rounded-md flex items-center justify-center text-white font-bold text-xs shadow-sm bg-gradient-primary">
-                          <Tag className="w-4 h-4" />
+                          {category.icon ? (
+                            <DynamicIcon name={category.icon} className="w-4 h-4" />
+                          ) : (
+                            <Tag className="w-4 h-4" />
+                          )}
                         </div>
                       </div>
                       
