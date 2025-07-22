@@ -473,11 +473,11 @@ const Companies = () => {
                     {activeTab === 'about' ? <>
                         <div>
                           <h3 className="text-lg font-semibold text-foreground mb-3">Şirkət Haqqında</h3>
-                          <p className="text-muted-foreground leading-relaxed">
-                            {selectedCompany.description || `${selectedCompany.name} Azərbaycanın aparıcı şirkətlərindən biridir. 
+                          <div className="text-muted-foreground leading-relaxed rich-text-content" dangerouslySetInnerHTML={{
+                            __html: selectedCompany.description || `${selectedCompany.name} Azərbaycanın aparıcı şirkətlərindən biridir. 
                             Bizim missiyamız keyfiyyətli xidmətlər təqdim etmək və müştərilərimizin tələbatlarını qarşılamaqdır. 
-                            Şirkətimiz innovativ yanaşmalar və peşəkar komanda ilə bazarda lider mövqe tutur.`}
-                          </p>
+                            Şirkətimiz innovativ yanaşmalar və peşəkar komanda ilə bazarda lider mövqe tutur.`
+                          }} />
                         </div>
 
                         {/* Contact Info */}

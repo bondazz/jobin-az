@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { RichTextEditor } from '@/components/ui/rich-text-editor';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -430,11 +431,11 @@ export default function AdminCompanies() {
 
                   <div className="space-y-2">
                     <Label htmlFor="description">Təsvir</Label>
-                    <Textarea
-                      id="description"
+                    <RichTextEditor
                       value={formData.description}
-                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                      rows={4}
+                      onChange={(value) => setFormData({ ...formData, description: value })}
+                      placeholder="Şirkət təsvirini yazın... (qalin hərf, başlıq, nöqtələr və s. əlavə edə bilərsiniz)"
+                      className="min-h-[300px]"
                     />
                   </div>
 
