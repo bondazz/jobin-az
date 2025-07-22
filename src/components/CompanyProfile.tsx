@@ -156,7 +156,7 @@ const CompanyProfile = ({ company, onClose, isMobile = false }: CompanyProfilePr
           {activeTab === 'about' ? (
             <div className="bg-card rounded-lg border border-border p-4">
               <h3 className="text-lg font-semibold text-foreground mb-3">Şirkət Haqqında</h3>
-              <div className="text-muted-foreground leading-relaxed rich-text-content" dangerouslySetInnerHTML={{
+              <div className="leading-relaxed rich-text-content" dangerouslySetInnerHTML={{
                 __html: company.description || `${company.name} Azərbaycanın aparıcı şirkətlərindən biridir. 
                 Bizim missiyamız keyfiyyətli xidmətlər təqdim etmək və müştərilərimizin 
                 ehtiyaclarını qarşılamaqdır.`
