@@ -150,7 +150,81 @@ const JobDetails = ({
         </div>
       </div>;
   }
+  // Generate JobPosting structured data
+  const generateJobPostingSchema = () => {
+    const baseUrl = window.location.origin;
+    const jobUrl = `${baseUrl}/vacancies/${job.slug}`;
+    
+    const schema: any = {
+      "@context": "https://schema.org",
+      "@type": "JobPosting",
+      "title": job.title,
+      "description": job.description.replace(/<[^>]*>/g, ''), // Remove HTML tags
+      "identifier": {
+        "@type": "PropertyValue",
+        "name": job.companies?.name || "Company",
+        "value": job.id
+      },
+      "datePosted": job.created_at,
+      "jobLocation": {
+        "@type": "Place",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": job.location,
+          "addressCountry": "AZ"
+        }
+      },
+      "hiringOrganization": {
+        "@type": "Organization",
+        "name": job.companies?.name || "Company",
+        "sameAs": job.companies?.website || "",
+        "logo": job.companies?.logo || ""
+      },
+      "employmentType": job.type === 'full-time' ? 'FULL_TIME' : 
+                       job.type === 'part-time' ? 'PART_TIME' : 
+                       job.type === 'contract' ? 'CONTRACTOR' : 
+                       job.type === 'internship' ? 'INTERN' : 'FULL_TIME',
+      "url": jobUrl,
+      "industry": job.categories?.name || "",
+      "workHours": job.type === 'full-time' ? "40 hours per week" : undefined,
+      "applicantLocationRequirements": {
+        "@type": "Country",
+        "name": "Azerbaijan"
+      }
+    };
+
+    // Add salary if available
+    if (job.salary && job.salary !== 'Müzakirə') {
+      schema.baseSalary = {
+        "@type": "MonetaryAmount",
+        "currency": "AZN",
+        "value": {
+          "@type": "QuantitativeValue",
+          "value": job.salary,
+          "unitText": "MONTH"
+        }
+      };
+    }
+
+    // Add valid through date (30 days from posting)
+    if (job.created_at) {
+      const validThrough = new Date(job.created_at);
+      validThrough.setDate(validThrough.getDate() + 30);
+      schema.validThrough = validThrough.toISOString();
+    }
+
+    return schema;
+  };
+
   return <>
+      {/* JobPosting Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(generateJobPostingSchema())
+        }}
+      />
+      
       <div id="job-details-printable" className={`h-full overflow-y-auto bg-background ${isMobile ? 'pt-16 pb-20' : 'pb-24'}`}>
         {/* Minimalist Header with Company Logo */}
         <div className={`${isMobile ? 'p-4 pt-6' : 'p-6'} border-b border-border`}>
