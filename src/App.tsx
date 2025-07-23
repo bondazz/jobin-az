@@ -61,8 +61,16 @@ const App = () => (
             <Route path="/services" element={<Pricing />} />
             <Route path="/about" element={<About />} />
           </Route>
-          {/* Sitemap route - outside Layout */}
+          {/* Sitemap routes - outside Layout */}
           <Route path="/sitemap.xml" element={<Sitemap />} />
+          <Route path="/sitemapjooble.xml" element={
+            <div dangerouslySetInnerHTML={{
+              __html: `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Copy-paste sitemap URLs here -->
+</urlset>`
+            }} />
+          } />
           {/* Admin routes - outside Layout */}
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />

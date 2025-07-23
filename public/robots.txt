@@ -1,14 +1,42 @@
-User-agent: Googlebot
+# Robots.txt for jooble.az
+# SEO optimized configuration
+
+# Allow all crawlers access to all content
+User-agent: *
 Allow: /
 
+# Specific crawler permissions
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
 User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Yandexbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: facebookexternalhit
 Allow: /
 
 User-agent: Twitterbot
 Allow: /
 
-User-agent: facebookexternalhit
+User-agent: LinkedInBot
 Allow: /
 
+# Prevent crawling of admin areas
 User-agent: *
-Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /_next/
+Disallow: /static/
+
+# Sitemaps
+Sitemap: https://jooble.az/sitemap.xml
+Sitemap: https://jooble.az/sitemapjooble.xml
+
+# Host declaration
+Host: https://jooble.az
