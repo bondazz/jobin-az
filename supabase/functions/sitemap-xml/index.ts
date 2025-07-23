@@ -21,31 +21,43 @@ serve(async (req) => {
     console.log('Fetching sitemap data with SUPABASE_SERVICE_ROLE_KEY...');
     console.log('Supabase URL:', supabaseUrl);
 
-    // Fetch all data with increased limits for large datasets
-    const [jobsData, categoriesData, companiesData] = await Promise.all([
-      supabase.from('jobs').select('slug, updated_at, category_id, company_id').eq('is_active', true).limit(100000).order('created_at', { ascending: false }),
-      supabase.from('categories').select('id, slug, updated_at').eq('is_active', true).limit(10000).order('name'),
-      supabase.from('companies').select('id, slug, updated_at').eq('is_active', true).limit(10000).order('name')
+    // Fetch ALL data without limits using pagination
+    const fetchAllData = async (table: string, select: string, orderBy?: string) => {
+      let allData: any[] = [];
+      let from = 0;
+      const batchSize = 1000;
+      
+      while (true) {
+        const query = supabase
+          .from(table)
+          .select(select)
+          .eq('is_active', true)
+          .range(from, from + batchSize - 1);
+          
+        if (orderBy) {
+          query.order(orderBy);
+        }
+        
+        const { data, error } = await query;
+        
+        if (error) throw error;
+        if (!data || data.length === 0) break;
+        
+        allData = allData.concat(data);
+        
+        if (data.length < batchSize) break;
+        from += batchSize;
+      }
+      
+      return allData;
+    };
+
+    const [jobs, categories, companies] = await Promise.all([
+      fetchAllData('jobs', 'slug, updated_at, category_id, company_id', 'created_at'),
+      fetchAllData('categories', 'id, slug, updated_at', 'name'),
+      fetchAllData('companies', 'id, slug, updated_at', 'name')
     ]);
 
-    if (jobsData.error) {
-      console.error('Error fetching jobs:', jobsData.error);
-      throw new Error('Failed to fetch jobs');
-    }
-    
-    if (categoriesData.error) {
-      console.error('Error fetching categories:', categoriesData.error);
-      throw new Error('Failed to fetch categories');
-    }
-    
-    if (companiesData.error) {
-      console.error('Error fetching companies:', companiesData.error);
-      throw new Error('Failed to fetch companies');
-    }
-
-    const jobs = jobsData.data || [];
-    const categories = categoriesData.data || [];
-    const companies = companiesData.data || [];
 
     console.log(`Found ${jobs.length} jobs, ${categories.length} categories, ${companies.length} companies - Total URLs will be approximately ${jobs.length + categories.length + (companies.length * 2) + 7}`);
 
