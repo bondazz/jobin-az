@@ -11,6 +11,8 @@ import Pricing from "./pages/Pricing";
 import CVBuilder from "./pages/CVBuilder";
 import NotFound from "./pages/NotFound";
 import Sitemap from "./pages/Sitemap";
+import SitemapJooble from "./pages/SitemapJooble";
+import RobotsTxt from "./pages/RobotsTxt";
 
 
 // Admin components
@@ -63,14 +65,8 @@ const App = () => (
           </Route>
           {/* Sitemap routes - outside Layout */}
           <Route path="/sitemap.xml" element={<Sitemap />} />
-          <Route path="/sitemapjooble.xml" element={
-            <div dangerouslySetInnerHTML={{
-              __html: `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- Copy-paste sitemap URLs here -->
-</urlset>`
-            }} />
-          } />
+          <Route path="/sitemapjooble.xml" element={<SitemapJooble />} />
+          <Route path="/robots.txt" element={<RobotsTxt />} />
           {/* Admin routes - outside Layout */}
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
