@@ -25,6 +25,35 @@ const Pricing = () => {
     updateSEO();
     fetchPricingData();
   }, []);
+
+  // Generate Service structured data
+  const generateServiceSchema = () => {
+    return {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "name": "Jooble İş Axtarış Xidməti",
+      "description": "Azərbaycan'da iş elanları və vakansiya axtarış platforması. Müxtəlif sahələrdə iş imkanları və karyera məsləhətləri.",
+      "provider": {
+        "@type": "Organization",
+        "name": "Jooble Azərbaycan",
+        "url": window.location.origin
+      },
+      "serviceType": "Job Search Platform",
+      "areaServed": {
+        "@type": "Country",
+        "name": "Azerbaijan"
+      },
+      "offers": plans.map(plan => ({
+        "@type": "Offer",
+        "name": plan.name,
+        "description": plan.description,
+        "price": plan.price,
+        "priceCurrency": "AZN",
+        "priceValidUntil": new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] // 1 year from now
+      })),
+      "url": window.location.href
+    };
+  };
   const fetchPricingData = async () => {
     try {
       const [plansResponse, featuresResponse] = await Promise.all([supabase.from('pricing_plans').select('*').eq('is_active', true).order('display_order'), supabase.from('pricing_features').select('*').eq('is_active', true).order('category, display_order')]);
@@ -77,6 +106,16 @@ const Pricing = () => {
       </div>;
   }
   return <div className="h-full overflow-y-auto bg-gradient-to-br from-background to-primary/5">
+      {/* Service Structured Data */}
+      {plans.length > 0 && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(generateServiceSchema())
+          }}
+        />
+      )}
+      
       <MobileHeader />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-16 xl:pt-8">
         {/* Header */}

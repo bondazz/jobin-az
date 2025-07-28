@@ -22,6 +22,31 @@ const About = () => {
     updateSEO();
     fetchAboutContent();
   }, []);
+
+  // Generate AboutPage structured data
+  const generateAboutPageSchema = () => {
+    const headerData = aboutData.header;
+    const contactData = aboutData.contact?.content || [];
+    
+    return {
+      "@context": "https://schema.org",
+      "@type": "AboutPage",
+      "name": headerData?.title || "Jooble Haqqında",
+      "description": headerData?.description || "Azərbaycan'ın ən böyük iş axtarış platforması. Minlərlə iş elanı və yüzlərlə şirkət bir yerdə.",
+      "url": window.location.href,
+      "mainEntity": {
+        "@type": "Organization",
+        "name": "Jooble Azərbaycan",
+        "description": headerData?.description || "Azərbaycan'ın ən böyük iş axtarış platforması",
+        "url": window.location.origin,
+        "contactPoint": contactData.length > 0 ? contactData.map((contact: any) => ({
+          "@type": "ContactPoint",
+          "contactType": "customer service",
+          "description": contact.value
+        })) : undefined
+      }
+    };
+  };
   const fetchAboutContent = async () => {
     try {
       const {
@@ -70,6 +95,14 @@ const About = () => {
   const featuresData = aboutData.features?.content || [];
   const contactData = aboutData.contact?.content || [];
   return <div className="h-full overflow-y-auto bg-gradient-to-br from-background to-primary/5">
+      {/* AboutPage Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(generateAboutPageSchema())
+        }}
+      />
+      
       {/* Mobile Header */}
       <MobileHeader />
       

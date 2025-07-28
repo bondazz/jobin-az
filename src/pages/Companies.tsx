@@ -47,6 +47,30 @@ const Companies = () => {
   useDynamicSEO('company', companySlug ? selectedCompany : null);
   useDynamicSEO('job', jobSlug ? jobData : null);
 
+  // Generate Organization structured data for selected company
+  const generateOrganizationSchema = (company: Company) => {
+    return {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": company.name,
+      "url": company.website || window.location.href,
+      "logo": company.logo || "",
+      "description": company.description || `${company.name} şirkətində iş imkanları və vakansiyalar`,
+      "address": company.address ? {
+        "@type": "PostalAddress",
+        "streetAddress": company.address,
+        "addressCountry": "AZ"
+      } : undefined,
+      "contactPoint": company.email || company.phone ? {
+        "@type": "ContactPoint",
+        "email": company.email,
+        "telephone": company.phone,
+        "contactType": "customer service"
+      } : undefined,
+      "sameAs": company.website ? [company.website] : undefined
+    };
+  };
+
   // Debouncing for search - 500ms delay
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -301,6 +325,16 @@ const Companies = () => {
   
   return (
     <div className="h-full flex bg-gradient-to-br from-background via-primary/3 to-background overflow-hidden">
+      {/* Organization Structured Data */}
+      {selectedCompany && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(generateOrganizationSchema(selectedCompany))
+          }}
+        />
+      )}
+      
       {/* Mobile Header */}
       <MobileHeader />
       

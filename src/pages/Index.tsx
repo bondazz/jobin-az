@@ -41,6 +41,30 @@ const Index = () => {
     }
   }, [jobSlug]);
 
+  // Generate WebSite structured data for homepage
+  const generateWebsiteSchema = () => {
+    return {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Jooble Azərbaycan",
+      "description": "Azərbaycan'ın ən böyük iş axtarış platforması. Minlərlə vakansiya və iş elanı bir yerdə.",
+      "url": window.location.origin,
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": window.location.origin + "/search?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Jooble Azərbaycan",
+        "url": window.location.origin
+      }
+    };
+  };
+
   // Fetch categories
   useEffect(() => {
     const fetchCategories = async () => {
@@ -157,6 +181,16 @@ const Index = () => {
 
   return (
     <div className="h-full flex bg-gradient-to-br from-background via-primary/3 to-background overflow-hidden">
+      {/* WebSite Structured Data for Homepage */}
+      {!jobSlug && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(generateWebsiteSchema())
+          }}
+        />
+      )}
+      
       {/* Mobile Header */}
       <MobileHeader />
       
