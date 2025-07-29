@@ -5,6 +5,7 @@ import VerifyBadge from '@/components/ui/verify-badge';
 import { useState, useEffect, useCallback, memo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Tables } from '@/integrations/supabase/types';
+import { LazyImage } from '@/components/ui/lazy-image';
 interface JobCardProps {
   job: Job;
   isSelected?: boolean;
@@ -93,7 +94,16 @@ const JobCard = memo(({
       <div className="flex items-center gap-2 flex-1 min-w-0 relative z-10">
         <div className="relative flex-shrink-0">
           {company?.logo ? (
-            <img src={company.logo} alt={company.name} className="w-8 h-8 rounded-md object-cover" />
+            <LazyImage 
+              src={company.logo} 
+              alt={company.name} 
+              className="w-8 h-8 rounded-md object-cover"
+              fallback={
+                <div className={`w-8 h-8 rounded-md flex items-center justify-center text-white font-bold text-xs shadow-sm ${job.tags?.includes('premium') ? 'bg-gradient-premium' : 'bg-gradient-primary'}`}>
+                  {(company?.name || job.title).charAt(0)}
+                </div>
+              }
+            />
           ) : (
             <div className={`w-8 h-8 rounded-md flex items-center justify-center text-white font-bold text-xs shadow-sm ${job.tags?.includes('premium') ? 'bg-gradient-premium' : 'bg-gradient-primary'}`}>
               {(company?.name || job.title).charAt(0)}

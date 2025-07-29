@@ -1,8 +1,6 @@
-import { useState, useMemo, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { Job } from '@/types/job';
 import JobCard from './JobCard';
@@ -31,29 +29,25 @@ const JobListings = ({
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch jobs from database
+  // Optimize job fetching - only get necessary data initially
   useEffect(() => {
     const fetchJobs = async () => {
       try {
+        // Simplified query - only essential fields for list view
         let query = supabase.from('jobs').select(`
-            *,
-            companies (name, logo, is_verified),
-            categories (name)
-          `).eq('is_active', true);
+            id, title, location, type, salary, tags, views, created_at, company_id,
+            companies!inner (name, logo, is_verified),
+            categories!inner (name)
+          `).eq('is_active', true).limit(50); // Limit to 50 jobs for performance
 
-        // Filter by company if companyId is provided
         if (companyId) {
           query = query.eq('company_id', companyId);
         }
-        const {
-          data,
-          error
-        } = await query.order('created_at', {
-          ascending: false
-        });
+        
+        const { data, error } = await query.order('created_at', { ascending: false });
         if (error) throw error;
 
-        // Transform data to match Job interface
+        // Minimal transformation
         const transformedJobs = data?.map(job => ({
           id: job.id,
           title: job.title,
@@ -63,15 +57,18 @@ const JobListings = ({
           location: job.location,
           type: job.type as 'full-time' | 'part-time' | 'contract' | 'internship',
           salary: job.salary,
-          description: job.description,
-          tags: (job.tags || []).filter((tag: string) => ['premium', 'new', 'urgent', 'remote'].includes(tag)) as ('premium' | 'new' | 'urgent' | 'remote')[],
+          description: '', // Don't load description for list view
+          tags: (job.tags || []).filter((tag: string) => 
+            tag === 'premium' || tag === 'new' || tag === 'urgent' || tag === 'remote'
+          ) as ('premium' | 'new' | 'urgent' | 'remote')[],
           views: job.views,
           postedAt: formatDate(job.created_at),
           category: job.categories?.name || '',
-          applicationUrl: job.application_url,
-          applicationType: job.application_type as 'website' | 'email',
-          applicationEmail: job.application_email
+          applicationUrl: '',
+          applicationType: 'website' as const,
+          applicationEmail: ''
         })) || [];
+        
         setJobs(transformedJobs);
       } catch (error) {
         console.error('Error fetching jobs:', error);
@@ -111,30 +108,48 @@ const JobListings = ({
   }, [locationFilter]);
 
   const filteredJobs = useMemo(() => {
+    // Early return for empty jobs
+    if (jobs.length === 0) return [];
+    
     let jobsToFilter = jobs;
 
-    // If showing only saved jobs, filter by saved job IDs first
+    // Optimized saved jobs filtering
     if (showOnlySaved) {
       const savedJobIds = JSON.parse(localStorage.getItem('savedJobs') || '[]');
+      if (savedJobIds.length === 0) return [];
       jobsToFilter = jobs.filter(job => savedJobIds.includes(job.id));
     }
     
+    // Optimized filtering with early exits
+    const searchLower = debouncedSearchQuery.toLowerCase();
+    const locationLower = debouncedLocationFilter.toLowerCase();
+    
     const filtered = jobsToFilter.filter(job => {
-      const matchesSearch = debouncedSearchQuery === '' || 
-        job.title.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) || 
-        job.company.toLowerCase().includes(debouncedSearchQuery.toLowerCase());
-      const matchesLocation = debouncedLocationFilter === '' || 
-        job.location.toLowerCase().includes(debouncedLocationFilter.toLowerCase());
-      const matchesCategory = !selectedCategory || job.category === selectedCategory;
-      const matchesCompany = !companyFilter || job.company_id === companyFilter;
-      return matchesSearch && matchesLocation && matchesCategory && matchesCompany;
+      // Quick category check first (fastest)
+      if (selectedCategory && job.category !== selectedCategory) return false;
+      if (companyFilter && job.company_id !== companyFilter) return false;
+      
+      // Search checks last (slower)
+      if (searchLower && !job.title.toLowerCase().includes(searchLower) && 
+          !job.company.toLowerCase().includes(searchLower)) return false;
+      if (locationLower && !job.location.toLowerCase().includes(locationLower)) return false;
+      
+      return true;
     });
 
-    // Optimize sorting - avoid complex operations
-    const premiumJobs = filtered.filter(job => job.tags?.includes('premium'));
-    const regularJobs = filtered.filter(job => !job.tags?.includes('premium'));
+    // Simple premium sorting - just check first tag
+    const result = [];
+    const premiumJobs = [];
+    const regularJobs = [];
+    
+    for (const job of filtered) {
+      if (job.tags?.[0] === 'premium') {
+        premiumJobs.push(job);
+      } else {
+        regularJobs.push(job);
+      }
+    }
 
-    // Simplified sorting for performance
     return [...premiumJobs, ...regularJobs].slice(0, 20);
   }, [jobs, debouncedSearchQuery, debouncedLocationFilter, selectedCategory, companyFilter, showOnlySaved]);
   const getCategoryLabel = (category: string) => {
@@ -196,11 +211,11 @@ const JobListings = ({
                 {/* Advertisement Banner every 6 jobs */}
                 {index > 0 && index % 6 === 0 && <AdBanner position="job_listing" className="mb-2 animate-fade-in" />}
                 
-                <div className="animate-fade-in w-full" style={{
-            animationDelay: `${index * 50}ms`
+                 <div className="animate-fade-in w-full" style={{
+            animationDelay: `${index * 20}ms` // Reduced for better performance
           }}>
-                  <JobCard job={job} isSelected={selectedJob?.id === job.id} onClick={() => onJobSelect(job)} isAlternate={index % 2 === 1} />
-                </div>
+                   <JobCard job={job} isSelected={selectedJob?.id === job.id} onClick={() => onJobSelect(job)} isAlternate={index % 2 === 1} />
+                 </div>
               </div>) : <div className="flex flex-col items-center justify-center py-16 text-muted-foreground animate-fade-in">
               <div className="relative mb-4">
                 <Search className="w-12 h-12 opacity-30" />

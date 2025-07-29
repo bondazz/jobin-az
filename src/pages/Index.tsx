@@ -1,16 +1,17 @@
 
-import { useState, useEffect, useCallback, memo } from 'react';
+import { useState, useEffect, useCallback, memo, Suspense, lazy } from 'react';
 import { useSearchParams, useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Job } from '@/types/job';
 import JobListings from '@/components/JobListings';
-import JobDetails from '@/components/JobDetails';
-import MobileMenu from '@/components/MobileMenu';
 import BottomNavigation from '@/components/BottomNavigation';
 import MobileHeader from '@/components/MobileHeader';
 import AdBanner from '@/components/AdBanner';
 import { generatePageSEO, updatePageMeta } from '@/utils/seo';
 import { useDynamicSEO } from '@/hooks/useSEO';
+
+// Lazy load JobDetails for better performance
+const JobDetails = lazy(() => import('@/components/JobDetails'));
 
 interface Category {
   id: string;
@@ -247,7 +248,13 @@ const Index = () => {
 
         {/* Job Details - Desktop Only */}
         <div className="hidden lg:block flex-1 bg-gradient-to-br from-job-details to-primary/3 animate-slide-in-right">
-          <JobDetails jobId={selectedJob?.id || null} />
+          <Suspense fallback={
+            <div className="flex items-center justify-center h-full">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          }>
+            <JobDetails jobId={selectedJob?.id || null} />
+          </Suspense>
           
           {/* Content Advertisement */}
           <div className="p-4">
@@ -266,7 +273,13 @@ const Index = () => {
           />
           {/* Job Details with proper spacing */}
           <div className="flex-1 overflow-y-auto pb-20">
-            <JobDetails jobId={selectedJob?.id || null} isMobile={true} />
+            <Suspense fallback={
+              <div className="flex items-center justify-center h-full">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              </div>
+            }>
+              <JobDetails jobId={selectedJob?.id || null} isMobile={true} />
+            </Suspense>
           </div>
         </div>
       )}
