@@ -2,7 +2,7 @@ import { Job } from '@/types/job';
 import { Badge } from '@/components/ui/badge';
 import { Eye, Heart } from 'lucide-react';
 import VerifyBadge from '@/components/ui/verify-badge';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, memo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Tables } from '@/integrations/supabase/types';
 interface JobCardProps {
@@ -13,7 +13,7 @@ interface JobCardProps {
 }
 
 type Company = Tables<'companies'>;
-const JobCard = ({
+const JobCard = memo(({
   job,
   isSelected,
   onClick,
@@ -32,7 +32,7 @@ const JobCard = ({
     }
   }, [job.id, job.company_id]);
 
-  const handleSaveToggle = (e: React.MouseEvent) => {
+  const handleSaveToggle = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
     
     const savedJobs = JSON.parse(localStorage.getItem('savedJobs') || '[]');
@@ -54,9 +54,9 @@ const JobCard = ({
       key: 'savedJobs',
       newValue: JSON.stringify(updatedSavedJobs)
     }));
-  };
+  }, [isSaved, job.id]);
 
-  const fetchCompany = async () => {
+  const fetchCompany = useCallback(async () => {
     if (!job.company_id) return;
     
     try {
@@ -71,7 +71,7 @@ const JobCard = ({
     } catch (error) {
       console.error('Error fetching company:', error);
     }
-  };
+  }, [job.company_id]);
 
   // Filter to only show premium tags
   const premiumTags = job.tags.filter(tag => tag === 'premium');
@@ -141,5 +141,6 @@ const JobCard = ({
         </button>
       </div>
     </div>;
-};
+});
+
 export default JobCard;

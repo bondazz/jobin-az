@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, memo } from 'react';
 import { useSearchParams, useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Job } from '@/types/job';
@@ -160,7 +160,7 @@ const Index = () => {
     return `${Math.ceil(diffDays / 30)} ay əvvəl`;
   };
 
-  const handleJobSelect = async (job: Job) => {
+  const handleJobSelect = useCallback(async (job: Job) => {
     // Get job slug from database
     const { data } = await supabase
       .from('jobs')
@@ -172,7 +172,7 @@ const Index = () => {
       navigate(`/vacancies/${data.slug}`);
     }
     setSelectedJob(job);
-  };
+  }, [navigate]);
 
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category === selectedCategory ? '' : category);

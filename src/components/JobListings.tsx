@@ -92,6 +92,24 @@ const JobListings = ({
     if (diffDays <= 30) return `${Math.ceil(diffDays / 7)} həftə əvvəl`;
     return `${Math.ceil(diffDays / 30)} ay əvvəl`;
   };
+  // Debounced search for performance
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
+  const [debouncedLocationFilter, setDebouncedLocationFilter] = useState('');
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedLocationFilter(locationFilter);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [locationFilter]);
+
   const filteredJobs = useMemo(() => {
     let jobsToFilter = jobs;
 
@@ -100,41 +118,25 @@ const JobListings = ({
       const savedJobIds = JSON.parse(localStorage.getItem('savedJobs') || '[]');
       jobsToFilter = jobs.filter(job => savedJobIds.includes(job.id));
     }
+    
     const filtered = jobsToFilter.filter(job => {
-      const matchesSearch = searchQuery === '' || job.title.toLowerCase().includes(searchQuery.toLowerCase()) || job.company.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesLocation = locationFilter === '' || job.location.toLowerCase().includes(locationFilter.toLowerCase());
+      const matchesSearch = debouncedSearchQuery === '' || 
+        job.title.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) || 
+        job.company.toLowerCase().includes(debouncedSearchQuery.toLowerCase());
+      const matchesLocation = debouncedLocationFilter === '' || 
+        job.location.toLowerCase().includes(debouncedLocationFilter.toLowerCase());
       const matchesCategory = !selectedCategory || job.category === selectedCategory;
       const matchesCompany = !companyFilter || job.company_id === companyFilter;
       return matchesSearch && matchesLocation && matchesCategory && matchesCompany;
     });
 
-    // Default sorting by newest with premium jobs first
-    let sortedJobs = [...filtered];
-    // Separate premium and regular jobs
-    const premiumJobs = sortedJobs.filter(job => job.tags?.includes('premium'));
-    const regularJobs = sortedJobs.filter(job => !job.tags?.includes('premium'));
+    // Optimize sorting - avoid complex operations
+    const premiumJobs = filtered.filter(job => job.tags?.includes('premium'));
+    const regularJobs = filtered.filter(job => !job.tags?.includes('premium'));
 
-    // Randomize premium jobs on each render
-    const shuffledPremium = [...premiumJobs].sort(() => Math.random() - 0.5);
-
-    // Sort regular jobs by posting date (newest first)
-    const sortedRegular = [...regularJobs].sort((a, b) => {
-      const getDateValue = (postedAt: string) => {
-        if (postedAt === 'Today') return Date.now();
-        if (postedAt === 'Yesterday') return Date.now() - 86400000;
-        const match = postedAt.match(/(\d+) (days?|weeks?|months?) ago/);
-        if (match) {
-          const [, num, unit] = match;
-          const multiplier = unit.includes('day') ? 1 : unit.includes('week') ? 7 : 30;
-          return Date.now() - parseInt(num) * multiplier * 86400000;
-        }
-        return Date.now() - parseInt(postedAt) * 86400000;
-      };
-      return getDateValue(b.postedAt) - getDateValue(a.postedAt);
-    });
-    sortedJobs = [...shuffledPremium, ...sortedRegular];
-    return sortedJobs.slice(0, 20);
-  }, [jobs, searchQuery, locationFilter, selectedCategory, companyFilter, showOnlySaved]);
+    // Simplified sorting for performance
+    return [...premiumJobs, ...regularJobs].slice(0, 20);
+  }, [jobs, debouncedSearchQuery, debouncedLocationFilter, selectedCategory, companyFilter, showOnlySaved]);
   const getCategoryLabel = (category: string) => {
     const categoryMap: Record<string, string> = {
       'Technology': 'Texnologiya',
