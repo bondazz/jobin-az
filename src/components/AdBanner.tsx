@@ -65,7 +65,7 @@ const AdBanner: React.FC<AdBannerProps> = ({ position, className = "" }) => {
   }
 
   return (
-    <div className={`space-y-4 ${className}`}>
+    <div className={`relative z-10 space-y-4 ${className}`}>
       {advertisements.map((ad) => (
         <div key={ad.id} className="w-full">
           {ad.link_url ? (
