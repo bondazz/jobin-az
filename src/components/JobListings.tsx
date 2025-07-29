@@ -5,7 +5,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { Job } from '@/types/job';
 import JobCard from './JobCard';
 import AdBanner from './AdBanner';
-import { Search, MapPin } from 'lucide-react';
+import { Search, MapPin, Loader2 } from 'lucide-react';
+
 interface JobListingsProps {
   selectedJob: Job | null;
   onJobSelect: (job: Job) => void;
@@ -15,6 +16,7 @@ interface JobListingsProps {
   showOnlySaved?: boolean;
   companyId?: string;
 }
+
 const JobListings = ({
   selectedJob,
   onJobSelect,
@@ -28,56 +30,81 @@ const JobListings = ({
   const [locationFilter, setLocationFilter] = useState('');
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [offset, setOffset] = useState(0);
+  const JOBS_PER_PAGE = 25;
 
-  // Optimize job fetching - get companies in batch
-  useEffect(() => {
-    const fetchJobs = async () => {
-      try {
-        // Get jobs with companies in one query
-        let query = supabase.from('jobs').select(`
-            id, title, location, type, salary, tags, views, created_at, company_id,
-            companies!inner (id, name, logo, is_verified),
-            categories!inner (name)
-          `).eq('is_active', true).limit(25); // Reduced to 25 for better performance
-
-        if (companyId) {
-          query = query.eq('company_id', companyId);
-        }
-        
-        const { data, error } = await query.order('created_at', { ascending: false });
-        if (error) throw error;
-
-        // Transform with companies already included
-        const transformedJobs = data?.map(job => ({
-          id: job.id,
-          title: job.title,
-          company: job.companies?.name || '',
-          company_id: job.company_id,
-          companyLogo: job.companies?.logo,
-          isVerified: job.companies?.is_verified || false,
-          location: job.location,
-          type: job.type as 'full-time' | 'part-time' | 'contract' | 'internship',
-          salary: job.salary,
-          description: '', // Don't load description for list view
-          tags: (job.tags || []).filter((tag: string) => 
-            tag === 'premium' || tag === 'new' || tag === 'urgent' || tag === 'remote'
-          ) as ('premium' | 'new' | 'urgent' | 'remote')[],
-          views: job.views,
-          postedAt: formatDate(job.created_at),
-          category: job.categories?.name || '',
-          applicationUrl: '',
-          applicationType: 'website' as const,
-          applicationEmail: ''
-        })) || [];
-        
-        setJobs(transformedJobs);
-      } catch (error) {
-        console.error('Error fetching jobs:', error);
-      } finally {
-        setLoading(false);
+  // Optimize job fetching - get companies in batch with pagination
+  const fetchJobs = useCallback(async (isLoadMore = false) => {
+    try {
+      if (isLoadMore) {
+        setLoadingMore(true);
+      } else {
+        setLoading(true);
+        setOffset(0);
       }
-    };
-    fetchJobs();
+
+      const currentOffset = isLoadMore ? offset : 0;
+      
+      // Get jobs with companies in one query
+      let query = supabase.from('jobs').select(`
+          id, title, location, type, salary, tags, views, created_at, company_id,
+          companies!inner (id, name, logo, is_verified),
+          categories!inner (name)
+        `).eq('is_active', true)
+        .range(currentOffset, currentOffset + JOBS_PER_PAGE - 1);
+
+      if (companyId) {
+        query = query.eq('company_id', companyId);
+      }
+      
+      const { data, error } = await query.order('created_at', { ascending: false });
+      if (error) throw error;
+
+      // Transform with companies already included
+      const transformedJobs = data?.map(job => ({
+        id: job.id,
+        title: job.title,
+        company: job.companies?.name || '',
+        company_id: job.company_id,
+        companyLogo: job.companies?.logo,
+        isVerified: job.companies?.is_verified || false,
+        location: job.location,
+        type: job.type as 'full-time' | 'part-time' | 'contract' | 'internship',
+        salary: job.salary,
+        description: '', // Don't load description for list view
+        tags: (job.tags || []).filter((tag: string) => 
+          tag === 'premium' || tag === 'new' || tag === 'urgent' || tag === 'remote'
+        ) as ('premium' | 'new' | 'urgent' | 'remote')[],
+        views: job.views,
+        postedAt: formatDate(job.created_at),
+        category: job.categories?.name || '',
+        applicationUrl: '',
+        applicationType: 'website' as const,
+        applicationEmail: ''
+      })) || [];
+      
+      if (isLoadMore) {
+        setJobs(prev => [...prev, ...transformedJobs]);
+      } else {
+        setJobs(transformedJobs);
+      }
+
+      // Check if there are more jobs
+      setHasMore(transformedJobs.length === JOBS_PER_PAGE);
+      setOffset(currentOffset + JOBS_PER_PAGE);
+      
+    } catch (error) {
+      console.error('Error fetching jobs:', error);
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
+    }
+  }, [companyId, offset]);
+
+  useEffect(() => {
+    fetchJobs(false);
   }, [companyId]);
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -90,6 +117,29 @@ const JobListings = ({
     if (diffDays <= 30) return `${Math.ceil(diffDays / 7)} həftə əvvəl`;
     return `${Math.ceil(diffDays / 30)} ay əvvəl`;
   };
+
+  // Infinite scroll handler
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight;
+      const clientHeight = window.innerHeight;
+      
+      if (scrollTop + clientHeight >= scrollHeight - 1000 && hasMore && !loadingMore && !loading) {
+        fetchJobs(true);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [hasMore, loadingMore, loading, fetchJobs]);
+
+  // Reset when filters change
+  useEffect(() => {
+    setOffset(0);
+    fetchJobs(false);
+  }, [selectedCategory, companyFilter, showOnlySaved]);
+  
   // Debounced search for performance
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
   const [debouncedLocationFilter, setDebouncedLocationFilter] = useState('');
@@ -151,7 +201,7 @@ const JobListings = ({
       }
     }
 
-    return [...premiumJobs, ...regularJobs].slice(0, 15); // Further reduced for performance
+    return [...premiumJobs, ...regularJobs];
   }, [jobs, debouncedSearchQuery, debouncedLocationFilter, selectedCategory, companyFilter, showOnlySaved]);
   const getCategoryLabel = (category: string) => {
     const categoryMap: Record<string, string> = {
@@ -234,6 +284,26 @@ const JobListings = ({
               </Button>
             </div>}
         </div>
+        
+        {/* Load More Button / Loading Indicator */}
+        {hasMore && !loading && (
+          <div className="flex justify-center py-8">
+            {loadingMore ? (
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span className="text-sm">Daha çox elan yüklənir...</span>
+              </div>
+            ) : (
+              <Button 
+                variant="outline" 
+                onClick={() => fetchJobs(true)}
+                className="px-6 py-2 border-primary/30 text-primary hover:bg-primary hover:text-white transition-all duration-300"
+              >
+                Daha çox elan
+              </Button>
+            )}
+          </div>
+        )}
       </div>
     </div>;
 };
