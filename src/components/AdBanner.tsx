@@ -25,7 +25,11 @@ const AdBanner: React.FC<AdBannerProps> = ({ position, className = "" }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchAdvertisements();
+    // Debounce ad loading for better performance
+    const timer = setTimeout(() => {
+      fetchAdvertisements();
+    }, 100);
+    return () => clearTimeout(timer);
   }, [position]);
 
   const fetchAdvertisements = async () => {

@@ -29,16 +29,16 @@ const JobListings = ({
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Optimize job fetching - only get necessary data initially
+  // Optimize job fetching - get companies in batch
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        // Simplified query - only essential fields for list view
+        // Get jobs with companies in one query
         let query = supabase.from('jobs').select(`
             id, title, location, type, salary, tags, views, created_at, company_id,
-            companies!inner (name, logo, is_verified),
+            companies!inner (id, name, logo, is_verified),
             categories!inner (name)
-          `).eq('is_active', true).limit(50); // Limit to 50 jobs for performance
+          `).eq('is_active', true).limit(25); // Reduced to 25 for better performance
 
         if (companyId) {
           query = query.eq('company_id', companyId);
@@ -47,13 +47,14 @@ const JobListings = ({
         const { data, error } = await query.order('created_at', { ascending: false });
         if (error) throw error;
 
-        // Minimal transformation
+        // Transform with companies already included
         const transformedJobs = data?.map(job => ({
           id: job.id,
           title: job.title,
           company: job.companies?.name || '',
           company_id: job.company_id,
           companyLogo: job.companies?.logo,
+          isVerified: job.companies?.is_verified || false,
           location: job.location,
           type: job.type as 'full-time' | 'part-time' | 'contract' | 'internship',
           salary: job.salary,
@@ -150,7 +151,7 @@ const JobListings = ({
       }
     }
 
-    return [...premiumJobs, ...regularJobs].slice(0, 20);
+    return [...premiumJobs, ...regularJobs].slice(0, 15); // Further reduced for performance
   }, [jobs, debouncedSearchQuery, debouncedLocationFilter, selectedCategory, companyFilter, showOnlySaved]);
   const getCategoryLabel = (category: string) => {
     const categoryMap: Record<string, string> = {

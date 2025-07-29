@@ -4,6 +4,7 @@ export interface Job {
   company: string;
   company_id?: string;
   companyLogo?: string;
+  isVerified?: boolean;
   location: string;
   type: 'full-time' | 'part-time' | 'contract' | 'internship';
   salary?: string;

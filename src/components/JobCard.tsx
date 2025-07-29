@@ -3,35 +3,33 @@ import { Badge } from '@/components/ui/badge';
 import { Eye, Heart } from 'lucide-react';
 import VerifyBadge from '@/components/ui/verify-badge';
 import { useState, useEffect, useCallback, memo } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { Tables } from '@/integrations/supabase/types';
 import { LazyImage } from '@/components/ui/lazy-image';
+
 interface JobCardProps {
   job: Job;
   isSelected?: boolean;
   onClick: () => void;
   isAlternate?: boolean;
+  companyData?: {
+    name: string;
+    logo?: string;
+    is_verified: boolean;
+  };
 }
 
-type Company = Tables<'companies'>;
 const JobCard = memo(({
   job,
   isSelected,
   onClick,
-  isAlternate
+  isAlternate,
+  companyData
 }: JobCardProps) => {
   const [isSaved, setIsSaved] = useState(false);
-  const [company, setCompany] = useState<Company | null>(null);
   
   useEffect(() => {
     const savedJobs = JSON.parse(localStorage.getItem('savedJobs') || '[]');
     setIsSaved(savedJobs.includes(job.id));
-    
-    // Fetch company data if job has company_id
-    if (job.company_id) {
-      fetchCompany();
-    }
-  }, [job.id, job.company_id]);
+  }, [job.id]);
 
   const handleSaveToggle = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
@@ -57,22 +55,6 @@ const JobCard = memo(({
     }));
   }, [isSaved, job.id]);
 
-  const fetchCompany = useCallback(async () => {
-    if (!job.company_id) return;
-    
-    try {
-      const { data, error } = await supabase
-        .from('companies')
-        .select('*')
-        .eq('id', job.company_id)
-        .single();
-
-      if (error) throw error;
-      setCompany(data);
-    } catch (error) {
-      console.error('Error fetching company:', error);
-    }
-  }, [job.company_id]);
 
   // Filter to only show premium tags
   const premiumTags = job.tags.filter(tag => tag === 'premium');
@@ -93,20 +75,20 @@ const JobCard = memo(({
       {/* Left Section - Company & Job Info */}
       <div className="flex items-center gap-2 flex-1 min-w-0 relative z-10">
         <div className="relative flex-shrink-0">
-          {company?.logo ? (
+          {job.companyLogo ? (
             <LazyImage 
-              src={company.logo} 
-              alt={company.name} 
+              src={job.companyLogo} 
+              alt={job.company} 
               className="w-8 h-8 rounded-md object-cover"
               fallback={
                 <div className={`w-8 h-8 rounded-md flex items-center justify-center text-white font-bold text-xs shadow-sm ${job.tags?.includes('premium') ? 'bg-gradient-premium' : 'bg-gradient-primary'}`}>
-                  {(company?.name || job.title).charAt(0)}
+                  {(job.company || job.title).charAt(0)}
                 </div>
               }
             />
           ) : (
             <div className={`w-8 h-8 rounded-md flex items-center justify-center text-white font-bold text-xs shadow-sm ${job.tags?.includes('premium') ? 'bg-gradient-premium' : 'bg-gradient-primary'}`}>
-              {(company?.name || job.title).charAt(0)}
+              {(job.company || job.title).charAt(0)}
             </div>
           )}
         </div>
@@ -118,9 +100,9 @@ const JobCard = memo(({
           <div className="flex items-center gap-2 mt-0">
             <div className="flex items-center gap-1">
               <p className="text-muted-foreground text-xs font-medium truncate">
-                {company?.name || 'Şirkət'}
+                {job.company || 'Şirkət'}
               </p>
-              {company?.is_verified && <VerifyBadge size={12} className="ml-0.5" />}
+              {job.isVerified && <VerifyBadge size={12} className="ml-0.5" />}
             </div>
           </div>
         </div>
