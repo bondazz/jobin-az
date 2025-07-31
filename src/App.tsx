@@ -3,34 +3,46 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Layout from "./components/Layout";
-import Index from "./pages/Index";
-import Categories from "./pages/Categories";
-import Companies from "./pages/Companies";
-import About from "./pages/About";
-import Pricing from "./pages/Pricing";
-import CVBuilder from "./pages/CVBuilder";
-import NotFound from "./pages/NotFound";
-import Sitemap from "./pages/Sitemap";
-import SitemapJooble from "./pages/SitemapJooble";
-import RobotsTxt from "./pages/RobotsTxt";
 
-
-// Admin components
-import AdminLogin from "./pages/admin/Login";
-import AdminDashboard from "./pages/admin/Dashboard";
-import AdminJobs from "./pages/admin/Jobs";
-import AdminCompanies from "./pages/admin/Companies";
-import AdminCategories from "./pages/admin/Categories";
-import AdminPricing from "./pages/admin/Pricing";
-import AdminAdvertisements from "./pages/admin/Advertisements";
-import AdminSitemap from "./pages/admin/Sitemap";
-import AdminSettings from "./pages/admin/Settings";
-
-// Lazy load SavedJobs to avoid circular dependency issues
+// Lazy load all components for better performance
 import { lazy, Suspense } from "react";
+
+// Main pages - critical for SEO, load immediately
+import Index from "./pages/Index";
+
+// Non-critical pages - lazy load
+const Categories = lazy(() => import("./pages/Categories"));
+const Companies = lazy(() => import("./pages/Companies"));
+const About = lazy(() => import("./pages/About"));
+const Pricing = lazy(() => import("./pages/Pricing"));
+const CVBuilder = lazy(() => import("./pages/CVBuilder"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 const SavedJobs = lazy(() => import("./pages/SavedJobs"));
 
+// XML/SEO pages - can be lazy loaded
+const Sitemap = lazy(() => import("./pages/Sitemap"));
+const SitemapJooble = lazy(() => import("./pages/SitemapJooble"));
+const RobotsTxt = lazy(() => import("./pages/RobotsTxt"));
+
+// Admin components - definitely lazy load
+const AdminLogin = lazy(() => import("./pages/admin/Login"));
+const AdminDashboard = lazy(() => import("./pages/admin/Dashboard"));
+const AdminJobs = lazy(() => import("./pages/admin/Jobs"));
+const AdminCompanies = lazy(() => import("./pages/admin/Companies"));
+const AdminCategories = lazy(() => import("./pages/admin/Categories"));
+const AdminPricing = lazy(() => import("./pages/admin/Pricing"));
+const AdminAdvertisements = lazy(() => import("./pages/admin/Advertisements"));
+const AdminSitemap = lazy(() => import("./pages/admin/Sitemap"));
+const AdminSettings = lazy(() => import("./pages/admin/Settings"));
+
 const queryClient = new QueryClient();
+
+// Common loading component
+const LoadingFallback = () => (
+  <div className="flex items-center justify-center min-h-[200px]">
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+  </div>
+);
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -41,43 +53,135 @@ const App = () => (
             <Route index element={<Index />} />
             <Route path="/vacancies" element={<Index />} />
             <Route path="/vacancies/:jobSlug" element={<Index />} />
-          <Route path="/categories" element={<Categories />} />
-          <Route path="/categories/:category" element={<Categories />} />
-          <Route path="/categories/:category/vacancy/:jobSlug" element={<Categories />} />
-           <Route path="/companies" element={<Companies />} />
-           <Route path="/companies/:company" element={<Companies />} />
-           <Route path="/companies/:company/vacancies" element={<Companies />} />
-           <Route path="/companies/:company/vacancy/:jobSlug" element={<Companies />} />
+            <Route path="/categories" element={
+              <Suspense fallback={<LoadingFallback />}>
+                <Categories />
+              </Suspense>
+            } />
+            <Route path="/categories/:category" element={
+              <Suspense fallback={<LoadingFallback />}>
+                <Categories />
+              </Suspense>
+            } />
+            <Route path="/categories/:category/vacancy/:jobSlug" element={
+              <Suspense fallback={<LoadingFallback />}>
+                <Categories />
+              </Suspense>
+            } />
+            <Route path="/companies" element={
+              <Suspense fallback={<LoadingFallback />}>
+                <Companies />
+              </Suspense>
+            } />
+            <Route path="/companies/:company" element={
+              <Suspense fallback={<LoadingFallback />}>
+                <Companies />
+              </Suspense>
+            } />
+            <Route path="/companies/:company/vacancies" element={
+              <Suspense fallback={<LoadingFallback />}>
+                <Companies />
+              </Suspense>
+            } />
+            <Route path="/companies/:company/vacancy/:jobSlug" element={
+              <Suspense fallback={<LoadingFallback />}>
+                <Companies />
+              </Suspense>
+            } />
             <Route path="/favorites" element={
-              <Suspense fallback={<div>Yüklənir...</div>}>
+              <Suspense fallback={<LoadingFallback />}>
                 <SavedJobs />
               </Suspense>
             } />
             <Route path="/favorites/:jobId" element={
-              <Suspense fallback={<div>Yüklənir...</div>}>
+              <Suspense fallback={<LoadingFallback />}>
                 <SavedJobs />
               </Suspense>
             } />
             <Route path="/bildirisler" element={<Index />} />
-            <Route path="/cv-builder" element={<CVBuilder />} />
-            <Route path="/services" element={<Pricing />} />
-            <Route path="/about" element={<About />} />
+            <Route path="/cv-builder" element={
+              <Suspense fallback={<LoadingFallback />}>
+                <CVBuilder />
+              </Suspense>
+            } />
+            <Route path="/services" element={
+              <Suspense fallback={<LoadingFallback />}>
+                <Pricing />
+              </Suspense>
+            } />
+            <Route path="/about" element={
+              <Suspense fallback={<LoadingFallback />}>
+                <About />
+              </Suspense>
+            } />
           </Route>
           {/* Sitemap routes - outside Layout */}
-          <Route path="/sitemap.xml" element={<Sitemap />} />
-          <Route path="/sitemapjooble.xml" element={<SitemapJooble />} />
-          <Route path="/robots.txt" element={<RobotsTxt />} />
+          <Route path="/sitemap.xml" element={
+            <Suspense fallback={<LoadingFallback />}>
+              <Sitemap />
+            </Suspense>
+          } />
+          <Route path="/sitemapjooble.xml" element={
+            <Suspense fallback={<LoadingFallback />}>
+              <SitemapJooble />
+            </Suspense>
+          } />
+          <Route path="/robots.txt" element={
+            <Suspense fallback={<LoadingFallback />}>
+              <RobotsTxt />
+            </Suspense>
+          } />
           {/* Admin routes - outside Layout */}
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/admin/jobs" element={<AdminJobs />} />
-          <Route path="/admin/companies" element={<AdminCompanies />} />
-          <Route path="/admin/categories" element={<AdminCategories />} />
-          <Route path="/admin/pricing" element={<AdminPricing />} />
-          <Route path="/admin/advertisements" element={<AdminAdvertisements />} />
-          <Route path="/admin/sitemap" element={<AdminSitemap />} />
-          <Route path="/admin/settings" element={<AdminSettings />} />
-          <Route path="*" element={<NotFound />} />
+          <Route path="/admin/login" element={
+            <Suspense fallback={<LoadingFallback />}>
+              <AdminLogin />
+            </Suspense>
+          } />
+          <Route path="/admin/dashboard" element={
+            <Suspense fallback={<LoadingFallback />}>
+              <AdminDashboard />
+            </Suspense>
+          } />
+          <Route path="/admin/jobs" element={
+            <Suspense fallback={<LoadingFallback />}>
+              <AdminJobs />
+            </Suspense>
+          } />
+          <Route path="/admin/companies" element={
+            <Suspense fallback={<LoadingFallback />}>
+              <AdminCompanies />
+            </Suspense>
+          } />
+          <Route path="/admin/categories" element={
+            <Suspense fallback={<LoadingFallback />}>
+              <AdminCategories />
+            </Suspense>
+          } />
+          <Route path="/admin/pricing" element={
+            <Suspense fallback={<LoadingFallback />}>
+              <AdminPricing />
+            </Suspense>
+          } />
+          <Route path="/admin/advertisements" element={
+            <Suspense fallback={<LoadingFallback />}>
+              <AdminAdvertisements />
+            </Suspense>
+          } />
+          <Route path="/admin/sitemap" element={
+            <Suspense fallback={<LoadingFallback />}>
+              <AdminSitemap />
+            </Suspense>
+          } />
+          <Route path="/admin/settings" element={
+            <Suspense fallback={<LoadingFallback />}>
+              <AdminSettings />
+            </Suspense>
+          } />
+          <Route path="*" element={
+            <Suspense fallback={<LoadingFallback />}>
+              <NotFound />
+            </Suspense>
+          } />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
