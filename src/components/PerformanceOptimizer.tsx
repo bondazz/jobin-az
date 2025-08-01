@@ -4,14 +4,9 @@ import { memo } from 'react';
 const PerformanceOptimizer = memo(() => {
   return (
     <>
-      {/* Preload critical fonts */}
-      <link 
-        rel="preload" 
-        href="/fonts/saira-v2-latin-300.woff2" 
-        as="font" 
-        type="font/woff2" 
-        crossOrigin="" 
-      />
+      {/* DNS prefetch for Google Fonts */}
+      <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+      <link rel="dns-prefetch" href="//fonts.gstatic.com" />
       
       {/* DNS prefetch for external resources */}
       <link rel="dns-prefetch" href="//igrtzfvphltnoiwedbtz.supabase.co" />
