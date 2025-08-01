@@ -67,7 +67,7 @@ const JobCard = memo(({
       
       {/* Premium badge - positioned at top border */}
       {premiumTags.length > 0 && <div className="absolute -top-px right-[3px] z-10">
-          <Badge variant="premium" className="text-xs rounded-sm font-bold px-2 py-0.5">
+          <Badge variant="premium" className="text-[7px] rounded-sm font-bold px-[13px] py-0 mx-[26px] my-[48px]">
             Premium
           </Badge>
         </div>}
