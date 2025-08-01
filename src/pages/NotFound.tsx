@@ -6,13 +6,20 @@ const NotFound = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.error(
-      "404 Error: User attempted to access non-existent route:",
-      location.pathname
-    );
+    const path = location.pathname;
     
-    // Redirect to home page after logging the error
-    navigate("/", { replace: true });
+    // Check if it's an asset file (images, favicons, css, js, etc.)
+    const isAsset = /\.(png|jpg|jpeg|gif|svg|ico|css|js|woff|woff2|ttf|eot|map)$/i.test(path);
+    
+    if (!isAsset) {
+      console.error(
+        "404 Error: User attempted to access non-existent route:",
+        path
+      );
+      
+      // Only redirect non-asset routes to home page
+      navigate("/", { replace: true });
+    }
   }, [location.pathname, navigate]);
 
   return (
