@@ -18,6 +18,10 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				'saira': ['Saira', 'sans-serif'],
+				'sans': ['Saira', 'ui-sans-serif', 'system-ui'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',

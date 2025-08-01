@@ -7,7 +7,7 @@ const PerformanceOptimizer = memo(() => {
       {/* Preload critical fonts */}
       <link 
         rel="preload" 
-        href="/fonts/inter.woff2" 
+        href="/fonts/saira-v2-latin-300.woff2" 
         as="font" 
         type="font/woff2" 
         crossOrigin="" 
