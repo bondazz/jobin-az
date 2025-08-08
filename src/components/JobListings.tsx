@@ -84,7 +84,6 @@ const JobListings = ({
           .from('jobs')
           .select(selectFields)
           .eq('is_active', true)
-          .not('tags', 'cs', ['premium'])
           .range(currentOffset, currentOffset + JOBS_PER_PAGE - 1)
           .order('created_at', { ascending: false });
 
@@ -94,7 +93,11 @@ const JobListings = ({
         if (regularError) throw regularError;
 
         const regularTransformed = transform(regularData);
-        setJobs((prev) => [...prev, ...regularTransformed]);
+        setJobs((prev) => {
+          const seen = new Set(prev.map(j => j.id));
+          const filteredNew = regularTransformed.filter(j => !seen.has(j.id));
+          return [...prev, ...filteredNew];
+        });
         setHasMore(regularTransformed.length === JOBS_PER_PAGE);
         setOffset(currentOffset + JOBS_PER_PAGE);
       } else {
@@ -103,7 +106,7 @@ const JobListings = ({
           .from('jobs')
           .select(selectFields)
           .eq('is_active', true)
-          .contains('tags', ['premium'])
+          .overlaps('tags', ['premium'])
           .order('created_at', { ascending: false });
         if (companyId) premiumQuery = premiumQuery.eq('company_id', companyId);
 
@@ -111,7 +114,6 @@ const JobListings = ({
           .from('jobs')
           .select(selectFields)
           .eq('is_active', true)
-          .not('tags', 'cs', ['premium'])
           .range(0, JOBS_PER_PAGE - 1)
           .order('created_at', { ascending: false });
         if (companyId) regularQuery = regularQuery.eq('company_id', companyId);
