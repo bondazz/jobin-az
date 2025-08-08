@@ -35,7 +35,7 @@ const JobListings = ({
   const [offset, setOffset] = useState(0);
   const JOBS_PER_PAGE = 25;
 
-  // Optimize job fetching - get companies in batch with pagination
+  // Optimize job fetching - premium first, then regular with pagination
   const fetchJobs = useCallback(async (isLoadMore = false) => {
     try {
       if (isLoadMore) {
@@ -46,55 +46,100 @@ const JobListings = ({
       }
 
       const currentOffset = isLoadMore ? offset : 0;
-      
-      // Get jobs with companies in one query
-      let query = supabase.from('jobs').select(`
+
+      // Build base select with joins
+      const selectFields = `
           id, title, location, type, salary, tags, views, created_at, company_id,
           companies!inner (id, name, logo, is_verified),
           categories!inner (name)
-        `).eq('is_active', true)
-        .range(currentOffset, currentOffset + JOBS_PER_PAGE - 1);
+        `;
 
-      if (companyId) {
-        query = query.eq('company_id', companyId);
-      }
-      
-      const { data, error } = await query.order('created_at', { ascending: false });
-      if (error) throw error;
+      // Helper to transform rows to Job
+      const transform = (data: any[] = []): Job[] =>
+        data.map((job: any) => ({
+          id: job.id,
+          title: job.title,
+          company: job.companies?.name || '',
+          company_id: job.company_id,
+          companyLogo: job.companies?.logo,
+          isVerified: job.companies?.is_verified || false,
+          location: job.location,
+          type: job.type as 'full-time' | 'part-time' | 'contract' | 'internship',
+          salary: job.salary,
+          description: '', // List view doesn't need description
+          tags: (job.tags || []).filter((tag: string) =>
+            tag === 'premium' || tag === 'new' || tag === 'urgent' || tag === 'remote'
+          ) as ('premium' | 'new' | 'urgent' | 'remote')[],
+          views: job.views,
+          postedAt: formatDate(job.created_at),
+          category: job.categories?.name || '',
+          applicationUrl: '',
+          applicationType: 'website' as const,
+          applicationEmail: ''
+        }));
 
-      // Transform with companies already included
-      const transformedJobs = data?.map(job => ({
-        id: job.id,
-        title: job.title,
-        company: job.companies?.name || '',
-        company_id: job.company_id,
-        companyLogo: job.companies?.logo,
-        isVerified: job.companies?.is_verified || false,
-        location: job.location,
-        type: job.type as 'full-time' | 'part-time' | 'contract' | 'internship',
-        salary: job.salary,
-        description: '', // Don't load description for list view
-        tags: (job.tags || []).filter((tag: string) => 
-          tag === 'premium' || tag === 'new' || tag === 'urgent' || tag === 'remote'
-        ) as ('premium' | 'new' | 'urgent' | 'remote')[],
-        views: job.views,
-        postedAt: formatDate(job.created_at),
-        category: job.categories?.name || '',
-        applicationUrl: '',
-        applicationType: 'website' as const,
-        applicationEmail: ''
-      })) || [];
-      
       if (isLoadMore) {
-        setJobs(prev => [...prev, ...transformedJobs]);
-      } else {
-        setJobs(transformedJobs);
-      }
+        // Load more REGULAR (non-premium) jobs only
+        let regularQuery = supabase
+          .from('jobs')
+          .select(selectFields)
+          .eq('is_active', true)
+          .not('tags', 'cs', ['premium'])
+          .range(currentOffset, currentOffset + JOBS_PER_PAGE - 1)
+          .order('created_at', { ascending: false });
 
-      // Check if there are more jobs
-      setHasMore(transformedJobs.length === JOBS_PER_PAGE);
-      setOffset(currentOffset + JOBS_PER_PAGE);
-      
+        if (companyId) regularQuery = regularQuery.eq('company_id', companyId);
+
+        const { data: regularData, error: regularError } = await regularQuery;
+        if (regularError) throw regularError;
+
+        const regularTransformed = transform(regularData);
+        setJobs((prev) => [...prev, ...regularTransformed]);
+        setHasMore(regularTransformed.length === JOBS_PER_PAGE);
+        setOffset(currentOffset + JOBS_PER_PAGE);
+      } else {
+        // Initial load: fetch ALL premium first, then first page of regular
+        let premiumQuery = supabase
+          .from('jobs')
+          .select(selectFields)
+          .eq('is_active', true)
+          .contains('tags', ['premium'])
+          .order('created_at', { ascending: false });
+        if (companyId) premiumQuery = premiumQuery.eq('company_id', companyId);
+
+        let regularQuery = supabase
+          .from('jobs')
+          .select(selectFields)
+          .eq('is_active', true)
+          .not('tags', 'cs', ['premium'])
+          .range(0, JOBS_PER_PAGE - 1)
+          .order('created_at', { ascending: false });
+        if (companyId) regularQuery = regularQuery.eq('company_id', companyId);
+
+        const [{ data: premiumData, error: premiumError }, { data: regularData, error: regularError }] = await Promise.all([
+          premiumQuery,
+          regularQuery
+        ]);
+        if (premiumError) throw premiumError;
+        if (regularError) throw regularError;
+
+        const premiumTransformed = transform(premiumData);
+        const regularTransformed = transform(regularData);
+
+        // Merge ensuring premium first and no duplicates
+        const seen = new Set<string>();
+        const merged: Job[] = [];
+        for (const j of [...premiumTransformed, ...regularTransformed]) {
+          if (!seen.has(j.id)) {
+            seen.add(j.id);
+            merged.push(j);
+          }
+        }
+
+        setJobs(merged);
+        setHasMore(regularTransformed.length === JOBS_PER_PAGE);
+        setOffset(JOBS_PER_PAGE);
+      }
     } catch (error) {
       console.error('Error fetching jobs:', error);
     } finally {
