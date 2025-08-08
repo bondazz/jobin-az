@@ -188,13 +188,12 @@ const JobListings = ({
       return true;
     });
 
-    // Simple premium sorting - just check first tag
-    const result = [];
-    const premiumJobs = [];
-    const regularJobs = [];
+    // Premium first: consider 'premium' tag anywhere in the array
+    const premiumJobs: Job[] = [];
+    const regularJobs: Job[] = [];
     
     for (const job of filtered) {
-      if (job.tags?.[0] === 'premium') {
+      if (job.tags?.includes('premium')) {
         premiumJobs.push(job);
       } else {
         regularJobs.push(job);
