@@ -501,16 +501,6 @@ export default function AdminJobs() {
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="application_url">Müraciət Linki</Label>
-                      <Input
-                        id="application_url"
-                        type="url"
-                        value={formData.application_url}
-                        onChange={(e) => setFormData({ ...formData, application_url: e.target.value })}
-                        placeholder="https://example.com/apply"
-                      />
-                    </div>
                   </div>
 
                   <div className="space-y-2">
