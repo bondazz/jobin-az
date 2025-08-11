@@ -91,6 +91,18 @@ export default function AdminJobs() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  // SEO auto-fill controls
+  const [seoTitleEdited, setSeoTitleEdited] = useState(false);
+  const [seoDescEdited, setSeoDescEdited] = useState(false);
+  const [lastGeneratedSEO, setLastGeneratedSEO] = useState({ title: '', description: '' });
+
+  const generateSeoFields = (title: string, companyName: string) => {
+    const year = new Date().getFullYear();
+    const seoTitle = `${title} vakansiyası – ${companyName}. ${year} iş elanları və vakansiyalar | Jooble.az`;
+    const seoDescription = `${companyName} şirkəti ${title} vakansiyası üzrə işçi axtarır! Ən son iş elanı, vakansiyalar, yüksək maaşlı iş imkanları və karyera fürsətləri sizi gözləyir. İş elanına müraciət et!`;
+    return { seoTitle, seoDescription };
+  };
+
   useEffect(() => {
     checkAuth();
     fetchData();
@@ -241,6 +253,35 @@ export default function AdminJobs() {
     }
   }, [companySearchTerm, companies]);
 
+  // Auto-generate SEO fields for new job based on title and company
+  useEffect(() => {
+    if (editingJob) return; // only for creating new vacancy
+
+    const title = formData.title?.trim();
+    const companyName = companies.find(c => c.id === formData.company_id)?.name?.trim();
+
+    if (!title || !companyName) return;
+
+    const { seoTitle, seoDescription } = generateSeoFields(title, companyName);
+
+    setFormData(prev => {
+      const prevSeoTitle = prev.seo_title ?? '';
+      const prevSeoDesc = prev.seo_description ?? '';
+      const shouldUpdateTitle = !seoTitleEdited && (prevSeoTitle.trim() === '' || prevSeoTitle === lastGeneratedSEO.title);
+      const shouldUpdateDesc = !seoDescEdited && (prevSeoDesc.trim() === '' || prevSeoDesc === lastGeneratedSEO.description);
+
+      if (!shouldUpdateTitle && !shouldUpdateDesc) return prev;
+
+      return {
+        ...prev,
+        seo_title: shouldUpdateTitle ? seoTitle : prev.seo_title,
+        seo_description: shouldUpdateDesc ? seoDescription : prev.seo_description,
+      };
+    });
+
+    setLastGeneratedSEO({ title: seoTitle, description: seoDescription });
+  }, [formData.title, formData.company_id, companies, editingJob, seoTitleEdited, seoDescEdited]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -294,6 +335,9 @@ export default function AdminJobs() {
 
   const handleEdit = (job: Job) => {
     setEditingJob(job);
+    // Disable auto SEO updates when editing existing job
+    setSeoTitleEdited(true);
+    setSeoDescEdited(true);
     setFormData({
       title: job.title,
       company_id: job.company_id,
@@ -344,6 +388,10 @@ export default function AdminJobs() {
 
   const resetForm = () => {
     setEditingJob(null);
+    // Reset SEO auto-fill controls for new job
+    setSeoTitleEdited(false);
+    setSeoDescEdited(false);
+    setLastGeneratedSEO({ title: '', description: '' });
     setFormData({
       title: '',
       company_id: '',
@@ -586,7 +634,7 @@ export default function AdminJobs() {
                         <Input
                           id="seo_title"
                           value={formData.seo_title}
-                          onChange={(e) => setFormData({ ...formData, seo_title: e.target.value })}
+                          onChange={(e) => { setSeoTitleEdited(true); setFormData({ ...formData, seo_title: e.target.value }); }}
                           placeholder="Meta title"
                         />
                       </div>
@@ -595,7 +643,7 @@ export default function AdminJobs() {
                         <Textarea
                           id="seo_description"
                           value={formData.seo_description}
-                          onChange={(e) => setFormData({ ...formData, seo_description: e.target.value })}
+                          onChange={(e) => { setSeoDescEdited(true); setFormData({ ...formData, seo_description: e.target.value }); }}
                           rows={2}
                           placeholder="Meta description"
                         />
