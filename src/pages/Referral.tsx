@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/components/ui/use-toast";
 import { updatePageMeta } from "@/utils/seo";
 import { Trash2 } from "lucide-react";
+import BottomNavigation from "@/components/BottomNavigation";
 
 interface ReferralRequestForm {
   company_name: string;
@@ -303,7 +304,7 @@ const Referral = () => {
   };
 
   return (
-    <main className="flex-1 overflow-y-auto">
+    <main className="flex-1 overflow-y-auto min-h-screen pb-20 xl:pb-0">
       <section className="p-4 lg:p-6 border-b border-border bg-gradient-to-r from-background to-primary/5">
         <div className="max-w-5xl mx-auto">
           <h1 className="text-2xl lg:text-3xl font-bold">Referral proqramı</h1>
@@ -556,6 +557,10 @@ const Referral = () => {
             </CardContent>
           </Card>
         </div>
+      </div>
+      {/* Bottom Navigation - Mobile/Tablet */}
+      <div className="pb-16 xl:pb-0">
+        <BottomNavigation selectedCategory="" onCategorySelect={() => {}} />
       </div>
     </main>
   );
