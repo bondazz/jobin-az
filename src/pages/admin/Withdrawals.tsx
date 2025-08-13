@@ -33,6 +33,7 @@ export default function AdminWithdrawals() {
   const [selected, setSelected] = useState<Withdrawal | null>(null);
   const [comment, setComment] = useState('');
   const [targetStatus, setTargetStatus] = useState<'paid' | 'cancelled' | null>(null);
+  const [names, setNames] = useState<Record<string, string>>({});
 
   useEffect(() => {
     checkAuth();
@@ -57,7 +58,20 @@ export default function AdminWithdrawals() {
         .select('*')
         .order('created_at', { ascending: false });
       if (error) throw error;
-      setRows((data || []) as Withdrawal[]);
+      const rows = (data || []) as Withdrawal[];
+      setRows(rows);
+      const userIds = Array.from(new Set(rows.map(r => r.user_id)));
+      if (userIds.length) {
+        const { data: profs } = await supabase
+          .from('profiles')
+          .select('user_id, full_name')
+          .in('user_id', userIds);
+        const map: Record<string, string> = {};
+        (profs || []).forEach(p => { map[(p as any).user_id] = (p as any).full_name || ''; });
+        setNames(map);
+      } else {
+        setNames({});
+      }
     } catch (e) {
       console.error(e);
       toast({ title: 'Xəta', description: 'Məlumatlar yüklənmədi', variant: 'destructive' });
@@ -130,6 +144,7 @@ export default function AdminWithdrawals() {
                   <TableRow>
                     <TableHead>Tarix</TableHead>
                     <TableHead>User ID</TableHead>
+                    <TableHead>Ad Soyad</TableHead>
                     <TableHead>Metod</TableHead>
                     <TableHead>Təyinat</TableHead>
                     <TableHead>Məbləğ</TableHead>
@@ -142,6 +157,7 @@ export default function AdminWithdrawals() {
                     <TableRow key={r.id}>
                       <TableCell className="text-sm text-muted-foreground">{new Date(r.created_at).toLocaleString()}</TableCell>
                       <TableCell className="text-xs">{r.user_id}</TableCell>
+                      <TableCell className="text-xs">{names[r.user_id] || '-'}</TableCell>
                       <TableCell>{r.method === 'card' ? 'Kart' : 'M10'}</TableCell>
                       <TableCell className="max-w-[240px] truncate" title={r.destination}>{r.destination}</TableCell>
                       <TableCell className="font-semibold">{r.amount} AZN</TableCell>

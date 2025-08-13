@@ -33,6 +33,7 @@ export default function AdminReferrals() {
   const [editing, setEditing] = useState<ReferralRow | null>(null);
   const [amount, setAmount] = useState<string>('');
   const [mode, setMode] = useState<'inc' | 'dec'>('inc');
+  const [names, setNames] = useState<Record<string, string>>({});
 
   useEffect(() => {
     checkAuth();
@@ -57,7 +58,20 @@ export default function AdminReferrals() {
         .select('*')
         .order('created_at', { ascending: false });
       if (error) throw error;
-      setRows((data || []) as ReferralRow[]);
+      const rows = (data || []) as ReferralRow[];
+      setRows(rows);
+      const userIds = Array.from(new Set(rows.map(r => r.user_id)));
+      if (userIds.length) {
+        const { data: profs } = await supabase
+          .from('profiles')
+          .select('user_id, full_name')
+          .in('user_id', userIds);
+        const map: Record<string, string> = {};
+        (profs || []).forEach(p => { map[(p as any).user_id] = (p as any).full_name || ''; });
+        setNames(map);
+      } else {
+        setNames({});
+      }
     } catch (e) {
       console.error(e);
       toast({ title: 'Xəta', description: 'Məlumatlar yüklənmədi', variant: 'destructive' });
@@ -126,6 +140,7 @@ export default function AdminReferrals() {
                   <TableRow>
                     <TableHead>Kod</TableHead>
                     <TableHead>User ID</TableHead>
+                    <TableHead>Ad Soyad</TableHead>
                     <TableHead>Kliklər</TableHead>
                     <TableHead>Qazanc (AZN)</TableHead>
                     <TableHead>Status</TableHead>
@@ -137,6 +152,7 @@ export default function AdminReferrals() {
                     <TableRow key={r.id}>
                       <TableCell className="font-medium">{r.code}</TableCell>
                       <TableCell className="text-sm text-muted-foreground">{r.user_id}</TableCell>
+                      <TableCell className="text-sm">{names[r.user_id] || '-'}</TableCell>
                       <TableCell>{r.clicks}</TableCell>
                       <TableCell className="font-semibold">{r.earnings_azn ?? 0}</TableCell>
                       <TableCell>

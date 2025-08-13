@@ -57,8 +57,7 @@ const Referral = () => {
   const [referralCode, setReferralCode] = useState<string>("");
   const [clicks, setClicks] = useState<number>(0);
   const [approvedCount, setApprovedCount] = useState<number>(0);
-
-  const balance = useMemo(() => approvedCount * 5, [approvedCount]);
+  const [balance, setBalance] = useState<number>(0);
 
   const [walletCard, setWalletCard] = useState("");
   const [walletM10, setWalletM10] = useState("");
@@ -67,6 +66,8 @@ const Referral = () => {
   const [withdrawMethod, setWithdrawMethod] = useState<"card" | "m10">("card");
   const [withdrawDest, setWithdrawDest] = useState<string>("");
   const [withdrawAmount, setWithdrawAmount] = useState<string>("");
+  const [withdrawals, setWithdrawals] = useState<{ id: string; status: string; amount: number; method: string; destination: string; created_at: string }[]>([]);
+  const [fullName, setFullName] = useState<string>("");
 
   const [reqForm, setReqForm] = useState<ReferralRequestForm>({
     company_name: "",
@@ -119,10 +120,10 @@ const Referral = () => {
   useEffect(() => {
     const init = async () => {
       if (!user) return;
-      // get or create referral
+      // get or create referral and stats
       const { data: existing } = await supabase
         .from("referrals")
-        .select("code")
+        .select("code, clicks, earnings_azn")
         .eq("user_id", user.id)
         .maybeSingle();
 
@@ -135,22 +136,20 @@ const Referral = () => {
         const { data: created, error } = await supabase
           .from("referrals")
           .insert({ user_id: user.id, code: newCode })
-          .select("code")
+          .select("code, clicks, earnings_azn")
           .single();
         if (error) {
           toast({ title: "Xəta", description: "Referral kodu yaradılmadı." });
         } else {
           code = created.code;
+          setClicks(created.clicks ?? 0);
+          setBalance(Number(created.earnings_azn || 0));
         }
+      } else {
+        setClicks(existing?.clicks ?? 0);
+        setBalance(Number(existing?.earnings_azn || 0));
       }
       if (code) setReferralCode(code);
-
-      // clicks
-      const { count: clickCount } = await supabase
-        .from("referral_clicks")
-        .select("*", { count: "exact", head: true })
-        .eq("referral_user_id", user.id);
-      setClicks(clickCount || 0);
 
       // approved requests
       const { count: appCount } = await supabase
@@ -167,6 +166,22 @@ const Referral = () => {
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
       setWallets(ws || []);
+
+      // withdrawals
+      const { data: wd } = await supabase
+        .from("withdrawals")
+        .select("id, status, amount, method, destination, created_at")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+      setWithdrawals((wd || []) as any);
+
+      // profile
+      const { data: prof } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      setFullName(prof?.full_name || "");
     };
     init();
   }, [user]);
@@ -268,21 +283,57 @@ const Referral = () => {
     toast({ title: "Cüzdan silindi" });
   };
 
+  const cancelWithdrawal = async (w: { id: string; status: string; amount: number }) => {
+    if (!user) return;
+    if (w.status !== 'pending') return;
+    const { error } = await supabase
+      .from('withdrawals')
+      .update({ status: 'cancelled' })
+      .eq('id', w.id);
+    if (error) return toast({ title: 'Xəta', description: 'Sorğu ləğv olunmadı' });
+
+    const newBal = Number((balance + w.amount).toFixed(2));
+    const { error: rErr } = await supabase.from('referrals').update({ earnings_azn: newBal }).eq('user_id', user.id);
+    if (!rErr) setBalance(newBal);
+
+    setWithdrawals((prev) => prev.map((row) => (row.id === w.id ? { ...row, status: 'cancelled' } : row)));
+    toast({ title: 'Sorğu ləğv olundu' });
+  };
+
   // Withdraw
   const createWithdrawal = async () => {
     if (!user) return;
     const amount = parseFloat(withdrawAmount || `${balance}`);
     if (isNaN(amount) || amount <= 0) return toast({ title: "Məbləği düzgün daxil edin" });
-    if (amount < 10) return toast({ title: "Minimum məbləğ 10 AZN" });
     if (amount > balance) return toast({ title: "Balansdan artıqdır" });
-
     if (!withdrawDest) return toast({ title: "Təyinat seçin" });
 
-    const { error } = await supabase
+    const { error: wErr } = await supabase
       .from("withdrawals")
       .insert({ user_id: user.id, method: withdrawMethod, amount, destination: withdrawDest });
-    if (error) return toast({ title: "Xəta", description: "Çıxarış yaradılmadı" });
+    if (wErr) return toast({ title: "Xəta", description: "Çıxarış yaradılmadı" });
 
+    // Decrease balance
+    const newBal = Number((balance - amount).toFixed(2));
+    const { error: rErr } = await supabase
+      .from("referrals")
+      .update({ earnings_azn: newBal })
+      .eq("user_id", user.id);
+    if (rErr) {
+      toast({ title: "Xəbərdarlıq", description: "Balans yenilənmədi, dəstəyə yazın" });
+    } else {
+      setBalance(newBal);
+    }
+
+    // Refresh withdrawals list
+    const { data: wd } = await supabase
+      .from("withdrawals")
+      .select("id, status, amount, method, destination, created_at")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
+    setWithdrawals((wd || []) as any);
+
+    setWithdrawAmount("");
     toast({ title: "Çıxarış yaradıldı", description: "Admin təsdiqindən sonra icra olunacaq" });
   };
 
@@ -304,6 +355,9 @@ const Referral = () => {
     setReqForm({ company_name: "", contact_name: "", contact_email: "", phone: "", job_title: "", message: "" });
   };
 
+  const amountNum = parseFloat(withdrawAmount || `${balance}`);
+  const canWithdraw = !!user && amountNum > 0 && amountNum <= balance && !!withdrawDest;
+
   return (
     <main className="flex-1 overflow-y-auto h-screen pb-20 xl:pb-0 pt-14 xl:pt-0">
       <MobileHeader />
@@ -311,8 +365,8 @@ const Referral = () => {
         <div className="max-w-5xl mx-auto">
           <h1 className="text-2xl lg:text-3xl font-bold">Referral proqramı</h1>
           <p className="text-sm text-muted-foreground mt-2">
-            Linkinizi paylaşın, sizin link vasitəsilə yerləşdirilən hər təsdiqlənən elan üçün 5 AZN qazanın. Minimum çıxarış 10 AZN.
-            İşəgötürənlər referral linki ilə müraciət edərək endirimlər və üstünlük qazanacaqlar.
+            Linkinizi paylaşın, sizin link vasitəsilə yerləşdirilən hər təsdiqlənən elan üçün 5 AZN qazanın.
+            Çıxarış sorğunuz admin təsdiqi ilə icra olunur.
           </p>
         </div>
       </section>
@@ -413,10 +467,10 @@ const Referral = () => {
                       >
                         Kopyala
                       </Button>
-                      <Button variant="ghost" onClick={signOut}>Çıxış</Button>
+                      
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
                     <div className="p-3 rounded-lg border">
                       <div className="text-xs text-muted-foreground">Klik sayı</div>
                       <div className="text-xl font-bold">{clicks}</div>
@@ -429,10 +483,22 @@ const Referral = () => {
                       <div className="text-xs text-muted-foreground">Qazanc (AZN)</div>
                       <div className="text-xl font-bold">{balance}</div>
                     </div>
-                    <div className="p-3 rounded-lg border">
-                      <div className="text-xs text-muted-foreground">Minimum çıxarış</div>
-                      <div className="text-xl font-bold">10</div>
-                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Profil</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div>
+                    <Label>Ad Soyad</Label>
+                    <Input value={fullName} onChange={(e)=>setFullName(e.target.value)} placeholder="Ad Soyad" />
+                  </div>
+                  <div className="flex justify-between">
+                    <Button variant="outline" onClick={async()=>{ if(!user) return; const { error } = await supabase.from('profiles').update({ full_name: fullName }).eq('user_id', user.id); if(error){ toast({ title: 'Xəta', description: 'Profil yenilənmədi' }); } else { toast({ title: 'Profil yeniləndi' }); } }}>Yadda saxla</Button>
+                    <Button variant="ghost" onClick={signOut}>Hesabdan çıxış</Button>
                   </div>
                 </CardContent>
               </Card>
@@ -537,7 +603,35 @@ const Referral = () => {
                     </div>
                   </div>
                   <div className="flex justify-end mt-3">
-                    <Button onClick={createWithdrawal} disabled={balance < 10}>Çıxarış et</Button>
+                    <Button onClick={createWithdrawal} disabled={!canWithdraw}>Çıxarış et</Button>
+                  </div>
+
+                  <Separator className="my-4" />
+                  <div className="space-y-2">
+                    <div className="text-sm font-medium">Sorğularım</div>
+                    <div className="space-y-2">
+                      {withdrawals.length === 0 && (
+                        <div className="text-sm text-muted-foreground">Hələ sorğu yoxdur</div>
+                      )}
+                      {withdrawals.map(w => (
+                        <div key={w.id} className="p-3 border rounded-md flex items-center justify-between">
+                          <div className="text-sm">
+                            <div className="font-medium">{w.amount} AZN • {w.method === 'card' ? 'Kart' : 'M10'}</div>
+                            <div className="text-xs text-muted-foreground">{new Date(w.created_at).toLocaleString()} • {w.destination}</div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className={`text-xs px-2 py-1 rounded ${w.status==='pending'?'bg-yellow-500/10 text-yellow-600': w.status==='paid'?'bg-green-500/10 text-green-600':'bg-red-500/10 text-red-600'}`}>
+                              {w.status==='pending'?'Gözləyir': w.status==='paid'?'Ödənildi':'Ləğv edildi'}
+                            </span>
+                            {w.status==='pending' && (
+                              <Button variant="outline" size="sm" onClick={()=>cancelWithdrawal(w)}>
+                                Ləğv et
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </CardContent>
               </Card>
