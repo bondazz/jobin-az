@@ -138,7 +138,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                 className="w-full justify-start h-10"
                 onClick={() => navigate('/admin/referral-jobs')}
               >
-                İş Elanları
+                Elan müraciətləri
               </Button>
             </div>
           </div>
@@ -233,7 +233,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                     className="w-full justify-start h-10"
                     onClick={() => { navigate('/admin/referral-jobs'); setSidebarOpen(false); }}
                   >
-                    İş Elanları
+                    Elan müraciətləri
                   </Button>
                 </div>
               </div>
