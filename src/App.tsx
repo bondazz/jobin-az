@@ -18,6 +18,7 @@ const Pricing = lazy(() => import("./pages/Pricing"));
 const CVBuilder = lazy(() => import("./pages/CVBuilder"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const SavedJobs = lazy(() => import("./pages/SavedJobs"));
+const Referral = lazy(() => import("./pages/Referral"));
 
 // XML/SEO pages - can be lazy loaded
 const Sitemap = lazy(() => import("./pages/Sitemap"));
@@ -107,6 +108,11 @@ const App = () => (
             <Route path="/services" element={
               <Suspense fallback={<LoadingFallback />}>
                 <Pricing />
+              </Suspense>
+            } />
+            <Route path="/referral" element={
+              <Suspense fallback={<LoadingFallback />}>
+                <Referral />
               </Suspense>
             } />
             <Route path="/about" element={

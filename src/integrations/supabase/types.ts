@@ -413,6 +413,108 @@ export type Database = {
         }
         Relationships: []
       }
+      referral_clicks: {
+        Row: {
+          created_at: string
+          id: string
+          referral_code: string
+          referral_user_id: string
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          referral_code: string
+          referral_user_id: string
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          referral_code?: string
+          referral_user_id?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      referral_requests: {
+        Row: {
+          company_name: string
+          contact_email: string | null
+          contact_name: string | null
+          created_at: string
+          id: string
+          job_title: string | null
+          message: string | null
+          phone: string | null
+          referral_code: string
+          referral_user_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          company_name: string
+          contact_email?: string | null
+          contact_name?: string | null
+          created_at?: string
+          id?: string
+          job_title?: string | null
+          message?: string | null
+          phone?: string | null
+          referral_code: string
+          referral_user_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          company_name?: string
+          contact_email?: string | null
+          contact_name?: string | null
+          created_at?: string
+          id?: string
+          job_title?: string | null
+          message?: string | null
+          phone?: string | null
+          referral_code?: string
+          referral_user_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      referrals: {
+        Row: {
+          clicks: number
+          code: string
+          created_at: string
+          earnings_azn: number
+          id: string
+          is_active: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          clicks?: number
+          code: string
+          created_at?: string
+          earnings_azn?: number
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          clicks?: number
+          code?: string
+          created_at?: string
+          earnings_azn?: number
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       site_settings: {
         Row: {
           created_at: string
@@ -437,6 +539,69 @@ export type Database = {
           key?: string
           updated_at?: string
           value?: Json | null
+        }
+        Relationships: []
+      }
+      wallets: {
+        Row: {
+          card_number: string | null
+          created_at: string
+          id: string
+          is_default: boolean
+          m10_number: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          card_number?: string | null
+          created_at?: string
+          id?: string
+          is_default?: boolean
+          m10_number?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          card_number?: string | null
+          created_at?: string
+          id?: string
+          is_default?: boolean
+          m10_number?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      withdrawals: {
+        Row: {
+          amount: number
+          created_at: string
+          destination: string
+          id: string
+          method: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          destination: string
+          id?: string
+          method: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          destination?: string
+          id?: string
+          method?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -483,6 +648,10 @@ export type Database = {
         Args: { job_id: string }
         Returns: undefined
       }
+      log_referral_click: {
+        Args: { code: string; ua: string }
+        Returns: undefined
+      }
       search_companies: {
         Args: { search_term: string }
         Returns: {
@@ -508,6 +677,18 @@ export type Database = {
           created_at: string
           updated_at: string
         }[]
+      }
+      submit_referral_request: {
+        Args: {
+          _code: string
+          _company_name: string
+          _contact_name: string
+          _contact_email: string
+          _phone: string
+          _job_title: string
+          _message: string
+        }
+        Returns: string
       }
     }
     Enums: {

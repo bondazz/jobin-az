@@ -81,6 +81,21 @@ const Index = () => {
     fetchCategories();
   }, []);
 
+  // Referral click logging
+  useEffect(() => {
+    const code = searchParams.get('ref');
+    if (!code) return;
+    const key = `ref_seen_${code}`;
+    if (localStorage.getItem(key)) return;
+    localStorage.setItem(key, '1');
+    (async () => {
+      try {
+        await (supabase.rpc as any)('log_referral_click' as any, { code, ua: navigator.userAgent } as any);
+      } catch (e) {
+        // ignore
+      }
+    })();
+  }, [searchParams]);
   // Check for category and company filters from URL
   useEffect(() => {
     const categorySlug = searchParams.get('category');
