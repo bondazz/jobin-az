@@ -35,6 +35,7 @@ export default function AdminWithdrawals() {
   const [targetStatus, setTargetStatus] = useState<'paid' | 'cancelled' | null>(null);
   const [names, setNames] = useState<Record<string, string>>({});
   const [viewingDetails, setViewingDetails] = useState<Withdrawal | null>(null);
+  const [walletDetails, setWalletDetails] = useState<Record<string, string>>({});
 
   useEffect(() => {
     checkAuth();
@@ -61,21 +62,40 @@ export default function AdminWithdrawals() {
       if (error) throw error;
       const rows = (data || []) as Withdrawal[];
       setRows(rows);
+      
       const userIds = Array.from(new Set(rows.map(r => r.user_id)));
       if (userIds.length) {
+        // Get user names
         const { data: profs } = await supabase
           .from('profiles')
           .select('user_id, first_name, last_name')
           .in('user_id', userIds);
-        const map: Record<string, string> = {};
+        const nameMap: Record<string, string> = {};
         (profs || []).forEach(p => { 
           const firstName = (p as any).first_name || '';
           const lastName = (p as any).last_name || '';
-          map[(p as any).user_id] = firstName || lastName ? `${firstName} ${lastName}`.trim() : '';
+          nameMap[(p as any).user_id] = firstName || lastName ? `${firstName} ${lastName}`.trim() : '';
         });
-        setNames(map);
+        setNames(nameMap);
+
+        // Get wallet details for card withdrawals
+        const cardWithdrawals = rows.filter(r => r.method === 'card');
+        if (cardWithdrawals.length) {
+          const { data: wallets } = await supabase
+            .from('wallets')
+            .select('user_id, card_number')
+            .in('user_id', userIds)
+            .not('card_number', 'is', null);
+          
+          const walletMap: Record<string, string> = {};
+          (wallets || []).forEach(w => {
+            walletMap[(w as any).user_id] = (w as any).card_number;
+          });
+          setWalletDetails(walletMap);
+        }
       } else {
         setNames({});
+        setWalletDetails({});
       }
     } catch (e) {
       console.error(e);
@@ -240,7 +260,12 @@ export default function AdminWithdrawals() {
                   </div>
                   <div className="col-span-2">
                     <div className="font-medium text-muted-foreground">Təyinat</div>
-                    <div className="font-mono bg-muted p-2 rounded text-sm">{viewingDetails.destination}</div>
+                    <div className="font-mono bg-muted p-2 rounded text-sm">
+                      {viewingDetails.method === 'card' 
+                        ? (walletDetails[viewingDetails.user_id] || viewingDetails.destination)
+                        : viewingDetails.destination
+                      }
+                    </div>
                   </div>
                   <div>
                     <div className="font-medium text-muted-foreground">Status</div>
