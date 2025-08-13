@@ -295,13 +295,17 @@ const Referral = () => {
     if (amount > balance) return toast({ title: "Balansdan artıqdır" });
     if (!withdrawDest) return toast({ title: "Təyinat seçin" });
 
-    // For card withdrawals, get the full card number from wallets instead of masked version
+    // For card withdrawals, store the selected card number in full format in database
     let fullDestination = withdrawDest;
     if (withdrawMethod === "card") {
-      const wallet = wallets.find((w) => w.card_number);
-      if (wallet && wallet.card_number) {
-        // Store full card number in database
-        fullDestination = wallet.card_number.replace(/\s/g, ''); // Remove spaces for consistent storage
+      // Find the specific wallet that matches the selected destination
+      const selectedWallet = wallets.find((w) => w.card_number && maskCardForUser(w.card_number) === withdrawDest);
+      if (selectedWallet && selectedWallet.card_number) {
+        // Store full card number in database without spaces for consistency
+        fullDestination = selectedWallet.card_number.replace(/\s/g, '');
+      } else {
+        // If we can't find the wallet, store the destination as is (might already be full card number)
+        fullDestination = withdrawDest.replace(/\s/g, '');
       }
     }
 
