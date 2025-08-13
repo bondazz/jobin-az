@@ -11,6 +11,7 @@ import { generateCategorySEO, generateJobSEO, generatePageSEO, updatePageMeta } 
 import { useDynamicSEO } from '@/hooks/useSEO';
 import BottomNavigation from '@/components/BottomNavigation';
 import MobileHeader from '@/components/MobileHeader';
+import { useReferralCode } from '@/hooks/useReferralCode';
 import { supabase } from '@/integrations/supabase/client';
 import { Tables } from '@/integrations/supabase/types';
 
@@ -27,6 +28,7 @@ const Categories = () => {
   const [loading, setLoading] = useState(true);
   const [currentCategory, setCurrentCategory] = useState<Category | null>(null);
   const [jobData, setJobData] = useState<any>(null);
+  const { getUrlWithReferral } = useReferralCode();
 
   // Dynamic SEO
   useDynamicSEO('category', categorySlug ? currentCategory : null);
@@ -108,10 +110,20 @@ const Categories = () => {
   const handleCategoryClick = (category: Category) => {
     navigate(`/vacancies?category=${category.slug}`);
   };
-  const handleJobSelect = (job: Job) => {
+  const handleJobSelect = async (job: Job) => {
+    // Get job slug from database
+    const { data } = await supabase
+      .from('jobs')
+      .select('slug')
+      .eq('id', job.id)
+      .single();
+    
+    if (data?.slug) {
+      const baseUrl = `/vacancies/${data.slug}?category=${categorySlug}`;
+      const urlWithReferral = getUrlWithReferral(baseUrl);
+      navigate(urlWithReferral);
+    }
     setSelectedJob(job);
-    const jobSlug = job.title.toLowerCase().replace(/\s+/g, '-');
-    navigate(`/categories/${categorySlug}/vacancy/${jobSlug}`);
   };
 
   const filteredCategories = categories.filter(category => 

@@ -7,6 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import { MapPin, Calendar, Users, Clock, Building, Star, Share2, Bookmark, Eye, DollarSign, Globe, Mail, Phone, Printer } from 'lucide-react';
 import VerifyBadge from '@/components/ui/verify-badge';
 import AdBanner from './AdBanner';
+import { useReferralCode } from '@/hooks/useReferralCode';
 interface JobDetailsProps {
   jobId: string | null;
   isMobile?: boolean;
@@ -21,6 +22,7 @@ const JobDetails = ({
   const [applicationEmail, setApplicationEmail] = useState<string | null>(null);
   const [revealingEmail, setRevealingEmail] = useState(false);
   const { toast } = useToast();
+  const { getUrlWithReferral } = useReferralCode();
   useEffect(() => {
     if (jobId) {
       fetchJobDetails(jobId);
@@ -99,10 +101,12 @@ const JobDetails = ({
     window.print();
   };
   const handleShare = async () => {
+    const currentUrl = window.location.href.split('?')[0]; // Remove existing query params
+    const shareUrl = getUrlWithReferral(currentUrl);
     const shareData = {
       title: job.title,
       text: `${job.companies?.name} şirkətində ${job.title} iş elanı`,
-      url: window.location.href
+      url: shareUrl
     };
     if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
       try {
@@ -122,10 +126,12 @@ const JobDetails = ({
     }
   };
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(window.location.href);
+    const currentUrl = window.location.href.split('?')[0]; // Remove existing query params
+    const shareUrl = getUrlWithReferral(currentUrl);
+    navigator.clipboard.writeText(shareUrl);
     toast({
       title: 'Link kopyalandı',
-      description: 'İş elanının linki panoya kopyalandı'
+      description: 'İş elanının linki panoa kopyalandı'
     });
   };
 

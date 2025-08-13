@@ -9,6 +9,7 @@ import MobileHeader from '@/components/MobileHeader';
 import AdBanner from '@/components/AdBanner';
 import { generatePageSEO, updatePageMeta } from '@/utils/seo';
 import { useDynamicSEO } from '@/hooks/useSEO';
+import { useReferralCode } from '@/hooks/useReferralCode';
 
 // Lazy load JobDetails for better performance
 const JobDetails = lazy(() => import('@/components/JobDetails'));
@@ -27,6 +28,7 @@ const Index = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { jobSlug } = useParams();
   const navigate = useNavigate();
+  const { getUrlWithReferral } = useReferralCode();
 
   // Dynamic SEO for job pages
   useDynamicSEO('job', jobSlug ? jobData : null);
@@ -185,10 +187,11 @@ const Index = () => {
       .single();
     
     if (data?.slug) {
-      navigate(`/vacancies/${data.slug}`);
+      const urlWithReferral = getUrlWithReferral(`/vacancies/${data.slug}`);
+      navigate(urlWithReferral);
     }
     setSelectedJob(job);
-  }, [navigate]);
+  }, [navigate, getUrlWithReferral]);
 
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category === selectedCategory ? '' : category);

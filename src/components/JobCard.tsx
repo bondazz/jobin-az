@@ -4,6 +4,7 @@ import { Eye, Heart } from 'lucide-react';
 import VerifyBadge from '@/components/ui/verify-badge';
 import { useState, useEffect, useCallback, memo } from 'react';
 import { LazyImage } from '@/components/ui/lazy-image';
+import { useReferralCode } from '@/hooks/useReferralCode';
 
 interface JobCardProps {
   job: Job;
@@ -25,6 +26,7 @@ const JobCard = memo(({
   companyData
 }: JobCardProps) => {
   const [isSaved, setIsSaved] = useState(false);
+  const { getUrlWithReferral } = useReferralCode();
   
   useEffect(() => {
     const savedJobs = JSON.parse(localStorage.getItem('savedJobs') || '[]');

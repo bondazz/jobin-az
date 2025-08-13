@@ -12,6 +12,7 @@ import { updatePageMeta } from "@/utils/seo";
 import { Trash2 } from "lucide-react";
 import BottomNavigation from "@/components/BottomNavigation";
 import MobileHeader from "@/components/MobileHeader";
+import { useReferralCode } from "@/hooks/useReferralCode";
 
 interface ReferralRequestForm {
   company_name: string;
@@ -46,6 +47,7 @@ const formatM10Input = (value: string) => {
 const Referral = () => {
   const [searchParams] = useSearchParams();
   const refCode = searchParams.get("ref") || "";
+  const { referralCode: storedReferralCode } = useReferralCode();
 
   const [user, setUser] = useState<import("@supabase/supabase-js").User | null>(null);
   const [session, setSession] = useState<import("@supabase/supabase-js").Session | null>(null);
@@ -386,7 +388,7 @@ const Referral = () => {
       <div className="max-w-5xl mx-auto p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left: Company request via referral */}
         <div className="lg:col-span-2">
-          {refCode && (
+          {refCode && !storedReferralCode && (
             <Card>
               <CardHeader>
                 <CardTitle>Elan yerləşdirmə müraciəti</CardTitle>

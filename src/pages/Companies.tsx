@@ -15,6 +15,7 @@ import { Tables } from '@/integrations/supabase/types';
 import { useIsMobile, useIsMobileOrTablet } from '@/hooks/use-mobile';
 import VerifyBadge from '@/components/ui/verify-badge';
 import { useCompanyProfile } from '@/hooks/useCompanyProfile';
+import { useReferralCode } from '@/hooks/useReferralCode';
 
 type Company = Tables<'companies'>;
 const Companies = () => {
@@ -39,6 +40,7 @@ const Companies = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
   const isMobileOrTablet = useIsMobileOrTablet();
+  const { getUrlWithReferral } = useReferralCode();
   
   // Use unified company profile hook for consistent behavior across all devices
   const { activeTab, handleTabChange } = useCompanyProfile(selectedCompany);
@@ -305,7 +307,9 @@ const Companies = () => {
       .single();
     
     if (data?.slug) {
-      navigate(`/vacancies/${data.slug}?company=${selectedCompany?.slug}`);
+      const baseUrl = `/vacancies/${data.slug}?company=${selectedCompany?.slug}`;
+      const urlWithReferral = getUrlWithReferral(baseUrl);
+      navigate(urlWithReferral);
     }
   };
 

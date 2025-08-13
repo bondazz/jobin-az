@@ -7,11 +7,13 @@ import { Job } from '@/types/job';
 import { generatePageSEO, updatePageMeta } from '@/utils/seo';
 import BottomNavigation from '@/components/BottomNavigation';
 import MobileHeader from '@/components/MobileHeader';
+import { useReferralCode } from '@/hooks/useReferralCode';
 
 const SavedJobs = () => {
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const { jobId } = useParams();
   const navigate = useNavigate();
+  const { getUrlWithReferral } = useReferralCode();
 
   useEffect(() => {
     const updateSEO = async () => {
@@ -30,7 +32,8 @@ const SavedJobs = () => {
 
   const handleJobSelect = async (job: Job) => {
     setSelectedJob(job);
-    navigate(`/favorites/${job.id}`);
+    const urlWithReferral = getUrlWithReferral(`/favorites/${job.id}`);
+    navigate(urlWithReferral);
   };
 
   return (
