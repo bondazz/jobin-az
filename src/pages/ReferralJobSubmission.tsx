@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { RichTextEditor } from '@/components/ui/rich-text-editor';
 import MobileHeader from '@/components/MobileHeader';
 import BottomNavigation from '@/components/BottomNavigation';
+import { generatePageSEO, updatePageMeta } from '@/utils/seo';
 
 const ReferralJobSubmission = () => {
   const [searchParams] = useSearchParams();
@@ -32,11 +33,64 @@ const ReferralJobSubmission = () => {
     job_article: ''
   });
 
-  // Redirect if no referral code
+  // Redirect if no referral code and setup SEO
   useEffect(() => {
     if (!refCode) {
       navigate('/');
+      return;
     }
+
+    // Setup SEO for job submission page
+    const setupSEO = async () => {
+      const seoData = await generatePageSEO('job_submission');
+      const jobSubmissionSEO = {
+        ...seoData,
+        title: 'İş Elanı Yerləşdir | Birləşik Elan | Jooble Azərbaycan',
+        description: 'İş elanınızı pulsuz yerləşdirin. Referral sistemi ilə birləşik elan yerləşdirin və işəgötürənlərlə birbaşa əlaqə saxlayın. Azərbaycanda ən effektiv iş elanı platforması.',
+        keywords: 'iş elanı yerləşdir, birləşik elan, referral sistem, iş elanı ver, vakansiya yerləşdir, işəgötürən, Azərbaycan iş elanları',
+        url: '/add_job'
+      };
+      updatePageMeta(jobSubmissionSEO);
+
+      // Add structured data for job posting
+      const structuredData = {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "İş Elanı Yerləşdir",
+        "description": "İş elanınızı referral sistemi ilə yerləşdirin",
+        "url": window.location.href,
+        "isPartOf": {
+          "@type": "WebSite",
+          "name": "Jooble Azərbaycan",
+          "url": window.location.origin
+        },
+        "breadcrumb": {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Ana Səhifə",
+              "item": window.location.origin
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "İş Elanı Yerləşdir",
+              "item": window.location.href
+            }
+          ]
+        }
+      };
+
+      // Add structured data to head
+      const script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.textContent = JSON.stringify(structuredData);
+      document.head.appendChild(script);
+    };
+
+    setupSEO();
   }, [refCode, navigate]);
 
   const handleInputChange = (field: string, value: string) => {
@@ -129,7 +183,7 @@ const ReferralJobSubmission = () => {
       {/* Main Content with Scrolling */}
       <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
         {/* Desktop Layout */}
-        <div className="hidden xl:block h-full overflow-auto">
+        <div className="hidden xl:block min-h-screen overflow-auto">
           <div className="container mx-auto px-4 py-8">
             <div className="max-w-4xl mx-auto">
               <Card className="shadow-xl border-0 bg-card/95 backdrop-blur-sm">
@@ -146,9 +200,9 @@ const ReferralJobSubmission = () => {
                   <form onSubmit={handleSubmit} className="space-y-8">
                     {/* Applicant Information */}
                     <div className="space-y-6">
-                      <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">
-                        Müraciətçi məlumatları
-                      </h3>
+                     <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2 text-center">
+                       Müraciətçi məlumatları
+                     </h3>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
@@ -203,9 +257,9 @@ const ReferralJobSubmission = () => {
 
                     {/* Job Details */}
                     <div className="space-y-6">
-                      <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">
-                        Elan təfərrüatları
-                      </h3>
+                     <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2 text-center">
+                       Elan təfərrüatları
+                     </h3>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
@@ -299,9 +353,9 @@ const ReferralJobSubmission = () => {
                 <form onSubmit={handleSubmit} className="space-y-6">
                   {/* Applicant Information */}
                   <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">
-                      Müraciətçi məlumatları
-                    </h3>
+                   <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2 text-center">
+                     Müraciətçi məlumatları
+                   </h3>
                     
                     <div className="space-y-4">
                       <div className="space-y-2">
@@ -354,9 +408,9 @@ const ReferralJobSubmission = () => {
 
                   {/* Job Details */}
                   <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">
-                      Elan təfərrüatları
-                    </h3>
+                   <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2 text-center">
+                     Elan təfərrüatları
+                   </h3>
                     
                     <div className="space-y-4">
                       <div className="space-y-2">
