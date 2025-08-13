@@ -178,7 +178,7 @@ const ReferralJobSubmission = () => {
       {/* Main Content with Scrolling */}
       <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
         {/* Desktop Layout */}
-        <div className="hidden xl:block min-h-screen overflow-auto">
+        <div className="hidden xl:block h-screen overflow-y-auto">
           <div className="container mx-auto px-4 py-8">
             <div className="max-w-4xl mx-auto">
               <Card className="shadow-xl border-0 bg-card/95 backdrop-blur-sm">

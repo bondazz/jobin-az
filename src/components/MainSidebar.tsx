@@ -62,6 +62,11 @@ const MainSidebar = () => {
     path: '/referral',
     count: null
   }, {
+    icon: FileText,
+    label: 'Elan yerləşdir',
+    path: '/add_job',
+    count: null
+  }, {
     icon: Info,
     label: 'Haqqında',
     path: '/about',
@@ -170,21 +175,6 @@ const MainSidebar = () => {
             </Button>
           ))}
         </div>
-        
-        {/* Referral Job Posting Button - Only show when accessing via referral link */}
-        {hasReferralCode && (
-          <div className="mt-4 pt-3 border-t border-border/40">
-            <Button 
-              asChild 
-              className="w-full bg-gradient-to-r from-primary to-accent text-white hover:opacity-90 font-medium text-sm py-2 px-3 rounded-lg shadow-lg transition-all duration-300"
-            >
-              <Link to={`/add_job?ref=${hasReferralCode}`}>
-                <FileText className="w-4 h-4 mr-2" />
-                Birləşik elan yerləşdir
-              </Link>
-            </Button>
-          </div>
-        )}
       </nav>
 
       {/* Statistics Section */}
