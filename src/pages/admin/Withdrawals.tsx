@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { CheckCircle, XCircle, Search } from 'lucide-react';
+import { CheckCircle, XCircle, Search, Eye } from 'lucide-react';
 
 interface Withdrawal {
   id: string;
@@ -34,7 +34,7 @@ export default function AdminWithdrawals() {
   const [comment, setComment] = useState('');
   const [targetStatus, setTargetStatus] = useState<'paid' | 'cancelled' | null>(null);
   const [names, setNames] = useState<Record<string, string>>({});
-  const [expandedCard, setExpandedCard] = useState<string | null>(null);
+  const [viewingDetails, setViewingDetails] = useState<Withdrawal | null>(null);
 
   useEffect(() => {
     checkAuth();
@@ -172,7 +172,7 @@ export default function AdminWithdrawals() {
                     <TableHead>Təyinat</TableHead>
                     <TableHead>Məbləğ</TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead>Əməliyyat</TableHead>
+                    <TableHead>Ətraflı</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -183,16 +183,7 @@ export default function AdminWithdrawals() {
                       <TableCell className="text-xs">{names[r.user_id] || '-'}</TableCell>
                       <TableCell>{r.method === 'card' ? 'Kart' : 'M10'}</TableCell>
                       <TableCell className="max-w-[240px]">
-                        {r.method === 'card' ? (
-                          <div 
-                            className="cursor-pointer hover:bg-muted p-1 rounded"
-                            onClick={() => setExpandedCard(expandedCard === r.id ? null : r.id)}
-                          >
-                            {expandedCard === r.id ? r.destination : `${r.destination.slice(0, 4)} **** **** ${r.destination.slice(-4)}`}
-                          </div>
-                        ) : (
-                          <span title={r.destination}>{r.destination}</span>
-                        )}
+                        {r.method === 'card' ? '**** **** **** ****' : r.destination}
                       </TableCell>
                       <TableCell className="font-semibold">{r.amount} AZN</TableCell>
                       <TableCell>
@@ -202,41 +193,13 @@ export default function AdminWithdrawals() {
                       </TableCell>
                       <TableCell>
                         <div className="flex gap-2">
-                          <Dialog open={selected?.id === r.id && targetStatus !== null} onOpenChange={(o)=>{ if(!o){ setSelected(null); setTargetStatus(null); setComment(''); }}}>
-                            <DialogTrigger asChild>
-                              <div className="flex gap-2">
-                                <Button 
-                                  size="sm" 
-                                  variant="outline" 
-                                  onClick={()=>openStatusDialog(r,'paid')}
-                                  disabled={r.status !== 'pending'}
-                                >
-                                  <CheckCircle className="w-4 h-4 mr-1"/> Ödənildi
-                                </Button>
-                                <Button 
-                                  size="sm" 
-                                  variant="outline" 
-                                  onClick={()=>openStatusDialog(r,'cancelled')}
-                                  disabled={r.status !== 'pending'}
-                                >
-                                  <XCircle className="w-4 h-4 mr-1"/> Ləğv et
-                                </Button>
-                              </div>
-                            </DialogTrigger>
-                            <DialogContent className="max-w-md">
-                              <DialogHeader>
-                                <DialogTitle>Statusu dəyiş: {targetStatus === 'paid' ? 'Ödənildi' : 'Ləğv edildi'}</DialogTitle>
-                              </DialogHeader>
-                              <div className="space-y-3">
-                                <Label>Admin şərhi {targetStatus==='cancelled' ? '(mütləq)' : '(opsional)'}</Label>
-                                <Input value={comment} onChange={(e)=>setComment(e.target.value)} placeholder="Qısa səbəb" />
-                                <div className="flex justify-end gap-2">
-                                  <Button variant="outline" onClick={()=>{setSelected(null); setTargetStatus(null); setComment('');}}>Bağla</Button>
-                                  <Button onClick={applyStatus}>Təsdiq et</Button>
-                                </div>
-                              </div>
-                            </DialogContent>
-                          </Dialog>
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            onClick={() => setViewingDetails(r)}
+                          >
+                            <Eye className="w-4 h-4 mr-1"/> Ətraflı
+                          </Button>
                         </div>
                       </TableCell>
                     </TableRow>
@@ -249,6 +212,95 @@ export default function AdminWithdrawals() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Details Dialog */}
+        <Dialog open={!!viewingDetails} onOpenChange={(open) => !open && setViewingDetails(null)}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Çıxarış təfərrüatları</DialogTitle>
+            </DialogHeader>
+            {viewingDetails && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <div className="font-medium text-muted-foreground">User ID</div>
+                    <div className="text-xs break-all">{viewingDetails.user_id}</div>
+                  </div>
+                  <div>
+                    <div className="font-medium text-muted-foreground">Ad Soyad</div>
+                    <div>{names[viewingDetails.user_id] || '-'}</div>
+                  </div>
+                  <div>
+                    <div className="font-medium text-muted-foreground">Metod</div>
+                    <div>{viewingDetails.method === 'card' ? 'Kart' : 'M10'}</div>
+                  </div>
+                  <div>
+                    <div className="font-medium text-muted-foreground">Məbləğ</div>
+                    <div className="font-semibold">{viewingDetails.amount} AZN</div>
+                  </div>
+                  <div className="col-span-2">
+                    <div className="font-medium text-muted-foreground">Təyinat</div>
+                    <div className="font-mono bg-muted p-2 rounded text-sm">{viewingDetails.destination}</div>
+                  </div>
+                  <div>
+                    <div className="font-medium text-muted-foreground">Status</div>
+                    <Badge variant={viewingDetails.status === 'pending' ? 'secondary' : viewingDetails.status === 'paid' ? 'default' : 'destructive'}>
+                      {viewingDetails.status === 'pending' ? 'Gözləyir' : viewingDetails.status === 'paid' ? 'Ödənildi' : 'Ləğv edildi'}
+                    </Badge>
+                  </div>
+                  <div>
+                    <div className="font-medium text-muted-foreground">Tarix</div>
+                    <div className="text-xs">{new Date(viewingDetails.created_at).toLocaleString()}</div>
+                  </div>
+                  {viewingDetails.admin_comment && (
+                    <div className="col-span-2">
+                      <div className="font-medium text-muted-foreground">Admin şərhi</div>
+                      <div className="bg-muted p-2 rounded text-sm">{viewingDetails.admin_comment}</div>
+                    </div>
+                  )}
+                </div>
+                
+                {viewingDetails.status === 'pending' && (
+                  <div className="flex gap-2 pt-4 border-t">
+                    <Dialog open={selected?.id === viewingDetails.id && targetStatus !== null} onOpenChange={(o)=>{ if(!o){ setSelected(null); setTargetStatus(null); setComment(''); }}}>
+                      <DialogTrigger asChild>
+                        <div className="flex gap-2 w-full">
+                          <Button 
+                            className="flex-1"
+                            variant="outline" 
+                            onClick={()=>openStatusDialog(viewingDetails,'paid')}
+                          >
+                            <CheckCircle className="w-4 h-4 mr-1"/> Ödənildi
+                          </Button>
+                          <Button 
+                            className="flex-1"
+                            variant="outline" 
+                            onClick={()=>openStatusDialog(viewingDetails,'cancelled')}
+                          >
+                            <XCircle className="w-4 h-4 mr-1"/> Ləğv et
+                          </Button>
+                        </div>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-md">
+                        <DialogHeader>
+                          <DialogTitle>Statusu dəyiş: {targetStatus === 'paid' ? 'Ödənildi' : 'Ləğv edildi'}</DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-3">
+                          <Label>Admin şərhi {targetStatus==='cancelled' ? '(mütləq)' : '(opsional)'}</Label>
+                          <Input value={comment} onChange={(e)=>setComment(e.target.value)} placeholder="Qısa səbəb" />
+                          <div className="flex justify-end gap-2">
+                            <Button variant="outline" onClick={()=>{setSelected(null); setTargetStatus(null); setComment('');}}>Bağla</Button>
+                            <Button onClick={applyStatus}>Təsdiq et</Button>
+                          </div>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+                )}
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </AdminLayout>
   );
