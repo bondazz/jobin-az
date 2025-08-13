@@ -89,16 +89,7 @@ export default function AdminWithdrawals() {
           
           const walletMap: Record<string, string> = {};
           (wallets || []).forEach(w => {
-            const cardNumber = (w as any).card_number;
-            const userId = (w as any).user_id;
-            // Match the card number to the withdrawal destination
-            const withdrawal = cardWithdrawals.find(wd => 
-              wd.user_id === userId && 
-              (wd.destination === cardNumber || wd.destination.replace(/\s/g, '') === cardNumber.replace(/\s/g, ''))
-            );
-            if (withdrawal) {
-              walletMap[withdrawal.id] = cardNumber;
-            }
+            walletMap[(w as any).user_id] = (w as any).card_number;
           });
           setWalletDetails(walletMap);
         }
@@ -271,7 +262,7 @@ export default function AdminWithdrawals() {
                     <div className="font-medium text-muted-foreground">Təyinat</div>
                     <div className="font-mono bg-muted p-2 rounded text-sm">
                       {viewingDetails.method === 'card' 
-                        ? (walletDetails[viewingDetails.id] || 'Kart məlumatı tapılmadı')
+                        ? (walletDetails[viewingDetails.user_id] || 'Kart məlumatı tapılmadı')
                         : viewingDetails.destination
                       }
                     </div>
