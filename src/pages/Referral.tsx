@@ -632,7 +632,7 @@ const Referral = () => {
                            <div className="flex items-center justify-between">
                              <div className="text-sm">
                                <div className="font-medium">{w.amount} AZN • {w.method === 'card' ? 'Kart' : 'M10'}</div>
-                               <div className="text-xs text-muted-foreground">{new Date(w.created_at).toLocaleString()} • {w.destination}</div>
+                               <div className="text-xs text-muted-foreground">{new Date(w.created_at).toLocaleString()} • {w.method === 'card' ? maskCardForUser(w.destination) : w.destination}</div>
                              </div>
                              <div className="flex items-center gap-2">
                              <span className={`text-xs px-2 py-1 rounded ${w.status==='pending'?'bg-yellow-500/10 text-yellow-600': w.status==='paid'?'bg-green-500/10 text-green-600':'bg-red-500/10 text-red-600'}`}>
