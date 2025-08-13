@@ -8,6 +8,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { RichTextEditor } from '@/components/ui/rich-text-editor';
+import MobileHeader from '@/components/MobileHeader';
+import BottomNavigation from '@/components/BottomNavigation';
 
 const ReferralJobSubmission = () => {
   const [searchParams] = useSearchParams();
@@ -120,159 +122,323 @@ const ReferralJobSubmission = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
+    <>
+      {/* Mobile Header */}
+      <MobileHeader />
+      
+      {/* Main Content with Scrolling */}
+      <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
+        {/* Desktop Layout */}
+        <div className="hidden xl:block h-full overflow-auto">
+          <div className="container mx-auto px-4 py-8">
+            <div className="max-w-4xl mx-auto">
+              <Card className="shadow-xl border-0 bg-card/95 backdrop-blur-sm">
+                <CardHeader className="bg-gradient-to-r from-primary/10 via-accent/5 to-primary/10">
+                  <CardTitle className="text-2xl font-bold text-center text-foreground">
+                    Birləşik Elan Yerləşdir
+                  </CardTitle>
+                  <p className="text-muted-foreground text-center mt-2">
+                    Aşağıdakı formu dolduraraq iş elanınızı yerləşdirə bilərsiniz
+                  </p>
+                </CardHeader>
 
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
-          <Card className="shadow-xl border-0 bg-card/95 backdrop-blur-sm">
-            <CardHeader className="bg-gradient-to-r from-primary/10 via-accent/5 to-primary/10">
-              <CardTitle className="text-2xl font-bold text-center text-foreground">
-                Birləşik Elan Yerləşdir
-              </CardTitle>
-              <p className="text-muted-foreground text-center mt-2">
-                Aşağıdakı formu dolduraraq iş elanınızı yerləşdirə bilərsiniz
-              </p>
-            </CardHeader>
-
-            <CardContent className="p-8">
-              <form onSubmit={handleSubmit} className="space-y-8">
-                {/* Applicant Information */}
-                <div className="space-y-6">
-                  <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">
-                    Müraciətçi məlumatları
-                  </h3>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="applicant_name">Ad *</Label>
-                      <Input
-                        id="applicant_name"
-                        value={formData.applicant_name}
-                        onChange={(e) => handleInputChange('applicant_name', e.target.value)}
-                        required
-                        className="focus:ring-2 focus:ring-primary/20"
-                      />
+                <CardContent className="p-8">
+                  <form onSubmit={handleSubmit} className="space-y-8">
+                    {/* Applicant Information */}
+                    <div className="space-y-6">
+                      <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">
+                        Müraciətçi məlumatları
+                      </h3>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="applicant_name">Ad *</Label>
+                          <Input
+                            id="applicant_name"
+                            value={formData.applicant_name}
+                            onChange={(e) => handleInputChange('applicant_name', e.target.value)}
+                            required
+                            className="focus:ring-2 focus:ring-primary/20"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="applicant_surname">Soyad *</Label>
+                          <Input
+                            id="applicant_surname"
+                            value={formData.applicant_surname}
+                            onChange={(e) => handleInputChange('applicant_surname', e.target.value)}
+                            required
+                            className="focus:ring-2 focus:ring-primary/20"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="applicant_position">Vəzifə *</Label>
+                          <Input
+                            id="applicant_position"
+                            value={formData.applicant_position}
+                            onChange={(e) => handleInputChange('applicant_position', e.target.value)}
+                            required
+                            className="focus:ring-2 focus:ring-primary/20"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="applicant_phone">Telefon *</Label>
+                          <Input
+                            id="applicant_phone"
+                            type="tel"
+                            value={formData.applicant_phone}
+                            onChange={(e) => handleInputChange('applicant_phone', e.target.value)}
+                            placeholder="Sizinlə bu nömrə vasitəsilə əlaqə saxlanılacaq"
+                            required
+                            className="focus:ring-2 focus:ring-primary/20"
+                          />
+                        </div>
+                      </div>
                     </div>
+
+                    {/* Job Details */}
+                    <div className="space-y-6">
+                      <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">
+                        Elan təfərrüatları
+                      </h3>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="company_name">Şirkətin və ya fərdi sahibkarın adı *</Label>
+                          <Input
+                            id="company_name"
+                            value={formData.company_name}
+                            onChange={(e) => handleInputChange('company_name', e.target.value)}
+                            required
+                            className="focus:ring-2 focus:ring-primary/20"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="voen">VÖEN</Label>
+                          <Input
+                            id="voen"
+                            value={formData.voen}
+                            onChange={(e) => handleInputChange('voen', e.target.value)}
+                            className="focus:ring-2 focus:ring-primary/20"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="website">Veb Sayt</Label>
+                        <Input
+                          id="website"
+                          type="url"
+                          value={formData.website}
+                          onChange={(e) => handleInputChange('website', e.target.value)}
+                          placeholder="Əgər yoxdursa boş saxlayın"
+                          className="focus:ring-2 focus:ring-primary/20"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="company_description">Şirkət və ya biznes haqqında qısa məlumat</Label>
+                        <Textarea
+                          id="company_description"
+                          value={formData.company_description}
+                          onChange={(e) => handleInputChange('company_description', e.target.value)}
+                          rows={3}
+                          className="focus:ring-2 focus:ring-primary/20"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="job_article">Elanda dərc olunacaq məqalə *</Label>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Bu sahə iş elanının əsas məzmunudur. Bold yazılar və digər formatlaşdırma seçimlərini istifadə edə bilərsiniz.
+                        </p>
+                        <RichTextEditor
+                          value={formData.job_article}
+                          onChange={(value) => handleInputChange('job_article', value)}
+                          placeholder="İş elanının təfərrüatlı təsvirini daxil edin..."
+                        />
+                      </div>
+                    </div>
+
+                    <div className="pt-6 border-t border-border">
+                      <Button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="w-full bg-gradient-to-r from-primary to-accent text-white hover:opacity-90 font-semibold py-3 text-lg"
+                      >
+                        {isSubmitting ? 'Göndərilir...' : 'Göndər'}
+                      </Button>
+                    </div>
+                  </form>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile/Tablet Layout */}
+        <div className="xl:hidden pt-16 pb-20 px-4 h-screen overflow-auto">
+          <div className="max-w-2xl mx-auto">
+            <Card className="shadow-xl border-0 bg-card/95 backdrop-blur-sm">
+              <CardHeader className="bg-gradient-to-r from-primary/10 via-accent/5 to-primary/10 p-4">
+                <CardTitle className="text-xl font-bold text-center text-foreground">
+                  Birləşik Elan Yerləşdir
+                </CardTitle>
+                <p className="text-muted-foreground text-center mt-2 text-sm">
+                  Aşağıdakı formu dolduraraq iş elanınızı yerləşdirə bilərsiniz
+                </p>
+              </CardHeader>
+
+              <CardContent className="p-4">
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* Applicant Information */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">
+                      Müraciətçi məlumatları
+                    </h3>
                     
-                    <div className="space-y-2">
-                      <Label htmlFor="applicant_surname">Soyad *</Label>
-                      <Input
-                        id="applicant_surname"
-                        value={formData.applicant_surname}
-                        onChange={(e) => handleInputChange('applicant_surname', e.target.value)}
-                        required
-                        className="focus:ring-2 focus:ring-primary/20"
-                      />
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="mobile_applicant_name">Ad *</Label>
+                        <Input
+                          id="mobile_applicant_name"
+                          value={formData.applicant_name}
+                          onChange={(e) => handleInputChange('applicant_name', e.target.value)}
+                          required
+                          className="focus:ring-2 focus:ring-primary/20"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="mobile_applicant_surname">Soyad *</Label>
+                        <Input
+                          id="mobile_applicant_surname"
+                          value={formData.applicant_surname}
+                          onChange={(e) => handleInputChange('applicant_surname', e.target.value)}
+                          required
+                          className="focus:ring-2 focus:ring-primary/20"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="mobile_applicant_position">Vəzifə *</Label>
+                        <Input
+                          id="mobile_applicant_position"
+                          value={formData.applicant_position}
+                          onChange={(e) => handleInputChange('applicant_position', e.target.value)}
+                          required
+                          className="focus:ring-2 focus:ring-primary/20"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="mobile_applicant_phone">Telefon *</Label>
+                        <Input
+                          id="mobile_applicant_phone"
+                          type="tel"
+                          value={formData.applicant_phone}
+                          onChange={(e) => handleInputChange('applicant_phone', e.target.value)}
+                          placeholder="Sizinlə bu nömrə vasitəsilə əlaqə saxlanılacaq"
+                          required
+                          className="focus:ring-2 focus:ring-primary/20"
+                        />
+                      </div>
                     </div>
                   </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="applicant_position">Vəzifə *</Label>
-                      <Input
-                        id="applicant_position"
-                        value={formData.applicant_position}
-                        onChange={(e) => handleInputChange('applicant_position', e.target.value)}
-                        required
-                        className="focus:ring-2 focus:ring-primary/20"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="applicant_phone">Telefon *</Label>
-                      <Input
-                        id="applicant_phone"
-                        type="tel"
-                        value={formData.applicant_phone}
-                        onChange={(e) => handleInputChange('applicant_phone', e.target.value)}
-                        placeholder="Sizinlə bu nömrə vasitəsilə əlaqə saxlanılacaq"
-                        required
-                        className="focus:ring-2 focus:ring-primary/20"
-                      />
-                    </div>
-                  </div>
-                </div>
 
-                {/* Job Details */}
-                <div className="space-y-6">
-                  <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">
-                    Elan təfərrüatları
-                  </h3>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="company_name">Şirkətin və ya fərdi sahibkarın adı *</Label>
-                      <Input
-                        id="company_name"
-                        value={formData.company_name}
-                        onChange={(e) => handleInputChange('company_name', e.target.value)}
-                        required
-                        className="focus:ring-2 focus:ring-primary/20"
-                      />
-                    </div>
+                  {/* Job Details */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">
+                      Elan təfərrüatları
+                    </h3>
                     
-                    <div className="space-y-2">
-                      <Label htmlFor="voen">VÖEN</Label>
-                      <Input
-                        id="voen"
-                        value={formData.voen}
-                        onChange={(e) => handleInputChange('voen', e.target.value)}
-                        className="focus:ring-2 focus:ring-primary/20"
-                      />
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="mobile_company_name">Şirkətin və ya fərdi sahibkarın adı *</Label>
+                        <Input
+                          id="mobile_company_name"
+                          value={formData.company_name}
+                          onChange={(e) => handleInputChange('company_name', e.target.value)}
+                          required
+                          className="focus:ring-2 focus:ring-primary/20"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="mobile_voen">VÖEN</Label>
+                        <Input
+                          id="mobile_voen"
+                          value={formData.voen}
+                          onChange={(e) => handleInputChange('voen', e.target.value)}
+                          className="focus:ring-2 focus:ring-primary/20"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="mobile_website">Veb Sayt</Label>
+                        <Input
+                          id="mobile_website"
+                          type="url"
+                          value={formData.website}
+                          onChange={(e) => handleInputChange('website', e.target.value)}
+                          placeholder="Əgər yoxdursa boş saxlayın"
+                          className="focus:ring-2 focus:ring-primary/20"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="mobile_company_description">Şirkət və ya biznes haqqında qısa məlumat</Label>
+                        <Textarea
+                          id="mobile_company_description"
+                          value={formData.company_description}
+                          onChange={(e) => handleInputChange('company_description', e.target.value)}
+                          rows={3}
+                          className="focus:ring-2 focus:ring-primary/20"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="mobile_job_article">Elanda dərc olunacaq məqalə *</Label>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Bu sahə iş elanının əsas məzmunudur. Bold yazılar və digər formatlaşdırma seçimlərini istifadə edə bilərsiniz.
+                        </p>
+                        <RichTextEditor
+                          value={formData.job_article}
+                          onChange={(value) => handleInputChange('job_article', value)}
+                          placeholder="İş elanının təfərrüatlı təsvirini daxil edin..."
+                        />
+                      </div>
                     </div>
                   </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="website">Veb Sayt</Label>
-                    <Input
-                      id="website"
-                      type="url"
-                      value={formData.website}
-                      onChange={(e) => handleInputChange('website', e.target.value)}
-                      placeholder="Əgər yoxdursa boş saxlayın"
-                      className="focus:ring-2 focus:ring-primary/20"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="company_description">Şirkət və ya biznes haqqında qısa məlumat</Label>
-                    <Textarea
-                      id="company_description"
-                      value={formData.company_description}
-                      onChange={(e) => handleInputChange('company_description', e.target.value)}
-                      rows={3}
-                      className="focus:ring-2 focus:ring-primary/20"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="job_article">Elanda dərc olunacaq məqalə *</Label>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      Bu sahə iş elanının əsas məzmunudur. Bold yazılar və digər formatlaşdırma seçimlərini istifadə edə bilərsiniz.
-                    </p>
-                    <RichTextEditor
-                      value={formData.job_article}
-                      onChange={(value) => handleInputChange('job_article', value)}
-                      placeholder="İş elanının təfərrüatlı təsvirini daxil edin..."
-                    />
-                  </div>
-                </div>
 
-                <div className="pt-6 border-t border-border">
-                  <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full bg-gradient-to-r from-primary to-accent text-white hover:opacity-90 font-semibold py-3 text-lg"
-                  >
-                    {isSubmitting ? 'Göndərilir...' : 'Göndər'}
-                  </Button>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
+                  <div className="pt-4 border-t border-border">
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full bg-gradient-to-r from-primary to-accent text-white hover:opacity-90 font-semibold py-3 text-lg"
+                    >
+                      {isSubmitting ? 'Göndərilir...' : 'Göndər'}
+                    </Button>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* Bottom Navigation for Mobile/Tablet */}
+      <BottomNavigation 
+        selectedCategory=""
+        onCategorySelect={() => {}}
+      />
+    </>
   );
 };
 
