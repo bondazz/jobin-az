@@ -168,6 +168,17 @@ const Referral = () => {
     init();
   }, [user]);
 
+  // Auto-fill withdrawal destination based on method and saved wallets
+  useEffect(() => {
+    if (withdrawMethod === "card") {
+      const w = wallets.find((w) => w.card_number);
+      setWithdrawDest(w ? maskCardForUser(w.card_number!) : "");
+    } else {
+      const w = wallets.find((w) => w.m10_number);
+      setWithdrawDest(w ? formatM10Input(w.m10_number!) : "");
+    }
+  }, [withdrawMethod, wallets]);
+
   // Auth handlers
   const signIn = async () => {
     setLoadingAuth(true);
@@ -194,32 +205,52 @@ const Referral = () => {
   };
 
   // Wallet handlers
-  const addWallet = async () => {
+  const addCardWallet = async () => {
     if (!user) return;
     const rawCard = walletCard.replace(/\s/g, "");
-    const rawM10 = walletM10.replace(/\s/g, "");
 
-    if (!rawCard && !rawM10) {
-      return toast({ title: "Məlumat çatışmır", description: "Kart və ya M10 nömrə daxil edin" });
+    if (!rawCard) {
+      return toast({ title: "Məlumat çatışmır", description: "Kart nömrəsini daxil edin" });
     }
-    if (rawCard && rawCard.length !== 16) {
+    if (rawCard.length !== 16) {
       return toast({ title: "Kart formatı yalnışdır", description: "16 rəqəm olmalıdır" });
     }
-    if (rawM10 && rawM10.length !== 10) {
+
+    const { data, error } = await supabase
+      .from("wallets")
+      .insert({ user_id: user.id, card_number: rawCard, m10_number: null })
+      .select("id, card_number, m10_number")
+      .single();
+
+    if (error) return toast({ title: "Xəta", description: "Kart əlavə olunmadı" });
+
+    setWallets([data!, ...wallets]);
+    setWalletCard("");
+    toast({ title: "Kart əlavə olundu" });
+  };
+
+  const addM10Wallet = async () => {
+    if (!user) return;
+    const rawM10 = walletM10.replace(/\s/g, "");
+
+    if (!rawM10) {
+      return toast({ title: "Məlumat çatışmır", description: "M10 nömrəsini daxil edin" });
+    }
+    if (rawM10.length !== 10) {
       return toast({ title: "M10 formatı yalnışdır", description: "055 993 77 66 formatında olmalıdır" });
     }
 
     const { data, error } = await supabase
       .from("wallets")
-      .insert({ user_id: user.id, card_number: rawCard || null, m10_number: rawM10 || null })
+      .insert({ user_id: user.id, card_number: null, m10_number: rawM10 })
       .select("id, card_number, m10_number")
       .single();
-    if (error) return toast({ title: "Xəta", description: "Cüzdan əlavə olunmadı" });
 
-    setWallets([data, ...wallets]);
-    setWalletCard("");
+    if (error) return toast({ title: "Xəta", description: "M10 əlavə olunmadı" });
+
+    setWallets([data!, ...wallets]);
     setWalletM10("");
-    toast({ title: "Cüzdan əlavə olundu" });
+    toast({ title: "M10 əlavə olundu" });
   };
 
   // Withdraw
@@ -395,28 +426,31 @@ const Referral = () => {
                   <CardTitle>Cüzdan</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-4">
                     <div>
                       <Label>Kart nömrəsi (1234 5678 9876 5432)</Label>
-                      <Input
-                        value={walletCard}
-                        onChange={(e) => setWalletCard(formatCardInput(e.target.value))}
-                        placeholder="1234 5678 9876 5432"
-                        inputMode="numeric"
-                      />
+                      <div className="flex gap-2">
+                        <Input
+                          value={walletCard}
+                          onChange={(e) => setWalletCard(formatCardInput(e.target.value))}
+                          placeholder="1234 5678 9876 5432"
+                          inputMode="numeric"
+                        />
+                        <Button onClick={addCardWallet}>Kartı əlavə et</Button>
+                      </div>
                     </div>
                     <div>
                       <Label>M10 nömrəsi (055 993 77 66)</Label>
-                      <Input
-                        value={walletM10}
-                        onChange={(e) => setWalletM10(formatM10Input(e.target.value))}
-                        placeholder="055 993 77 66"
-                        inputMode="numeric"
-                      />
+                      <div className="flex gap-2">
+                        <Input
+                          value={walletM10}
+                          onChange={(e) => setWalletM10(formatM10Input(e.target.value))}
+                          placeholder="055 993 77 66"
+                          inputMode="numeric"
+                        />
+                        <Button onClick={addM10Wallet}>M10 əlavə et</Button>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex justify-end mt-3">
-                    <Button onClick={addWallet}>Cüzdanı əlavə et</Button>
                   </div>
 
                   <Separator className="my-4" />
@@ -469,7 +503,15 @@ const Referral = () => {
                     </div>
                     <div>
                       <Label>Təyinat</Label>
-                      <Input value={withdrawDest} onChange={(e) => setWithdrawDest(e.target.value)} placeholder="Seçilmiş cüzdan" />
+                      <Input 
+                        value={withdrawDest} 
+                        onChange={(e) => {
+                          if (withdrawMethod === "card") return;
+                          setWithdrawDest(formatM10Input(e.target.value));
+                        }} 
+                        placeholder="Seçilmiş cüzdan" 
+                        readOnly={withdrawMethod === "card"}
+                      />
                     </div>
                     <div>
                       <Label>Məbləğ (AZN)</Label>
