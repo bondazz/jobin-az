@@ -11,13 +11,13 @@ import { RichTextEditor } from '@/components/ui/rich-text-editor';
 import MobileHeader from '@/components/MobileHeader';
 import BottomNavigation from '@/components/BottomNavigation';
 import { generatePageSEO, updatePageMeta } from '@/utils/seo';
-
 const ReferralJobSubmission = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const refCode = searchParams.get('ref');
-
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     // Applicant information
@@ -35,7 +35,6 @@ const ReferralJobSubmission = () => {
 
   // Setup SEO
   useEffect(() => {
-
     // Setup SEO for job submission page
     const setupSEO = async () => {
       const seoData = await generatePageSEO('job_submission');
@@ -62,20 +61,17 @@ const ReferralJobSubmission = () => {
         },
         "breadcrumb": {
           "@type": "BreadcrumbList",
-          "itemListElement": [
-            {
-              "@type": "ListItem",
-              "position": 1,
-              "name": "Ana Səhifə",
-              "item": window.location.origin
-            },
-            {
-              "@type": "ListItem",
-              "position": 2,
-              "name": "İş Elanı Yerləşdir",
-              "item": window.location.href
-            }
-          ]
+          "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Ana Səhifə",
+            "item": window.location.origin
+          }, {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "İş Elanı Yerləşdir",
+            "item": window.location.href
+          }]
         }
       };
 
@@ -85,47 +81,37 @@ const ReferralJobSubmission = () => {
       script.textContent = JSON.stringify(structuredData);
       document.head.appendChild(script);
     };
-
     setupSEO();
   }, [navigate]);
-
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
     }));
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Validate required fields
-    const requiredFields = [
-      'applicant_name', 'applicant_surname', 'applicant_position', 
-      'applicant_phone', 'company_name', 'job_article'
-    ];
-    
+    const requiredFields = ['applicant_name', 'applicant_surname', 'applicant_position', 'applicant_phone', 'company_name', 'job_article'];
     for (const field of requiredFields) {
       if (!formData[field as keyof typeof formData]) {
-        toast({ title: "Bütün məcburi sahələri doldurun", variant: "destructive" });
+        toast({
+          title: "Bütün məcburi sahələri doldurun",
+          variant: "destructive"
+        });
         return;
       }
     }
-
     setIsSubmitting(true);
-
     try {
       let referralData = null;
-      
+
       // Only check referral if code exists
       if (refCode) {
-        const { data } = await supabase
-          .from('referrals')
-          .select('user_id')
-          .eq('code', refCode)
-          .eq('is_active', true)
-          .maybeSingle();
-        
+        const {
+          data
+        } = await supabase.from('referrals').select('user_id').eq('code', refCode).eq('is_active', true).maybeSingle();
         referralData = data;
       }
 
@@ -139,15 +125,14 @@ const ReferralJobSubmission = () => {
         referral_user_id: null,
         ...formData
       };
-
-      const { error } = await supabase
-        .from('referral_job_submissions')
-        .insert(submissionData);
-
+      const {
+        error
+      } = await supabase.from('referral_job_submissions').insert(submissionData);
       if (error) throw error;
+      toast({
+        title: "Müraciətiniz uğurla göndərildi!"
+      });
 
-      toast({ title: "Müraciətiniz uğurla göndərildi!" });
-      
       // Reset form
       setFormData({
         applicant_name: '',
@@ -160,18 +145,17 @@ const ReferralJobSubmission = () => {
         company_description: '',
         job_article: ''
       });
-
     } catch (error) {
       console.error('Submit error:', error);
-      toast({ title: "Xəta baş verdi", variant: "destructive" });
+      toast({
+        title: "Xəta baş verdi",
+        variant: "destructive"
+      });
     } finally {
       setIsSubmitting(false);
     }
   };
-
-
-  return (
-    <>
+  return <>
       {/* Mobile Header */}
       <MobileHeader />
       
@@ -183,9 +167,7 @@ const ReferralJobSubmission = () => {
             <div className="max-w-4xl mx-auto">
               <Card className="shadow-xl border-0 bg-card/95 backdrop-blur-sm">
                 <CardHeader className="bg-gradient-to-r from-primary/10 via-accent/5 to-primary/10">
-                  <CardTitle className="text-2xl font-bold text-center text-foreground">
-                    Birləşik Elan Yerləşdir
-                  </CardTitle>
+                  <CardTitle className="text-2xl font-bold text-center text-foreground">Elan Məlumatları</CardTitle>
                   <p className="text-muted-foreground text-center mt-2">
                     Aşağıdakı formu dolduraraq iş elanınızı yerləşdirə bilərsiniz
                   </p>
@@ -202,50 +184,24 @@ const ReferralJobSubmission = () => {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="applicant_name">Ad *</Label>
-                          <Input
-                            id="applicant_name"
-                            value={formData.applicant_name}
-                            onChange={(e) => handleInputChange('applicant_name', e.target.value)}
-                            required
-                            className="focus:ring-2 focus:ring-primary/20"
-                          />
+                          <Input id="applicant_name" value={formData.applicant_name} onChange={e => handleInputChange('applicant_name', e.target.value)} required className="focus:ring-2 focus:ring-primary/20" />
                         </div>
                         
                         <div className="space-y-2">
                           <Label htmlFor="applicant_surname">Soyad *</Label>
-                          <Input
-                            id="applicant_surname"
-                            value={formData.applicant_surname}
-                            onChange={(e) => handleInputChange('applicant_surname', e.target.value)}
-                            required
-                            className="focus:ring-2 focus:ring-primary/20"
-                          />
+                          <Input id="applicant_surname" value={formData.applicant_surname} onChange={e => handleInputChange('applicant_surname', e.target.value)} required className="focus:ring-2 focus:ring-primary/20" />
                         </div>
                       </div>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="applicant_position">Vəzifə *</Label>
-                          <Input
-                            id="applicant_position"
-                            value={formData.applicant_position}
-                            onChange={(e) => handleInputChange('applicant_position', e.target.value)}
-                            required
-                            className="focus:ring-2 focus:ring-primary/20"
-                          />
+                          <Input id="applicant_position" value={formData.applicant_position} onChange={e => handleInputChange('applicant_position', e.target.value)} required className="focus:ring-2 focus:ring-primary/20" />
                         </div>
                         
                         <div className="space-y-2">
                           <Label htmlFor="applicant_phone">Telefon *</Label>
-                          <Input
-                            id="applicant_phone"
-                            type="tel"
-                            value={formData.applicant_phone}
-                            onChange={(e) => handleInputChange('applicant_phone', e.target.value)}
-                            placeholder="Sizinlə bu nömrə vasitəsilə əlaqə saxlanılacaq"
-                            required
-                            className="focus:ring-2 focus:ring-primary/20"
-                          />
+                          <Input id="applicant_phone" type="tel" value={formData.applicant_phone} onChange={e => handleInputChange('applicant_phone', e.target.value)} placeholder="Sizinlə bu nömrə vasitəsilə əlaqə saxlanılacaq" required className="focus:ring-2 focus:ring-primary/20" />
                         </div>
                       </div>
                     </div>
@@ -259,47 +215,23 @@ const ReferralJobSubmission = () => {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="company_name">Şirkətin və ya fərdi sahibkarın adı *</Label>
-                          <Input
-                            id="company_name"
-                            value={formData.company_name}
-                            onChange={(e) => handleInputChange('company_name', e.target.value)}
-                            required
-                            className="focus:ring-2 focus:ring-primary/20"
-                          />
+                          <Input id="company_name" value={formData.company_name} onChange={e => handleInputChange('company_name', e.target.value)} required className="focus:ring-2 focus:ring-primary/20" />
                         </div>
                         
                         <div className="space-y-2">
                           <Label htmlFor="voen">VÖEN</Label>
-                          <Input
-                            id="voen"
-                            value={formData.voen}
-                            onChange={(e) => handleInputChange('voen', e.target.value)}
-                            className="focus:ring-2 focus:ring-primary/20"
-                          />
+                          <Input id="voen" value={formData.voen} onChange={e => handleInputChange('voen', e.target.value)} className="focus:ring-2 focus:ring-primary/20" />
                         </div>
                       </div>
                       
                       <div className="space-y-2">
                         <Label htmlFor="website">Veb Sayt</Label>
-                        <Input
-                          id="website"
-                          type="url"
-                          value={formData.website}
-                          onChange={(e) => handleInputChange('website', e.target.value)}
-                          placeholder="Əgər yoxdursa boş saxlayın"
-                          className="focus:ring-2 focus:ring-primary/20"
-                        />
+                        <Input id="website" type="url" value={formData.website} onChange={e => handleInputChange('website', e.target.value)} placeholder="Əgər yoxdursa boş saxlayın" className="focus:ring-2 focus:ring-primary/20" />
                       </div>
                       
                       <div className="space-y-2">
                         <Label htmlFor="company_description">Şirkət və ya biznes haqqında qısa məlumat</Label>
-                        <Textarea
-                          id="company_description"
-                          value={formData.company_description}
-                          onChange={(e) => handleInputChange('company_description', e.target.value)}
-                          rows={3}
-                          className="focus:ring-2 focus:ring-primary/20"
-                        />
+                        <Textarea id="company_description" value={formData.company_description} onChange={e => handleInputChange('company_description', e.target.value)} rows={3} className="focus:ring-2 focus:ring-primary/20" />
                       </div>
                       
                       <div className="space-y-2">
@@ -307,20 +239,12 @@ const ReferralJobSubmission = () => {
                         <p className="text-sm text-muted-foreground mb-2">
                           Bu sahə iş elanının əsas məzmunudur. Bold yazılar və digər formatlaşdırma seçimlərini istifadə edə bilərsiniz.
                         </p>
-                        <RichTextEditor
-                          value={formData.job_article}
-                          onChange={(value) => handleInputChange('job_article', value)}
-                          placeholder="İş elanının təfərrüatlı təsvirini daxil edin..."
-                        />
+                        <RichTextEditor value={formData.job_article} onChange={value => handleInputChange('job_article', value)} placeholder="İş elanının təfərrüatlı təsvirini daxil edin..." />
                       </div>
                     </div>
 
                     <div className="pt-6 border-t border-border">
-                      <Button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className="w-full bg-gradient-to-r from-primary to-accent text-white hover:opacity-90 font-semibold py-3 text-lg"
-                      >
+                      <Button type="submit" disabled={isSubmitting} className="w-full bg-gradient-to-r from-primary to-accent text-white hover:opacity-90 font-semibold py-3 text-lg">
                         {isSubmitting ? 'Göndərilir...' : 'Göndər'}
                       </Button>
                     </div>
@@ -355,48 +279,22 @@ const ReferralJobSubmission = () => {
                     <div className="space-y-4">
                       <div className="space-y-2">
                         <Label htmlFor="mobile_applicant_name">Ad *</Label>
-                        <Input
-                          id="mobile_applicant_name"
-                          value={formData.applicant_name}
-                          onChange={(e) => handleInputChange('applicant_name', e.target.value)}
-                          required
-                          className="focus:ring-2 focus:ring-primary/20"
-                        />
+                        <Input id="mobile_applicant_name" value={formData.applicant_name} onChange={e => handleInputChange('applicant_name', e.target.value)} required className="focus:ring-2 focus:ring-primary/20" />
                       </div>
                       
                       <div className="space-y-2">
                         <Label htmlFor="mobile_applicant_surname">Soyad *</Label>
-                        <Input
-                          id="mobile_applicant_surname"
-                          value={formData.applicant_surname}
-                          onChange={(e) => handleInputChange('applicant_surname', e.target.value)}
-                          required
-                          className="focus:ring-2 focus:ring-primary/20"
-                        />
+                        <Input id="mobile_applicant_surname" value={formData.applicant_surname} onChange={e => handleInputChange('applicant_surname', e.target.value)} required className="focus:ring-2 focus:ring-primary/20" />
                       </div>
                       
                       <div className="space-y-2">
                         <Label htmlFor="mobile_applicant_position">Vəzifə *</Label>
-                        <Input
-                          id="mobile_applicant_position"
-                          value={formData.applicant_position}
-                          onChange={(e) => handleInputChange('applicant_position', e.target.value)}
-                          required
-                          className="focus:ring-2 focus:ring-primary/20"
-                        />
+                        <Input id="mobile_applicant_position" value={formData.applicant_position} onChange={e => handleInputChange('applicant_position', e.target.value)} required className="focus:ring-2 focus:ring-primary/20" />
                       </div>
                       
                       <div className="space-y-2">
                         <Label htmlFor="mobile_applicant_phone">Telefon *</Label>
-                        <Input
-                          id="mobile_applicant_phone"
-                          type="tel"
-                          value={formData.applicant_phone}
-                          onChange={(e) => handleInputChange('applicant_phone', e.target.value)}
-                          placeholder="Sizinlə bu nömrə vasitəsilə əlaqə saxlanılacaq"
-                          required
-                          className="focus:ring-2 focus:ring-primary/20"
-                        />
+                        <Input id="mobile_applicant_phone" type="tel" value={formData.applicant_phone} onChange={e => handleInputChange('applicant_phone', e.target.value)} placeholder="Sizinlə bu nömrə vasitəsilə əlaqə saxlanılacaq" required className="focus:ring-2 focus:ring-primary/20" />
                       </div>
                     </div>
                   </div>
@@ -410,46 +308,22 @@ const ReferralJobSubmission = () => {
                     <div className="space-y-4">
                       <div className="space-y-2">
                         <Label htmlFor="mobile_company_name">Şirkətin və ya fərdi sahibkarın adı *</Label>
-                        <Input
-                          id="mobile_company_name"
-                          value={formData.company_name}
-                          onChange={(e) => handleInputChange('company_name', e.target.value)}
-                          required
-                          className="focus:ring-2 focus:ring-primary/20"
-                        />
+                        <Input id="mobile_company_name" value={formData.company_name} onChange={e => handleInputChange('company_name', e.target.value)} required className="focus:ring-2 focus:ring-primary/20" />
                       </div>
                       
                       <div className="space-y-2">
                         <Label htmlFor="mobile_voen">VÖEN</Label>
-                        <Input
-                          id="mobile_voen"
-                          value={formData.voen}
-                          onChange={(e) => handleInputChange('voen', e.target.value)}
-                          className="focus:ring-2 focus:ring-primary/20"
-                        />
+                        <Input id="mobile_voen" value={formData.voen} onChange={e => handleInputChange('voen', e.target.value)} className="focus:ring-2 focus:ring-primary/20" />
                       </div>
                       
                       <div className="space-y-2">
                         <Label htmlFor="mobile_website">Veb Sayt</Label>
-                        <Input
-                          id="mobile_website"
-                          type="url"
-                          value={formData.website}
-                          onChange={(e) => handleInputChange('website', e.target.value)}
-                          placeholder="Əgər yoxdursa boş saxlayın"
-                          className="focus:ring-2 focus:ring-primary/20"
-                        />
+                        <Input id="mobile_website" type="url" value={formData.website} onChange={e => handleInputChange('website', e.target.value)} placeholder="Əgər yoxdursa boş saxlayın" className="focus:ring-2 focus:ring-primary/20" />
                       </div>
                       
                       <div className="space-y-2">
                         <Label htmlFor="mobile_company_description">Şirkət və ya biznes haqqında qısa məlumat</Label>
-                        <Textarea
-                          id="mobile_company_description"
-                          value={formData.company_description}
-                          onChange={(e) => handleInputChange('company_description', e.target.value)}
-                          rows={3}
-                          className="focus:ring-2 focus:ring-primary/20"
-                        />
+                        <Textarea id="mobile_company_description" value={formData.company_description} onChange={e => handleInputChange('company_description', e.target.value)} rows={3} className="focus:ring-2 focus:ring-primary/20" />
                       </div>
                       
                       <div className="space-y-2">
@@ -457,21 +331,13 @@ const ReferralJobSubmission = () => {
                         <p className="text-sm text-muted-foreground mb-2">
                           Bu sahə iş elanının əsas məzmunudur. Bold yazılar və digər formatlaşdırma seçimlərini istifadə edə bilərsiniz.
                         </p>
-                        <RichTextEditor
-                          value={formData.job_article}
-                          onChange={(value) => handleInputChange('job_article', value)}
-                          placeholder="İş elanının təfərrüatlı təsvirini daxil edin..."
-                        />
+                        <RichTextEditor value={formData.job_article} onChange={value => handleInputChange('job_article', value)} placeholder="İş elanının təfərrüatlı təsvirini daxil edin..." />
                       </div>
                     </div>
                   </div>
 
                   <div className="pt-4 border-t border-border">
-                    <Button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="w-full bg-gradient-to-r from-primary to-accent text-white hover:opacity-90 font-semibold py-3 text-lg"
-                    >
+                    <Button type="submit" disabled={isSubmitting} className="w-full bg-gradient-to-r from-primary to-accent text-white hover:opacity-90 font-semibold py-3 text-lg">
                       {isSubmitting ? 'Göndərilir...' : 'Göndər'}
                     </Button>
                   </div>
@@ -483,12 +349,7 @@ const ReferralJobSubmission = () => {
       </div>
 
       {/* Bottom Navigation for Mobile/Tablet */}
-      <BottomNavigation 
-        selectedCategory=""
-        onCategorySelect={() => {}}
-      />
-    </>
-  );
+      <BottomNavigation selectedCategory="" onCategorySelect={() => {}} />
+    </>;
 };
-
 export default ReferralJobSubmission;
