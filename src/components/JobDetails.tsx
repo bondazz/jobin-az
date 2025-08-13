@@ -18,9 +18,9 @@ const JobDetails = ({
   const [job, setJob] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
-  const {
-    toast
-  } = useToast();
+  const [applicationEmail, setApplicationEmail] = useState<string | null>(null);
+  const [revealingEmail, setRevealingEmail] = useState(false);
+  const { toast } = useToast();
   useEffect(() => {
     if (jobId) {
       fetchJobDetails(jobId);
@@ -48,7 +48,7 @@ const JobDetails = ({
         data,
         error
       } = await supabase.from('jobs').select(`
-          *,
+          id, application_type, salary, company_id, title, is_active, updated_at, type, location, seo_keywords, seo_description, views, category_id, seo_title, created_at, slug, application_url, tags, description,
           companies:company_id(name, logo, website, email, phone, is_verified),
           categories:category_id(name)
         `).eq('id', id).single();
@@ -56,7 +56,7 @@ const JobDetails = ({
       // If not found by ID, try by slug
       if (error && error.code === 'PGRST116') {
         const slugResult = await supabase.from('jobs').select(`
-            *,
+            id, application_type, salary, company_id, title, is_active, updated_at, type, location, seo_keywords, seo_description, views, category_id, seo_title, created_at, slug, application_url, tags, description,
             companies:company_id(name, logo, website, email, phone, is_verified),
             categories:category_id(name)
           `).eq('slug', id).single();
@@ -127,6 +127,25 @@ const JobDetails = ({
       title: 'Link kopyalandı',
       description: 'İş elanının linki panoya kopyalandı'
     });
+  };
+
+  const handleRevealEmail = async () => {
+    if (!job?.id) return;
+    try {
+      setRevealingEmail(true);
+      const { data, error } = await supabase.rpc('get_job_application_email', { job_uuid: job.id });
+      setRevealingEmail(false);
+      if (error || !data) {
+        toast({ title: 'E-mail tapılmadı', description: 'Bu elan üçün e-mail mövcud deyil', variant: 'destructive' as any });
+        return;
+      }
+      setApplicationEmail(data);
+      await navigator.clipboard.writeText(data);
+      toast({ title: 'E-mail kopyalandı', description: `${data} panoya kopyalandı` });
+    } catch (e) {
+      setRevealingEmail(false);
+      console.error('Error revealing email:', e);
+    }
   };
   if (loading) {
     return <div className="h-full flex items-center justify-center bg-gradient-to-br from-job-details to-primary/3">
@@ -363,19 +382,14 @@ const JobDetails = ({
           >
             Müraciət et
           </Button>
-        ) : job.application_type === 'email' && job.application_email ? (
+        ) : job.application_type === 'email' ? (
           <Button 
             size="sm" 
             className="bg-primary hover:bg-primary/90 text-white font-medium shadow-lg text-sm px-4 py-2 rounded-md" 
-            onClick={() => {
-              navigator.clipboard.writeText(job.application_email);
-              toast({
-                title: 'E-mail kopyalandı',
-                description: `${job.application_email} panoya kopyalandı`
-              });
-            }}
+            onClick={handleRevealEmail}
+            disabled={revealingEmail}
           >
-            Müraciət et
+            {applicationEmail ? 'E-mail kopyalandı' : 'Müraciət et'}
           </Button>
         ) : (
           <Button 

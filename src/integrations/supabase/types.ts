@@ -610,7 +610,87 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      jobs_public: {
+        Row: {
+          application_type: string | null
+          application_url: string | null
+          category_id: string | null
+          company_id: string | null
+          created_at: string | null
+          description: string | null
+          id: string | null
+          is_active: boolean | null
+          location: string | null
+          salary: string | null
+          seo_description: string | null
+          seo_keywords: string[] | null
+          seo_title: string | null
+          slug: string | null
+          tags: string[] | null
+          title: string | null
+          type: string | null
+          updated_at: string | null
+          views: number | null
+        }
+        Insert: {
+          application_type?: string | null
+          application_url?: string | null
+          category_id?: string | null
+          company_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          location?: string | null
+          salary?: string | null
+          seo_description?: string | null
+          seo_keywords?: string[] | null
+          seo_title?: string | null
+          slug?: string | null
+          tags?: string[] | null
+          title?: string | null
+          type?: string | null
+          updated_at?: string | null
+          views?: number | null
+        }
+        Update: {
+          application_type?: string | null
+          application_url?: string | null
+          category_id?: string | null
+          company_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          location?: string | null
+          salary?: string | null
+          seo_description?: string | null
+          seo_keywords?: string[] | null
+          seo_title?: string | null
+          slug?: string | null
+          tags?: string[] | null
+          title?: string | null
+          type?: string | null
+          updated_at?: string | null
+          views?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jobs_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       get_all_companies: {
@@ -638,6 +718,10 @@ export type Database = {
           created_at: string
           updated_at: string
         }[]
+      }
+      get_job_application_email: {
+        Args: { job_uuid: string }
+        Returns: string
       }
       get_user_role: {
         Args: { user_uuid: string }

@@ -122,7 +122,7 @@ const Index = () => {
         const { data, error } = await supabase
           .from('jobs')
           .select(`
-            *,
+            id, application_type, salary, company_id, title, is_active, updated_at, type, location, seo_keywords, seo_description, views, category_id, seo_title, created_at, slug, application_url, tags, description,
             companies (name, logo, is_verified),
             categories (name)
           `)
