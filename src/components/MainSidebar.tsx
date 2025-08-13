@@ -178,7 +178,7 @@ const MainSidebar = () => {
               asChild 
               className="w-full bg-gradient-to-r from-primary to-accent text-white hover:opacity-90 font-medium text-sm py-2 px-3 rounded-lg shadow-lg transition-all duration-300"
             >
-              <Link to="/birlesik-elan">
+              <Link to={`/add_job?ref=${hasReferralCode}`}>
                 <FileText className="w-4 h-4 mr-2" />
                 Birləşik elan yerləşdir
               </Link>

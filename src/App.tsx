@@ -119,7 +119,7 @@ const App = () => (
                 <Referral />
               </Suspense>
             } />
-            <Route path="/birlesik-elan" element={
+            <Route path="/add_job" element={
               <Suspense fallback={<LoadingFallback />}>
                 <ReferralJobSubmission />
               </Suspense>
