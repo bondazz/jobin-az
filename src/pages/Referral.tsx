@@ -295,9 +295,19 @@ const Referral = () => {
     if (amount > balance) return toast({ title: "Balansdan artıqdır" });
     if (!withdrawDest) return toast({ title: "Təyinat seçin" });
 
+    // For card withdrawals, get the full card number from wallets instead of masked version
+    let fullDestination = withdrawDest;
+    if (withdrawMethod === "card") {
+      const wallet = wallets.find((w) => w.card_number);
+      if (wallet && wallet.card_number) {
+        // Store full card number in database
+        fullDestination = wallet.card_number.replace(/\s/g, ''); // Remove spaces for consistent storage
+      }
+    }
+
     const { error: wErr } = await supabase
       .from("withdrawals")
-      .insert({ user_id: user.id, method: withdrawMethod, amount, destination: withdrawDest });
+      .insert({ user_id: user.id, method: withdrawMethod, amount, destination: fullDestination });
     if (wErr) return toast({ title: "Xəta", description: "Çıxarış yaradılmadı" });
 
     // Decrease balance

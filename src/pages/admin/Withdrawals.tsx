@@ -209,7 +209,11 @@ export default function AdminWithdrawals() {
                       <TableCell className="text-xs">{names[r.user_id] || '-'}</TableCell>
                       <TableCell>{r.method === 'card' ? 'Kart' : 'M10'}</TableCell>
                       <TableCell className="max-w-[240px]">
-                        {r.method === 'card' ? '**** **** **** ****' : r.destination}
+                        {r.method === 'card' ? 
+                          (r.destination && r.destination.length >= 8 ? 
+                            `${r.destination.slice(0, 4)} **** **** ${r.destination.slice(-4)}` 
+                            : '**** **** **** ****'
+                          ) : r.destination}
                       </TableCell>
                       <TableCell className="font-semibold">{r.amount} AZN</TableCell>
                       <TableCell>
@@ -268,7 +272,10 @@ export default function AdminWithdrawals() {
                     <div className="font-medium text-muted-foreground">Təyinat</div>
                     <div className="font-mono bg-muted p-2 rounded text-sm">
                       {viewingDetails.method === 'card' 
-                        ? (walletDetails[viewingDetails.user_id] || 'Kart məlumatı tapılmadı')
+                        ? (viewingDetails.destination && viewingDetails.destination.length >= 12 ? 
+                            `${viewingDetails.destination.slice(0, 4)} ${viewingDetails.destination.slice(4, 8)} ${viewingDetails.destination.slice(8, 12)} ${viewingDetails.destination.slice(12, 16)}`
+                            : 'Kart məlumatı tapılmadı'
+                          )
                         : viewingDetails.destination
                       }
                     </div>
