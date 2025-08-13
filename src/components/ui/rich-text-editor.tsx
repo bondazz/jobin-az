@@ -21,6 +21,18 @@ const modules = {
     ['link'],
     ['clean']
   ],
+  keyboard: {
+    bindings: {
+      enter: {
+        key: 13,
+        handler: function(range: any, context: any) {
+          this.quill.insertText(range.index, '\n');
+          this.quill.setSelection(range.index + 1);
+          return false;
+        }
+      }
+    }
+  }
 };
 
 const formats = [
@@ -32,7 +44,7 @@ const formats = [
 
 export function RichTextEditor({ value, onChange, placeholder, className }: RichTextEditorProps) {
   return (
-    <div className={cn("rich-text-editor", className)}>
+    <div className={cn("rich-text-editor [&_.ql-editor]:min-h-[120px] [&_.ql-editor]:leading-relaxed [&_.ql-editor]:p-3", className)}>
       <ReactQuill
         theme="snow"
         value={value}
@@ -41,6 +53,9 @@ export function RichTextEditor({ value, onChange, placeholder, className }: Rich
         formats={formats}
         placeholder={placeholder}
         className="quill-editor"
+        style={{
+          minHeight: '150px'
+        }}
       />
     </div>
   );

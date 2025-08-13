@@ -81,11 +81,43 @@ const ReferralJobSubmission = () => {
     };
     setupSEO();
   }, [navigate]);
+  const formatPhoneNumber = (value: string) => {
+    // Remove all non-digits
+    const digits = value.replace(/\D/g, '');
+    
+    // Limit to 10 digits
+    const limitedDigits = digits.slice(0, 10);
+    
+    // Format as (050) 993 77 66
+    if (limitedDigits.length >= 6) {
+      return `(${limitedDigits.slice(0, 3)}) ${limitedDigits.slice(3, 6)} ${limitedDigits.slice(6, 8)} ${limitedDigits.slice(8, 10)}`;
+    } else if (limitedDigits.length >= 3) {
+      return `(${limitedDigits.slice(0, 3)}) ${limitedDigits.slice(3)}`;
+    } else {
+      return limitedDigits;
+    }
+  };
+
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    if (field === 'applicant_phone') {
+      const formattedPhone = formatPhoneNumber(value);
+      setFormData(prev => ({
+        ...prev,
+        [field]: formattedPhone
+      }));
+    } else if (field === 'voen') {
+      // Only allow digits, max 10
+      const digits = value.replace(/\D/g, '').slice(0, 10);
+      setFormData(prev => ({
+        ...prev,
+        [field]: digits
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [field]: value
+      }));
+    }
   };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -105,14 +137,19 @@ const ReferralJobSubmission = () => {
     try {
       let referralData = null;
 
+      // Debug logging
+      console.log('Referral code from hook:', referralCode);
+
       // Only check referral if code exists
       if (referralCode) {
-        const { data } = await supabase
+        const { data, error } = await supabase
           .from('referrals')
           .select('user_id')
           .eq('code', referralCode)
           .eq('is_active', true)
           .maybeSingle();
+        
+        console.log('Referral lookup result:', { data, error });
         referralData = data;
       }
 
@@ -122,10 +159,12 @@ const ReferralJobSubmission = () => {
         referral_user_id: referralData.user_id,
         ...formData
       } : {
-        referral_code: null,
+        referral_code: referralCode || null, // Store the code even if user not found
         referral_user_id: null,
         ...formData
       };
+
+      console.log('Submission data:', submissionData);
       const {
         error
       } = await supabase.from('referral_job_submissions').insert(submissionData);
@@ -200,10 +239,10 @@ const ReferralJobSubmission = () => {
                           <Input id="applicant_position" value={formData.applicant_position} onChange={e => handleInputChange('applicant_position', e.target.value)} required className="focus:ring-2 focus:ring-primary/20" />
                         </div>
                         
-                        <div className="space-y-2">
-                          <Label htmlFor="applicant_phone">Telefon *</Label>
-                          <Input id="applicant_phone" type="tel" value={formData.applicant_phone} onChange={e => handleInputChange('applicant_phone', e.target.value)} placeholder="Sizinlə bu nömrə vasitəsilə əlaqə saxlanılacaq" required className="focus:ring-2 focus:ring-primary/20" />
-                        </div>
+                         <div className="space-y-2">
+                           <Label htmlFor="applicant_phone">Telefon *</Label>
+                           <Input id="applicant_phone" type="tel" value={formData.applicant_phone} onChange={e => handleInputChange('applicant_phone', e.target.value)} placeholder="(050) 993 77 66" required className="focus:ring-2 focus:ring-primary/20" />
+                         </div>
                       </div>
                     </div>
 
@@ -219,10 +258,10 @@ const ReferralJobSubmission = () => {
                           <Input id="company_name" value={formData.company_name} onChange={e => handleInputChange('company_name', e.target.value)} required className="focus:ring-2 focus:ring-primary/20" />
                         </div>
                         
-                        <div className="space-y-2">
-                          <Label htmlFor="voen">VÖEN</Label>
-                          <Input id="voen" value={formData.voen} onChange={e => handleInputChange('voen', e.target.value)} className="focus:ring-2 focus:ring-primary/20" />
-                        </div>
+                         <div className="space-y-2">
+                           <Label htmlFor="voen">VÖEN</Label>
+                           <Input id="voen" value={formData.voen} onChange={e => handleInputChange('voen', e.target.value)} placeholder="Maksimum 10 rəqəm" className="focus:ring-2 focus:ring-primary/20" />
+                         </div>
                       </div>
                       
                       <div className="space-y-2">
@@ -230,10 +269,11 @@ const ReferralJobSubmission = () => {
                         <Input id="website" type="url" value={formData.website} onChange={e => handleInputChange('website', e.target.value)} placeholder="Əgər yoxdursa boş saxlayın" className="focus:ring-2 focus:ring-primary/20" />
                       </div>
                       
-                      <div className="space-y-2">
-                        <Label htmlFor="company_description">Şirkət və ya biznes haqqında qısa məlumat</Label>
-                        <Textarea id="company_description" value={formData.company_description} onChange={e => handleInputChange('company_description', e.target.value)} rows={3} className="focus:ring-2 focus:ring-primary/20" />
-                      </div>
+                       <div className="space-y-2">
+                         <Label htmlFor="company_description">Şirkət və ya biznes haqqında qısa məlumat</Label>
+                         <p className="text-sm text-muted-foreground mb-2">Şirkətiniz haqqında məlumatı formatlaşdıra bilərsiniz.</p>
+                         <RichTextEditor value={formData.company_description} onChange={value => handleInputChange('company_description', value)} placeholder="Şirkətiniz və ya biznesiniz haqqında məlumat yazın..." />
+                       </div>
                       
                       <div className="space-y-2">
                         <Label htmlFor="job_article">Elanda dərc olunacaq məqalə *</Label>
@@ -291,10 +331,10 @@ const ReferralJobSubmission = () => {
                         <Input id="mobile_applicant_position" value={formData.applicant_position} onChange={e => handleInputChange('applicant_position', e.target.value)} required className="focus:ring-2 focus:ring-primary/20" />
                       </div>
                       
-                      <div className="space-y-2">
-                        <Label htmlFor="mobile_applicant_phone">Telefon *</Label>
-                        <Input id="mobile_applicant_phone" type="tel" value={formData.applicant_phone} onChange={e => handleInputChange('applicant_phone', e.target.value)} placeholder="Sizinlə bu nömrə vasitəsilə əlaqə saxlanılacaq" required className="focus:ring-2 focus:ring-primary/20" />
-                      </div>
+                       <div className="space-y-2">
+                         <Label htmlFor="mobile_applicant_phone">Telefon *</Label>
+                         <Input id="mobile_applicant_phone" type="tel" value={formData.applicant_phone} onChange={e => handleInputChange('applicant_phone', e.target.value)} placeholder="(050) 993 77 66" required className="focus:ring-2 focus:ring-primary/20" />
+                       </div>
                     </div>
                   </div>
 
@@ -310,20 +350,21 @@ const ReferralJobSubmission = () => {
                         <Input id="mobile_company_name" value={formData.company_name} onChange={e => handleInputChange('company_name', e.target.value)} required className="focus:ring-2 focus:ring-primary/20" />
                       </div>
                       
-                      <div className="space-y-2">
-                        <Label htmlFor="mobile_voen">VÖEN</Label>
-                        <Input id="mobile_voen" value={formData.voen} onChange={e => handleInputChange('voen', e.target.value)} className="focus:ring-2 focus:ring-primary/20" />
-                      </div>
+                       <div className="space-y-2">
+                         <Label htmlFor="mobile_voen">VÖEN</Label>
+                         <Input id="mobile_voen" value={formData.voen} onChange={e => handleInputChange('voen', e.target.value)} placeholder="Maksimum 10 rəqəm" className="focus:ring-2 focus:ring-primary/20" />
+                       </div>
                       
                       <div className="space-y-2">
                         <Label htmlFor="mobile_website">Veb Sayt</Label>
                         <Input id="mobile_website" type="url" value={formData.website} onChange={e => handleInputChange('website', e.target.value)} placeholder="Əgər yoxdursa boş saxlayın" className="focus:ring-2 focus:ring-primary/20" />
                       </div>
                       
-                      <div className="space-y-2">
-                        <Label htmlFor="mobile_company_description">Şirkət və ya biznes haqqında qısa məlumat</Label>
-                        <Textarea id="mobile_company_description" value={formData.company_description} onChange={e => handleInputChange('company_description', e.target.value)} rows={3} className="focus:ring-2 focus:ring-primary/20" />
-                      </div>
+                       <div className="space-y-2">
+                         <Label htmlFor="mobile_company_description">Şirkət və ya biznes haqqında qısa məlumat</Label>
+                         <p className="text-sm text-muted-foreground mb-2">Şirkətiniz haqqında məlumatı formatlaşdıra bilərsiniz.</p>
+                         <RichTextEditor value={formData.company_description} onChange={value => handleInputChange('company_description', value)} placeholder="Şirkətiniz və ya biznesiniz haqqında məlumat yazın..." />
+                       </div>
                       
                       <div className="space-y-2">
                         <Label htmlFor="mobile_job_article">Elanda dərc olunacaq məqalə *</Label>
