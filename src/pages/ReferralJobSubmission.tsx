@@ -236,9 +236,7 @@ const ReferralJobSubmission = () => {
                       
                       <div className="space-y-2">
                         <Label htmlFor="job_article">Elanda dərc olunacaq məqalə *</Label>
-                        <p className="text-sm text-muted-foreground mb-2">
-                          Bu sahə iş elanının əsas məzmunudur. Bold yazılar və digər formatlaşdırma seçimlərini istifadə edə bilərsiniz.
-                        </p>
+                        <p className="text-sm text-muted-foreground mb-2">Bu sahə iş elanının əsas məzmunudur.</p>
                         <RichTextEditor value={formData.job_article} onChange={value => handleInputChange('job_article', value)} placeholder="İş elanının təfərrüatlı təsvirini daxil edin..." />
                       </div>
                     </div>
