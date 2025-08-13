@@ -61,12 +61,6 @@ const Companies = () => {
         "streetAddress": company.address,
         "addressCountry": "AZ"
       } : undefined,
-      "contactPoint": company.email || company.phone ? {
-        "@type": "ContactPoint",
-        "email": company.email,
-        "telephone": company.phone,
-        "contactType": "customer service"
-      } : undefined,
       "sameAs": company.website ? [company.website] : undefined
     };
   };
@@ -188,7 +182,7 @@ const Companies = () => {
         console.log('🔍 Axtarış edilir:', debouncedSearchTerm);
         const { data, error } = await supabase
           .from('companies')
-          .select('*')
+          .select('id, name, slug, logo, background_image, description, website, address, seo_title, seo_description, seo_keywords, about_seo_title, about_seo_description, jobs_seo_title, jobs_seo_description, is_verified, is_active, created_at, updated_at')
           .eq('is_active', true)
           .ilike('name', `%${debouncedSearchTerm.trim()}%`)
           .order('name');
@@ -197,8 +191,9 @@ const Companies = () => {
         console.log('✅ Axtarış nəticəsi:', data?.length || 0);
         
         // Search zamanı bütün nəticələri göstər
-        setAllCompanies(data || []);
-        setCompanies(data || []);
+        const safeData = (data || []).map((c: any) => ({ ...c, email: null, phone: null }));
+        setAllCompanies(safeData);
+        setCompanies(safeData);
         setHasMore(false);
         setLoading(false); // Search zamanı da loading-i söndür
       } else {
@@ -207,7 +202,7 @@ const Companies = () => {
         // İlk 15 şirkəti anında yüklə
         const { data: initialData, error: initialError } = await supabase
           .from('companies')
-          .select('*')
+          .select('id, name, slug, logo, background_image, description, website, address, seo_title, seo_description, seo_keywords, about_seo_title, about_seo_description, jobs_seo_title, jobs_seo_description, is_verified, is_active, created_at, updated_at')
           .eq('is_active', true)
           .order('name')
           .limit(15);
@@ -217,12 +212,12 @@ const Companies = () => {
         console.log(`✅ İlk batch: ${initialData?.length || 0} şirkət anında yükləndi`);
         
         // İlk şirkətləri anında göstər
-        setCompanies(initialData || []);
+        setCompanies((initialData || []).map((c: any) => ({ ...c, email: null, phone: null })));
         setLoading(false); // Loading-i burada söndür
         
         // Background-da qalan şirkətləri yüklə
         console.log('🔄 Background-da qalan şirkətlər yüklənir...');
-        loadRemainingCompaniesInBackground(initialData || []);
+        loadRemainingCompaniesInBackground((initialData || []).map((c: any) => ({ ...c, email: null, phone: null })));
       }
 
     } catch (error) {
@@ -249,7 +244,7 @@ const Companies = () => {
         
         const { data, error } = await supabase
           .from('companies')
-          .select('*')
+          .select('id, name, slug, logo, background_image, description, website, address, seo_title, seo_description, seo_keywords, about_seo_title, about_seo_description, jobs_seo_title, jobs_seo_description, is_verified, is_active, created_at, updated_at')
           .eq('is_active', true)
           .order('name')
           .range(offset + currentPage * pageSize, offset + (currentPage + 1) * pageSize - 1);
@@ -259,7 +254,7 @@ const Companies = () => {
         console.log(`✅ Background səhifə ${currentPage + 1}: ${data?.length || 0} şirkət`);
         
         if (data && data.length > 0) {
-          allCompaniesData = [...allCompaniesData, ...data];
+          allCompaniesData = [...allCompaniesData, ...(data as any[]).map((c: any) => ({ ...c, email: null, phone: null }))];
           console.log(`📈 Background cəmi: ${allCompaniesData.length} şirkət`);
           
           if (data.length < pageSize) {
@@ -528,29 +523,6 @@ const Companies = () => {
                             </div>
                           )}
 
-                          {selectedCompany.email && (
-                            <div className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border">
-                              <Mail className="w-5 h-5 text-primary" />
-                              <div>
-                                <p className="text-sm font-medium text-foreground">E-poçt</p>
-                                <a href={`mailto:${selectedCompany.email}`} className="text-sm text-primary hover:underline">
-                                  {selectedCompany.email}
-                                </a>
-                              </div>
-                            </div>
-                          )}
-
-                          {selectedCompany.phone && (
-                            <div className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border">
-                              <Phone className="w-5 h-5 text-primary" />
-                              <div>
-                                <p className="text-sm font-medium text-foreground">Telefon</p>
-                                <a href={`tel:${selectedCompany.phone}`} className="text-sm text-primary hover:underline">
-                                  {selectedCompany.phone}
-                                </a>
-                              </div>
-                            </div>
-                          )}
 
                           {selectedCompany.address && (
                             <div className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border">

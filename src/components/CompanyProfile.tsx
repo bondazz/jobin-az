@@ -115,18 +115,6 @@ const CompanyProfile = ({ company, onClose, isMobile = false }: CompanyProfilePr
                   </a>
                 </div>
               )}
-              {company.phone && (
-                <div className="flex items-center gap-2">
-                  <Phone className="w-4 h-4 text-primary" />
-                  <span className="text-foreground text-sm">{company.phone}</span>
-                </div>
-              )}
-              {company.email && (
-                <div className="flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-primary" />
-                  <span className="text-foreground text-sm">{company.email}</span>
-                </div>
-              )}
             </div>
             </div>
           </div>

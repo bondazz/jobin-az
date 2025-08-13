@@ -719,6 +719,13 @@ export type Database = {
           updated_at: string
         }[]
       }
+      get_company_contact: {
+        Args: { company_uuid: string }
+        Returns: {
+          email: string
+          phone: string
+        }[]
+      }
       get_job_application_email: {
         Args: { job_uuid: string }
         Returns: string

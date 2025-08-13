@@ -110,7 +110,7 @@ export default function AdminCompanies() {
       // İlk 15 şirkəti anında yüklə
       const { data: initialData, error: initialError } = await supabase
         .from('companies')
-        .select('*')
+        .select('id, name, slug, logo, background_image, description, website, address, seo_title, seo_description, seo_keywords, about_seo_title, about_seo_description, jobs_seo_title, jobs_seo_description, is_verified, is_active, created_at, updated_at')
         .eq('is_active', true)
         .order('name')
         .limit(15);
@@ -174,7 +174,7 @@ export default function AdminCompanies() {
         
         const { data, error } = await supabase
           .from('companies')
-          .select('*')
+          .select('id, name, slug, logo, background_image, description, website, address, seo_title, seo_description, seo_keywords, about_seo_title, about_seo_description, jobs_seo_title, jobs_seo_description, is_verified, is_active, created_at, updated_at')
           .eq('is_active', true)
           .order('name')
           .range(offset + currentPage * pageSize, offset + (currentPage + 1) * pageSize - 1);
@@ -281,8 +281,21 @@ export default function AdminCompanies() {
     }
   };
 
-  const handleEdit = (company: Company) => {
+  const handleEdit = async (company: Company) => {
     setEditingCompany(company);
+
+    // Fetch sensitive contact info via admin-only RPC
+    const { data: contactData, error: contactError } = await supabase.rpc('get_company_contact', {
+      company_uuid: company.id,
+    });
+
+    if (contactError) {
+      console.error('Error fetching company contact info:', contactError);
+    }
+
+    const email = contactData && contactData.length > 0 ? contactData[0].email || '' : '';
+    const phone = contactData && contactData.length > 0 ? contactData[0].phone || '' : '';
+
     setFormData({
       name: company.name,
       slug: company.slug,
@@ -290,8 +303,8 @@ export default function AdminCompanies() {
       background_image: company.background_image || '',
       description: company.description || '',
       website: company.website || '',
-      email: company.email || '',
-      phone: company.phone || '',
+      email,
+      phone,
       address: company.address || '',
       seo_title: company.seo_title || '',
       seo_description: company.seo_description || '',
@@ -359,7 +372,6 @@ export default function AdminCompanies() {
 
   const filteredCompanies = companies.filter(company =>
     company.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    company.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     company.address?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
