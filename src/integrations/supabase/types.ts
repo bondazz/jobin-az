@@ -443,6 +443,63 @@ export type Database = {
         }
         Relationships: []
       }
+      referral_job_submissions: {
+        Row: {
+          admin_comment: string | null
+          applicant_name: string
+          applicant_phone: string
+          applicant_position: string
+          applicant_surname: string
+          company_description: string | null
+          company_name: string
+          created_at: string
+          id: string
+          job_article: string
+          referral_code: string
+          referral_user_id: string
+          status: string
+          updated_at: string
+          voen: string | null
+          website: string | null
+        }
+        Insert: {
+          admin_comment?: string | null
+          applicant_name: string
+          applicant_phone: string
+          applicant_position: string
+          applicant_surname: string
+          company_description?: string | null
+          company_name: string
+          created_at?: string
+          id?: string
+          job_article: string
+          referral_code: string
+          referral_user_id: string
+          status?: string
+          updated_at?: string
+          voen?: string | null
+          website?: string | null
+        }
+        Update: {
+          admin_comment?: string | null
+          applicant_name?: string
+          applicant_phone?: string
+          applicant_position?: string
+          applicant_surname?: string
+          company_description?: string | null
+          company_name?: string
+          created_at?: string
+          id?: string
+          job_article?: string
+          referral_code?: string
+          referral_user_id?: string
+          status?: string
+          updated_at?: string
+          voen?: string | null
+          website?: string | null
+        }
+        Relationships: []
+      }
       referral_requests: {
         Row: {
           company_name: string
