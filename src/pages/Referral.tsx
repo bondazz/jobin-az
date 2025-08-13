@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/components/ui/use-toast";
 import { updatePageMeta } from "@/utils/seo";
+import { Trash2 } from "lucide-react";
 
 interface ReferralRequestForm {
   company_name: string;
@@ -253,6 +254,18 @@ const Referral = () => {
     toast({ title: "M10 əlavə olundu" });
   };
 
+  const deleteWallet = async (id: string) => {
+    if (!user) return;
+    const prev = wallets;
+    setWallets((ws) => ws.filter((w) => w.id !== id));
+    const { error } = await supabase.from("wallets").delete().eq("id", id);
+    if (error) {
+      setWallets(prev);
+      return toast({ title: "Xəta", description: "Cüzdan silinmədi" });
+    }
+    toast({ title: "Cüzdan silindi" });
+  };
+
   // Withdraw
   const createWithdrawal = async () => {
     if (!user) return;
@@ -465,18 +478,12 @@ const Referral = () => {
                           {w.m10_number && <div>M10: {formatM10Input(w.m10_number)}</div>}
                         </div>
                         <Button
-                          variant="outline"
-                          onClick={() => {
-                            if (w.card_number) {
-                              setWithdrawMethod("card");
-                              setWithdrawDest(maskCardForUser(w.card_number));
-                            } else if (w.m10_number) {
-                              setWithdrawMethod("m10");
-                              setWithdrawDest(formatM10Input(w.m10_number));
-                            }
-                          }}
+                          variant="destructive"
+                          size="icon"
+                          onClick={() => deleteWallet(w.id)}
+                          aria-label="Sil"
                         >
-                          Çıxarış üçün seç
+                          <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                     ))}
@@ -536,7 +543,7 @@ const Referral = () => {
         </div>
 
         {/* Right column: Quick docs */}
-        <div className="lg:col-span-1">
+        <div className="lg:col-span-1 lg:sticky lg:top-4 self-start">
           <Card>
             <CardHeader>
               <CardTitle>Qısa dokumentasiya</CardTitle>
