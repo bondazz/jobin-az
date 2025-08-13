@@ -81,16 +81,22 @@ export default function AdminWithdrawals() {
         // Get wallet details for card withdrawals
         const cardWithdrawals = rows.filter(r => r.method === 'card');
         if (cardWithdrawals.length) {
-          const { data: wallets } = await supabase
-            .from('wallets')
-            .select('user_id, card_number')
-            .in('user_id', userIds)
-            .not('card_number', 'is', null);
-          
+          // For each card withdrawal, find the matching card number in wallets
           const walletMap: Record<string, string> = {};
-          (wallets || []).forEach(w => {
-            walletMap[(w as any).user_id] = (w as any).card_number;
-          });
+          
+          for (const withdrawal of cardWithdrawals) {
+            // Find wallet for this user with card number that matches destination
+            const { data: userWallet } = await supabase
+              .from('wallets')
+              .select('card_number')
+              .eq('user_id', withdrawal.user_id)
+              .not('card_number', 'is', null)
+              .maybeSingle();
+              
+            if (userWallet && userWallet.card_number) {
+              walletMap[withdrawal.user_id] = userWallet.card_number;
+            }
+          }
           setWalletDetails(walletMap);
         }
       } else {

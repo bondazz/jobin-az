@@ -285,61 +285,6 @@ const Referral = () => {
     toast({ title: "Cüzdan silindi" });
   };
 
-  const cancelWithdrawal = async (w: { id: string; status: string; amount: number }) => {
-    if (!user) return;
-    if (w.status !== 'pending') {
-      toast({ title: 'Xəbərdarlıq', description: 'Bu sorğu artıq ləğv edilib və ya ödənilib' });
-      return;
-    }
-
-    // First check if withdrawal is still pending in database to prevent race conditions
-    const { data: currentWithdrawal, error: checkError } = await supabase
-      .from('withdrawals')
-      .select('status')
-      .eq('id', w.id)
-      .single();
-
-    if (checkError || !currentWithdrawal || currentWithdrawal.status !== 'pending') {
-      toast({ title: 'Xəta', description: 'Bu sorğu artıq dəyişdirilib' });
-      // Refresh the withdrawals list to show current state
-      const { data: wd } = await supabase
-        .from("withdrawals")
-        .select("id, status, amount, method, destination, created_at, admin_comment")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
-      setWithdrawals((wd || []) as any);
-      return;
-    }
-
-    // Update withdrawal status to cancelled
-    const { error } = await supabase
-      .from('withdrawals')
-      .update({ status: 'cancelled' })
-      .eq('id', w.id)
-      .eq('status', 'pending'); // Additional check to ensure it's still pending
-
-    if (error) {
-      toast({ title: 'Xəta', description: 'Sorğu ləğv olunmadı' });
-      return;
-    }
-
-    // Restore balance
-    const newBal = Number((balance + w.amount).toFixed(2));
-    const { error: rErr } = await supabase
-      .from('referrals')
-      .update({ earnings_azn: newBal })
-      .eq('user_id', user.id);
-    
-    if (rErr) {
-      toast({ title: 'Xəbərdarlıq', description: 'Balans yenilənmədi, dəstəyə yazın' });
-    } else {
-      setBalance(newBal);
-    }
-
-    // Update local state
-    setWithdrawals((prev) => prev.map((row) => (row.id === w.id ? { ...row, status: 'cancelled' } : row)));
-    toast({ title: 'Sorğu ləğv olundu', description: 'Məbləğ balansınıza qaytarıldı' });
-  };
 
   // Withdraw
   const createWithdrawal = async () => {
@@ -683,11 +628,6 @@ const Referral = () => {
                              <span className={`text-xs px-2 py-1 rounded ${w.status==='pending'?'bg-yellow-500/10 text-yellow-600': w.status==='paid'?'bg-green-500/10 text-green-600':'bg-red-500/10 text-red-600'}`}>
                                {w.status==='pending'?'Gözləyir': w.status==='paid'?'Ödənildi':'Ləğv edildi'}
                              </span>
-                             {w.status==='pending' && (
-                               <Button variant="outline" size="sm" onClick={()=>cancelWithdrawal(w)} disabled={w.status !== 'pending'}>
-                                 Ləğv et
-                               </Button>
-                             )}
                              </div>
                            </div>
                            {w.admin_comment && (
