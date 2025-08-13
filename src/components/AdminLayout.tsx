@@ -107,6 +107,34 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
               </Button>
             );
           })}
+
+          {/* Referral submenu */}
+          <div className="pt-2">
+            <Button
+              variant={location.pathname.startsWith('/admin/referral') || location.pathname.startsWith('/admin/withdrawal') ? 'default' : 'ghost'}
+              className="w-full justify-start h-12 text-left"
+              onClick={() => { /* visual group only */ }}
+            >
+              <span className="mr-3 h-5 w-5">🤝</span>
+              Referral
+            </Button>
+            <div className="pl-8 mt-1 space-y-1">
+              <Button
+                variant={isActivePath('/admin/referrals') ? 'default' : 'ghost'}
+                className="w-full justify-start h-10"
+                onClick={() => navigate('/admin/referrals')}
+              >
+                Referrallar
+              </Button>
+              <Button
+                variant={isActivePath('/admin/withdrawals') ? 'default' : 'ghost'}
+                className="w-full justify-start h-10"
+                onClick={() => navigate('/admin/withdrawals')}
+              >
+                Çıxarışlar
+              </Button>
+            </div>
+          </div>
         </nav>
 
         {/* Logout Section */}
@@ -167,6 +195,34 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                   </Button>
                 );
               })}
+
+              {/* Referral submenu */}
+              <div className="pt-2">
+                <Button
+                  variant={location.pathname.startsWith('/admin/referral') || location.pathname.startsWith('/admin/withdrawal') ? 'default' : 'ghost'}
+                  className="w-full justify-start h-12 text-left"
+                  onClick={() => { /* visual group only */ }}
+                >
+                  <span className="mr-3 h-5 w-5">🤝</span>
+                  Referral
+                </Button>
+                <div className="pl-8 mt-1 space-y-1">
+                  <Button
+                    variant={isActivePath('/admin/referrals') ? 'default' : 'ghost'}
+                    className="w-full justify-start h-10"
+                    onClick={() => { navigate('/admin/referrals'); setSidebarOpen(false); }}
+                  >
+                    Referrallar
+                  </Button>
+                  <Button
+                    variant={isActivePath('/admin/withdrawals') ? 'default' : 'ghost'}
+                    className="w-full justify-start h-10"
+                    onClick={() => { navigate('/admin/withdrawals'); setSidebarOpen(false); }}
+                  >
+                    Çıxarışlar
+                  </Button>
+                </div>
+              </div>
             </nav>
 
             {/* Logout Section */}

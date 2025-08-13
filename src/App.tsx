@@ -35,6 +35,8 @@ const AdminPricing = lazy(() => import("./pages/admin/Pricing"));
 const AdminAdvertisements = lazy(() => import("./pages/admin/Advertisements"));
 const AdminSitemap = lazy(() => import("./pages/admin/Sitemap"));
 const AdminSettings = lazy(() => import("./pages/admin/Settings"));
+const AdminReferrals = lazy(() => import("./pages/admin/Referrals"));
+const AdminWithdrawals = lazy(() => import("./pages/admin/Withdrawals"));
 
 const queryClient = new QueryClient();
 
@@ -176,6 +178,16 @@ const App = () => (
           <Route path="/admin/sitemap" element={
             <Suspense fallback={<LoadingFallback />}>
               <AdminSitemap />
+            </Suspense>
+          } />
+          <Route path="/admin/referrals" element={
+            <Suspense fallback={<LoadingFallback />}>
+              <AdminReferrals />
+            </Suspense>
+          } />
+          <Route path="/admin/withdrawals" element={
+            <Suspense fallback={<LoadingFallback />}>
+              <AdminWithdrawals />
             </Suspense>
           } />
           <Route path="/admin/settings" element={
