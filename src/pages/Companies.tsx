@@ -182,7 +182,7 @@ const Companies = () => {
         console.log('🔍 Axtarış edilir:', debouncedSearchTerm);
         const { data, error } = await supabase
           .from('companies')
-          .select('id, name, slug, logo, background_image, description, website, address, seo_title, seo_description, seo_keywords, about_seo_title, about_seo_description, jobs_seo_title, jobs_seo_description, is_verified, is_active, created_at, updated_at')
+          .select('id, name, slug, logo, background_image, description, website, email, phone, address, seo_title, seo_description, seo_keywords, about_seo_title, about_seo_description, jobs_seo_title, jobs_seo_description, is_verified, is_active, created_at, updated_at')
           .eq('is_active', true)
           .ilike('name', `%${debouncedSearchTerm.trim()}%`)
           .order('name');
@@ -191,9 +191,8 @@ const Companies = () => {
         console.log('✅ Axtarış nəticəsi:', data?.length || 0);
         
         // Search zamanı bütün nəticələri göstər
-        const safeData = (data || []).map((c: any) => ({ ...c, email: null, phone: null }));
-        setAllCompanies(safeData);
-        setCompanies(safeData);
+        setAllCompanies(data || []);
+        setCompanies(data || []);
         setHasMore(false);
         setLoading(false); // Search zamanı da loading-i söndür
       } else {
@@ -202,7 +201,7 @@ const Companies = () => {
         // İlk 15 şirkəti anında yüklə
         const { data: initialData, error: initialError } = await supabase
           .from('companies')
-          .select('id, name, slug, logo, background_image, description, website, address, seo_title, seo_description, seo_keywords, about_seo_title, about_seo_description, jobs_seo_title, jobs_seo_description, is_verified, is_active, created_at, updated_at')
+          .select('id, name, slug, logo, background_image, description, website, email, phone, address, seo_title, seo_description, seo_keywords, about_seo_title, about_seo_description, jobs_seo_title, jobs_seo_description, is_verified, is_active, created_at, updated_at')
           .eq('is_active', true)
           .order('name')
           .limit(15);
@@ -212,12 +211,12 @@ const Companies = () => {
         console.log(`✅ İlk batch: ${initialData?.length || 0} şirkət anında yükləndi`);
         
         // İlk şirkətləri anında göstər
-        setCompanies((initialData || []).map((c: any) => ({ ...c, email: null, phone: null })));
+        setCompanies(initialData || []);
         setLoading(false); // Loading-i burada söndür
         
         // Background-da qalan şirkətləri yüklə
         console.log('🔄 Background-da qalan şirkətlər yüklənir...');
-        loadRemainingCompaniesInBackground((initialData || []).map((c: any) => ({ ...c, email: null, phone: null })));
+        loadRemainingCompaniesInBackground(initialData || []);
       }
 
     } catch (error) {
@@ -244,7 +243,7 @@ const Companies = () => {
         
         const { data, error } = await supabase
           .from('companies')
-          .select('id, name, slug, logo, background_image, description, website, address, seo_title, seo_description, seo_keywords, about_seo_title, about_seo_description, jobs_seo_title, jobs_seo_description, is_verified, is_active, created_at, updated_at')
+          .select('id, name, slug, logo, background_image, description, website, email, phone, address, seo_title, seo_description, seo_keywords, about_seo_title, about_seo_description, jobs_seo_title, jobs_seo_description, is_verified, is_active, created_at, updated_at')
           .eq('is_active', true)
           .order('name')
           .range(offset + currentPage * pageSize, offset + (currentPage + 1) * pageSize - 1);
@@ -254,7 +253,7 @@ const Companies = () => {
         console.log(`✅ Background səhifə ${currentPage + 1}: ${data?.length || 0} şirkət`);
         
         if (data && data.length > 0) {
-          allCompaniesData = [...allCompaniesData, ...(data as any[]).map((c: any) => ({ ...c, email: null, phone: null }))];
+          allCompaniesData = [...allCompaniesData, ...data];
           console.log(`📈 Background cəmi: ${allCompaniesData.length} şirkət`);
           
           if (data.length < pageSize) {

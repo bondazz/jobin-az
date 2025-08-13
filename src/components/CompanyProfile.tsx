@@ -115,6 +115,24 @@ const CompanyProfile = ({ company, onClose, isMobile = false }: CompanyProfilePr
                   </a>
                 </div>
               )}
+              {company.email && (
+                <div className="flex items-center gap-2">
+                  <Mail className="w-4 h-4 text-primary" />
+                  <a href={`mailto:${company.email}`} 
+                     className="text-primary hover:underline text-sm truncate">
+                    {company.email}
+                  </a>
+                </div>
+              )}
+              {company.phone && (
+                <div className="flex items-center gap-2">
+                  <Phone className="w-4 h-4 text-primary" />
+                  <a href={`tel:${company.phone}`} 
+                     className="text-primary hover:underline text-sm truncate">
+                    {company.phone}
+                  </a>
+                </div>
+              )}
             </div>
             </div>
           </div>
