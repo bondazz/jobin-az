@@ -384,9 +384,11 @@ export type Database = {
         Row: {
           avatar_url: string | null
           created_at: string
+          first_name: string | null
           full_name: string | null
           id: string
           is_active: boolean
+          last_name: string | null
           role: string
           updated_at: string
           user_id: string
@@ -394,9 +396,11 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           created_at?: string
+          first_name?: string | null
           full_name?: string | null
           id?: string
           is_active?: boolean
+          last_name?: string | null
           role?: string
           updated_at?: string
           user_id: string
@@ -404,9 +408,11 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           created_at?: string
+          first_name?: string | null
           full_name?: string | null
           id?: string
           is_active?: boolean
+          last_name?: string | null
           role?: string
           updated_at?: string
           user_id?: string

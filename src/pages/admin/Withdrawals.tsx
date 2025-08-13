@@ -34,6 +34,7 @@ export default function AdminWithdrawals() {
   const [comment, setComment] = useState('');
   const [targetStatus, setTargetStatus] = useState<'paid' | 'cancelled' | null>(null);
   const [names, setNames] = useState<Record<string, string>>({});
+  const [expandedCard, setExpandedCard] = useState<string | null>(null);
 
   useEffect(() => {
     checkAuth();
@@ -64,10 +65,14 @@ export default function AdminWithdrawals() {
       if (userIds.length) {
         const { data: profs } = await supabase
           .from('profiles')
-          .select('user_id, full_name')
+          .select('user_id, first_name, last_name')
           .in('user_id', userIds);
         const map: Record<string, string> = {};
-        (profs || []).forEach(p => { map[(p as any).user_id] = (p as any).full_name || ''; });
+        (profs || []).forEach(p => { 
+          const firstName = (p as any).first_name || '';
+          const lastName = (p as any).last_name || '';
+          map[(p as any).user_id] = firstName || lastName ? `${firstName} ${lastName}`.trim() : '';
+        });
         setNames(map);
       } else {
         setNames({});
@@ -91,6 +96,24 @@ export default function AdminWithdrawals() {
     if (targetStatus === 'cancelled' && !comment.trim()) {
       return toast({ title: 'Şərh tələb olunur', description: 'Ləğv səbəbini yazın' });
     }
+
+    // If cancelling, restore balance to user
+    if (targetStatus === 'cancelled') {
+      const { data: referral } = await supabase
+        .from('referrals')
+        .select('earnings_azn')
+        .eq('user_id', selected.user_id)
+        .single();
+      
+      if (referral) {
+        const newBalance = Number((Number(referral.earnings_azn || 0) + selected.amount).toFixed(2));
+        await supabase
+          .from('referrals')
+          .update({ earnings_azn: newBalance })
+          .eq('user_id', selected.user_id);
+      }
+    }
+
     const { error } = await supabase
       .from('withdrawals')
       .update({ status: targetStatus, admin_comment: comment || null })
@@ -159,7 +182,18 @@ export default function AdminWithdrawals() {
                       <TableCell className="text-xs">{r.user_id}</TableCell>
                       <TableCell className="text-xs">{names[r.user_id] || '-'}</TableCell>
                       <TableCell>{r.method === 'card' ? 'Kart' : 'M10'}</TableCell>
-                      <TableCell className="max-w-[240px] truncate" title={r.destination}>{r.destination}</TableCell>
+                      <TableCell className="max-w-[240px]">
+                        {r.method === 'card' ? (
+                          <div 
+                            className="cursor-pointer hover:bg-muted p-1 rounded"
+                            onClick={() => setExpandedCard(expandedCard === r.id ? null : r.id)}
+                          >
+                            {expandedCard === r.id ? r.destination : `${r.destination.slice(0, 4)} **** **** ${r.destination.slice(-4)}`}
+                          </div>
+                        ) : (
+                          <span title={r.destination}>{r.destination}</span>
+                        )}
+                      </TableCell>
                       <TableCell className="font-semibold">{r.amount} AZN</TableCell>
                       <TableCell>
                         <Badge variant={r.status === 'pending' ? 'secondary' : r.status === 'paid' ? 'default' : 'destructive'}>
@@ -171,10 +205,20 @@ export default function AdminWithdrawals() {
                           <Dialog open={selected?.id === r.id && targetStatus !== null} onOpenChange={(o)=>{ if(!o){ setSelected(null); setTargetStatus(null); setComment(''); }}}>
                             <DialogTrigger asChild>
                               <div className="flex gap-2">
-                                <Button size="sm" variant="outline" onClick={()=>openStatusDialog(r,'paid')}>
+                                <Button 
+                                  size="sm" 
+                                  variant="outline" 
+                                  onClick={()=>openStatusDialog(r,'paid')}
+                                  disabled={r.status !== 'pending'}
+                                >
                                   <CheckCircle className="w-4 h-4 mr-1"/> Ödənildi
                                 </Button>
-                                <Button size="sm" variant="outline" onClick={()=>openStatusDialog(r,'cancelled')}>
+                                <Button 
+                                  size="sm" 
+                                  variant="outline" 
+                                  onClick={()=>openStatusDialog(r,'cancelled')}
+                                  disabled={r.status !== 'pending'}
+                                >
                                   <XCircle className="w-4 h-4 mr-1"/> Ləğv et
                                 </Button>
                               </div>

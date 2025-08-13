@@ -66,8 +66,9 @@ const Referral = () => {
   const [withdrawMethod, setWithdrawMethod] = useState<"card" | "m10">("card");
   const [withdrawDest, setWithdrawDest] = useState<string>("");
   const [withdrawAmount, setWithdrawAmount] = useState<string>("");
-  const [withdrawals, setWithdrawals] = useState<{ id: string; status: string; amount: number; method: string; destination: string; created_at: string }[]>([]);
-  const [fullName, setFullName] = useState<string>("");
+  const [withdrawals, setWithdrawals] = useState<{ id: string; status: string; amount: number; method: string; destination: string; created_at: string; admin_comment?: string }[]>([]);
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
 
   const [reqForm, setReqForm] = useState<ReferralRequestForm>({
     company_name: "",
@@ -170,7 +171,7 @@ const Referral = () => {
       // withdrawals
       const { data: wd } = await supabase
         .from("withdrawals")
-        .select("id, status, amount, method, destination, created_at")
+        .select("id, status, amount, method, destination, created_at, admin_comment")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
       setWithdrawals((wd || []) as any);
@@ -178,10 +179,11 @@ const Referral = () => {
       // profile
       const { data: prof } = await supabase
         .from("profiles")
-        .select("full_name")
+        .select("first_name, last_name")
         .eq("user_id", user.id)
         .maybeSingle();
-      setFullName(prof?.full_name || "");
+      setFirstName(prof?.first_name || "");
+      setLastName(prof?.last_name || "");
     };
     init();
   }, [user]);
@@ -305,6 +307,7 @@ const Referral = () => {
     if (!user) return;
     const amount = parseFloat(withdrawAmount || `${balance}`);
     if (isNaN(amount) || amount <= 0) return toast({ title: "Məbləği düzgün daxil edin" });
+    if (amount < 10) return toast({ title: "Minimum çıxarış 10 AZN-dir" });
     if (amount > balance) return toast({ title: "Balansdan artıqdır" });
     if (!withdrawDest) return toast({ title: "Təyinat seçin" });
 
@@ -328,7 +331,7 @@ const Referral = () => {
     // Refresh withdrawals list
     const { data: wd } = await supabase
       .from("withdrawals")
-      .select("id, status, amount, method, destination, created_at")
+      .select("id, status, amount, method, destination, created_at, admin_comment")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
     setWithdrawals((wd || []) as any);
@@ -356,7 +359,18 @@ const Referral = () => {
   };
 
   const amountNum = parseFloat(withdrawAmount || `${balance}`);
-  const canWithdraw = !!user && amountNum > 0 && amountNum <= balance && !!withdrawDest;
+  const canWithdraw = !!user && amountNum >= 10 && amountNum <= balance && !!withdrawDest;
+
+  // Update profile names
+  const updateProfile = async () => {
+    if (!user) return;
+    const { error } = await supabase
+      .from("profiles")
+      .update({ first_name: firstName, last_name: lastName })
+      .eq("user_id", user.id);
+    if (error) return toast({ title: "Xəta", description: "Profil yenilənmədi" });
+    toast({ title: "Profil yeniləndi" });
+  };
 
   return (
     <main className="flex-1 overflow-y-auto h-screen pb-20 xl:pb-0 pt-14 xl:pt-0">
@@ -492,12 +506,18 @@ const Referral = () => {
                   <CardTitle>Profil</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <div>
-                    <Label>Ad Soyad</Label>
-                    <Input value={fullName} onChange={(e)=>setFullName(e.target.value)} placeholder="Ad Soyad" />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <Label>Ad</Label>
+                      <Input value={firstName} onChange={(e)=>setFirstName(e.target.value)} placeholder="Ad" />
+                    </div>
+                    <div>
+                      <Label>Soyad</Label>
+                      <Input value={lastName} onChange={(e)=>setLastName(e.target.value)} placeholder="Soyad" />
+                    </div>
                   </div>
                   <div className="flex justify-between">
-                    <Button variant="outline" onClick={async()=>{ if(!user) return; const { error } = await supabase.from('profiles').update({ full_name: fullName }).eq('user_id', user.id); if(error){ toast({ title: 'Xəta', description: 'Profil yenilənmədi' }); } else { toast({ title: 'Profil yeniləndi' }); } }}>Yadda saxla</Button>
+                    <Button variant="outline" onClick={updateProfile}>Yadda saxla</Button>
                     <Button variant="ghost" onClick={signOut}>Hesabdan çıxış</Button>
                   </div>
                 </CardContent>
@@ -614,21 +634,29 @@ const Referral = () => {
                         <div className="text-sm text-muted-foreground">Hələ sorğu yoxdur</div>
                       )}
                       {withdrawals.map(w => (
-                        <div key={w.id} className="p-3 border rounded-md flex items-center justify-between">
-                          <div className="text-sm">
-                            <div className="font-medium">{w.amount} AZN • {w.method === 'card' ? 'Kart' : 'M10'}</div>
-                            <div className="text-xs text-muted-foreground">{new Date(w.created_at).toLocaleString()} • {w.destination}</div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className={`text-xs px-2 py-1 rounded ${w.status==='pending'?'bg-yellow-500/10 text-yellow-600': w.status==='paid'?'bg-green-500/10 text-green-600':'bg-red-500/10 text-red-600'}`}>
-                              {w.status==='pending'?'Gözləyir': w.status==='paid'?'Ödənildi':'Ləğv edildi'}
-                            </span>
-                            {w.status==='pending' && (
-                              <Button variant="outline" size="sm" onClick={()=>cancelWithdrawal(w)}>
-                                Ləğv et
-                              </Button>
-                            )}
-                          </div>
+                         <div key={w.id} className="p-3 border rounded-md">
+                           <div className="flex items-center justify-between">
+                             <div className="text-sm">
+                               <div className="font-medium">{w.amount} AZN • {w.method === 'card' ? 'Kart' : 'M10'}</div>
+                               <div className="text-xs text-muted-foreground">{new Date(w.created_at).toLocaleString()} • {w.destination}</div>
+                             </div>
+                             <div className="flex items-center gap-2">
+                               <span className={`text-xs px-2 py-1 rounded ${w.status==='pending'?'bg-yellow-500/10 text-yellow-600': w.status==='paid'?'bg-green-500/10 text-green-600':'bg-red-500/10 text-red-600'}`}>
+                                 {w.status==='pending'?'Gözləyir': w.status==='paid'?'Ödənildi':'Ləğv edildi'}
+                               </span>
+                               {w.status==='pending' && (
+                                 <Button variant="outline" size="sm" onClick={()=>cancelWithdrawal(w)}>
+                                   Ləğv et
+                                 </Button>
+                               )}
+                             </div>
+                           </div>
+                           {w.admin_comment && (
+                             <div className="mt-2 p-2 bg-muted rounded text-xs">
+                               <div className="font-medium text-muted-foreground">Admin şərhi:</div>
+                               <div>{w.admin_comment}</div>
+                             </div>
+                           )}
                         </div>
                       ))}
                     </div>
