@@ -7,6 +7,7 @@ import ThemeToggle from '@/components/ThemeToggle';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
 import { useSavedJobs } from '@/hooks/useSavedJobs';
 import { supabase } from '@/integrations/supabase/client';
+import { useReferralCode } from '@/hooks/useReferralCode';
 interface BottomNavigationProps {
   selectedCategory?: string;
   onCategorySelect: (category: string) => void;
@@ -20,9 +21,8 @@ const BottomNavigation = ({
   const [companiesCount, setCompaniesCount] = useState(0);
   const [categoriesCount, setCategoriesCount] = useState(0);
   const location = useLocation();
-  const {
-    savedJobsCount
-  } = useSavedJobs();
+  const { savedJobsCount } = useSavedJobs();
+  const { getUrlWithReferral } = useReferralCode();
   useEffect(() => {
     fetchCounts();
   }, []);
@@ -140,7 +140,7 @@ const BottomNavigation = ({
       {/* Bottom Navigation Bar */}
       <div className="xl:hidden fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-t border-border">
         <div className="flex items-center justify-around px-2 py-2">
-          {mainNavItems.map(item => <Link key={item.label} to={item.path} className={`flex flex-col items-center gap-1 h-auto py-2 px-3 rounded-lg transition-colors ${isActivePath(item.path) ? 'text-primary bg-primary/10' : 'text-muted-foreground hover:text-foreground'}`}>
+          {mainNavItems.map(item => <Link key={item.label} to={getUrlWithReferral(item.path)} className={`flex flex-col items-center gap-1 h-auto py-2 px-3 rounded-lg transition-colors ${isActivePath(item.path) ? 'text-primary bg-primary/10' : 'text-muted-foreground hover:text-foreground'}`}>
               <div className="relative">
                 <item.icon className="w-5 h-5" />
                 {item.path === '/favorites' && <Badge variant="secondary" className="absolute -top-2 -right-2 h-4 min-w-4 text-[10px] px-1 bg-primary text-white">
@@ -177,7 +177,7 @@ const BottomNavigation = ({
                     {allMenuItems.filter(item => ['/services', '/about', '/referral', '/add_job'].includes(item.path) || item.path === '/').map((item, index) => (
                       <Link 
                         key={item.path} 
-                        to={item.path} 
+                        to={getUrlWithReferral(item.path)} 
                         className={`flex items-center justify-between p-2.5 rounded-lg transition-all duration-200 ${
                           isActivePath(item.path) 
                             ? 'bg-primary/10 text-primary border border-primary/20' 

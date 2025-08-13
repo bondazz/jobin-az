@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Link, useLocation, useSearchParams } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -9,11 +9,11 @@ import LanguageToggle from '@/components/LanguageToggle';
 import AdBanner from '@/components/AdBanner';
 import { Briefcase, Tag, Building, Bookmark, Bell, TrendingUp, Info, DollarSign, Calendar, BarChart3, FileText, Share2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { useReferralCode } from '@/hooks/useReferralCode';
 
 const MainSidebar = () => {
   const location = useLocation();
-  const [searchParams] = useSearchParams();
-  const hasReferralCode = searchParams.get('ref');
+  const { getUrlWithReferral } = useReferralCode();
   
   // Get saved jobs count
   const [savedJobsCount, setSavedJobsCount] = useState(0);
@@ -150,7 +150,7 @@ const MainSidebar = () => {
               }`} 
               style={{ animationDelay: `${index * 50}ms` }}
             >
-              <Link to={item.path} className="flex items-center justify-between w-full">
+              <Link to={getUrlWithReferral(item.path)} className="flex items-center justify-between w-full">
                 <div className="flex items-center gap-3">
                   <div className={`w-7 h-7 rounded-md flex items-center justify-center ${
                     isActivePath(item.path) ? 'bg-white/20' : 'bg-primary/10'

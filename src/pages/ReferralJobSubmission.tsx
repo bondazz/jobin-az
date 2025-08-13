@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,13 +11,11 @@ import { RichTextEditor } from '@/components/ui/rich-text-editor';
 import MobileHeader from '@/components/MobileHeader';
 import BottomNavigation from '@/components/BottomNavigation';
 import { generatePageSEO, updatePageMeta } from '@/utils/seo';
+import { useReferralCode } from '@/hooks/useReferralCode';
 const ReferralJobSubmission = () => {
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const {
-    toast
-  } = useToast();
-  const refCode = searchParams.get('ref');
+  const { toast } = useToast();
+  const { referralCode } = useReferralCode();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     // Applicant information
@@ -108,16 +106,19 @@ const ReferralJobSubmission = () => {
       let referralData = null;
 
       // Only check referral if code exists
-      if (refCode) {
-        const {
-          data
-        } = await supabase.from('referrals').select('user_id').eq('code', refCode).eq('is_active', true).maybeSingle();
+      if (referralCode) {
+        const { data } = await supabase
+          .from('referrals')
+          .select('user_id')
+          .eq('code', referralCode)
+          .eq('is_active', true)
+          .maybeSingle();
         referralData = data;
       }
 
       // Submit the form data
-      const submissionData = refCode && referralData ? {
-        referral_code: refCode,
+      const submissionData = referralCode && referralData ? {
+        referral_code: referralCode,
         referral_user_id: referralData.user_id,
         ...formData
       } : {
