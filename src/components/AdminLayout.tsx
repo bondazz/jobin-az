@@ -133,6 +133,13 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
               >
                 Çıxarışlar
               </Button>
+              <Button
+                variant={isActivePath('/admin/referral-jobs') ? 'default' : 'ghost'}
+                className="w-full justify-start h-10"
+                onClick={() => navigate('/admin/referral-jobs')}
+              >
+                İş Elanları
+              </Button>
             </div>
           </div>
         </nav>
@@ -220,6 +227,13 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                     onClick={() => { navigate('/admin/withdrawals'); setSidebarOpen(false); }}
                   >
                     Çıxarışlar
+                  </Button>
+                  <Button
+                    variant={isActivePath('/admin/referral-jobs') ? 'default' : 'ghost'}
+                    className="w-full justify-start h-10"
+                    onClick={() => { navigate('/admin/referral-jobs'); setSidebarOpen(false); }}
+                  >
+                    İş Elanları
                   </Button>
                 </div>
               </div>

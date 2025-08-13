@@ -19,6 +19,7 @@ const CVBuilder = lazy(() => import("./pages/CVBuilder"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const SavedJobs = lazy(() => import("./pages/SavedJobs"));
 const Referral = lazy(() => import("./pages/Referral"));
+const ReferralJobSubmission = lazy(() => import("./pages/ReferralJobSubmission"));
 
 // XML/SEO pages - can be lazy loaded
 const Sitemap = lazy(() => import("./pages/Sitemap"));
@@ -37,6 +38,7 @@ const AdminSitemap = lazy(() => import("./pages/admin/Sitemap"));
 const AdminSettings = lazy(() => import("./pages/admin/Settings"));
 const AdminReferrals = lazy(() => import("./pages/admin/Referrals"));
 const AdminWithdrawals = lazy(() => import("./pages/admin/Withdrawals"));
+const AdminReferralJobSubmissions = lazy(() => import("./pages/admin/ReferralJobSubmissions"));
 
 const queryClient = new QueryClient();
 
@@ -117,6 +119,11 @@ const App = () => (
                 <Referral />
               </Suspense>
             } />
+            <Route path="/birlesik-elan" element={
+              <Suspense fallback={<LoadingFallback />}>
+                <ReferralJobSubmission />
+              </Suspense>
+            } />
             <Route path="/about" element={
               <Suspense fallback={<LoadingFallback />}>
                 <About />
@@ -188,6 +195,11 @@ const App = () => (
           <Route path="/admin/withdrawals" element={
             <Suspense fallback={<LoadingFallback />}>
               <AdminWithdrawals />
+            </Suspense>
+          } />
+          <Route path="/admin/referral-jobs" element={
+            <Suspense fallback={<LoadingFallback />}>
+              <AdminReferralJobSubmissions />
             </Suspense>
           } />
           <Route path="/admin/settings" element={
