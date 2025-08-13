@@ -455,8 +455,8 @@ export type Database = {
           created_at: string
           id: string
           job_article: string
-          referral_code: string
-          referral_user_id: string
+          referral_code: string | null
+          referral_user_id: string | null
           status: string
           updated_at: string
           voen: string | null
@@ -473,8 +473,8 @@ export type Database = {
           created_at?: string
           id?: string
           job_article: string
-          referral_code: string
-          referral_user_id: string
+          referral_code?: string | null
+          referral_user_id?: string | null
           status?: string
           updated_at?: string
           voen?: string | null
@@ -491,8 +491,8 @@ export type Database = {
           created_at?: string
           id?: string
           job_article?: string
-          referral_code?: string
-          referral_user_id?: string
+          referral_code?: string | null
+          referral_user_id?: string | null
           status?: string
           updated_at?: string
           voen?: string | null
