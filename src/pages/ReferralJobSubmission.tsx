@@ -33,12 +33,8 @@ const ReferralJobSubmission = () => {
     job_article: ''
   });
 
-  // Redirect if no referral code and setup SEO
+  // Setup SEO
   useEffect(() => {
-    if (!refCode) {
-      navigate('/');
-      return;
-    }
 
     // Setup SEO for job submission page
     const setupSEO = async () => {
@@ -91,7 +87,7 @@ const ReferralJobSubmission = () => {
     };
 
     setupSEO();
-  }, [refCode, navigate]);
+  }, [navigate]);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
@@ -102,11 +98,6 @@ const ReferralJobSubmission = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!refCode) {
-      toast({ title: "Referral kodu tapılmadı", variant: "destructive" });
-      return;
-    }
 
     // Validate required fields
     const requiredFields = [
@@ -124,27 +115,34 @@ const ReferralJobSubmission = () => {
     setIsSubmitting(true);
 
     try {
-      // Get referral user ID from the referral code
-      const { data: referralData } = await supabase
-        .from('referrals')
-        .select('user_id')
-        .eq('code', refCode)
-        .eq('is_active', true)
-        .single();
-
-      if (!referralData) {
-        toast({ title: "Referral kodu keçərsizdir", variant: "destructive" });
-        return;
+      let referralData = null;
+      
+      // Only check referral if code exists
+      if (refCode) {
+        const { data } = await supabase
+          .from('referrals')
+          .select('user_id')
+          .eq('code', refCode)
+          .eq('is_active', true)
+          .maybeSingle();
+        
+        referralData = data;
       }
 
       // Submit the form data
+      const submissionData = refCode && referralData ? {
+        referral_code: refCode,
+        referral_user_id: referralData.user_id,
+        ...formData
+      } : {
+        referral_code: null,
+        referral_user_id: null,
+        ...formData
+      };
+
       const { error } = await supabase
         .from('referral_job_submissions')
-        .insert({
-          referral_code: refCode,
-          referral_user_id: referralData.user_id,
-          ...formData
-        });
+        .insert(submissionData);
 
       if (error) throw error;
 
@@ -171,9 +169,6 @@ const ReferralJobSubmission = () => {
     }
   };
 
-  if (!refCode) {
-    return null;
-  }
 
   return (
     <>
