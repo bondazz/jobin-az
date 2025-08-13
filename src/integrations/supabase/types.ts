@@ -574,6 +574,7 @@ export type Database = {
       }
       withdrawals: {
         Row: {
+          admin_comment: string | null
           amount: number
           created_at: string
           destination: string
@@ -584,6 +585,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          admin_comment?: string | null
           amount: number
           created_at?: string
           destination: string
@@ -594,6 +596,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          admin_comment?: string | null
           amount?: number
           created_at?: string
           destination?: string
