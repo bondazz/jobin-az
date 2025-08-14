@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.3 (519615d)"
@@ -759,27 +759,27 @@ export type Database = {
       get_all_companies: {
         Args: Record<PropertyKey, never>
         Returns: {
-          id: string
-          name: string
-          slug: string
-          logo: string
-          background_image: string
-          description: string
-          website: string
-          email: string
-          phone: string
+          about_seo_description: string
+          about_seo_title: string
           address: string
-          seo_title: string
+          background_image: string
+          created_at: string
+          description: string
+          email: string
+          id: string
+          is_active: boolean
+          is_verified: boolean
+          jobs_seo_description: string
+          jobs_seo_title: string
+          logo: string
+          name: string
+          phone: string
           seo_description: string
           seo_keywords: string[]
-          about_seo_title: string
-          about_seo_description: string
-          jobs_seo_title: string
-          jobs_seo_description: string
-          is_verified: boolean
-          is_active: boolean
-          created_at: string
+          seo_title: string
+          slug: string
           updated_at: string
+          website: string
         }[]
       }
       get_company_contact: {
@@ -812,38 +812,38 @@ export type Database = {
       search_companies: {
         Args: { search_term: string }
         Returns: {
-          id: string
-          name: string
-          slug: string
-          logo: string
-          background_image: string
-          description: string
-          website: string
-          email: string
-          phone: string
+          about_seo_description: string
+          about_seo_title: string
           address: string
-          seo_title: string
+          background_image: string
+          created_at: string
+          description: string
+          email: string
+          id: string
+          is_active: boolean
+          is_verified: boolean
+          jobs_seo_description: string
+          jobs_seo_title: string
+          logo: string
+          name: string
+          phone: string
           seo_description: string
           seo_keywords: string[]
-          about_seo_title: string
-          about_seo_description: string
-          jobs_seo_title: string
-          jobs_seo_description: string
-          is_verified: boolean
-          is_active: boolean
-          created_at: string
+          seo_title: string
+          slug: string
           updated_at: string
+          website: string
         }[]
       }
       submit_referral_request: {
         Args: {
           _code: string
           _company_name: string
-          _contact_name: string
           _contact_email: string
-          _phone: string
+          _contact_name: string
           _job_title: string
           _message: string
+          _phone: string
         }
         Returns: string
       }

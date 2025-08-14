@@ -57,7 +57,6 @@ const Referral = () => {
   const [loadingAuth, setLoadingAuth] = useState(false);
 
   const [referralCode, setReferralCode] = useState<string>("");
-  const [clicks, setClicks] = useState<number>(0);
   const [approvedCount, setApprovedCount] = useState<number>(0);
   const [balance, setBalance] = useState<number>(0);
 
@@ -126,7 +125,7 @@ const Referral = () => {
       // get or create referral and stats
       const { data: existing } = await supabase
         .from("referrals")
-        .select("code, clicks, earnings_azn")
+        .select("code, earnings_azn")
         .eq("user_id", user.id)
         .maybeSingle();
 
@@ -139,27 +138,25 @@ const Referral = () => {
         const { data: created, error } = await supabase
           .from("referrals")
           .insert({ user_id: user.id, code: newCode })
-          .select("code, clicks, earnings_azn")
+          .select("code, earnings_azn")
           .single();
         if (error) {
           toast({ title: "Xəta", description: "Referral kodu yaradılmadı." });
         } else {
           code = created.code;
-          setClicks(created.clicks ?? 0);
           setBalance(Number(created.earnings_azn || 0));
         }
       } else {
-        setClicks(existing?.clicks ?? 0);
         setBalance(Number(existing?.earnings_azn || 0));
       }
       if (code) setReferralCode(code);
 
-      // approved requests
+      // approved job submissions count
       const { count: appCount } = await supabase
-        .from("referral_requests")
+        .from("referral_job_submissions")
         .select("*", { count: "exact", head: true })
         .eq("referral_user_id", user.id)
-        .eq("status", "approved");
+        .eq("status", "published");
       setApprovedCount(appCount || 0);
 
       // wallets
@@ -375,71 +372,94 @@ const Referral = () => {
   return (
     <main className="flex-1 overflow-y-auto h-screen pb-20 xl:pb-0 pt-14 xl:pt-0">
       <MobileHeader />
-      <section className="p-4 lg:p-6 border-b border-border bg-gradient-to-r from-background to-primary/5">
-        <div className="max-w-5xl mx-auto">
-          <h1 className="text-2xl lg:text-3xl font-bold">Referral proqramı</h1>
-          <p className="text-sm text-muted-foreground mt-2">
-            Linkinizi paylaşın, sizin link vasitəsilə yerləşdirilən hər təsdiqlənən elan üçün 5 AZN qazanın.
-            Çıxarış sorğunuz admin təsdiqi ilə icra olunur.
-          </p>
+      
+      {/* Hero Section */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-secondary/10">
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent" />
+        <div className="relative max-w-6xl mx-auto px-4 py-12 lg:py-16">
+          <div className="text-center space-y-4">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full text-sm font-medium text-primary">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
+              </svg>
+              Referral Proqramı
+            </div>
+            <h1 className="text-3xl lg:text-4xl xl:text-5xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+              Paylaş və Qazan
+            </h1>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Linkinizi paylaşın və hər təsdiqlənən elan üçün <span className="font-semibold text-primary">5 AZN</span> qazanın.
+              Minimal çıxarış məbləği cəmi 10 AZN-dir.
+            </p>
+          </div>
         </div>
       </section>
 
-      <div className="max-w-5xl mx-auto p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left: Company request via referral */}
-        <div className="lg:col-span-2">
-          {refCode && !storedReferralCode && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Elan yerləşdirmə müraciəti</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={submitRequest} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label>Şirkət adı</Label>
-                    <Input required value={reqForm.company_name} onChange={(e) => setReqForm({ ...reqForm, company_name: e.target.value })} />
-                  </div>
-                  <div>
-                    <Label>Əlaqədar şəxs</Label>
-                    <Input value={reqForm.contact_name} onChange={(e) => setReqForm({ ...reqForm, contact_name: e.target.value })} />
-                  </div>
-                  <div>
-                    <Label>E-poçt</Label>
-                    <Input type="email" value={reqForm.contact_email} onChange={(e) => setReqForm({ ...reqForm, contact_email: e.target.value })} />
-                  </div>
-                  <div>
-                    <Label>Telefon</Label>
-                    <Input value={reqForm.phone} onChange={(e) => setReqForm({ ...reqForm, phone: e.target.value })} />
-                  </div>
-                  <div>
-                    <Label>Vakansiya adı</Label>
-                    <Input required value={reqForm.job_title} onChange={(e) => setReqForm({ ...reqForm, job_title: e.target.value })} />
-                  </div>
-                  <div className="md:col-span-2">
-                    <Label>Qısa təsvir</Label>
-                    <Input value={reqForm.message} onChange={(e) => setReqForm({ ...reqForm, message: e.target.value })} />
-                  </div>
-                  <div className="md:col-span-2 flex justify-end">
-                    <Button type="submit">Müraciəti göndər</Button>
-                  </div>
-                </form>
-              </CardContent>
-            </Card>
-          )}
+      <div className="max-w-6xl mx-auto p-4 lg:p-6 space-y-8">
+        {/* Company request form for referral link visitors */}
+        {refCode && !storedReferralCode && (
+          <Card className="border-2 border-primary/20 bg-gradient-to-r from-primary/5 to-transparent">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-primary">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
+                </svg>
+                Elan yerləşdirmə müraciəti
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={submitRequest} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label>Şirkət adı</Label>
+                  <Input required value={reqForm.company_name} onChange={(e) => setReqForm({ ...reqForm, company_name: e.target.value })} />
+                </div>
+                <div>
+                  <Label>Əlaqədar şəxs</Label>
+                  <Input value={reqForm.contact_name} onChange={(e) => setReqForm({ ...reqForm, contact_name: e.target.value })} />
+                </div>
+                <div>
+                  <Label>E-poçt</Label>
+                  <Input type="email" value={reqForm.contact_email} onChange={(e) => setReqForm({ ...reqForm, contact_email: e.target.value })} />
+                </div>
+                <div>
+                  <Label>Telefon</Label>
+                  <Input value={reqForm.phone} onChange={(e) => setReqForm({ ...reqForm, phone: e.target.value })} />
+                </div>
+                <div>
+                  <Label>Vakansiya adı</Label>
+                  <Input required value={reqForm.job_title} onChange={(e) => setReqForm({ ...reqForm, job_title: e.target.value })} />
+                </div>
+                <div className="md:col-span-2">
+                  <Label>Qısa təsvir</Label>
+                  <Input value={reqForm.message} onChange={(e) => setReqForm({ ...reqForm, message: e.target.value })} />
+                </div>
+                <div className="md:col-span-2 flex justify-end">
+                  <Button type="submit" className="bg-primary hover:bg-primary/90">Müraciəti göndər</Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        )}
 
-          {/* Auth or Dashboard */}
-          {!user ? (
-            <Card className="mt-6">
+        {!user ? (
+          // Authentication Section
+          <div className="grid lg:grid-cols-2 gap-8">
+            <Card className="border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-white">
               <CardHeader>
-                <CardTitle>Qeydiyyat / Daxil ol</CardTitle>
+                <CardTitle className="flex items-center gap-2 text-blue-600">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                  Qeydiyyat / Daxil ol
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <Tabs defaultValue="signin">
-                  <TabsList>
+                  <TabsList className="grid w-full grid-cols-2">
                     <TabsTrigger value="signin">Daxil ol</TabsTrigger>
                     <TabsTrigger value="signup">Qeydiyyat</TabsTrigger>
                   </TabsList>
-                  <TabsContent value="signin" className="mt-4 space-y-3">
+                  <TabsContent value="signin" className="mt-4 space-y-4">
                     <div>
                       <Label>E-poçt</Label>
                       <Input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="name@example.com" />
@@ -448,9 +468,11 @@ const Referral = () => {
                       <Label>Şifrə</Label>
                       <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                     </div>
-                    <Button onClick={signIn} disabled={loadingAuth}>Daxil ol</Button>
+                    <Button onClick={signIn} disabled={loadingAuth} className="w-full">
+                      {loadingAuth ? "Daxil olunur..." : "Daxil ol"}
+                    </Button>
                   </TabsContent>
-                  <TabsContent value="signup" className="mt-4 space-y-3">
+                  <TabsContent value="signup" className="mt-4 space-y-4">
                     <div>
                       <Label>E-poçt</Label>
                       <Input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="name@example.com" />
@@ -459,73 +481,120 @@ const Referral = () => {
                       <Label>Şifrə</Label>
                       <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                     </div>
-                    <Button onClick={signUp} disabled={loadingAuth}>Qeydiyyat</Button>
+                    <Button onClick={signUp} disabled={loadingAuth} className="w-full">
+                      {loadingAuth ? "Qeydiyyat olunur..." : "Qeydiyyat"}
+                    </Button>
                   </TabsContent>
                 </Tabs>
               </CardContent>
             </Card>
-          ) : (
-            <div className="mt-6 space-y-6">
-              <Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Qısa dokumentasiya
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm text-muted-foreground space-y-3">
+                <div className="flex items-start gap-3">
+                  <div className="flex-shrink-0 w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-bold">1</div>
+                  <p>Qeydiyyatdan keçin və unikal referral linkinizi kopyalayın.</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="flex-shrink-0 w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-bold">2</div>
+                  <p>Linki paylaşın. Sizin link vasitəsilə elan yerləşdirilsə, təsdiq ediləndə <span className="font-semibold text-primary">5 AZN</span> qazanırsınız.</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="flex-shrink-0 w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-bold">3</div>
+                  <p>Cüzdan bölməsindən kartı (1234 5678 9876 5432) və ya M10 nömrənizi (055 993 77 66) əlavə edin.</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="flex-shrink-0 w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-bold">4</div>
+                  <p>Balans 10 AZN olduqda çıxarış üçün sorğu yaradın. Sorğular admin paneldən təsdiqlənir.</p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        ) : (
+          // Dashboard for logged in users
+          <div className="grid lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2 space-y-6">
+              {/* Referral Link Card */}
+              <Card className="border-2 border-primary/20 bg-gradient-to-r from-primary/5 to-transparent">
                 <CardHeader>
-                  <CardTitle>Sizin referral linkiniz</CardTitle>
+                  <CardTitle className="flex items-center gap-2 text-primary">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                    </svg>
+                    Sizin referral linkiniz
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-col md:flex-row gap-3 items-start md:items-center">
-                    <Input readOnly value={referralCode ? `${window.location.origin}/?ref=${referralCode}` : "Yaradılır..."} />
+                    <Input 
+                      readOnly 
+                      value={referralCode ? `${window.location.origin}/?ref=${referralCode}` : "Yaradılır..."} 
+                      className="flex-1 bg-white/50 font-mono text-sm"
+                    />
                     <div className="flex gap-2">
                       <Button
                         variant="secondary"
-                        onClick={() => navigator.clipboard.writeText(`${window.location.origin}/?ref=${referralCode}`)}
+                        onClick={() => {
+                          navigator.clipboard.writeText(`${window.location.origin}/?ref=${referralCode}`);
+                          toast({ title: "Kopyalandı!", description: "Referral link panoya kopyalandı" });
+                        }}
                         disabled={!referralCode}
+                        className="min-w-[100px]"
                       >
                         Kopyala
                       </Button>
-                      
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
-                    <div className="p-3 rounded-lg border">
-                      <div className="text-xs text-muted-foreground">Klik sayı</div>
-                      <div className="text-xl font-bold">{clicks}</div>
+                  
+                  {/* Stats Cards */}
+                  <div className="grid grid-cols-2 gap-4 mt-6">
+                    <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-xl p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="text-sm font-medium text-primary/80">Təsdiqlənən elan</div>
+                          <div className="text-2xl font-bold text-primary">{approvedCount}</div>
+                        </div>
+                        <div className="p-2 bg-primary/10 rounded-lg">
+                          <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </div>
+                      </div>
                     </div>
-                    <div className="p-3 rounded-lg border">
-                      <div className="text-xs text-muted-foreground">Təsdiqlənən elan</div>
-                      <div className="text-xl font-bold">{approvedCount}</div>
+                    <div className="relative overflow-hidden bg-gradient-to-br from-green-500/10 to-green-500/5 border border-green-500/20 rounded-xl p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="text-sm font-medium text-green-600/80">Balans (AZN)</div>
+                          <div className="text-2xl font-bold text-green-600">{balance}</div>
+                        </div>
+                        <div className="p-2 bg-green-500/10 rounded-lg">
+                          <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                          </svg>
+                        </div>
+                      </div>
                     </div>
-                    <div className="p-3 rounded-lg border">
-                      <div className="text-xs text-muted-foreground">Qazanc (AZN)</div>
-                      <div className="text-xl font-bold">{balance}</div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Profil</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div>
-                      <Label>Ad</Label>
-                      <Input value={firstName} onChange={(e)=>setFirstName(e.target.value)} placeholder="Ad" />
-                    </div>
-                    <div>
-                      <Label>Soyad</Label>
-                      <Input value={lastName} onChange={(e)=>setLastName(e.target.value)} placeholder="Soyad" />
-                    </div>
-                  </div>
-                  <div className="flex justify-between">
-                    <Button variant="outline" onClick={updateProfile}>Yadda saxla</Button>
-                    <Button variant="ghost" onClick={signOut}>Hesabdan çıxış</Button>
                   </div>
                 </CardContent>
               </Card>
 
+              {/* Wallet Management */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Cüzdan</CardTitle>
+                  <CardTitle className="flex items-center gap-2">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                    </svg>
+                    Cüzdan idarəsi
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
@@ -538,7 +607,7 @@ const Referral = () => {
                           placeholder="1234 5678 9876 5432"
                           inputMode="numeric"
                         />
-                        <Button onClick={addCardWallet}>Kartı əlavə et</Button>
+                        <Button onClick={addCardWallet}>Əlavə et</Button>
                       </div>
                     </div>
                     <div>
@@ -550,42 +619,51 @@ const Referral = () => {
                           placeholder="055 993 77 66"
                           inputMode="numeric"
                         />
-                        <Button onClick={addM10Wallet}>M10 əlavə et</Button>
+                        <Button onClick={addM10Wallet}>Əlavə et</Button>
                       </div>
                     </div>
                   </div>
 
                   <Separator className="my-4" />
                   <div className="space-y-2">
-                    {wallets.length === 0 && (
-                      <div className="text-sm text-muted-foreground">Cüzdan əlavə olunmayıb</div>
-                    )}
-                    {wallets.map((w) => (
-                      <div key={w.id} className="p-3 border rounded-md flex items-center justify-between">
-                        <div className="text-sm">
-                          {w.card_number && <div>Kart: {maskCardForUser(w.card_number)}</div>}
-                          {w.m10_number && <div>M10: {formatM10Input(w.m10_number)}</div>}
-                        </div>
-                        <Button
-                          variant="destructive"
-                          size="icon"
-                          onClick={() => deleteWallet(w.id)}
-                          aria-label="Sil"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                    <div className="text-sm font-medium">Mənim cüzdanlarım</div>
+                    {wallets.length === 0 ? (
+                      <div className="p-4 border-2 border-dashed border-gray-200 rounded-lg text-center text-sm text-muted-foreground">
+                        Hələ cüzdan əlavə olunmayıb
                       </div>
-                    ))}
+                    ) : (
+                      wallets.map((w) => (
+                        <div key={w.id} className="p-3 border rounded-lg flex items-center justify-between bg-gray-50/50">
+                          <div className="text-sm">
+                            {w.card_number && <div className="font-medium">Kart: {maskCardForUser(w.card_number)}</div>}
+                            {w.m10_number && <div className="font-medium">M10: {formatM10Input(w.m10_number)}</div>}
+                          </div>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => deleteWallet(w.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))
+                    )}
                   </div>
                 </CardContent>
               </Card>
 
+              {/* Withdrawal Section */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Çıxarış</CardTitle>
+                  <CardTitle className="flex items-center gap-2">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                    </svg>
+                    Çıxarış et
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                     <div>
                       <Label>Metod</Label>
                       <select
@@ -622,65 +700,111 @@ const Referral = () => {
                       />
                     </div>
                   </div>
-                  <div className="flex justify-end mt-3">
-                    <Button onClick={createWithdrawal} disabled={!canWithdraw}>Çıxarış et</Button>
+                  <div className="flex justify-end">
+                    <Button onClick={createWithdrawal} disabled={!canWithdraw}>
+                      Çıxarış et
+                    </Button>
                   </div>
 
                   <Separator className="my-4" />
                   <div className="space-y-2">
-                    <div className="text-sm font-medium">Sorğularım</div>
+                    <div className="text-sm font-medium">Çıxarış tarixçəsi</div>
                     <div className="space-y-2">
-                      {withdrawals.length === 0 && (
-                        <div className="text-sm text-muted-foreground">Hələ sorğu yoxdur</div>
-                      )}
-                      {withdrawals.map(w => (
-                         <div key={w.id} className="p-3 border rounded-md">
-                           <div className="flex items-center justify-between">
-                             <div className="text-sm">
-                               <div className="font-medium">{w.amount} AZN • {w.method === 'card' ? 'Kart' : 'M10'}</div>
-                               <div className="text-xs text-muted-foreground">{new Date(w.created_at).toLocaleString()} • {w.method === 'card' ? maskCardForUser(w.destination) : w.destination}</div>
-                             </div>
-                             <div className="flex items-center gap-2">
-                             <span className={`text-xs px-2 py-1 rounded ${w.status==='pending'?'bg-yellow-500/10 text-yellow-600': w.status==='paid'?'bg-green-500/10 text-green-600':'bg-red-500/10 text-red-600'}`}>
-                               {w.status==='pending'?'Gözləyir': w.status==='paid'?'Ödənildi':'Ləğv edildi'}
-                             </span>
-                             </div>
-                           </div>
-                           {w.admin_comment && (
-                             <div className="mt-2 p-2 bg-muted rounded text-xs">
-                               <div className="font-medium text-muted-foreground">Admin şərhi:</div>
-                               <div>{w.admin_comment}</div>
-                             </div>
-                           )}
+                      {withdrawals.length === 0 ? (
+                        <div className="p-4 border-2 border-dashed border-gray-200 rounded-lg text-center text-sm text-muted-foreground">
+                          Hələ çıxarış sorğusu yoxdur
                         </div>
-                      ))}
+                      ) : (
+                        withdrawals.map(w => (
+                           <div key={w.id} className="p-3 border rounded-lg bg-gray-50/50">
+                             <div className="flex items-center justify-between">
+                               <div className="text-sm">
+                                 <div className="font-medium">{w.amount} AZN • {w.method === 'card' ? 'Kart' : 'M10'}</div>
+                                 <div className="text-xs text-muted-foreground">{new Date(w.created_at).toLocaleString()}</div>
+                                 <div className="text-xs text-muted-foreground">{w.method === 'card' ? maskCardForUser(w.destination) : w.destination}</div>
+                               </div>
+                               <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                                 w.status==='pending'?'bg-yellow-100 text-yellow-700': 
+                                 w.status==='paid'?'bg-green-100 text-green-700':
+                                 'bg-red-100 text-red-700'
+                               }`}>
+                                 {w.status==='pending'?'Gözləyir': w.status==='paid'?'Ödənildi':'Ləğv edildi'}
+                               </span>
+                             </div>
+                             {w.admin_comment && (
+                               <div className="mt-2 p-2 bg-blue-50 rounded text-xs">
+                                 <div className="font-medium text-blue-600">Admin şərhi:</div>
+                                 <div className="text-blue-700">{w.admin_comment}</div>
+                               </div>
+                             )}
+                          </div>
+                        ))
+                      )}
                     </div>
                   </div>
                 </CardContent>
               </Card>
             </div>
-          )}
-        </div>
 
-        {/* Right column: Quick docs */}
-        <div className="lg:col-span-1 lg:sticky lg:top-4 self-start">
-          <Card>
-            <CardHeader>
-              <CardTitle>Qısa dokumentasiya</CardTitle>
-            </CardHeader>
-            <CardContent className="text-sm text-muted-foreground space-y-2">
-              <p>1) Qeydiyyatdan keçin və unikal referral linkinizi kopyalayın.</p>
-              <p>2) Linki paylaşın. Sizin link vasitəsilə elan yerləşdirilsə, təsdiq ediləndə 5 AZN qazanırsınız.</p>
-              <p>3) Cüzdan bölməsindən kartı (1234 5678 9876 5432) və ya M10 nömrənizi (055 993 77 66) əlavə edin.</p>
-              <p>4) Balans 10 AZN olduqda çıxarış üçün sorğu yaradın. Sorğular admin paneldən təsdiqlənir.</p>
-            </CardContent>
-          </Card>
-        </div>
+            {/* Right Sidebar */}
+            <div className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    Profil
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 gap-3">
+                    <div>
+                      <Label>Ad</Label>
+                      <Input value={firstName} onChange={(e)=>setFirstName(e.target.value)} placeholder="Ad" />
+                    </div>
+                    <div>
+                      <Label>Soyad</Label>
+                      <Input value={lastName} onChange={(e)=>setLastName(e.target.value)} placeholder="Soyad" />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Button variant="outline" onClick={updateProfile} className="w-full">Yadda saxla</Button>
+                    <Button variant="ghost" onClick={signOut} className="w-full">Hesabdan çıxış</Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Qısa məlumat
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="text-sm text-muted-foreground space-y-3">
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-bold">1</div>
+                    <p>Linkinizi paylaşın</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-bold">2</div>
+                    <p>Hər təsdiqlənən elan üçün <span className="font-semibold text-primary">5 AZN</span> qazanın</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-bold">3</div>
+                    <p>Minimum 10 AZN çıxarış</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        )}
       </div>
-      {/* Bottom Navigation - Mobile/Tablet */}
-      <div className="pb-16 xl:pb-0">
-        <BottomNavigation selectedCategory="" onCategorySelect={() => {}} />
-      </div>
+      
+      <BottomNavigation selectedCategory="" onCategorySelect={() => {}} />
     </main>
   );
 };
