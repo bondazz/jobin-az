@@ -549,6 +549,7 @@ export type Database = {
         Row: {
           clicks: number
           code: string
+          confirmations_count: number
           created_at: string
           earnings_azn: number
           id: string
@@ -559,6 +560,7 @@ export type Database = {
         Insert: {
           clicks?: number
           code: string
+          confirmations_count?: number
           created_at?: string
           earnings_azn?: number
           id?: string
@@ -569,6 +571,7 @@ export type Database = {
         Update: {
           clicks?: number
           code?: string
+          confirmations_count?: number
           created_at?: string
           earnings_azn?: number
           id?: string
