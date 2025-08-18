@@ -210,37 +210,64 @@ const Referral = () => {
   const signUp = async () => {
     setLoadingAuth(true);
     
-    // Sign up with email confirmation required
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: `${window.location.origin}/referral`,
-        data: {
-          first_name: firstName,
-          last_name: lastName
-        }
-      },
-    });
-    
-    if (error) {
-      setLoadingAuth(false);
-      return toast({ title: "Qeydiyyat alınmadı", description: error.message });
-    }
+    try {
 
-    // Always require email verification - user will not be logged in until verified
-    if (data.user) {
+      // Sign up with email confirmation required
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/referral`,
+          data: {
+            first_name: firstName,
+            last_name: lastName
+          }
+        },
+      });
+      
       setLoadingAuth(false);
       
-      // Clear form
-      setEmail("");
-      setPassword("");
-      setFirstName("");
-      setLastName("");
-      
+      if (error) {
+        // Handle specific error cases
+        if (error.message.includes('rate limit') || error.message.includes('429')) {
+          return toast({ 
+            title: "Çox tez-tez cəhd", 
+            description: "Xahiş edirik bir neçə dəqiqə gözləyin və yenidən cəhd edin." 
+          });
+        }
+        
+        if (error.message.includes('timeout') || error.message.includes('504')) {
+          return toast({ 
+            title: "Şəbəkə xətası", 
+            description: "İnternet bağlantınızı yoxlayın və yenidən cəhd edin." 
+          });
+        }
+        
+        return toast({ 
+          title: "Qeydiyyat alınmadı", 
+          description: error.message 
+        });
+      }
+
+      // Success case
+      if (data.user) {
+        // Clear form
+        setEmail("");
+        setPassword("");
+        setFirstName("");
+        setLastName("");
+        
+        toast({ 
+          title: "Qeydiyyat tamamlandı", 
+          description: "E-poçt ünvanınıza təsdiqləmə linki göndərilmişdir. Linkə klikləyərək hesabınızı təsdiqləyin və daxil olun." 
+        });
+      }
+    } catch (err: any) {
+      setLoadingAuth(false);
+      console.error('Signup error:', err);
       toast({ 
-        title: "Qeydiyyat tamamlandı", 
-        description: "E-poçt ünvanınıza təsdiqləmə linki göndərilmişdir. Linkə klikləyərək hesabınızı təsdiqləyin və daxil olun." 
+        title: "Xəta baş verdi", 
+        description: "Xahiş edirik yenidən cəhd edin." 
       });
     }
   };
