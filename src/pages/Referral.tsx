@@ -209,14 +209,53 @@ const Referral = () => {
 
   const signUp = async () => {
     setLoadingAuth(true);
-    const { error } = await supabase.auth.signUp({
+    
+    // Sign up without email confirmation (we'll handle it manually)
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: { emailRedirectTo: `${window.location.origin}/referral` },
+      options: {
+        emailRedirectTo: `${window.location.origin}/referral`,
+        data: {
+          first_name: firstName,
+          last_name: lastName
+        }
+      },
     });
+    
+    if (error) {
+      setLoadingAuth(false);
+      return toast({ title: "Qeydiyyat alınmadı", description: error.message });
+    }
+
+    // Send custom verification email
+    if (data.user && !data.session) {
+      try {
+        // Generate a unique token for verification
+        const verificationToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        
+        const { error: emailError } = await supabase.functions.invoke('send-verification-email', {
+          body: {
+            email: email,
+            token: verificationToken,
+            type: 'signup',
+            redirectTo: `${window.location.origin}/referral`
+          }
+        });
+
+        if (emailError) {
+          console.error('Email sending failed:', emailError);
+        }
+      } catch (emailErr) {
+        console.error('Email function error:', emailErr);
+      }
+    }
+    
     setLoadingAuth(false);
-    if (error) return toast({ title: "Qeydiyyat alınmadı", description: error.message });
-    toast({ title: "Qeydiyyat tamamlandı", description: "E-poçt təsdiqləmə linkini yoxlayın." });
+    toast({ 
+      title: "Qeydiyyat tamamlandı", 
+      description: "E-poçt təsdiqləmə linkini yoxlayın və hesabınızı təsdiqləyin." 
+    });
   };
 
   const signOut = async () => {
