@@ -211,8 +211,7 @@ const Referral = () => {
     setLoadingAuth(true);
     
     try {
-
-      // Sign up with email confirmation required
+      // First, create user without automatic email
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -224,27 +223,10 @@ const Referral = () => {
           }
         },
       });
-
-      // Send custom verification email using Resend
-      if (data.user && !data.user.email_confirmed_at && data.session) {
-        try {
-          await supabase.functions.invoke('send-verification-email', {
-            body: {
-              email: data.user.email,
-              token: data.session.access_token,
-              type: 'signup',
-              redirectTo: `${window.location.origin}/referral?verified=true`
-            }
-          });
-          console.log('Custom verification email sent successfully');
-        } catch (emailError) {
-          console.warn('Custom email sending failed, using default Supabase verification:', emailError);
-        }
-      }
-      
-      setLoadingAuth(false);
       
       if (error) {
+        setLoadingAuth(false);
+        
         // Handle specific error cases
         if (error.message.includes('rate limit') || error.message.includes('429')) {
           return toast({ 
@@ -253,10 +235,17 @@ const Referral = () => {
           });
         }
         
-        if (error.message.includes('timeout') || error.message.includes('504')) {
+        if (error.message.includes('timeout') || error.message.includes('504') || error.message.includes('upstream request timeout')) {
           return toast({ 
             title: "Şəbəkə xətası", 
-            description: "İnternet bağlantınızı yoxlayın və yenidən cəhd edin." 
+            description: "Server məşğuldur. Xahiş edirik bir neçə saniyə gözləyin və yenidən cəhd edin." 
+          });
+        }
+        
+        if (error.message.includes('User already registered')) {
+          return toast({ 
+            title: "İstifadəçi mövcuddur", 
+            description: "Bu email adresi artıq qeydiyyatdan keçmişdir." 
           });
         }
         
@@ -266,8 +255,29 @@ const Referral = () => {
         });
       }
 
-      // Success case
+      // If user was created successfully
       if (data.user) {
+        console.log('User created successfully:', data.user.id);
+        
+        // Send custom verification email using our edge function
+        try {
+          const emailResult = await supabase.functions.invoke('send-verification-email', {
+            body: {
+              email: data.user.email,
+              token: data.user.id, // Use user ID as token for our custom verification
+              type: 'signup',
+              redirectTo: `${window.location.origin}/referral?verified=true`
+            }
+          });
+          
+          console.log('Custom verification email sent:', emailResult);
+        } catch (emailError) {
+          console.error('Custom email failed:', emailError);
+          // Don't show error to user, let default Supabase email work
+        }
+        
+        setLoadingAuth(false);
+        
         // Clear form
         setEmail("");
         setPassword("");
@@ -275,17 +285,31 @@ const Referral = () => {
         setLastName("");
         
         toast({ 
-          title: "Qeydiyyat tamamlandı", 
-          description: "E-poçt ünvanınıza təsdiqləmə linki göndərilmişdir. Linkə klikləyərək hesabınızı təsdiqləyin və daxil olun." 
+          title: "Qeydiyyat uğurla tamamlandı!", 
+          description: "E-poçt ünvanınıza təsdiqləmə maili göndərilmişdir. Linkə klikləyərək hesabınızı təsdiqləyin." 
+        });
+      } else {
+        setLoadingAuth(false);
+        toast({ 
+          title: "Xəta baş verdi", 
+          description: "Qeydiyyat zamanı xəta baş verdi. Yenidən cəhd edin." 
         });
       }
     } catch (err: any) {
       setLoadingAuth(false);
       console.error('Signup error:', err);
-      toast({ 
-        title: "Xəta baş verdi", 
-        description: "Xahiş edirik yenidən cəhd edin." 
-      });
+      
+      if (err.message?.includes('timeout') || err.message?.includes('504')) {
+        toast({ 
+          title: "Şəbəkə xətası", 
+          description: "İnternet bağlantınızı yoxlayın və yenidən cəhd edin." 
+        });
+      } else {
+        toast({ 
+          title: "Xəta baş verdi", 
+          description: "Qeydiyyat zamanı xəta baş verdi. Yenidən cəhd edin." 
+        });
+      }
     }
   };
 

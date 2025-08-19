@@ -25,13 +25,15 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { email, token, type, redirectTo }: VerificationEmailRequest = await req.json();
 
+    console.log('Verification email request:', { email, type, redirectTo });
+
     const isSignup = type === 'signup';
     const subject = isSignup ? "Hesabınızı təsdiqləyin" : "Parolunuzu yeniləyin";
     const actionText = isSignup ? "Hesabı təsdiqləyin" : "Parolu yeniləyin";
     
-    // Create verification URL
+    // Create verification URL - use the user ID token approach for custom verification
     const baseUrl = redirectTo || Deno.env.get('SUPABASE_URL');
-    const verificationUrl = `${baseUrl}/auth/v1/verify?token=${token}&type=${type}&redirect_to=${redirectTo || `${baseUrl}/referral`}`;
+    const verificationUrl = `${baseUrl}/auth/v1/verify?token=${token}&type=${type}&redirect_to=${redirectTo || `${baseUrl}/referral?verified=true`}`;
 
     const emailResponse = await resend.emails.send({
       from: "İş Axtarış Platforması <noreply@yourdomain.com>", // Sizin domain-inizi əlavə edin
