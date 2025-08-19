@@ -217,13 +217,30 @@ const Referral = () => {
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/referral`,
+          emailRedirectTo: `${window.location.origin}/referral?verified=true`,
           data: {
             first_name: firstName,
             last_name: lastName
           }
         },
       });
+
+      // Send custom verification email using Resend
+      if (data.user && !data.user.email_confirmed_at && data.session) {
+        try {
+          await supabase.functions.invoke('send-verification-email', {
+            body: {
+              email: data.user.email,
+              token: data.session.access_token,
+              type: 'signup',
+              redirectTo: `${window.location.origin}/referral?verified=true`
+            }
+          });
+          console.log('Custom verification email sent successfully');
+        } catch (emailError) {
+          console.warn('Custom email sending failed, using default Supabase verification:', emailError);
+        }
+      }
       
       setLoadingAuth(false);
       
