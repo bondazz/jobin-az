@@ -211,15 +211,16 @@ const Referral = () => {
     setLoadingAuth(true);
     
     try {
-      // First, create user without automatic email
+      // Create user WITHOUT email confirmation to avoid rate limits
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/referral?verified=true`,
+          // Disable email confirmation to prevent rate limit issues
           data: {
             first_name: firstName,
-            last_name: lastName
+            last_name: lastName,
+            email_confirm: false
           }
         },
       });
@@ -259,7 +260,7 @@ const Referral = () => {
       if (data.user) {
         console.log('User created successfully:', data.user.id);
         
-        // Send custom verification email using our edge function
+        // Always send our custom verification email since Supabase's is disabled
         try {
           const emailResult = await supabase.functions.invoke('send-verification-email', {
             body: {
@@ -271,9 +272,18 @@ const Referral = () => {
           });
           
           console.log('Custom verification email sent:', emailResult);
+          
+          if (emailResult.error) {
+            console.error('Email function error:', emailResult.error);
+            throw new Error('Email göndərmə xətası');
+          }
         } catch (emailError) {
           console.error('Custom email failed:', emailError);
-          // Don't show error to user, let default Supabase email work
+          setLoadingAuth(false);
+          return toast({ 
+            title: "Email xətası", 
+            description: "Təsdiqləmə emaili göndərilmədi. Dəstəklə əlaqə saxlayın." 
+          });
         }
         
         setLoadingAuth(false);

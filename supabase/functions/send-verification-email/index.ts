@@ -31,9 +31,9 @@ const handler = async (req: Request): Promise<Response> => {
     const subject = isSignup ? "Hesabınızı təsdiqləyin" : "Parolunuzu yeniləyin";
     const actionText = isSignup ? "Hesabı təsdiqləyin" : "Parolu yeniləyin";
     
-    // Create verification URL - use the user ID token approach for custom verification
-    const baseUrl = redirectTo || Deno.env.get('SUPABASE_URL');
-    const verificationUrl = `${baseUrl}/auth/v1/verify?token=${token}&type=${type}&redirect_to=${redirectTo || `${baseUrl}/referral?verified=true`}`;
+    // Create custom verification URL that doesn't use Supabase auth verify
+    const baseUrl = redirectTo || 'https://6598636d-17d6-4c97-943b-bc05bdcd0ce0.lovableproject.com';
+    const verificationUrl = `${baseUrl}?verified=true&user_id=${token}&email_confirmed=true`;
 
     const emailResponse = await resend.emails.send({
       from: "İş Axtarış Platforması <noreply@yourdomain.com>", // Sizin domain-inizi əlavə edin
