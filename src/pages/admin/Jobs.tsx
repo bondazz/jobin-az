@@ -253,7 +253,7 @@ export default function AdminJobs() {
     }
   }, [companySearchTerm, companies]);
 
-  // Auto-generate SEO fields for new job based on title and company
+  // Auto-generate SEO fields and slug for new job based on title and company
   useEffect(() => {
     if (editingJob) return; // only for creating new vacancy
 
@@ -263,6 +263,22 @@ export default function AdminJobs() {
     if (!title || !companyName) return;
 
     const { seoTitle, seoDescription } = generateSeoFields(title, companyName);
+    
+    // Auto-generate unique slug from title
+    const baseSlug = title
+      .toLowerCase()
+      .replace(/[ğüşöçıəĞÜŞÖÇIƏ]/g, match => {
+        const map: Record<string, string> = {
+          'ğ': 'g', 'ü': 'u', 'ş': 's', 'ö': 'o', 'ç': 'c', 'ı': 'i', 'ə': 'e',
+          'Ğ': 'g', 'Ü': 'u', 'Ş': 's', 'Ö': 'o', 'Ç': 'c', 'I': 'i', 'Ə': 'e'
+        };
+        return map[match] || match;
+      })
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+    
+    // Add timestamp to ensure uniqueness
+    const uniqueSlug = `${baseSlug}-${Date.now()}`;
 
     setFormData(prev => {
       const prevSeoTitle = prev.seo_title ?? '';
@@ -270,12 +286,13 @@ export default function AdminJobs() {
       const shouldUpdateTitle = !seoTitleEdited && (prevSeoTitle.trim() === '' || prevSeoTitle === lastGeneratedSEO.title);
       const shouldUpdateDesc = !seoDescEdited && (prevSeoDesc.trim() === '' || prevSeoDesc === lastGeneratedSEO.description);
 
-      if (!shouldUpdateTitle && !shouldUpdateDesc) return prev;
+      if (!shouldUpdateTitle && !shouldUpdateDesc && prev.slug) return prev;
 
       return {
         ...prev,
         seo_title: shouldUpdateTitle ? seoTitle : prev.seo_title,
         seo_description: shouldUpdateDesc ? seoDescription : prev.seo_description,
+        slug: uniqueSlug, // Always generate unique slug for new jobs
       };
     });
 
