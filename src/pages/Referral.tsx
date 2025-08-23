@@ -186,7 +186,7 @@ const Referral = () => {
       // profile
       const { data: prof } = await supabase
         .from("profiles")
-        .select("first_name, last_name, full_name, avatar_url")
+        .select("first_name, last_name, full_name, avatar_url, background_image")
         .eq("user_id", user.id)
         .maybeSingle();
       
@@ -199,6 +199,7 @@ const Referral = () => {
       setLastName(displayLastName);
       setFullName(displayFullName);
       setAvatarUrl(prof?.avatar_url || null);
+      setBackgroundImageUrl(prof?.background_image || null);
     };
     init();
   }, [user]);

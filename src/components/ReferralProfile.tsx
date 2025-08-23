@@ -50,7 +50,7 @@ export default function ReferralProfile({
   const [editAvatarUrl, setEditAvatarUrl] = useState(avatarUrl || "");
   const [editBackgroundUrl, setEditBackgroundUrl] = useState(backgroundImageUrl || "");
 
-  const updateProfile = async () => {
+  const updateProfileInfo = async () => {
     if (!user) return;
     
     const updatedFullName = `${editFirstName} ${editLastName}`.trim();
@@ -61,7 +61,6 @@ export default function ReferralProfile({
         first_name: editFirstName,
         last_name: editLastName,
         full_name: updatedFullName,
-        avatar_url: editAvatarUrl || null,
       })
       .eq("user_id", user.id);
 
@@ -72,12 +71,61 @@ export default function ReferralProfile({
         firstName: editFirstName,
         lastName: editLastName,
         fullName: updatedFullName,
-        avatarUrl: editAvatarUrl || null,
-        backgroundImageUrl: editBackgroundUrl || null,
+        avatarUrl: avatarUrl,
+        backgroundImageUrl: backgroundImageUrl,
       });
       setIsEditingProfile(false);
+      toast({ title: "Profil məlumatları yeniləndi!" });
+    }
+  };
+
+  const updateAvatar = async () => {
+    if (!user) return;
+    
+    const { error } = await supabase
+      .from("profiles")
+      .update({
+        avatar_url: editAvatarUrl || null,
+      })
+      .eq("user_id", user.id);
+
+    if (error) {
+      toast({ title: "Xəta", description: "Profil şəkli yenilənmədi" });
+    } else {
+      onProfileUpdate({
+        firstName: firstName,
+        lastName: lastName,
+        fullName: fullName,
+        avatarUrl: editAvatarUrl || null,
+        backgroundImageUrl: backgroundImageUrl,
+      });
       setIsEditingAvatar(false);
-      toast({ title: "Profil yeniləndi!" });
+      toast({ title: "Profil şəkli yeniləndi!" });
+    }
+  };
+
+  const updateBackground = async () => {
+    if (!user) return;
+    
+    const { error } = await supabase
+      .from("profiles")
+      .update({
+        background_image: editBackgroundUrl || null,
+      })
+      .eq("user_id", user.id);
+
+    if (error) {
+      toast({ title: "Xəta", description: "Arxa fon yenilənmədi" });
+    } else {
+      onProfileUpdate({
+        firstName: firstName,
+        lastName: lastName,
+        fullName: fullName,
+        avatarUrl: avatarUrl,
+        backgroundImageUrl: editBackgroundUrl || null,
+      });
+      setIsEditingBackground(false);
+      toast({ title: "Arxa fon yeniləndi!" });
     }
   };
 
@@ -169,7 +217,7 @@ export default function ReferralProfile({
               imageType="companies"
             />
             <div className="flex gap-2 mt-3">
-              <Button size="sm" onClick={updateProfile}>
+              <Button size="sm" onClick={updateBackground}>
                 Yadda saxla
               </Button>
               <Button size="sm" variant="outline" onClick={() => setIsEditingBackground(false)}>
@@ -190,7 +238,7 @@ export default function ReferralProfile({
               imageType="companies"
             />
             <div className="flex gap-2 mt-3">
-              <Button size="sm" onClick={updateProfile}>
+              <Button size="sm" onClick={updateAvatar}>
                 Yadda saxla
               </Button>
               <Button size="sm" variant="outline" onClick={() => setIsEditingAvatar(false)}>
@@ -306,7 +354,7 @@ export default function ReferralProfile({
             
             <div className="flex gap-2 pt-2">
               <Button 
-                onClick={updateProfile} 
+                onClick={updateProfileInfo} 
                 className="flex-1"
               >
                 Yadda saxla
