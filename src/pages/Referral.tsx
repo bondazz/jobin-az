@@ -9,11 +9,11 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/components/ui/use-toast";
 import { updatePageMeta } from "@/utils/seo";
-import { Trash2, User, Camera, Edit3 } from "lucide-react";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Trash2 } from "lucide-react";
 import BottomNavigation from "@/components/BottomNavigation";
 import MobileHeader from "@/components/MobileHeader";
 import { useReferralCode } from "@/hooks/useReferralCode";
+import ReferralProfile from "@/components/ReferralProfile";
 
 interface ReferralRequestForm {
   company_name: string;
@@ -73,6 +73,7 @@ const Referral = () => {
   const [lastName, setLastName] = useState<string>("");
   const [fullName, setFullName] = useState<string>("");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [backgroundImageUrl, setBackgroundImageUrl] = useState<string | null>(null);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
 
   const [reqForm, setReqForm] = useState<ReferralRequestForm>({
@@ -914,139 +915,27 @@ const Referral = () => {
 
             {/* Right Sidebar - Enhanced Profile */}
             <div className="space-y-6">
-              <Card className="overflow-hidden bg-gradient-to-br from-primary/5 via-background to-secondary/5">
-                {/* Profile Header */}
-                <div className="relative">
-                  {/* Background gradient */}
-                  <div className="h-24 bg-gradient-to-r from-primary/20 via-primary/10 to-secondary/20" />
-                  
-                  {/* Avatar section */}
-                  <div className="absolute -bottom-8 left-6">
-                    <div className="relative group">
-                      <Avatar className="w-16 h-16 border-4 border-background shadow-lg">
-                        <AvatarImage 
-                          src={avatarUrl || undefined} 
-                          alt={fullName || "Profil şəkli"} 
-                        />
-                        <AvatarFallback className="bg-primary/10 text-primary text-lg font-semibold">
-                          {fullName ? fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : 
-                           (firstName && lastName) ? `${firstName[0]}${lastName[0]}`.toUpperCase() : 
-                           user?.email ? user.email[0].toUpperCase() : <User className="w-6 h-6" />}
-                        </AvatarFallback>
-                      </Avatar>
-                      
-                      {/* Camera icon overlay */}
-                      <div className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer flex items-center justify-center">
-                        <Camera className="w-4 h-4 text-white" />
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Edit button */}
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    onClick={() => setIsEditingProfile(!isEditingProfile)}
-                    className="absolute top-4 right-4 h-8 w-8 p-0"
-                  >
-                    <Edit3 className="w-4 h-4" />
-                  </Button>
-                </div>
-                
-                <CardContent className="pt-12 pb-6">
-                  {!isEditingProfile ? (
-                    /* Display Mode */
-                    <div className="space-y-4">
-                      <div>
-                        <h3 className="text-lg font-semibold text-foreground">
-                          {fullName || (firstName && lastName ? `${firstName} ${lastName}` : user?.email?.split('@')[0] || "Anonim İstifadəçi")}
-                        </h3>
-                        <p className="text-sm text-muted-foreground">Referral Partneri</p>
-                      </div>
-                      
-                      {/* Stats Grid */}
-                      <div className="grid grid-cols-2 gap-3 py-4">
-                        <div className="text-center p-3 rounded-lg bg-primary/5 border border-primary/10">
-                          <div className="text-lg font-bold text-primary">{approvedCount}</div>
-                          <div className="text-xs text-muted-foreground">Elan</div>
-                        </div>
-                        <div className="text-center p-3 rounded-lg bg-green-500/5 border border-green-500/10">
-                          <div className="text-lg font-bold text-green-600">{balance} ₼</div>
-                          <div className="text-xs text-muted-foreground">Balans</div>
-                        </div>
-                      </div>
-                      
-                      {referralCode && (
-                        <div className="p-3 rounded-lg bg-gradient-to-r from-primary/5 to-secondary/5 border border-primary/10">
-                          <div className="text-xs text-muted-foreground mb-1">Referral Kodu</div>
-                          <div className="font-mono text-sm font-medium text-primary">{referralCode}</div>
-                        </div>
-                      )}
-                      
-                      <div className="flex gap-2">
-                        <Button 
-                          variant="outline" 
-                          onClick={() => setIsEditingProfile(true)}
-                          className="flex-1"
-                        >
-                          Profili redaktə et
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          onClick={signOut}
-                          className="flex-1"
-                        >
-                          Çıxış
-                        </Button>
-                      </div>
-                    </div>
-                  ) : (
-                    /* Edit Mode */
-                    <div className="space-y-4">
-                      <div className="text-center mb-4">
-                        <h3 className="text-lg font-semibold">Profili Redaktə Et</h3>
-                      </div>
-                      
-                      <div className="space-y-3">
-                        <div>
-                          <Label className="text-sm font-medium">Ad</Label>
-                          <Input 
-                            value={firstName} 
-                            onChange={(e) => setFirstName(e.target.value)} 
-                            placeholder="Adınızı daxil edin"
-                            className="mt-1"
-                          />
-                        </div>
-                        <div>
-                          <Label className="text-sm font-medium">Soyad</Label>
-                          <Input 
-                            value={lastName} 
-                            onChange={(e) => setLastName(e.target.value)} 
-                            placeholder="Soyadınızı daxil edin"
-                            className="mt-1"
-                          />
-                        </div>
-                      </div>
-                      
-                      <div className="flex gap-2 pt-2">
-                        <Button 
-                          onClick={updateProfile} 
-                          className="flex-1"
-                        >
-                          Yadda saxla
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          onClick={() => setIsEditingProfile(false)}
-                          className="flex-1"
-                        >
-                          Ləğv et
-                        </Button>
-                      </div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+              <ReferralProfile
+                user={user!}
+                firstName={firstName}
+                lastName={lastName}
+                fullName={fullName}
+                avatarUrl={avatarUrl}
+                backgroundImageUrl={backgroundImageUrl}
+                referralCode={referralCode}
+                approvedCount={approvedCount}
+                balance={balance}
+                onProfileUpdate={(updates) => {
+                  setFirstName(updates.firstName);
+                  setLastName(updates.lastName);
+                  setFullName(updates.fullName);
+                  setAvatarUrl(updates.avatarUrl);
+                  if (updates.backgroundImageUrl !== undefined) {
+                    setBackgroundImageUrl(updates.backgroundImageUrl);
+                  }
+                }}
+                onSignOut={signOut}
+              />
 
               <Card>
                 <CardHeader>
