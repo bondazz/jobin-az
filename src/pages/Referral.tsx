@@ -126,34 +126,37 @@ const Referral = () => {
   useEffect(() => {
     const init = async () => {
       if (!user) return;
-      // get or create referral and stats
+      
+      // Get existing referral and stats (should only be one now due to unique constraint)
       const { data: existing } = await supabase
         .from("referrals")
         .select("code, earnings_azn")
         .eq("user_id", user.id)
-        .maybeSingle();
+        .single();
 
-      let code = existing?.code;
-      if (!code) {
-        // generate simple unique code
+      if (existing?.code) {
+        setReferralCode(existing.code);
+        setBalance(Number(existing.earnings_azn || 0));
+      } else {
+        // If no referral exists (shouldn't happen with trigger), create one
         const base = (user.id || "").replace(/-/g, "").slice(0, 6);
         const rand = Math.random().toString(36).slice(2, 6);
         const newCode = `${base}${rand}`;
+        
         const { data: created, error } = await supabase
           .from("referrals")
           .insert({ user_id: user.id, code: newCode })
           .select("code, earnings_azn")
           .single();
+          
         if (error) {
+          console.error("Error creating referral:", error);
           toast({ title: "Xəta", description: "Referral kodu yaradılmadı." });
-        } else {
-          code = created.code;
+        } else if (created) {
+          setReferralCode(created.code);
           setBalance(Number(created.earnings_azn || 0));
         }
-      } else {
-        setBalance(Number(existing?.earnings_azn || 0));
       }
-      if (code) setReferralCode(code);
 
       // approved job submissions count
       const { count: appCount } = await supabase
