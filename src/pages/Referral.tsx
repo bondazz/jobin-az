@@ -211,16 +211,17 @@ const Referral = () => {
     setLoadingAuth(true);
     
     try {
-      // Create user WITHOUT email confirmation to avoid rate limits
+      const redirectUrl = `${window.location.origin}/referral`;
+      
+      // Use Supabase's built-in email confirmation
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          // Disable email confirmation to prevent rate limit issues
+          emailRedirectTo: redirectUrl,
           data: {
             first_name: firstName,
             last_name: lastName,
-            email_confirm: false
           }
         },
       });
@@ -260,32 +261,6 @@ const Referral = () => {
       if (data.user) {
         console.log('User created successfully:', data.user.id);
         
-        // Always send our custom verification email since Supabase's is disabled
-        try {
-          const emailResult = await supabase.functions.invoke('send-verification-email', {
-            body: {
-              email: data.user.email,
-              token: data.user.id, // Use user ID as token for our custom verification
-              type: 'signup',
-              redirectTo: `${window.location.origin}/referral?verified=true`
-            }
-          });
-          
-          console.log('Custom verification email sent:', emailResult);
-          
-          if (emailResult.error) {
-            console.error('Email function error:', emailResult.error);
-            throw new Error('Email göndərmə xətası');
-          }
-        } catch (emailError) {
-          console.error('Custom email failed:', emailError);
-          setLoadingAuth(false);
-          return toast({ 
-            title: "Email xətası", 
-            description: "Təsdiqləmə emaili göndərilmədi. Dəstəklə əlaqə saxlayın." 
-          });
-        }
-        
         setLoadingAuth(false);
         
         // Clear form
@@ -294,10 +269,17 @@ const Referral = () => {
         setFirstName("");
         setLastName("");
         
-        toast({ 
-          title: "Qeydiyyat uğurla tamamlandı!", 
-          description: "E-poçt ünvanınıza təsdiqləmə maili göndərilmişdir. Linkə klikləyərək hesabınızı təsdiqləyin." 
-        });
+        if (!data.user.email_confirmed_at) {
+          toast({ 
+            title: "Qeydiyyat uğurla tamamlandı!", 
+            description: "E-poçt ünvanınıza təsdiqləmə maili göndərilmişdir. Linkə klikləyərək hesabınızı təsdiqləyin." 
+          });
+        } else {
+          toast({ 
+            title: "Qeydiyyat uğurla tamamlandı!", 
+            description: "Hesabınız aktiv edildi." 
+          });
+        }
       } else {
         setLoadingAuth(false);
         toast({ 
