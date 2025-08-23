@@ -9,7 +9,8 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/components/ui/use-toast";
 import { updatePageMeta } from "@/utils/seo";
-import { Trash2 } from "lucide-react";
+import { Trash2, User, Camera, Edit3 } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import BottomNavigation from "@/components/BottomNavigation";
 import MobileHeader from "@/components/MobileHeader";
 import { useReferralCode } from "@/hooks/useReferralCode";
@@ -70,6 +71,9 @@ const Referral = () => {
   const [withdrawals, setWithdrawals] = useState<{ id: string; status: string; amount: number; method: string; destination: string; created_at: string; admin_comment?: string }[]>([]);
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
+  const [fullName, setFullName] = useState<string>("");
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
 
   const [reqForm, setReqForm] = useState<ReferralRequestForm>({
     company_name: "",
@@ -178,11 +182,13 @@ const Referral = () => {
       // profile
       const { data: prof } = await supabase
         .from("profiles")
-        .select("first_name, last_name")
+        .select("first_name, last_name, full_name, avatar_url")
         .eq("user_id", user.id)
         .maybeSingle();
       setFirstName(prof?.first_name || "");
       setLastName(prof?.last_name || "");
+      setFullName(prof?.full_name || "");
+      setAvatarUrl(prof?.avatar_url || null);
     };
     init();
   }, [user]);
@@ -464,11 +470,18 @@ const Referral = () => {
   // Update profile names
   const updateProfile = async () => {
     if (!user) return;
+    const updatedFullName = `${firstName} ${lastName}`.trim();
     const { error } = await supabase
       .from("profiles")
-      .update({ first_name: firstName, last_name: lastName })
+      .update({ 
+        first_name: firstName, 
+        last_name: lastName,
+        full_name: updatedFullName
+      })
       .eq("user_id", user.id);
     if (error) return toast({ title: "Xəta", description: "Profil yenilənmədi" });
+    setFullName(updatedFullName);
+    setIsEditingProfile(false);
     toast({ title: "Profil yeniləndi" });
   };
 
@@ -890,32 +903,137 @@ const Referral = () => {
               </Card>
             </div>
 
-            {/* Right Sidebar */}
+            {/* Right Sidebar - Enhanced Profile */}
             <div className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                    Profil
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 gap-3">
-                    <div>
-                      <Label>Ad</Label>
-                      <Input value={firstName} onChange={(e)=>setFirstName(e.target.value)} placeholder="Ad" />
-                    </div>
-                    <div>
-                      <Label>Soyad</Label>
-                      <Input value={lastName} onChange={(e)=>setLastName(e.target.value)} placeholder="Soyad" />
+              <Card className="overflow-hidden bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+                {/* Profile Header */}
+                <div className="relative">
+                  {/* Background gradient */}
+                  <div className="h-24 bg-gradient-to-r from-primary/20 via-primary/10 to-secondary/20" />
+                  
+                  {/* Avatar section */}
+                  <div className="absolute -bottom-8 left-6">
+                    <div className="relative group">
+                      <Avatar className="w-16 h-16 border-4 border-background shadow-lg">
+                        <AvatarImage 
+                          src={avatarUrl || undefined} 
+                          alt={fullName || "Profil şəkli"} 
+                        />
+                        <AvatarFallback className="bg-primary/10 text-primary text-lg font-semibold">
+                          {(firstName?.[0] || "") + (lastName?.[0] || "") || <User className="w-6 h-6" />}
+                        </AvatarFallback>
+                      </Avatar>
+                      
+                      {/* Camera icon overlay */}
+                      <div className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer flex items-center justify-center">
+                        <Camera className="w-4 h-4 text-white" />
+                      </div>
                     </div>
                   </div>
-                  <div className="flex flex-col gap-2">
-                    <Button variant="outline" onClick={updateProfile} className="w-full">Yadda saxla</Button>
-                    <Button variant="ghost" onClick={signOut} className="w-full">Hesabdan çıxış</Button>
-                  </div>
+                  
+                  {/* Edit button */}
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={() => setIsEditingProfile(!isEditingProfile)}
+                    className="absolute top-4 right-4 h-8 w-8 p-0"
+                  >
+                    <Edit3 className="w-4 h-4" />
+                  </Button>
+                </div>
+                
+                <CardContent className="pt-12 pb-6">
+                  {!isEditingProfile ? (
+                    /* Display Mode */
+                    <div className="space-y-4">
+                      <div>
+                        <h3 className="text-lg font-semibold text-foreground">
+                          {fullName || `${firstName} ${lastName}`.trim() || "Anonim İstifadəçi"}
+                        </h3>
+                        <p className="text-sm text-muted-foreground">Referral Partneri</p>
+                      </div>
+                      
+                      {/* Stats Grid */}
+                      <div className="grid grid-cols-2 gap-3 py-4">
+                        <div className="text-center p-3 rounded-lg bg-primary/5 border border-primary/10">
+                          <div className="text-lg font-bold text-primary">{approvedCount}</div>
+                          <div className="text-xs text-muted-foreground">Elan</div>
+                        </div>
+                        <div className="text-center p-3 rounded-lg bg-green-500/5 border border-green-500/10">
+                          <div className="text-lg font-bold text-green-600">{balance} ₼</div>
+                          <div className="text-xs text-muted-foreground">Balans</div>
+                        </div>
+                      </div>
+                      
+                      {referralCode && (
+                        <div className="p-3 rounded-lg bg-gradient-to-r from-primary/5 to-secondary/5 border border-primary/10">
+                          <div className="text-xs text-muted-foreground mb-1">Referral Kodu</div>
+                          <div className="font-mono text-sm font-medium text-primary">{referralCode}</div>
+                        </div>
+                      )}
+                      
+                      <div className="flex gap-2">
+                        <Button 
+                          variant="outline" 
+                          onClick={() => setIsEditingProfile(true)}
+                          className="flex-1"
+                        >
+                          Profili redaktə et
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          onClick={signOut}
+                          className="flex-1"
+                        >
+                          Çıxış
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    /* Edit Mode */
+                    <div className="space-y-4">
+                      <div className="text-center mb-4">
+                        <h3 className="text-lg font-semibold">Profili Redaktə Et</h3>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <div>
+                          <Label className="text-sm font-medium">Ad</Label>
+                          <Input 
+                            value={firstName} 
+                            onChange={(e) => setFirstName(e.target.value)} 
+                            placeholder="Adınızı daxil edin"
+                            className="mt-1"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-sm font-medium">Soyad</Label>
+                          <Input 
+                            value={lastName} 
+                            onChange={(e) => setLastName(e.target.value)} 
+                            placeholder="Soyadınızı daxil edin"
+                            className="mt-1"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="flex gap-2 pt-2">
+                        <Button 
+                          onClick={updateProfile} 
+                          className="flex-1"
+                        >
+                          Yadda saxla
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          onClick={() => setIsEditingProfile(false)}
+                          className="flex-1"
+                        >
+                          Ləğv et
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
