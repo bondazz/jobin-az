@@ -185,9 +185,15 @@ const Referral = () => {
         .select("first_name, last_name, full_name, avatar_url")
         .eq("user_id", user.id)
         .maybeSingle();
-      setFirstName(prof?.first_name || "");
-      setLastName(prof?.last_name || "");
-      setFullName(prof?.full_name || "");
+      
+      // Set the profile data, with fallbacks for display
+      const displayFirstName = prof?.first_name || "";
+      const displayLastName = prof?.last_name || "";
+      const displayFullName = prof?.full_name || (displayFirstName || displayLastName ? `${displayFirstName} ${displayLastName}`.trim() : "");
+      
+      setFirstName(displayFirstName);
+      setLastName(displayLastName);
+      setFullName(displayFullName);
       setAvatarUrl(prof?.avatar_url || null);
     };
     init();
@@ -920,7 +926,9 @@ const Referral = () => {
                           alt={fullName || "Profil şəkli"} 
                         />
                         <AvatarFallback className="bg-primary/10 text-primary text-lg font-semibold">
-                          {(firstName?.[0] || "") + (lastName?.[0] || "") || <User className="w-6 h-6" />}
+                          {fullName ? fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : 
+                           (firstName && lastName) ? `${firstName[0]}${lastName[0]}`.toUpperCase() : 
+                           user?.email ? user.email[0].toUpperCase() : <User className="w-6 h-6" />}
                         </AvatarFallback>
                       </Avatar>
                       
@@ -948,7 +956,7 @@ const Referral = () => {
                     <div className="space-y-4">
                       <div>
                         <h3 className="text-lg font-semibold text-foreground">
-                          {fullName || `${firstName} ${lastName}`.trim() || "Anonim İstifadəçi"}
+                          {fullName || (firstName && lastName ? `${firstName} ${lastName}` : user?.email?.split('@')[0] || "Anonim İstifadəçi")}
                         </h3>
                         <p className="text-sm text-muted-foreground">Referral Partneri</p>
                       </div>
