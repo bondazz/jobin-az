@@ -281,7 +281,7 @@ export default function ReferralProfile({
         )}
 
         {!isEditingProfile ? (
-          /* Display Mode - Perfect UI/UX */
+          /* Display Mode - 3 Column Layout */
           <div className="space-y-6 animate-fade-in">
             {/* User Info Section */}
             <div className="text-center sm:text-left space-y-2">
@@ -299,11 +299,12 @@ export default function ReferralProfile({
               </div>
             </div>
 
-            {/* Enhanced Stats Section */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="relative group">
+            {/* Three Column Layout */}
+            <div className="grid grid-cols-3 gap-4">
+              {/* Left: Approved Ads */}
+              <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5 rounded-2xl blur-sm"></div>
-                <div className="relative bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20 rounded-2xl p-4 shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105">
+                <div className="relative bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20 rounded-2xl p-4 shadow-md transition-all duration-300">
                   <div className="text-center space-y-2">
                     <div className="flex justify-center">
                       <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
@@ -318,9 +319,10 @@ export default function ReferralProfile({
                 </div>
               </div>
               
-              <div className="relative group">
+              {/* Center: Balance */}
+              <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-br from-success/20 to-success/5 rounded-2xl blur-sm"></div>
-                <div className="relative bg-gradient-to-br from-success/10 via-success/5 to-transparent border border-success/20 rounded-2xl p-4 shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105">
+                <div className="relative bg-gradient-to-br from-success/10 via-success/5 to-transparent border border-success/20 rounded-2xl p-4 shadow-md transition-all duration-300">
                   <div className="text-center space-y-2">
                     <div className="flex justify-center">
                       <div className="w-10 h-10 bg-success/10 rounded-full flex items-center justify-center">
@@ -334,11 +336,29 @@ export default function ReferralProfile({
                   </div>
                 </div>
               </div>
+
+              {/* Right: Referral Link */}
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-secondary/15 to-accent/10 rounded-2xl blur-sm"></div>
+                <div className="relative bg-gradient-to-br from-secondary/8 via-secondary/4 to-transparent border border-secondary/20 rounded-2xl p-4 shadow-md transition-all duration-300">
+                  <div className="text-center space-y-2">
+                    <div className="flex justify-center">
+                      <div className="w-10 h-10 bg-secondary/10 rounded-full flex items-center justify-center">
+                        <Share2 className="w-5 h-5 text-secondary" />
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      <div className="text-sm font-bold text-secondary">Link</div>
+                      <div className="text-xs text-muted-foreground font-medium leading-tight">Referral<br />Link</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            {/* Enhanced Referral Link Section */}
+            {/* Full Referral Link Section */}
             {referralCode && (
-              <div className="relative group">
+              <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-br from-secondary/15 to-accent/10 rounded-2xl blur-sm"></div>
                 <div className="relative bg-gradient-to-br from-secondary/8 via-secondary/4 to-transparent border border-secondary/20 rounded-2xl p-5 shadow-md">
                   <div className="space-y-4">
@@ -355,7 +375,7 @@ export default function ReferralProfile({
                         onClick={copyReferralCode}
                         className="h-8 w-8 p-0 hover:bg-secondary/10 rounded-xl transition-all duration-200 group"
                       >
-                        <Clipboard className="w-4 h-4 text-secondary group-hover:scale-110 transition-transform" />
+                        <Clipboard className="w-4 h-4 text-secondary transition-transform" />
                       </Button>
                     </div>
                     
