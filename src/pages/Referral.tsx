@@ -16,6 +16,7 @@ import MobileHeader from "@/components/MobileHeader";
 import { useReferralCode } from "@/hooks/useReferralCode";
 import ReferralProfile from "@/components/ReferralProfile";
 import creditCardIcon from "@/assets/credit-card-icon.png";
+import visaMasterCardIcon from "@/assets/visa-mastercard-icon.png";
 import m10Logo from "@/assets/m10-logo.png";
 
 interface ReferralRequestForm {
@@ -728,23 +729,25 @@ const Referral = () => {
                     <CardContent className="pt-0">
                       <div className="space-y-4">
                         <div>
-                          <Label className="flex items-center gap-2 mb-2">
-                            <img 
-                              src={creditCardIcon} 
-                              alt="Kart" 
-                              className="w-5 h-5 object-contain"
-                              style={{ width: '20px', height: '20px' }}
-                            />
-                            Kart nömrəsi
-                          </Label>
-                          <div className="flex gap-2">
-                            <Input
-                              value={walletCard}
-                              onChange={(e) => setWalletCard(formatCardInput(e.target.value))}
-                              placeholder="4169 **** **** 0000"
-                              inputMode="numeric"
-                              className="bg-card"
-                            />
+                          <Label className="mb-2">Kart nömrəsi</Label>
+                          <div className="flex gap-2 items-center">
+                            <div className="relative flex-1">
+                              <Input
+                                value={walletCard}
+                                onChange={(e) => setWalletCard(formatCardInput(e.target.value))}
+                                placeholder="4169 **** **** 0000"
+                                inputMode="numeric"
+                                className="bg-card pl-12"
+                              />
+                              <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+                                <img 
+                                  src={visaMasterCardIcon} 
+                                  alt="Visa MasterCard" 
+                                  className="w-6 h-6 object-contain"
+                                  style={{ width: '24px', height: '24px' }}
+                                />
+                              </div>
+                            </div>
                             <Button onClick={addCardWallet} size="sm" className="shrink-0">Əlavə et</Button>
                           </div>
                         </div>
