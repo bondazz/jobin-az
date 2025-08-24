@@ -710,7 +710,12 @@ const Referral = () => {
                       <CardTitle className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20 p-1.5 shadow-sm">
-                            <img src={creditCardIcon} alt="Kart" className="w-full h-full object-contain" />
+                            <img 
+                              src={creditCardIcon} 
+                              alt="Kart" 
+                              className="w-full h-full object-contain"
+                              style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                            />
                           </div>
                           <span>Cüzdan idarəsi</span>
                         </div>
@@ -724,7 +729,12 @@ const Referral = () => {
                       <div className="space-y-4">
                         <div>
                           <Label className="flex items-center gap-2 mb-2">
-                            <img src={creditCardIcon} alt="Kart" className="w-4 h-4" />
+                            <img 
+                              src={creditCardIcon} 
+                              alt="Kart" 
+                              className="w-5 h-5 object-contain"
+                              style={{ width: '20px', height: '20px' }}
+                            />
                             Kart nömrəsi
                           </Label>
                           <div className="flex gap-2">
@@ -740,7 +750,12 @@ const Referral = () => {
                         </div>
                         <div>
                           <Label className="flex items-center gap-2 mb-2">
-                            <img src={m10Logo} alt="M10" className="w-4 h-4" />
+                            <img 
+                              src={m10Logo} 
+                              alt="M10" 
+                              className="w-5 h-5 object-contain"
+                              style={{ width: '20px', height: '20px' }}
+                            />
                             M10 nömrəsi
                           </Label>
                           <div className="flex gap-2">
@@ -769,13 +784,23 @@ const Referral = () => {
                               <div className="flex items-center gap-2">
                                 {w.card_number && (
                                   <>
-                                    <img src={creditCardIcon} alt="Kart" className="w-5 h-5" />
+                                    <img 
+                                      src={creditCardIcon} 
+                                      alt="Kart" 
+                                      className="w-6 h-6 object-contain"
+                                      style={{ width: '24px', height: '24px' }}
+                                    />
                                     <div className="text-sm font-medium">Kart: {maskCardForUser(w.card_number)}</div>
                                   </>
                                 )}
                                 {w.m10_number && (
                                   <>
-                                    <img src={m10Logo} alt="M10" className="w-5 h-5" />
+                                    <img 
+                                      src={m10Logo} 
+                                      alt="M10" 
+                                      className="w-6 h-6 object-contain"
+                                      style={{ width: '24px', height: '24px' }}
+                                    />
                                     <div className="text-sm font-medium">M10: {formatM10Input(w.m10_number)}</div>
                                   </>
                                 )}
@@ -818,7 +843,10 @@ const Referral = () => {
                     <CardContent className="pt-0">
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                         <div>
-                          <Label>Metod</Label>
+                          <Label className="flex items-center gap-2">
+                            <CreditCard className="w-4 h-4" />
+                            Metod
+                          </Label>
                           <select
                             className="w-full h-10 rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                             value={withdrawMethod}
@@ -879,9 +907,19 @@ const Referral = () => {
                                  <div className="flex items-center justify-between">
                                    <div className="flex items-center gap-2">
                                      {w.method === 'card' ? (
-                                       <img src={creditCardIcon} alt="Kart" className="w-4 h-4" />
+                                       <img 
+                                         src={creditCardIcon} 
+                                         alt="Kart" 
+                                         className="w-5 h-5 object-contain"
+                                         style={{ width: '20px', height: '20px' }}
+                                       />
                                      ) : (
-                                       <img src={m10Logo} alt="M10" className="w-4 h-4" />
+                                       <img 
+                                         src={m10Logo} 
+                                         alt="M10" 
+                                         className="w-5 h-5 object-contain"
+                                         style={{ width: '20px', height: '20px' }}
+                                       />
                                      )}
                                      <div className="text-sm">
                                        <div className="font-medium">{w.amount} AZN • {w.method === 'card' ? 'Kart' : 'M10'}</div>
