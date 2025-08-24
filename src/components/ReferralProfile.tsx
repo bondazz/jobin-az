@@ -168,7 +168,7 @@ export default function ReferralProfile({
           } : {}}
         >
           {/* Background overlay for better text readability */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10 xl:z-0" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-50" />
           
           {/* Background edit button */}
           <Button
