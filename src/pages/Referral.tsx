@@ -739,7 +739,7 @@ const Referral = () => {
                           </div>
                         </div>
                         <div>
-                          <Label className="mb-2">Nömrə</Label>
+                          <Label className="mb-2">M10 Nömrə</Label>
                           <div className="flex gap-2 items-center">
                             <div className="relative flex-1">
                               <Input
