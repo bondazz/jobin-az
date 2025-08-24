@@ -381,57 +381,6 @@ export default function ReferralProfile({
               </Dialog>
             </div>
 
-            {/* Full Referral Link Section */}
-            {referralCode && (
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-secondary/15 to-accent/10 rounded-2xl blur-sm"></div>
-                <div className="relative bg-gradient-to-br from-secondary/8 via-secondary/4 to-transparent border border-secondary/20 rounded-2xl p-5 shadow-md">
-                  <div className="space-y-4">
-                    {/* Header */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2.5 h-2.5 bg-secondary rounded-full animate-pulse"></div>
-                        <Share2 className="w-4 h-4 text-secondary" />
-                        <span className="text-sm font-semibold text-secondary">Referral Link</span>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={copyReferralCode}
-                        className="h-8 w-8 p-0 hover:bg-secondary/10 rounded-xl transition-all duration-200 group"
-                      >
-                        <Clipboard className="w-4 h-4 text-secondary transition-transform" />
-                      </Button>
-                    </div>
-                    
-                    {/* Link Display Box */}
-                    <div className="relative">
-                      <div className="bg-card border border-border/60 rounded-xl p-4 shadow-inner">
-                        <div className="space-y-2">
-                          <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                            Referral Linkiniz
-                          </label>
-                          <div className="font-mono text-sm text-foreground break-all leading-relaxed bg-muted/30 p-3 rounded-lg border border-border/30">
-                            {`${window.location.origin}/?ref=${referralCode}`}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Copy Button */}
-                    <Button 
-                      onClick={copyReferralLink}
-                      size="sm"
-                      className="w-full h-10 bg-gradient-to-r from-secondary to-secondary/80 hover:from-secondary/90 hover:to-secondary/70 text-secondary-foreground font-medium shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl"
-                    >
-                      <Share2 className="w-4 h-4 mr-2" />
-                      Linki Kopyala
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            )}
-
             {/* Enhanced Action Buttons */}
             <div className="flex gap-3 pt-2">
               <Button 
