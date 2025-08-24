@@ -168,7 +168,7 @@ export default function ReferralProfile({
           } : {}}
         >
           {/* Background overlay for better text readability */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-50" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
           
           {/* Background edit button */}
           <Button
@@ -181,8 +181,8 @@ export default function ReferralProfile({
           </Button>
         </div>
 
-        {/* Profile Avatar - Centered on mobile, left-aligned on larger screens */}
-        <div className="absolute -bottom-8 sm:-bottom-10 left-1/2 sm:left-6 transform -translate-x-1/2 sm:translate-x-0">
+        {/* Profile Avatar - At the top of the page */}
+        <div className="absolute -top-8 sm:-top-10 left-1/2 sm:left-6 transform -translate-x-1/2 sm:translate-x-0 z-10">
           <div className="relative group">
             <Avatar className="w-16 h-16 sm:w-20 sm:h-20 border-4 border-card shadow-xl">
               <AvatarImage src={avatarUrl || undefined} alt={displayName} />
