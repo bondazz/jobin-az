@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -49,6 +49,14 @@ export default function ReferralProfile({
   const [editLastName, setEditLastName] = useState(lastName);
   const [editAvatarUrl, setEditAvatarUrl] = useState(avatarUrl || "");
   const [editBackgroundUrl, setEditBackgroundUrl] = useState(backgroundImageUrl || "");
+
+  // Update edit fields when props change
+  useEffect(() => {
+    setEditFirstName(firstName);
+    setEditLastName(lastName);
+    setEditAvatarUrl(avatarUrl || "");
+    setEditBackgroundUrl(backgroundImageUrl || "");
+  }, [firstName, lastName, avatarUrl, backgroundImageUrl]);
 
   const updateProfileInfo = async () => {
     if (!user) return;
@@ -152,7 +160,7 @@ export default function ReferralProfile({
       {/* Background Image Section */}
       <div className="relative">
         <div 
-          className="h-32 bg-gradient-to-br from-primary/20 via-primary/10 to-secondary/20 relative overflow-hidden"
+          className="h-24 sm:h-32 bg-gradient-to-br from-primary/20 via-primary/10 to-secondary/20 relative overflow-hidden"
           style={backgroundImageUrl ? {
             backgroundImage: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.1)), url(${backgroundImageUrl})`,
             backgroundSize: 'cover',
@@ -173,12 +181,12 @@ export default function ReferralProfile({
           </Button>
         </div>
 
-        {/* Profile Avatar */}
-        <div className="absolute -bottom-10 left-6">
+        {/* Profile Avatar - Centered on mobile, left-aligned on larger screens */}
+        <div className="absolute -bottom-8 sm:-bottom-10 left-1/2 sm:left-6 transform -translate-x-1/2 sm:translate-x-0">
           <div className="relative group">
-            <Avatar className="w-20 h-20 border-4 border-card shadow-xl">
+            <Avatar className="w-16 h-16 sm:w-20 sm:h-20 border-4 border-card shadow-xl">
               <AvatarImage src={avatarUrl || undefined} alt={displayName} />
-              <AvatarFallback className="bg-primary/10 text-primary text-xl font-bold">
+              <AvatarFallback className="bg-primary/10 text-primary text-lg sm:text-xl font-bold">
                 {initials}
               </AvatarFallback>
             </Avatar>
@@ -188,7 +196,7 @@ export default function ReferralProfile({
               onClick={() => setIsEditingAvatar(!isEditingAvatar)}
               className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-200 cursor-pointer flex items-center justify-center"
             >
-              <Camera className="w-5 h-5 text-white" />
+              <Camera className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </button>
           </div>
         </div>
@@ -198,14 +206,14 @@ export default function ReferralProfile({
           variant="ghost"
           size="sm"
           onClick={() => setIsEditingProfile(!isEditingProfile)}
-          className="absolute -bottom-2 right-4 h-8 px-3 bg-card/80 backdrop-blur-sm hover:bg-card border shadow-sm"
+          className="absolute -bottom-2 right-2 sm:right-4 h-8 px-2 sm:px-3 bg-card/80 backdrop-blur-sm hover:bg-card border shadow-sm"
         >
-          <Edit3 className="w-4 h-4 mr-1" />
+          <Edit3 className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
           <span className="text-xs">Redaktə</span>
         </Button>
       </div>
 
-      <CardContent className="pt-14 pb-6">
+      <CardContent className="pt-12 sm:pt-14 pb-6">
         {/* Background Image Edit */}
         {isEditingBackground && (
           <div className="mb-6 p-4 border border-border rounded-lg bg-muted/30">
@@ -251,25 +259,25 @@ export default function ReferralProfile({
         {!isEditingProfile ? (
           /* Display Mode */
           <div className="space-y-6">
-            {/* User Info */}
-            <div className="space-y-2">
-              <h2 className="text-xl font-bold text-foreground">{displayName}</h2>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            {/* User Info - Centered on mobile */}
+            <div className="space-y-2 text-center sm:text-left">
+              <h2 className="text-lg sm:text-xl font-bold text-foreground">{displayName}</h2>
+              <div className="flex items-center justify-center sm:justify-start gap-2 text-sm text-muted-foreground">
                 <User className="w-4 h-4" />
                 <span>Referral Partneri</span>
               </div>
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-2 gap-3">
-              <div className="text-center p-4 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20">
-                <Trophy className="w-6 h-6 text-primary mx-auto mb-2" />
-                <div className="text-2xl font-bold text-primary">{approvedCount}</div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="text-center p-3 sm:p-4 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20">
+                <Trophy className="w-5 h-5 sm:w-6 sm:h-6 text-primary mx-auto mb-2" />
+                <div className="text-xl sm:text-2xl font-bold text-primary">{approvedCount}</div>
                 <div className="text-xs text-muted-foreground">Təsdiqlənən elan</div>
               </div>
-              <div className="text-center p-4 rounded-lg bg-gradient-to-br from-green-500/10 to-green-500/5 border border-green-500/20">
-                <Wallet className="w-6 h-6 text-green-600 mx-auto mb-2" />
-                <div className="text-2xl font-bold text-green-600">{balance} ₼</div>
+              <div className="text-center p-3 sm:p-4 rounded-lg bg-gradient-to-br from-green-500/10 to-green-500/5 border border-green-500/20">
+                <Wallet className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 mx-auto mb-2" />
+                <div className="text-xl sm:text-2xl font-bold text-green-600">{balance} ₼</div>
                 <div className="text-xs text-muted-foreground">Balans</div>
               </div>
             </div>
