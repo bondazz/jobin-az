@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "@/components/ui/use-toast";
 import { Camera, Edit3, User, Share2, Trophy, Wallet, Clipboard } from "lucide-react";
 import ImageUpload from "@/components/ImageUpload";
@@ -324,17 +325,60 @@ export default function ReferralProfile({
               </div>
 
               {/* Right: Referral Link */}
-              <div className="bg-gradient-to-br from-secondary/6 via-secondary/3 to-transparent border border-secondary/15 rounded-xl p-2.5 shadow-sm">
-                <div className="text-center space-y-1.5">
-                  <div className="w-6 h-6 bg-secondary/10 rounded-full flex items-center justify-center mx-auto">
-                    <Share2 className="w-3 h-3 text-secondary" />
+              <Dialog>
+                <DialogTrigger asChild>
+                  <div className="bg-gradient-to-br from-secondary/6 via-secondary/3 to-transparent border border-secondary/15 rounded-xl p-2.5 shadow-sm cursor-pointer hover:bg-secondary/5 transition-all duration-200">
+                    <div className="text-center space-y-1.5">
+                      <div className="w-6 h-6 bg-secondary/10 rounded-full flex items-center justify-center mx-auto">
+                        <Share2 className="w-3 h-3 text-secondary" />
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-secondary truncate px-1">
+                          .../?ref={referralCode}
+                        </div>
+                        <div className="text-xs text-muted-foreground font-medium">Referral</div>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="text-sm font-bold text-secondary">Link</div>
-                    <div className="text-xs text-muted-foreground font-medium">Referral</div>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md bg-card/95 backdrop-blur-xl border border-border/50 shadow-2xl">
+                  <DialogHeader>
+                    <DialogTitle className="flex items-center gap-2 text-secondary">
+                      <Share2 className="w-4 h-4" />
+                      Referral Link
+                    </DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4 pt-2">
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                        Sizin Referral Linkiniz
+                      </label>
+                      <div className="bg-muted/30 border border-border/40 rounded-lg p-3">
+                        <div className="font-mono text-sm text-foreground break-all leading-relaxed">
+                          {`${window.location.origin}/?ref=${referralCode}`}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex gap-2">
+                      <Button 
+                        onClick={copyReferralLink}
+                        className="flex-1 h-9 bg-gradient-to-r from-secondary to-secondary/80 hover:from-secondary/90 hover:to-secondary/70 text-secondary-foreground font-medium shadow-lg hover:shadow-xl transition-all duration-300"
+                      >
+                        <Clipboard className="w-4 h-4 mr-2" />
+                        Linki Kopyala
+                      </Button>
+                      <Button 
+                        onClick={copyReferralCode}
+                        variant="outline"
+                        className="h-9 px-3 border-secondary/30 hover:bg-secondary/5"
+                      >
+                        <span className="text-xs">Kod</span>
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              </div>
+                </DialogContent>
+              </Dialog>
             </div>
 
             {/* Full Referral Link Section */}
