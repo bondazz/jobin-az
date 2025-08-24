@@ -18,6 +18,7 @@ import ReferralProfile from "@/components/ReferralProfile";
 import creditCardIcon from "@/assets/credit-card-icon.png";
 import visaMasterCardIcon from "@/assets/visa-mastercard-icon.png";
 import m10Logo from "@/assets/m10-logo.png";
+import m10IconNew from "@/assets/m10-icon-new.png";
 
 interface ReferralRequestForm {
   company_name: string;
@@ -752,23 +753,25 @@ const Referral = () => {
                           </div>
                         </div>
                         <div>
-                          <Label className="flex items-center gap-2 mb-2">
-                            <img 
-                              src={m10Logo} 
-                              alt="M10" 
-                              className="w-5 h-5 object-contain"
-                              style={{ width: '20px', height: '20px' }}
-                            />
-                            M10 nömrəsi
-                          </Label>
-                          <div className="flex gap-2">
-                            <Input
-                              value={walletM10}
-                              onChange={(e) => setWalletM10(formatM10Input(e.target.value))}
-                              placeholder="055 555 55 55"
-                              inputMode="numeric"
-                              className="bg-card"
-                            />
+                          <Label className="mb-2">M10 nömrəsi</Label>
+                          <div className="flex gap-2 items-center">
+                            <div className="relative flex-1">
+                              <Input
+                                value={walletM10}
+                                onChange={(e) => setWalletM10(formatM10Input(e.target.value))}
+                                placeholder="055 555 55 55"
+                                inputMode="numeric"
+                                className="bg-card pl-12"
+                              />
+                              <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+                                <img 
+                                  src={m10IconNew} 
+                                  alt="M10" 
+                                  className="w-6 h-6 object-contain"
+                                  style={{ width: '24px', height: '24px' }}
+                                />
+                              </div>
+                            </div>
                             <Button onClick={addM10Wallet} size="sm" className="shrink-0">Əlavə et</Button>
                           </div>
                         </div>
