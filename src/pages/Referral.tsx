@@ -708,7 +708,7 @@ const Referral = () => {
                 <CardContent>
                   <div className="space-y-4">
                     <div>
-                      <Label>Kart nömrəsi (4169 **** **** 0000)</Label>
+                      <Label>Kart nömrəsi</Label>
                       <div className="flex gap-2">
                         <Input
                           value={walletCard}
@@ -720,7 +720,7 @@ const Referral = () => {
                       </div>
                     </div>
                     <div>
-                      <Label>M10 nömrəsi (055 555 55 55)</Label>
+                      <Label>M10 nömrəsi</Label>
                       <div className="flex gap-2">
                         <Input
                           value={walletM10}
