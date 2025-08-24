@@ -927,22 +927,78 @@ const Referral = () => {
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    Qısa məlumat
+                    Qısa məlumat – Referal Proqramı
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="text-sm text-muted-foreground space-y-3">
-                  <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-bold">1</div>
-                    <p>Linkinizi paylaşın</p>
+                <CardContent className="text-sm space-y-6">
+                  
+                  <div className="border-l-4 border-primary/30 pl-4">
+                    <h4 className="font-semibold text-foreground mb-2">Linkinizi paylaşın</h4>
+                    <p className="text-muted-foreground">Şəxsi referal linkinizi dostlarınız, şirkətlər və sosial şəbəkələrdə paylaşın. Link yalnız sizə məxsusdur; spam paylaşımlarına icazə verilmir.</p>
                   </div>
-                  <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-bold">2</div>
-                    <p>Hər təsdiqlənən elan üçün <span className="font-semibold text-primary">5 AZN</span> qazanın</p>
+
+                  <div className="border-l-4 border-success/30 pl-4">
+                    <h4 className="font-semibold text-foreground mb-2">Qazanc: hər təsdiqlənən elan üçün 5 AZN</h4>
+                    <p className="text-muted-foreground">Sizin linkinizlə sayta gəlib elan yerləşdirən işəgötürənin elanı təsdiqləndikdə, 5 AZN bonus dərhal balansınıza əlavə olunur.</p>
                   </div>
-                  <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-bold">3</div>
-                    <p>Minimum 10 AZN çıxarış</p>
+
+                  <div className="border-l-4 border-warning/30 pl-4">
+                    <h4 className="font-semibold text-foreground mb-2">Çıxarış şərti: minimum 10 AZN</h4>
+                    <p className="text-muted-foreground">Balansınız 10 AZN və ya daha çox olduqda vəsaiti çıxara bilərsiniz.</p>
                   </div>
+
+                  <div className="border-l-4 border-blue-500/30 pl-4">
+                    <h4 className="font-semibold text-foreground mb-2">Çıxarış kanalları</h4>
+                    <ul className="text-muted-foreground space-y-1">
+                      <li>• Bank kartı (Visa/Mastercard)</li>
+                      <li>• M10 hesabı</li>
+                    </ul>
+                  </div>
+
+                  <div className="border-l-4 border-red-500/30 pl-4">
+                    <h4 className="font-semibold text-foreground mb-2">Güvənlik və Məxfilik</h4>
+                    <ul className="text-muted-foreground space-y-1 text-xs">
+                      <li>• Bütün əməliyyatlar HTTPS/TLS ilə şifrələnir.</li>
+                      <li>• Kart məlumatları sistemimizdə saxlanmır; ödənişlər PCI DSS tələblərinə uyğun sertifikatlı ödəniş tərəfdaşı vasitəsilə emal olunur.</li>
+                      <li>• Şəxsi məlumatlar yalnız xidmət göstərmək məqsədi ilə istifadə olunur və üçüncü tərəflərlə paylaşılmır.</li>
+                    </ul>
+                  </div>
+
+                  <div className="border-l-4 border-orange-500/30 pl-4">
+                    <h4 className="font-semibold text-foreground mb-2">Qısa şərtlər</h4>
+                    <ul className="text-muted-foreground space-y-1 text-xs">
+                      <li>• Bonus yalnız qaydalara uyğun, moderasiya tərəfindən təsdiqlənmiş elanlara görə hesablanır.</li>
+                      <li>• Self-referral, saxta hesablar və ya aldadıcı fəaliyyət qadağandır.</li>
+                      <li>• Çıxarış zamanı bank/ödəmə provayderinin komissiyası tətbiq oluna bilər.</li>
+                    </ul>
+                  </div>
+
+                  <div className="border-l-4 border-purple-500/30 pl-4">
+                    <h4 className="font-semibold text-foreground mb-2">Tez-tez verilən suallar (FAQ)</h4>
+                    <div className="space-y-2 text-xs">
+                      <div>
+                        <p className="font-medium text-foreground">— Referal linki necə işləyir?</p>
+                        <p className="text-muted-foreground">Linkinizi klikləyən işəgötürən saytda elan yerləşdirib təsdiqləndikdə, balansınıza 5 AZN bonus yazılır.</p>
+                      </div>
+                      <div>
+                        <p className="font-medium text-foreground">— Bonus nə vaxt balansa düşür?</p>
+                        <p className="text-muted-foreground">Elan moderasiyadan keçdikdən dərhal sonra.</p>
+                      </div>
+                      <div>
+                        <p className="font-medium text-foreground">— Minimum çıxarış nə qədərdir?</p>
+                        <p className="text-muted-foreground">Minimum çıxarış məbləği 10 AZN-dir.</p>
+                      </div>
+                      <div>
+                        <p className="font-medium text-foreground">— Hara çıxara bilərəm?</p>
+                        <p className="text-muted-foreground">Bank kartına (Visa/Mastercard) və ya M10 hesabına.</p>
+                      </div>
+                      <div>
+                        <p className="font-medium text-foreground">— Dəstək üçün kimə yazım?</p>
+                        <p className="text-muted-foreground">info@jooble.az ünvanına yaza bilərsiniz.</p>
+                      </div>
+                    </div>
+                  </div>
+
                 </CardContent>
               </Card>
             </div>
