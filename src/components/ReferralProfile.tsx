@@ -213,11 +213,11 @@ export default function ReferralProfile({
         </Button>
       </div>
 
-      <CardContent className="pt-10 pb-6 px-5">
+      <CardContent className="pt-8 pb-4 px-4">
         {/* Background Image Edit */}
         {isEditingBackground && (
-          <div className="mb-6 p-4 border border-border/40 rounded-2xl bg-gradient-to-br from-card via-muted/30 to-card shadow-lg backdrop-blur-sm">
-            <div className="mb-3">
+          <div className="mb-4 p-3 border border-border/40 rounded-xl bg-gradient-to-br from-card via-muted/30 to-card shadow-md backdrop-blur-sm">
+            <div className="mb-2">
               <h4 className="text-sm font-semibold text-foreground mb-2">Arxa fon şəkli</h4>
               <ImageUpload
                 value={editBackgroundUrl}
@@ -227,11 +227,11 @@ export default function ReferralProfile({
                 imageType="companies"
               />
             </div>
-            <div className="flex gap-3 pt-2">
+            <div className="flex gap-2 pt-2">
               <Button 
                 size="sm" 
                 onClick={updateBackground} 
-                className="h-8 px-4 text-sm bg-primary hover:bg-primary-hover shadow-md transition-all duration-200 font-medium"
+                className="h-7 px-3 text-xs bg-primary hover:bg-primary-hover shadow-md transition-all duration-200 font-medium"
               >
                 Yadda Saxla
               </Button>
@@ -239,7 +239,7 @@ export default function ReferralProfile({
                 size="sm" 
                 variant="outline" 
                 onClick={() => setIsEditingBackground(false)} 
-                className="h-8 px-4 text-sm border-border/60 hover:bg-muted/50 transition-all duration-200"
+                className="h-7 px-3 text-xs border-border/60 hover:bg-muted/50 transition-all duration-200"
               >
                 Ləğv Et
               </Button>
@@ -249,8 +249,8 @@ export default function ReferralProfile({
 
         {/* Avatar Edit */}
         {isEditingAvatar && (
-          <div className="mb-6 p-4 border border-border/40 rounded-2xl bg-gradient-to-br from-card via-muted/30 to-card shadow-lg backdrop-blur-sm">
-            <div className="mb-3">
+          <div className="mb-4 p-3 border border-border/40 rounded-xl bg-gradient-to-br from-card via-muted/30 to-card shadow-md backdrop-blur-sm">
+            <div className="mb-2">
               <h4 className="text-sm font-semibold text-foreground mb-2">Profil şəkli</h4>
               <ImageUpload
                 value={editAvatarUrl}
@@ -260,11 +260,11 @@ export default function ReferralProfile({
                 imageType="companies"
               />
             </div>
-            <div className="flex gap-3 pt-2">
+            <div className="flex gap-2 pt-2">
               <Button 
                 size="sm" 
                 onClick={updateAvatar} 
-                className="h-8 px-4 text-sm bg-primary hover:bg-primary-hover shadow-md transition-all duration-200 font-medium"
+                className="h-7 px-3 text-xs bg-primary hover:bg-primary-hover shadow-md transition-all duration-200 font-medium"
               >
                 Yadda Saxla
               </Button>
@@ -272,7 +272,7 @@ export default function ReferralProfile({
                 size="sm" 
                 variant="outline" 
                 onClick={() => setIsEditingAvatar(false)} 
-                className="h-8 px-4 text-sm border-border/60 hover:bg-muted/50 transition-all duration-200"
+                className="h-7 px-3 text-xs border-border/60 hover:bg-muted/50 transition-all duration-200"
               >
                 Ləğv Et
               </Button>
@@ -281,76 +281,57 @@ export default function ReferralProfile({
         )}
 
         {!isEditingProfile ? (
-          /* Display Mode - 3 Column Layout */
-          <div className="space-y-6 animate-fade-in">
-            {/* User Info Section */}
-            <div className="text-center sm:text-left space-y-2">
-              <div className="space-y-1">
-                <h2 className="text-lg font-bold leading-tight bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                  {displayName}
-                </h2>
-                <div className="flex items-center justify-center sm:justify-start gap-2">
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-2.5 h-2.5 bg-success rounded-full animate-pulse shadow-sm"></div>
-                    <User className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-sm text-muted-foreground font-medium">Referral Partneri</span>
-                  </div>
-                </div>
+          /* Display Mode - Compact Layout */
+          <div className="space-y-4 animate-fade-in">
+            {/* User Info Section - Compact */}
+            <div className="text-center sm:text-left">
+              <h2 className="text-base font-bold leading-tight bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                {displayName}
+              </h2>
+              <div className="flex items-center justify-center sm:justify-start gap-2 mt-1">
+                <div className="w-1.5 h-1.5 bg-success rounded-full"></div>
+                <User className="w-3 h-3 text-muted-foreground" />
+                <span className="text-xs text-muted-foreground font-medium">Referral Partneri</span>
               </div>
             </div>
 
-            {/* Three Column Layout */}
-            <div className="grid grid-cols-3 gap-4">
+            {/* Compact Three Column Stats */}
+            <div className="grid grid-cols-3 gap-2">
               {/* Left: Approved Ads */}
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5 rounded-2xl blur-sm"></div>
-                <div className="relative bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20 rounded-2xl p-4 shadow-md transition-all duration-300">
-                  <div className="text-center space-y-2">
-                    <div className="flex justify-center">
-                      <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                        <Trophy className="w-5 h-5 text-primary" />
-                      </div>
-                    </div>
-                    <div className="space-y-1">
-                      <div className="text-xl font-bold text-primary">{approvedCount}</div>
-                      <div className="text-xs text-muted-foreground font-medium leading-tight">Təsdiqlənən<br />Elanlar</div>
-                    </div>
+              <div className="bg-gradient-to-br from-primary/8 via-primary/4 to-transparent border border-primary/15 rounded-xl p-2.5 shadow-sm">
+                <div className="text-center space-y-1.5">
+                  <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                    <Trophy className="w-3 h-3 text-primary" />
+                  </div>
+                  <div>
+                    <div className="text-lg font-bold text-primary">{approvedCount}</div>
+                    <div className="text-xs text-muted-foreground font-medium">Təsdiqlənən</div>
                   </div>
                 </div>
               </div>
               
               {/* Center: Balance */}
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-success/20 to-success/5 rounded-2xl blur-sm"></div>
-                <div className="relative bg-gradient-to-br from-success/10 via-success/5 to-transparent border border-success/20 rounded-2xl p-4 shadow-md transition-all duration-300">
-                  <div className="text-center space-y-2">
-                    <div className="flex justify-center">
-                      <div className="w-10 h-10 bg-success/10 rounded-full flex items-center justify-center">
-                        <Wallet className="w-5 h-5 text-success" />
-                      </div>
-                    </div>
-                    <div className="space-y-1">
-                      <div className="text-xl font-bold text-success">{balance}₼</div>
-                      <div className="text-xs text-muted-foreground font-medium leading-tight">Cari<br />Balans</div>
-                    </div>
+              <div className="bg-gradient-to-br from-success/8 via-success/4 to-transparent border border-success/15 rounded-xl p-2.5 shadow-sm">
+                <div className="text-center space-y-1.5">
+                  <div className="w-6 h-6 bg-success/10 rounded-full flex items-center justify-center mx-auto">
+                    <Wallet className="w-3 h-3 text-success" />
+                  </div>
+                  <div>
+                    <div className="text-lg font-bold text-success">{balance}₼</div>
+                    <div className="text-xs text-muted-foreground font-medium">Balans</div>
                   </div>
                 </div>
               </div>
 
               {/* Right: Referral Link */}
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-secondary/15 to-accent/10 rounded-2xl blur-sm"></div>
-                <div className="relative bg-gradient-to-br from-secondary/8 via-secondary/4 to-transparent border border-secondary/20 rounded-2xl p-4 shadow-md transition-all duration-300">
-                  <div className="text-center space-y-2">
-                    <div className="flex justify-center">
-                      <div className="w-10 h-10 bg-secondary/10 rounded-full flex items-center justify-center">
-                        <Share2 className="w-5 h-5 text-secondary" />
-                      </div>
-                    </div>
-                    <div className="space-y-1">
-                      <div className="text-sm font-bold text-secondary">Link</div>
-                      <div className="text-xs text-muted-foreground font-medium leading-tight">Referral<br />Link</div>
-                    </div>
+              <div className="bg-gradient-to-br from-secondary/6 via-secondary/3 to-transparent border border-secondary/15 rounded-xl p-2.5 shadow-sm">
+                <div className="text-center space-y-1.5">
+                  <div className="w-6 h-6 bg-secondary/10 rounded-full flex items-center justify-center mx-auto">
+                    <Share2 className="w-3 h-3 text-secondary" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-bold text-secondary">Link</div>
+                    <div className="text-xs text-muted-foreground font-medium">Referral</div>
                   </div>
                 </div>
               </div>
