@@ -213,23 +213,23 @@ export default function ReferralProfile({
         </Button>
       </div>
 
-      <CardContent className="pt-12 sm:pt-14 pb-6">
+      <CardContent className="pt-8 pb-3 px-3">
         {/* Background Image Edit */}
         {isEditingBackground && (
-          <div className="mb-6 p-4 border border-border rounded-lg bg-muted/30">
+          <div className="mb-3 p-2 border border-border rounded bg-muted/30">
             <ImageUpload
               value={editBackgroundUrl}
               onChange={setEditBackgroundUrl}
-              label="Arxa fon şəkli"
-              placeholder="Arxa fon şəkli URL-i"
+              label="Arxa fon"
+              placeholder="URL"
               imageType="companies"
             />
-            <div className="flex gap-2 mt-3">
-              <Button size="sm" onClick={updateBackground}>
-                Yadda saxla
+            <div className="flex gap-1 mt-2">
+              <Button size="sm" onClick={updateBackground} className="h-6 text-xs">
+                Saxla
               </Button>
-              <Button size="sm" variant="outline" onClick={() => setIsEditingBackground(false)}>
-                Ləğv et
+              <Button size="sm" variant="outline" onClick={() => setIsEditingBackground(false)} className="h-6 text-xs">
+                Ləğv
               </Button>
             </div>
           </div>
@@ -237,20 +237,20 @@ export default function ReferralProfile({
 
         {/* Avatar Edit */}
         {isEditingAvatar && (
-          <div className="mb-6 p-4 border border-border rounded-lg bg-muted/30">
+          <div className="mb-3 p-2 border border-border rounded bg-muted/30">
             <ImageUpload
               value={editAvatarUrl}
               onChange={setEditAvatarUrl}
-              label="Profil şəkli"
-              placeholder="Profil şəkli URL-i"
+              label="Şəkil"
+              placeholder="URL"
               imageType="companies"
             />
-            <div className="flex gap-2 mt-3">
-              <Button size="sm" onClick={updateAvatar}>
-                Yadda saxla
+            <div className="flex gap-1 mt-2">
+              <Button size="sm" onClick={updateAvatar} className="h-6 text-xs">
+                Saxla
               </Button>
-              <Button size="sm" variant="outline" onClick={() => setIsEditingAvatar(false)}>
-                Ləğv et
+              <Button size="sm" variant="outline" onClick={() => setIsEditingAvatar(false)} className="h-6 text-xs">
+                Ləğv
               </Button>
             </div>
           </div>
@@ -258,75 +258,79 @@ export default function ReferralProfile({
 
         {!isEditingProfile ? (
           /* Display Mode */
-          <div className="space-y-4">
-            {/* User Info - Centered on mobile */}
-            <div className="space-y-1 text-center sm:text-left">
-              <h2 className="text-base sm:text-lg font-bold text-foreground">{displayName}</h2>
+          <div className="space-y-2">
+            {/* User Info */}
+            <div className="text-center sm:text-left">
+              <h2 className="text-sm font-bold text-foreground leading-tight">{displayName}</h2>
               <div className="flex items-center justify-center sm:justify-start gap-1 text-xs text-muted-foreground">
-                <User className="w-3 h-3" />
-                <span>Referral Partneri</span>
+                <User className="w-2.5 h-2.5" />
+                <span className="text-xs">Partner</span>
               </div>
             </div>
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <div className="text-center p-2 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20">
-                <Trophy className="w-4 h-4 text-primary mx-auto mb-1" />
-                <div className="text-lg font-bold text-primary">{approvedCount}</div>
-                <div className="text-xs text-muted-foreground">Təsdiqlənən elan</div>
+            {/* Compact Stats Row */}
+            <div className="flex gap-2">
+              <div className="flex-1 text-center p-1.5 rounded bg-primary/5 border border-primary/10">
+                <div className="flex items-center justify-center gap-1">
+                  <Trophy className="w-3 h-3 text-primary" />
+                  <span className="text-sm font-bold text-primary">{approvedCount}</span>
+                </div>
+                <div className="text-xs text-muted-foreground">Elan</div>
               </div>
-              <div className="text-center p-2 rounded-lg bg-gradient-to-br from-green-500/10 to-green-500/5 border border-green-500/20">
-                <Wallet className="w-4 h-4 text-green-600 mx-auto mb-1" />
-                <div className="text-lg font-bold text-green-600">{balance} ₼</div>
+              <div className="flex-1 text-center p-1.5 rounded bg-green-500/5 border border-green-500/10">
+                <div className="flex items-center justify-center gap-1">
+                  <Wallet className="w-3 h-3 text-green-600" />
+                  <span className="text-sm font-bold text-green-600">{balance}₼</span>
+                </div>
                 <div className="text-xs text-muted-foreground">Balans</div>
               </div>
             </div>
 
-            {/* Referral Code Section */}
+            {/* Compact Referral Section */}
             {referralCode && (
-              <div className="p-2 rounded-lg bg-gradient-to-r from-secondary/20 to-accent/10 border border-secondary/20">
+              <div className="p-1.5 rounded bg-secondary/5 border border-secondary/10">
                 <div className="flex items-center justify-between mb-1">
                   <div className="flex items-center gap-1">
-                    <Share2 className="w-3 h-3 text-secondary-foreground" />
-                    <span className="text-xs font-medium text-secondary-foreground">Referral Linki</span>
+                    <Share2 className="w-2.5 h-2.5 text-secondary-foreground" />
+                    <span className="text-xs font-medium">Link</span>
                   </div>
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={copyReferralCode}
-                    className="h-4 px-1"
+                    className="h-4 w-4 p-0"
                   >
-                    <Clipboard className="w-3 h-3" />
+                    <Clipboard className="w-2.5 h-2.5" />
                   </Button>
                 </div>
-                <div className="font-mono text-xs text-secondary-foreground mb-1 break-all">
-                  {`${window.location.origin}/?ref=${referralCode}`}
+                <div className="font-mono text-xs text-muted-foreground truncate mb-1">
+                  .../?ref={referralCode}
                 </div>
                 <Button 
                   onClick={copyReferralLink}
                   size="sm"
-                  className="w-full h-6 bg-secondary hover:bg-secondary/80 text-secondary-foreground text-xs"
+                  className="w-full h-5 bg-secondary hover:bg-secondary/80 text-secondary-foreground text-xs"
                 >
-                  <Share2 className="w-3 h-3 mr-1" />
-                  Linki kopyala
+                  <Share2 className="w-2.5 h-2.5 mr-1" />
+                  Kopyala
                 </Button>
               </div>
             )}
 
-            {/* Action Buttons */}
+            {/* Compact Action Buttons */}
             <div className="flex gap-1">
               <Button 
                 variant="outline" 
                 onClick={() => setIsEditingProfile(true)}
-                className="flex-1 h-8 text-xs"
+                className="flex-1 h-6 text-xs px-2"
               >
-                <Edit3 className="w-3 h-3 mr-1" />
-                Profili redaktə et
+                <Edit3 className="w-2.5 h-2.5 mr-1" />
+                Redaktə
               </Button>
               <Button 
                 variant="ghost" 
                 onClick={onSignOut}
-                className="flex-1 h-8 text-xs"
+                className="flex-1 h-6 text-xs px-2"
               >
                 Çıxış
               </Button>
@@ -334,38 +338,38 @@ export default function ReferralProfile({
           </div>
         ) : (
           /* Edit Mode */
-          <div className="space-y-4">
-            <div className="text-center mb-4">
-              <h3 className="text-lg font-semibold">Profili Redaktə Et</h3>
+          <div className="space-y-2">
+            <div className="text-center">
+              <h3 className="text-sm font-semibold">Redaktə</h3>
             </div>
             
-            <div className="space-y-3">
+            <div className="space-y-2">
               <div>
-                <Label className="text-sm font-medium">Ad</Label>
+                <Label className="text-xs">Ad</Label>
                 <Input 
                   value={editFirstName} 
                   onChange={(e) => setEditFirstName(e.target.value)} 
-                  placeholder="Adınızı daxil edin"
-                  className="mt-1"
+                  placeholder="Ad"
+                  className="h-7 text-sm"
                 />
               </div>
               <div>
-                <Label className="text-sm font-medium">Soyad</Label>
+                <Label className="text-xs">Soyad</Label>
                 <Input 
                   value={editLastName} 
                   onChange={(e) => setEditLastName(e.target.value)} 
-                  placeholder="Soyadınızı daxil edin"
-                  className="mt-1"
+                  placeholder="Soyad"
+                  className="h-7 text-sm"
                 />
               </div>
             </div>
             
-            <div className="flex gap-2 pt-2">
+            <div className="flex gap-1 pt-1">
               <Button 
                 onClick={updateProfileInfo} 
-                className="flex-1"
+                className="flex-1 h-6 text-xs"
               >
-                Yadda saxla
+                Saxla
               </Button>
               <Button 
                 variant="outline" 
@@ -374,9 +378,9 @@ export default function ReferralProfile({
                   setEditFirstName(firstName);
                   setEditLastName(lastName);
                 }}
-                className="flex-1"
+                className="flex-1 h-6 text-xs"
               >
-                Ləğv et
+                Ləğv
               </Button>
             </div>
           </div>
