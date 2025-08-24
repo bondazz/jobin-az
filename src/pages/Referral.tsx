@@ -10,16 +10,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { toast } from "@/components/ui/use-toast";
 import { updatePageMeta } from "@/utils/seo";
-import { Trash2, ChevronDown, CreditCard, Banknote } from "lucide-react";
+import { Trash2, ChevronDown, CreditCard, Banknote, Smartphone } from "lucide-react";
 import BottomNavigation from "@/components/BottomNavigation";
 import MobileHeader from "@/components/MobileHeader";
 import { useReferralCode } from "@/hooks/useReferralCode";
 import ReferralProfile from "@/components/ReferralProfile";
-import creditCardIcon from "@/assets/credit-card-icon.png";
-import visaMasterCardIcon from "@/assets/visa-mastercard-icon.png";
-import m10Logo from "@/assets/m10-logo.png";
-import m10IconNew from "@/assets/m10-icon-new.png";
-import m10LogoNew from "@/assets/m10-logo-new.png";
 
 interface ReferralRequestForm {
   company_name: string;
@@ -712,13 +707,8 @@ const Referral = () => {
                     <CardHeader className="cursor-pointer hover:bg-muted/50 transition-colors rounded-t-lg">
                       <CardTitle className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20 p-1.5 shadow-sm">
-                            <img 
-                              src={creditCardIcon} 
-                              alt="Kart" 
-                              className="w-full h-full object-contain"
-                              style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-                            />
+                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20 p-2 shadow-sm">
+                            <CreditCard className="w-full h-full text-primary" />
                           </div>
                           <span>Cüzdan idarəsi</span>
                         </div>
@@ -742,12 +732,7 @@ const Referral = () => {
                                 className="bg-card pl-12"
                               />
                               <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-                                <img 
-                                  src={visaMasterCardIcon} 
-                                  alt="Visa MasterCard" 
-                                  className="w-6 h-6 object-contain"
-                                  style={{ width: '24px', height: '24px' }}
-                                />
+                                <CreditCard className="w-5 h-5 text-primary" />
                               </div>
                             </div>
                             <Button onClick={addCardWallet} size="sm" className="shrink-0">Əlavə et</Button>
@@ -765,12 +750,7 @@ const Referral = () => {
                                 className="bg-card pl-12"
                               />
                               <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-                                <img 
-                                  src={m10LogoNew} 
-                                  alt="" 
-                                  className="w-6 h-6 object-contain"
-                                  style={{ width: '24px', height: '24px' }}
-                                />
+                                <Smartphone className="w-5 h-5 text-secondary" />
                               </div>
                             </div>
                             <Button onClick={addM10Wallet} size="sm" className="shrink-0">Əlavə et</Button>
@@ -791,23 +771,13 @@ const Referral = () => {
                               <div className="flex items-center gap-2">
                                 {w.card_number && (
                                   <>
-                                    <img 
-                                      src={visaMasterCardIcon} 
-                                      alt="Kart" 
-                                      className="w-6 h-6 object-contain"
-                                      style={{ width: '24px', height: '24px' }}
-                                    />
+                                    <CreditCard className="w-5 h-5 text-primary" />
                                     <div className="text-sm font-medium">{maskCardForUser(w.card_number)}</div>
                                   </>
                                 )}
                                 {w.m10_number && (
                                   <>
-                                    <img 
-                                      src={m10LogoNew} 
-                                      alt="M10" 
-                                      className="w-6 h-6 object-contain"
-                                      style={{ width: '24px', height: '24px' }}
-                                    />
+                                    <Smartphone className="w-5 h-5 text-secondary" />
                                     <div className="text-sm font-medium">{formatM10Input(w.m10_number)}</div>
                                   </>
                                 )}
@@ -914,19 +884,9 @@ const Referral = () => {
                                  <div className="flex items-center justify-between">
                                    <div className="flex items-center gap-2">
                                      {w.method === 'card' ? (
-                                       <img 
-                                         src={visaMasterCardIcon} 
-                                         alt="Kart" 
-                                         className="w-5 h-5 object-contain"
-                                         style={{ width: '20px', height: '20px' }}
-                                       />
+                                       <CreditCard className="w-4 h-4 text-primary" />
                                      ) : (
-                                       <img 
-                                         src={m10LogoNew} 
-                                         alt="M10" 
-                                         className="w-5 h-5 object-contain"
-                                         style={{ width: '20px', height: '20px' }}
-                                       />
+                                       <Smartphone className="w-4 h-4 text-secondary" />
                                      )}
                                      <div className="text-sm">
                                        <div className="font-medium">{w.amount} AZN • {w.method === 'card' ? 'Kart' : 'M10'}</div>
