@@ -753,7 +753,7 @@ const Referral = () => {
                           </div>
                         </div>
                         <div>
-                          <Label className="mb-2">M10 nömrəsi</Label>
+                          <Label className="mb-2">Nömrə</Label>
                           <div className="flex gap-2 items-center">
                             <div className="relative flex-1">
                               <Input
@@ -766,7 +766,7 @@ const Referral = () => {
                               <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
                                 <img 
                                   src={m10IconNew} 
-                                  alt="M10" 
+                                  alt="" 
                                   className="w-6 h-6 object-contain"
                                   style={{ width: '24px', height: '24px' }}
                                 />
