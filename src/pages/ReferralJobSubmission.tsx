@@ -150,17 +150,18 @@ const ReferralJobSubmission = () => {
           .maybeSingle();
         
         console.log('Referral lookup result:', { data, error });
+        
+        if (error) {
+          console.error('Error looking up referral:', error);
+        }
+        
         referralData = data;
       }
 
-      // Submit the form data
-      const submissionData = referralCode && referralData ? {
-        referral_code: referralCode,
-        referral_user_id: referralData.user_id,
-        ...formData
-      } : {
-        referral_code: referralCode || null, // Store the code even if user not found
-        referral_user_id: null,
+      // Submit the form data - ensure referral_user_id is properly set
+      const submissionData = {
+        referral_code: referralCode || null,
+        referral_user_id: referralData?.user_id || null,
         ...formData
       };
 
