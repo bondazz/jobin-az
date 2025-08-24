@@ -258,35 +258,35 @@ export default function ReferralProfile({
 
         {!isEditingProfile ? (
           /* Display Mode */
-          <div className="space-y-6">
+          <div className="space-y-4">
             {/* User Info - Centered on mobile */}
-            <div className="space-y-2 text-center sm:text-left">
-              <h2 className="text-lg sm:text-xl font-bold text-foreground">{displayName}</h2>
-              <div className="flex items-center justify-center sm:justify-start gap-2 text-sm text-muted-foreground">
-                <User className="w-4 h-4" />
+            <div className="space-y-1 text-center sm:text-left">
+              <h2 className="text-base sm:text-lg font-bold text-foreground">{displayName}</h2>
+              <div className="flex items-center justify-center sm:justify-start gap-1 text-xs text-muted-foreground">
+                <User className="w-3 h-3" />
                 <span>Referral Partneri</span>
               </div>
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="text-center p-3 sm:p-4 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20">
-                <Trophy className="w-5 h-5 sm:w-6 sm:h-6 text-primary mx-auto mb-2" />
-                <div className="text-xl sm:text-2xl font-bold text-primary">{approvedCount}</div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div className="text-center p-2 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20">
+                <Trophy className="w-4 h-4 text-primary mx-auto mb-1" />
+                <div className="text-lg font-bold text-primary">{approvedCount}</div>
                 <div className="text-xs text-muted-foreground">Təsdiqlənən elan</div>
               </div>
-              <div className="text-center p-3 sm:p-4 rounded-lg bg-gradient-to-br from-green-500/10 to-green-500/5 border border-green-500/20">
-                <Wallet className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 mx-auto mb-2" />
-                <div className="text-xl sm:text-2xl font-bold text-green-600">{balance} ₼</div>
+              <div className="text-center p-2 rounded-lg bg-gradient-to-br from-green-500/10 to-green-500/5 border border-green-500/20">
+                <Wallet className="w-4 h-4 text-green-600 mx-auto mb-1" />
+                <div className="text-lg font-bold text-green-600">{balance} ₼</div>
                 <div className="text-xs text-muted-foreground">Balans</div>
               </div>
             </div>
 
             {/* Referral Code Section */}
             {referralCode && (
-              <div className="p-3 rounded-lg bg-gradient-to-r from-secondary/20 to-accent/10 border border-secondary/20">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
+              <div className="p-2 rounded-lg bg-gradient-to-r from-secondary/20 to-accent/10 border border-secondary/20">
+                <div className="flex items-center justify-between mb-1">
+                  <div className="flex items-center gap-1">
                     <Share2 className="w-3 h-3 text-secondary-foreground" />
                     <span className="text-xs font-medium text-secondary-foreground">Referral Linki</span>
                   </div>
@@ -294,18 +294,18 @@ export default function ReferralProfile({
                     variant="ghost"
                     size="sm"
                     onClick={copyReferralCode}
-                    className="h-5 px-2"
+                    className="h-4 px-1"
                   >
                     <Clipboard className="w-3 h-3" />
                   </Button>
                 </div>
-                <div className="font-mono text-sm text-secondary-foreground mb-2 break-all">
+                <div className="font-mono text-xs text-secondary-foreground mb-1 break-all">
                   {`${window.location.origin}/?ref=${referralCode}`}
                 </div>
                 <Button 
                   onClick={copyReferralLink}
                   size="sm"
-                  className="w-full h-7 bg-secondary hover:bg-secondary/80 text-secondary-foreground text-xs"
+                  className="w-full h-6 bg-secondary hover:bg-secondary/80 text-secondary-foreground text-xs"
                 >
                   <Share2 className="w-3 h-3 mr-1" />
                   Linki kopyala
@@ -314,19 +314,19 @@ export default function ReferralProfile({
             )}
 
             {/* Action Buttons */}
-            <div className="flex gap-2">
+            <div className="flex gap-1">
               <Button 
                 variant="outline" 
                 onClick={() => setIsEditingProfile(true)}
-                className="flex-1"
+                className="flex-1 h-8 text-xs"
               >
-                <Edit3 className="w-4 h-4 mr-2" />
+                <Edit3 className="w-3 h-3 mr-1" />
                 Profili redaktə et
               </Button>
               <Button 
                 variant="ghost" 
                 onClick={onSignOut}
-                className="flex-1"
+                className="flex-1 h-8 text-xs"
               >
                 Çıxış
               </Button>
