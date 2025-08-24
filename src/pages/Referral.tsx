@@ -376,7 +376,7 @@ const Referral = () => {
       return toast({ title: "Məlumat çatışmır", description: "M10 nömrəsini daxil edin" });
     }
     if (rawM10.length !== 10) {
-      return toast({ title: "M10 formatı yalnışdır", description: "055 993 77 66 formatında olmalıdır" });
+      return toast({ title: "M10 formatı yalnışdır", description: "055 555 55 55 formatında olmalıdır" });
     }
 
     const { data, error } = await supabase
@@ -658,7 +658,7 @@ const Referral = () => {
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="flex-shrink-0 w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-bold">3</div>
-                  <p>Cüzdan bölməsindən kartı (1234 5678 9876 5432) və ya M10 nömrənizi (055 993 77 66) əlavə edin.</p>
+                  <p>Cüzdan bölməsindən kartı (4169  **** **** 0000) və ya M10 nömrənizi (055 555 55 55) əlavə edin.</p>
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="flex-shrink-0 w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-bold">4</div>
@@ -708,24 +708,24 @@ const Referral = () => {
                 <CardContent>
                   <div className="space-y-4">
                     <div>
-                      <Label>Kart nömrəsi (1234 5678 9876 5432)</Label>
+                      <Label>Kart nömrəsi (4169 **** **** 0000)</Label>
                       <div className="flex gap-2">
                         <Input
                           value={walletCard}
                           onChange={(e) => setWalletCard(formatCardInput(e.target.value))}
-                          placeholder="1234 5678 9876 5432"
+                          placeholder="4169 **** **** 0000"
                           inputMode="numeric"
                         />
                         <Button onClick={addCardWallet}>Əlavə et</Button>
                       </div>
                     </div>
                     <div>
-                      <Label>M10 nömrəsi (055 993 77 66)</Label>
+                      <Label>M10 nömrəsi (055 555 55 55)</Label>
                       <div className="flex gap-2">
                         <Input
                           value={walletM10}
                           onChange={(e) => setWalletM10(formatM10Input(e.target.value))}
-                          placeholder="055 993 77 66"
+                          placeholder="055 555 55 55"
                           inputMode="numeric"
                         />
                         <Button onClick={addM10Wallet}>Əlavə et</Button>
