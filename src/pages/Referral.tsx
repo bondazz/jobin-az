@@ -688,7 +688,31 @@ const Referral = () => {
           </div>
         ) : (
           // Dashboard for logged in users
-          <div className="grid lg:grid-cols-3 gap-8">
+          <>
+            {/* Profile Section - Always at top */}
+            <ReferralProfile
+              user={user!}
+              firstName={firstName}
+              lastName={lastName}
+              fullName={fullName}
+              avatarUrl={avatarUrl}
+              backgroundImageUrl={backgroundImageUrl}
+              referralCode={referralCode}
+              approvedCount={approvedCount}
+              balance={balance}
+              onProfileUpdate={(updates) => {
+                setFirstName(updates.firstName);
+                setLastName(updates.lastName);
+                setFullName(updates.fullName);
+                setAvatarUrl(updates.avatarUrl);
+                if (updates.backgroundImageUrl !== undefined) {
+                  setBackgroundImageUrl(updates.backgroundImageUrl);
+                }
+              }}
+              onSignOut={signOut}
+            />
+
+            <div className="grid lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-6">
               {/* Referral Link Card */}
               <Card className="border-2 border-primary/20 bg-gradient-to-r from-primary/5 to-transparent">
@@ -914,30 +938,8 @@ const Referral = () => {
               </Card>
             </div>
 
-            {/* Right Sidebar - Enhanced Profile */}
+            {/* Right Sidebar - Info only */}
             <div className="space-y-6">
-              <ReferralProfile
-                user={user!}
-                firstName={firstName}
-                lastName={lastName}
-                fullName={fullName}
-                avatarUrl={avatarUrl}
-                backgroundImageUrl={backgroundImageUrl}
-                referralCode={referralCode}
-                approvedCount={approvedCount}
-                balance={balance}
-                onProfileUpdate={(updates) => {
-                  setFirstName(updates.firstName);
-                  setLastName(updates.lastName);
-                  setFullName(updates.fullName);
-                  setAvatarUrl(updates.avatarUrl);
-                  if (updates.backgroundImageUrl !== undefined) {
-                    setBackgroundImageUrl(updates.backgroundImageUrl);
-                  }
-                }}
-                onSignOut={signOut}
-              />
-
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -964,6 +966,7 @@ const Referral = () => {
               </Card>
             </div>
           </div>
+          </>
         )}
       </div>
       
