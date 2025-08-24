@@ -19,6 +19,7 @@ import creditCardIcon from "@/assets/credit-card-icon.png";
 import visaMasterCardIcon from "@/assets/visa-mastercard-icon.png";
 import m10Logo from "@/assets/m10-logo.png";
 import m10IconNew from "@/assets/m10-icon-new.png";
+import m10LogoNew from "@/assets/m10-logo-new.png";
 
 interface ReferralRequestForm {
   company_name: string;
@@ -765,7 +766,7 @@ const Referral = () => {
                               />
                               <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
                                 <img 
-                                  src={m10IconNew} 
+                                  src={m10LogoNew} 
                                   alt="" 
                                   className="w-6 h-6 object-contain"
                                   style={{ width: '24px', height: '24px' }}
@@ -791,23 +792,23 @@ const Referral = () => {
                                 {w.card_number && (
                                   <>
                                     <img 
-                                      src={creditCardIcon} 
+                                      src={visaMasterCardIcon} 
                                       alt="Kart" 
                                       className="w-6 h-6 object-contain"
                                       style={{ width: '24px', height: '24px' }}
                                     />
-                                    <div className="text-sm font-medium">Kart: {maskCardForUser(w.card_number)}</div>
+                                    <div className="text-sm font-medium">{maskCardForUser(w.card_number)}</div>
                                   </>
                                 )}
                                 {w.m10_number && (
                                   <>
                                     <img 
-                                      src={m10Logo} 
+                                      src={m10LogoNew} 
                                       alt="M10" 
                                       className="w-6 h-6 object-contain"
                                       style={{ width: '24px', height: '24px' }}
                                     />
-                                    <div className="text-sm font-medium">M10: {formatM10Input(w.m10_number)}</div>
+                                    <div className="text-sm font-medium">{formatM10Input(w.m10_number)}</div>
                                   </>
                                 )}
                               </div>
@@ -914,14 +915,14 @@ const Referral = () => {
                                    <div className="flex items-center gap-2">
                                      {w.method === 'card' ? (
                                        <img 
-                                         src={creditCardIcon} 
+                                         src={visaMasterCardIcon} 
                                          alt="Kart" 
                                          className="w-5 h-5 object-contain"
                                          style={{ width: '20px', height: '20px' }}
                                        />
                                      ) : (
                                        <img 
-                                         src={m10Logo} 
+                                         src={m10LogoNew} 
                                          alt="M10" 
                                          className="w-5 h-5 object-contain"
                                          style={{ width: '20px', height: '20px' }}
