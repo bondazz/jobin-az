@@ -285,7 +285,7 @@ export default function ReferralProfile({
           /* Display Mode - Compact Layout */
           <div className="space-y-4 animate-fade-in">
             {/* User Info Section - Compact */}
-            <div className="text-center sm:text-left">
+            <div className="text-center sm:text-left pt-4">
               <h2 className="text-base font-bold leading-tight bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
                 {displayName}
               </h2>
