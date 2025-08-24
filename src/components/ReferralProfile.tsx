@@ -284,30 +284,30 @@ export default function ReferralProfile({
 
             {/* Referral Code Section */}
             {referralCode && (
-              <div className="p-4 rounded-lg bg-gradient-to-r from-secondary/20 to-accent/10 border border-secondary/20">
+              <div className="p-3 rounded-lg bg-gradient-to-r from-secondary/20 to-accent/10 border border-secondary/20">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <Share2 className="w-4 h-4 text-secondary-foreground" />
-                    <span className="text-sm font-medium text-secondary-foreground">Referral Kodu</span>
+                    <Share2 className="w-3 h-3 text-secondary-foreground" />
+                    <span className="text-xs font-medium text-secondary-foreground">Referral Linki</span>
                   </div>
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={copyReferralCode}
-                    className="h-6 px-2"
+                    className="h-5 px-2"
                   >
                     <Clipboard className="w-3 h-3" />
                   </Button>
                 </div>
-                <div className="font-mono text-lg font-bold text-secondary-foreground mb-3">
-                  {referralCode}
+                <div className="font-mono text-sm text-secondary-foreground mb-2 break-all">
+                  {`${window.location.origin}/?ref=${referralCode}`}
                 </div>
                 <Button 
                   onClick={copyReferralLink}
                   size="sm"
-                  className="w-full bg-secondary hover:bg-secondary/80 text-secondary-foreground"
+                  className="w-full h-7 bg-secondary hover:bg-secondary/80 text-secondary-foreground text-xs"
                 >
-                  <Share2 className="w-4 h-4 mr-2" />
+                  <Share2 className="w-3 h-3 mr-1" />
                   Linki kopyala
                 </Button>
               </div>
