@@ -500,26 +500,7 @@ const Referral = () => {
     <main className="flex-1 overflow-y-auto h-screen pb-20 xl:pb-0 pt-14 xl:pt-0">
       <MobileHeader />
       
-      {/* Hero Section - Compact */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary/8 via-background to-secondary/8">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/3 to-transparent" />
-        <div className="relative max-w-6xl mx-auto px-4 py-8 lg:py-10">
-          <div className="text-center space-y-3">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 rounded-full text-xs font-medium text-primary">
-              <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
-              </svg>
-              Referral Proqramı
-            </div>
-            <h1 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-              Paylaş və Qazan
-            </h1>
-            <p className="text-sm lg:text-base text-muted-foreground max-w-xl mx-auto">
-              Hər təsdiqlənən elan üçün <span className="font-semibold text-primary">5 AZN</span> qazanın. Minimal çıxarış 10 AZN.
-            </p>
-          </div>
-        </div>
-      </section>
+      {/* Hero Section - Removed per user request */}
 
       <div className="max-w-6xl mx-auto p-4 lg:p-6 space-y-8">
         {/* Company request form for referral link visitors */}
