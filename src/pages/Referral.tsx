@@ -7,13 +7,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { toast } from "@/components/ui/use-toast";
 import { updatePageMeta } from "@/utils/seo";
-import { Trash2 } from "lucide-react";
+import { Trash2, ChevronDown, CreditCard, Banknote } from "lucide-react";
 import BottomNavigation from "@/components/BottomNavigation";
 import MobileHeader from "@/components/MobileHeader";
 import { useReferralCode } from "@/hooks/useReferralCode";
 import ReferralProfile from "@/components/ReferralProfile";
+import creditCardIcon from "@/assets/credit-card-icon.png";
+import m10Logo from "@/assets/m10-logo.png";
 
 interface ReferralRequestForm {
   company_name: string;
@@ -75,6 +78,10 @@ const Referral = () => {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [backgroundImageUrl, setBackgroundImageUrl] = useState<string | null>(null);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
+
+  // Collapsible states
+  const [isWalletOpen, setIsWalletOpen] = useState(false);
+  const [isWithdrawalOpen, setIsWithdrawalOpen] = useState(false);
 
   const [reqForm, setReqForm] = useState<ReferralRequestForm>({
     company_name: "",
@@ -695,163 +702,215 @@ const Referral = () => {
 
             <div className="grid lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-6">
-              {/* Wallet Management */}
+              {/* Wallet Management - Collapsible */}
               <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                    </svg>
-                    Cüzdan idarəsi
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div>
-                      <Label>Kart nömrəsi</Label>
-                      <div className="flex gap-2">
-                        <Input
-                          value={walletCard}
-                          onChange={(e) => setWalletCard(formatCardInput(e.target.value))}
-                          placeholder="4169 **** **** 0000"
-                          inputMode="numeric"
-                        />
-                        <Button onClick={addCardWallet}>Əlavə et</Button>
-                      </div>
-                    </div>
-                    <div>
-                      <Label>M10 nömrəsi</Label>
-                      <div className="flex gap-2">
-                        <Input
-                          value={walletM10}
-                          onChange={(e) => setWalletM10(formatM10Input(e.target.value))}
-                          placeholder="055 555 55 55"
-                          inputMode="numeric"
-                        />
-                        <Button onClick={addM10Wallet}>Əlavə et</Button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <Separator className="my-4" />
-                  <div className="space-y-2">
-                    <div className="text-sm font-medium">Mənim cüzdanlarım</div>
-                    {wallets.length === 0 ? (
-                      <div className="p-4 border-2 border-dashed border-gray-200 rounded-lg text-center text-sm text-muted-foreground">
-                        Hələ cüzdan əlavə olunmayıb
-                      </div>
-                    ) : (
-                      wallets.map((w) => (
-                        <div key={w.id} className="p-3 border rounded-lg flex items-center justify-between bg-gray-50/50">
-                          <div className="text-sm">
-                            {w.card_number && <div className="font-medium">Kart: {maskCardForUser(w.card_number)}</div>}
-                            {w.m10_number && <div className="font-medium">M10: {formatM10Input(w.m10_number)}</div>}
+                <Collapsible open={isWalletOpen} onOpenChange={setIsWalletOpen}>
+                  <CollapsibleTrigger asChild>
+                    <CardHeader className="cursor-pointer hover:bg-muted/50 transition-colors rounded-t-lg">
+                      <CardTitle className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20 p-1.5 shadow-sm">
+                            <img src={creditCardIcon} alt="Kart" className="w-full h-full object-contain" />
                           </div>
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => deleteWallet(w.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+                          <span>Cüzdan idarəsi</span>
                         </div>
-                      ))
-                    )}
-                  </div>
-                </CardContent>
+                        <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform duration-200 ${isWalletOpen ? 'rotate-180' : ''}`} />
+                      </CardTitle>
+                    </CardHeader>
+                  </CollapsibleTrigger>
+                  
+                  <CollapsibleContent>
+                    <CardContent className="pt-0">
+                      <div className="space-y-4">
+                        <div>
+                          <Label className="flex items-center gap-2 mb-2">
+                            <img src={creditCardIcon} alt="Kart" className="w-4 h-4" />
+                            Kart nömrəsi
+                          </Label>
+                          <div className="flex gap-2">
+                            <Input
+                              value={walletCard}
+                              onChange={(e) => setWalletCard(formatCardInput(e.target.value))}
+                              placeholder="4169 **** **** 0000"
+                              inputMode="numeric"
+                              className="bg-card"
+                            />
+                            <Button onClick={addCardWallet} size="sm" className="shrink-0">Əlavə et</Button>
+                          </div>
+                        </div>
+                        <div>
+                          <Label className="flex items-center gap-2 mb-2">
+                            <img src={m10Logo} alt="M10" className="w-4 h-4" />
+                            M10 nömrəsi
+                          </Label>
+                          <div className="flex gap-2">
+                            <Input
+                              value={walletM10}
+                              onChange={(e) => setWalletM10(formatM10Input(e.target.value))}
+                              placeholder="055 555 55 55"
+                              inputMode="numeric"
+                              className="bg-card"
+                            />
+                            <Button onClick={addM10Wallet} size="sm" className="shrink-0">Əlavə et</Button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <Separator className="my-4" />
+                      <div className="space-y-2">
+                        <div className="text-sm font-medium">Mənim cüzdanlarım</div>
+                        {wallets.length === 0 ? (
+                          <div className="p-4 border-2 border-dashed border-muted-foreground/20 rounded-lg text-center text-sm text-muted-foreground">
+                            Hələ cüzdan əlavə olunmayıb
+                          </div>
+                        ) : (
+                          wallets.map((w) => (
+                            <div key={w.id} className="p-3 border rounded-lg flex items-center justify-between bg-muted/20 hover:bg-muted/30 transition-colors">
+                              <div className="flex items-center gap-2">
+                                {w.card_number && (
+                                  <>
+                                    <img src={creditCardIcon} alt="Kart" className="w-5 h-5" />
+                                    <div className="text-sm font-medium">Kart: {maskCardForUser(w.card_number)}</div>
+                                  </>
+                                )}
+                                {w.m10_number && (
+                                  <>
+                                    <img src={m10Logo} alt="M10" className="w-5 h-5" />
+                                    <div className="text-sm font-medium">M10: {formatM10Input(w.m10_number)}</div>
+                                  </>
+                                )}
+                              </div>
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                onClick={() => deleteWallet(w.id)}
+                                className="h-8 w-8 p-0"
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    </CardContent>
+                  </CollapsibleContent>
+                </Collapsible>
               </Card>
 
-              {/* Withdrawal Section */}
+              {/* Withdrawal Section - Collapsible */}
               <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                    </svg>
-                    Çıxarış et
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                    <div>
-                      <Label>Metod</Label>
-                      <select
-                        className="w-full h-10 rounded-md border bg-background px-3"
-                        value={withdrawMethod}
-                        onChange={(e) => setWithdrawMethod(e.target.value as any)}
-                      >
-                        <option value="card">Kart</option>
-                        <option value="m10">M10</option>
-                      </select>
-                    </div>
-                    <div>
-                      <Label>Təyinat</Label>
-                      <Input 
-                        value={withdrawDest} 
-                        onChange={(e) => {
-                          if (withdrawMethod === "card") return;
-                          setWithdrawDest(formatM10Input(e.target.value));
-                        }} 
-                        placeholder="Seçilmiş cüzdan" 
-                        readOnly={withdrawMethod === "card"}
-                      />
-                    </div>
-                    <div>
-                      <Label>Məbləğ (AZN)</Label>
-                      <Input
-                        value={withdrawAmount}
-                        onChange={(e) => {
-                          const v = e.target.value.replace(/[^0-9.]/g, "");
-                          setWithdrawAmount(v);
-                        }}
-                        placeholder={`${balance}`}
-                        inputMode="decimal"
-                      />
-                    </div>
-                  </div>
-                  <div className="flex justify-end">
-                    <Button onClick={createWithdrawal} disabled={!canWithdraw}>
-                      Çıxarış et
-                    </Button>
-                  </div>
-
-                  <Separator className="my-4" />
-                  <div className="space-y-2">
-                    <div className="text-sm font-medium">Çıxarış tarixçəsi</div>
-                    <div className="space-y-2">
-                      {withdrawals.length === 0 ? (
-                        <div className="p-4 border-2 border-dashed border-gray-200 rounded-lg text-center text-sm text-muted-foreground">
-                          Hələ çıxarış sorğusu yoxdur
-                        </div>
-                      ) : (
-                        withdrawals.map(w => (
-                           <div key={w.id} className="p-3 border rounded-lg bg-gray-50/50">
-                             <div className="flex items-center justify-between">
-                               <div className="text-sm">
-                                 <div className="font-medium">{w.amount} AZN • {w.method === 'card' ? 'Kart' : 'M10'}</div>
-                                 <div className="text-xs text-muted-foreground">{new Date(w.created_at).toLocaleString()}</div>
-                                 <div className="text-xs text-muted-foreground">{w.method === 'card' ? maskCardForUser(w.destination) : w.destination}</div>
-                               </div>
-                               <span className={`text-xs px-2 py-1 rounded-full font-medium ${
-                                 w.status==='pending'?'bg-yellow-100 text-yellow-700': 
-                                 w.status==='paid'?'bg-green-100 text-green-700':
-                                 'bg-red-100 text-red-700'
-                               }`}>
-                                 {w.status==='pending'?'Gözləyir': w.status==='paid'?'Ödənildi':'Ləğv edildi'}
-                               </span>
-                             </div>
-                             {w.admin_comment && (
-                               <div className="mt-2 p-2 bg-blue-50 rounded text-xs">
-                                 <div className="font-medium text-blue-600">Admin şərhi:</div>
-                                 <div className="text-blue-700">{w.admin_comment}</div>
-                               </div>
-                             )}
+                <Collapsible open={isWithdrawalOpen} onOpenChange={setIsWithdrawalOpen}>
+                  <CollapsibleTrigger asChild>
+                    <CardHeader className="cursor-pointer hover:bg-muted/50 transition-colors rounded-t-lg">
+                      <CardTitle className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-success/20 to-success/10 border border-success/20 p-2 shadow-sm">
+                            <Banknote className="w-full h-full text-success" />
                           </div>
-                        ))
-                      )}
-                    </div>
-                  </div>
-                </CardContent>
+                          <span>Çıxarış et</span>
+                        </div>
+                        <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform duration-200 ${isWithdrawalOpen ? 'rotate-180' : ''}`} />
+                      </CardTitle>
+                    </CardHeader>
+                  </CollapsibleTrigger>
+                  
+                  <CollapsibleContent>
+                    <CardContent className="pt-0">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div>
+                          <Label>Metod</Label>
+                          <select
+                            className="w-full h-10 rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                            value={withdrawMethod}
+                            onChange={(e) => setWithdrawMethod(e.target.value as any)}
+                          >
+                            <option value="card">💳 Kart</option>
+                            <option value="m10">📱 M10</option>
+                          </select>
+                        </div>
+                        <div>
+                          <Label>Təyinat</Label>
+                          <Input 
+                            value={withdrawDest} 
+                            onChange={(e) => {
+                              if (withdrawMethod === "card") return;
+                              setWithdrawDest(formatM10Input(e.target.value));
+                            }} 
+                            placeholder="Seçilmiş cüzdan" 
+                            readOnly={withdrawMethod === "card"}
+                            className="bg-card"
+                          />
+                        </div>
+                        <div>
+                          <Label>Məbləğ (AZN)</Label>
+                          <Input
+                            value={withdrawAmount}
+                            onChange={(e) => {
+                              const v = e.target.value.replace(/[^0-9.]/g, "");
+                              setWithdrawAmount(v);
+                            }}
+                            placeholder={`${balance}`}
+                            inputMode="decimal"
+                            className="bg-card"
+                          />
+                        </div>
+                      </div>
+                      <div className="flex justify-end">
+                        <Button 
+                          onClick={createWithdrawal} 
+                          disabled={!canWithdraw}
+                          className="bg-gradient-to-r from-success to-success/80 hover:from-success/90 hover:to-success/70"
+                        >
+                          Çıxarış et
+                        </Button>
+                      </div>
+
+                      <Separator className="my-4" />
+                      <div className="space-y-2">
+                        <div className="text-sm font-medium">Çıxarış tarixçəsi</div>
+                        <div className="space-y-2">
+                          {withdrawals.length === 0 ? (
+                            <div className="p-4 border-2 border-dashed border-muted-foreground/20 rounded-lg text-center text-sm text-muted-foreground">
+                              Hələ çıxarış sorğusu yoxdur
+                            </div>
+                          ) : (
+                            withdrawals.map(w => (
+                               <div key={w.id} className="p-3 border rounded-lg bg-muted/20 hover:bg-muted/30 transition-colors">
+                                 <div className="flex items-center justify-between">
+                                   <div className="flex items-center gap-2">
+                                     {w.method === 'card' ? (
+                                       <img src={creditCardIcon} alt="Kart" className="w-4 h-4" />
+                                     ) : (
+                                       <img src={m10Logo} alt="M10" className="w-4 h-4" />
+                                     )}
+                                     <div className="text-sm">
+                                       <div className="font-medium">{w.amount} AZN • {w.method === 'card' ? 'Kart' : 'M10'}</div>
+                                       <div className="text-xs text-muted-foreground">{new Date(w.created_at).toLocaleString()}</div>
+                                       <div className="text-xs text-muted-foreground">{w.method === 'card' ? maskCardForUser(w.destination) : w.destination}</div>
+                                     </div>
+                                   </div>
+                                   <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                                     w.status==='pending'?'bg-yellow-100 text-yellow-700': 
+                                     w.status==='paid'?'bg-green-100 text-green-700':
+                                     'bg-red-100 text-red-700'
+                                   }`}>
+                                     {w.status==='pending'?'Gözləyir': w.status==='paid'?'Ödənildi':'Ləğv edildi'}
+                                   </span>
+                                 </div>
+                                 {w.admin_comment && (
+                                   <div className="mt-2 p-2 bg-blue-50 rounded text-xs">
+                                     <div className="font-medium text-blue-600">Admin şərhi:</div>
+                                     <div className="text-blue-700">{w.admin_comment}</div>
+                                   </div>
+                                 )}
+                              </div>
+                            ))
+                          )}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </CollapsibleContent>
+                </Collapsible>
               </Card>
             </div>
 
