@@ -672,7 +672,7 @@ const Referral = () => {
                 </div>
                 
                 <div className="flex justify-center mt-6">
-                  <svg width="720" height="420" viewBox="0 0 720 420" fill="none"
+                  <svg width="720" height="420" viewBox="80 60 560 300" fill="none"
                        xmlns="http://www.w3.org/2000/svg"
                        style={{"--accent":"#FF6A1A", "--ink":"#C9D1D9"} as React.CSSProperties} aria-hidden="true" className="w-full max-w-md">
                     <style>{`
