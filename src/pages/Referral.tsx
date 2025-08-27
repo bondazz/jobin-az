@@ -677,9 +677,8 @@ const Referral = () => {
                        style={{"--accent":"#FF6A1A"} as React.CSSProperties} aria-hidden="true" className="w-full max-w-md">
                     <style>{`
                       /* Colors - Theme aware */
-                      .stroke-soft { stroke: hsl(var(--border)); }
-                      .fill-glass { fill: hsl(var(--muted) / 0.3); }
-                      .fill-glass-2 { fill: hsl(var(--muted) / 0.5); }
+                      .stroke-accent { stroke: var(--accent); }
+                      .fill-transparent { fill: transparent; }
                       .fill-ink-1 { fill: hsl(var(--foreground) / 0.8); }
                       .fill-ink-2 { fill: hsl(var(--foreground) / 0.6); }
                       .fill-ink-3 { fill: hsl(var(--muted-foreground) / 0.4); }
@@ -724,20 +723,16 @@ const Referral = () => {
                       }
                     `}</style>
 
-                    {/* subtle glass card (transparent) */}
-                    <rect x="120" y="96" width="480" height="228" rx="26"
-                          fill="rgba(255,255,255,.04)" className="stroke-soft" strokeWidth="1"/>
-
                     {/* Wallet body */}
                     <rect x="210" y="160" width="300" height="116" rx="20"
-                          className="fill-glass-2" stroke="rgba(255,255,255,.22)" strokeWidth="1.5"/>
+                          className="fill-transparent stroke-accent" strokeWidth="1.5"/>
                     {/* Wallet flap (animated tilt) */}
-                    <rect id="flap" x="210" y="150" width="240" height="32" rx="12" className="fill-glass"/>
+                    <rect id="flap" x="210" y="150" width="240" height="32" rx="12" className="fill-transparent stroke-accent" strokeWidth="1"/>
                     <circle cx="236" cy="166" r="5" className="accent"/>
 
                     {/* Bank card (animated slide) */}
                     <g id="card">
-                      <rect x="396" y="138" width="164" height="92" rx="12" className="fill-ink-3"/>
+                      <rect x="396" y="138" width="164" height="92" rx="12" className="fill-ink-3 stroke-accent" strokeWidth="1"/>
                       <rect x="414" y="160" width="104" height="10" rx="5" className="fill-ink-1"/>
                       <rect x="414" y="178" width="72" height="10" rx="5" className="fill-ink-2"/>
                     </g>
