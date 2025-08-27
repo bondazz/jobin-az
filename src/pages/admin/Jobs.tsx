@@ -264,8 +264,8 @@ export default function AdminJobs() {
 
     const { seoTitle, seoDescription } = generateSeoFields(title, companyName);
     
-    // Auto-generate unique slug from title
-    const baseSlug = title
+    // Auto-generate unique slug: company-name + job-title + 7-digit-number
+    const processText = (text: string) => text
       .toLowerCase()
       .replace(/[ğüşöçıəĞÜŞÖÇIƏ]/g, match => {
         const map: Record<string, string> = {
@@ -276,9 +276,13 @@ export default function AdminJobs() {
       })
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '');
+
+    const companySlug = processText(companyName);
+    const titleSlug = processText(title);
     
-    // Add timestamp to ensure uniqueness
-    const uniqueSlug = `${baseSlug}-${Date.now()}`;
+    // Generate unique 7-digit number
+    const uniqueNumber = Math.floor(1000000 + Math.random() * 9000000);
+    const uniqueSlug = `${companySlug}-${titleSlug}-${uniqueNumber}`;
 
     setFormData(prev => {
       const prevSeoTitle = prev.seo_title ?? '';
