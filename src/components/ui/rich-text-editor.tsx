@@ -1,4 +1,6 @@
 import React from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import { cn } from '@/lib/utils';
 
 interface RichTextEditorProps {
@@ -8,21 +10,41 @@ interface RichTextEditorProps {
   className?: string;
 }
 
-export function RichTextEditor({ value, onChange, placeholder, className }: RichTextEditorProps) {
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    onChange(e.target.value);
-  };
+const modules = {
+  toolbar: [
+    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+    [{ 'size': ['small', false, 'large', 'huge'] }],
+    ['bold', 'italic', 'underline', 'strike'],
+    [{ 'color': [] }, { 'background': [] }],
+    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+    [{ 'indent': '-1'}, { 'indent': '+1' }],
+    [{ 'align': [] }],
+    ['link', 'image'],
+    ['clean']
+  ]
+};
 
+const formats = [
+  'header', 'size',
+  'bold', 'italic', 'underline', 'strike',
+  'color', 'background',
+  'list', 'bullet', 'indent',
+  'align', 'link', 'image'
+];
+
+export function RichTextEditor({ value, onChange, placeholder, className }: RichTextEditorProps) {
   return (
     <div className={cn("rich-text-editor", className)}>
-      <textarea
+      <ReactQuill
         value={value}
-        onChange={handleChange}
+        onChange={onChange}
         placeholder={placeholder}
-        className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-vertical"
+        modules={modules}
+        formats={formats}
         style={{
           minHeight: '150px'
         }}
+        className="bg-background text-foreground [&_.ql-editor]:min-h-[120px] [&_.ql-toolbar]:border-input [&_.ql-container]:border-input [&_.ql-editor]:text-foreground"
       />
     </div>
   );
