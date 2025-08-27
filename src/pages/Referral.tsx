@@ -670,6 +670,31 @@ const Referral = () => {
                   <div className="flex-shrink-0 w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-bold">4</div>
                   <p>Balans 10 AZN olduqda çıxarış üçün sorğu yaradın. Sorğular admin paneldən təsdiqlənir.</p>
                 </div>
+                
+                <div className="flex justify-center mt-6">
+                  <svg width="720" height="420" viewBox="0 0 720 420" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" className="w-full max-w-md">   
+                    <defs>     
+                      <linearGradient id="gl2" x1="0" y1="0" x2="1" y2="1">       
+                        <stop offset="0" stopColor="rgba(255,255,255,.12)"/>       
+                        <stop offset="1" stopColor="rgba(255,255,255,.04)"/>     
+                      </linearGradient>   
+                    </defs>    
+                    {/* glass card */}
+                    <rect x="120" y="96" width="480" height="228" rx="26" fill="url(#gl2)" stroke="rgba(255,255,255,0.08)"/>    
+                    {/* wallet body */}
+                    <rect x="210" y="160" width="300" height="116" rx="20" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.22)"/>   
+                    {/* flap */}
+                    <rect x="210" y="150" width="240" height="32" rx="12" fill="rgba(255,255,255,0.06)"/>   
+                    <circle cx="236" cy="166" r="5" fill="#FF6A1A"/>    
+                    {/* bank card */}
+                    <rect x="396" y="138" width="164" height="92" rx="12" fill="rgba(255,255,255,0.14)"/>   
+                    <rect x="414" y="160" width="104" height="10" rx="5" fill="rgba(255,255,255,0.35)"/>   
+                    <rect x="414" y="178" width="72" height="10" rx="5" fill="rgba(255,255,255,0.22)"/>    
+                    {/* reward coin */}
+                    <circle cx="268" cy="218" r="34" fill="#FF6A1A"/>   
+                    <path d="M256 219l9 9 18-18" stroke="white" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/> 
+                  </svg>
+                </div>
               </CardContent>
             </Card>
           </div>
