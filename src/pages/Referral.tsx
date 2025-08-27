@@ -672,17 +672,17 @@ const Referral = () => {
                 </div>
                 
                 <div className="flex justify-center mt-6">
-                  <svg width="720" height="420" viewBox="80 60 560 300" fill="none"
+                  <svg width="520" height="180" viewBox="180 130 360 160" fill="none"
                        xmlns="http://www.w3.org/2000/svg"
-                       style={{"--accent":"#FF6A1A", "--ink":"#C9D1D9"} as React.CSSProperties} aria-hidden="true" className="w-full max-w-md">
+                       style={{"--accent":"#FF6A1A"} as React.CSSProperties} aria-hidden="true" className="w-full max-w-md">
                     <style>{`
-                      /* Colors */
-                      .stroke-soft { stroke: rgba(255,255,255,.08); }
-                      .fill-glass { fill: rgba(255,255,255,.06); }
-                      .fill-glass-2 { fill: rgba(255,255,255,.10); }
-                      .fill-ink-1 { fill: rgba(255,255,255,.35); }
-                      .fill-ink-2 { fill: rgba(255,255,255,.22); }
-                      .fill-ink-3 { fill: rgba(255,255,255,.14); }
+                      /* Colors - Theme aware */
+                      .stroke-soft { stroke: hsl(var(--border)); }
+                      .fill-glass { fill: hsl(var(--muted) / 0.3); }
+                      .fill-glass-2 { fill: hsl(var(--muted) / 0.5); }
+                      .fill-ink-1 { fill: hsl(var(--foreground) / 0.8); }
+                      .fill-ink-2 { fill: hsl(var(--foreground) / 0.6); }
+                      .fill-ink-3 { fill: hsl(var(--muted-foreground) / 0.4); }
                       .accent { fill: var(--accent); stroke: var(--accent); }
 
                       /* Motion */
