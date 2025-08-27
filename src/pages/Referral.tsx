@@ -672,27 +672,85 @@ const Referral = () => {
                 </div>
                 
                 <div className="flex justify-center mt-6">
-                  <svg width="720" height="420" viewBox="0 0 720 420" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" className="w-full max-w-md">   
-                    <defs>     
-                      <linearGradient id="gl2" x1="0" y1="0" x2="1" y2="1">       
-                        <stop offset="0" stopColor="rgba(255,255,255,.12)"/>       
-                        <stop offset="1" stopColor="rgba(255,255,255,.04)"/>     
-                      </linearGradient>   
-                    </defs>    
-                    {/* glass card */}
-                    <rect x="120" y="96" width="480" height="228" rx="26" fill="url(#gl2)" stroke="rgba(255,255,255,0.08)"/>    
-                    {/* wallet body */}
-                    <rect x="210" y="160" width="300" height="116" rx="20" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.22)"/>   
-                    {/* flap */}
-                    <rect x="210" y="150" width="240" height="32" rx="12" fill="rgba(255,255,255,0.06)"/>   
-                    <circle cx="236" cy="166" r="5" fill="#FF6A1A"/>    
-                    {/* bank card */}
-                    <rect x="396" y="138" width="164" height="92" rx="12" fill="rgba(255,255,255,0.14)"/>   
-                    <rect x="414" y="160" width="104" height="10" rx="5" fill="rgba(255,255,255,0.35)"/>   
-                    <rect x="414" y="178" width="72" height="10" rx="5" fill="rgba(255,255,255,0.22)"/>    
-                    {/* reward coin */}
-                    <circle cx="268" cy="218" r="34" fill="#FF6A1A"/>   
-                    <path d="M256 219l9 9 18-18" stroke="white" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/> 
+                  <svg width="720" height="420" viewBox="0 0 720 420" fill="none"
+                       xmlns="http://www.w3.org/2000/svg"
+                       style={{"--accent":"#FF6A1A", "--ink":"#C9D1D9"} as React.CSSProperties} aria-hidden="true" className="w-full max-w-md">
+                    <style>{`
+                      /* Colors */
+                      .stroke-soft { stroke: rgba(255,255,255,.08); }
+                      .fill-glass { fill: rgba(255,255,255,.06); }
+                      .fill-glass-2 { fill: rgba(255,255,255,.10); }
+                      .fill-ink-1 { fill: rgba(255,255,255,.35); }
+                      .fill-ink-2 { fill: rgba(255,255,255,.22); }
+                      .fill-ink-3 { fill: rgba(255,255,255,.14); }
+                      .accent { fill: var(--accent); stroke: var(--accent); }
+
+                      /* Motion */
+                      #card { animation: slideCard 4s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 50%; }
+                      #flap { animation: flap 4s ease-in-out infinite; transform-box: fill-box; transform-origin: left center; }
+                      #coin { animation: coinPulse 2.6s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 50%; }
+                      #glow { animation: glowPulse 2.6s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 50%; }
+                      #tick { stroke-dasharray: 60; stroke-dashoffset: 60; animation: tickDraw 2.6s ease-in-out infinite; }
+
+                      /* Keyframes */
+                      @keyframes slideCard {
+                        0%,100% { transform: translateY(0); }
+                        35% { transform: translateY(-8px); }
+                        60% { transform: translateY(-8px); }
+                      }
+                      @keyframes flap {
+                        0%,100% { transform: rotate(0deg); }
+                        30% { transform: rotate(-10deg); }
+                        60% { transform: rotate(-10deg); }
+                      }
+                      @keyframes coinPulse {
+                        0%,100% { transform: scale(1); }
+                        45% { transform: scale(1.08); }
+                      }
+                      @keyframes glowPulse {
+                        0%,100% { transform: scale(1); opacity: .25; }
+                        45% { transform: scale(1.25); opacity: .05; }
+                      }
+                      @keyframes tickDraw {
+                        0% { stroke-dashoffset: 60; opacity: 0.9; }
+                        30% { stroke-dashoffset: 0; opacity: 1; }
+                        60% { stroke-dashoffset: 0; opacity: 1; }
+                        100% { stroke-dashoffset: 60; opacity: 0.9; }
+                      }
+
+                      /* Respect reduced motion */
+                      @media (prefers-reduced-motion: reduce) {
+                        #card, #flap, #coin, #glow, #tick { animation: none !important; }
+                      }
+                    `}</style>
+
+                    {/* subtle glass card (transparent) */}
+                    <rect x="120" y="96" width="480" height="228" rx="26"
+                          fill="rgba(255,255,255,.04)" className="stroke-soft" strokeWidth="1"/>
+
+                    {/* Wallet body */}
+                    <rect x="210" y="160" width="300" height="116" rx="20"
+                          className="fill-glass-2" stroke="rgba(255,255,255,.22)" strokeWidth="1.5"/>
+                    {/* Wallet flap (animated tilt) */}
+                    <rect id="flap" x="210" y="150" width="240" height="32" rx="12" className="fill-glass"/>
+                    <circle cx="236" cy="166" r="5" className="accent"/>
+
+                    {/* Bank card (animated slide) */}
+                    <g id="card">
+                      <rect x="396" y="138" width="164" height="92" rx="12" className="fill-ink-3"/>
+                      <rect x="414" y="160" width="104" height="10" rx="5" className="fill-ink-1"/>
+                      <rect x="414" y="178" width="72" height="10" rx="5" className="fill-ink-2"/>
+                    </g>
+
+                    {/* Reward coin (pulse) */}
+                    <g id="coin">
+                      {/* soft glow */}
+                      <circle id="glow" cx="268" cy="218" r="36" fill="var(--accent)" opacity=".18"/>
+                      <circle cx="268" cy="218" r="34" className="accent"/>
+                      {/* check mark (draw animation) */}
+                      <path id="tick" d="M254 219l10 10 20-20" fill="none" stroke="#fff" strokeWidth="5"
+                            strokeLinecap="round" strokeLinejoin="round"/>
+                    </g>
                   </svg>
                 </div>
               </CardContent>
