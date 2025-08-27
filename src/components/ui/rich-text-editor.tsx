@@ -20,19 +20,7 @@ const modules = {
     [{ 'align': [] }],
     ['link'],
     ['clean']
-  ],
-  keyboard: {
-    bindings: {
-      enter: {
-        key: 13,
-        handler: function(range: any, context: any) {
-          this.quill.insertText(range.index, '\n');
-          this.quill.setSelection(range.index + 1);
-          return false;
-        }
-      }
-    }
-  }
+  ]
 };
 
 const formats = [
