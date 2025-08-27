@@ -557,7 +557,7 @@ const Referral = () => {
         {!user ? (
           // Authentication Section
           <div className="grid lg:grid-cols-2 gap-8">
-            <Card className="border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-white">
+            <Card className="border border-border bg-card">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-blue-600">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
