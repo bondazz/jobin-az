@@ -1,49 +1,29 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 const SitemapIndex = () => {
-  const [xmlContent, setXmlContent] = useState<string>('');
-
   useEffect(() => {
-    const loadSitemap = async () => {
+    const loadAndRenderXML = async () => {
       try {
         const response = await fetch('https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap-xml');
         if (response.ok) {
-          const xml = await response.text();
-          setXmlContent(xml);
+          const xmlContent = await response.text();
           
-          // Document type-ını XML olaraq təyin et
-          const htmlElement = document.documentElement;
-          const head = document.head;
-          const body = document.body;
-          
-          // Bütün HTML-i təmizlə və XML məzmunu yaz
-          htmlElement.innerHTML = '';
-          document.open();
-          document.write(xml);
+          // Browser pəncərəsini tamamilə XML məzmunu ilə əvəz et
+          document.open('text/xml');
+          document.write(xmlContent);
           document.close();
         }
       } catch (error) {
-        console.error('Sitemap yüklənə bilmədi:', error);
-        const fallbackXml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://jooble.az/</loc>
-    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>
-</urlset>`;
-        
-        document.open();
-        document.write(fallbackXml);
-        document.close();
+        console.error('XML yükləmə xətası:', error);
+        // Yönləndirmə et əgər xəta varsa
+        window.location.href = 'https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap-xml';
       }
     };
 
-    loadSitemap();
+    // Kiçik gecikmə ilə XML-i yüklə ki, React tam render olsun
+    setTimeout(loadAndRenderXML, 100);
   }, []);
 
-  // XML yükləmə prosesi zamanı heçnə göstərmə
   return null;
 };
 
