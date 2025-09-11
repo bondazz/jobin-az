@@ -8,31 +8,31 @@ const SitemapIndex = () => {
         if (response.ok) {
           const xmlText = await response.text();
           
-          // Document-i tamamilə XML məzmunu ilə əvəz et
-          document.open();
+          // Bütün HTML məzmununu təmizləyib XML ilə əvəz et
+          document.open('application/xml', 'replace');
           document.write(xmlText);
           document.close();
           
-          // Content-Type-ı XML olaraq təyin et
-          const metaElement = document.querySelector('meta[http-equiv="Content-Type"]');
-          if (metaElement) {
-            metaElement.remove();
-          }
-          
-          const newMeta = document.createElement('meta');
-          newMeta.setAttribute('http-equiv', 'Content-Type');
-          newMeta.setAttribute('content', 'application/xml; charset=UTF-8');
-          document.head.appendChild(newMeta);
+        } else {
+          // Xəta halında fallback
+          const errorXml = '<?xml version="1.0" encoding="UTF-8"?>\n<error>Sitemap yüklənə bilmədi</error>';
+          document.open('application/xml', 'replace');
+          document.write(errorXml);
+          document.close();
         }
       } catch (error) {
         console.error('XML yükləmə xətası:', error);
+        const errorXml = '<?xml version="1.0" encoding="UTF-8"?>\n<error>Sitemap yüklənə bilmədi</error>';
+        document.open('application/xml', 'replace');
+        document.write(errorXml);
+        document.close();
       }
     };
 
     loadXMLContent();
   }, []);
 
-  // Yükləmə zamanı boş səhifə göstər
+  // Yükləmə zamanı boş return
   return null;
 };
 
