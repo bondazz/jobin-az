@@ -4,7 +4,11 @@ const SitemapJooble = () => {
   useEffect(() => {
     const loadAndRenderXML = async () => {
       try {
-        const response = await fetch('https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap-xml');
+        // First try to use fetch (will be intercepted by SW if active)
+        const response = await fetch('/sitemapjooble.xml', {
+          headers: { 'Accept': 'application/xml' }
+        });
+        
         if (response.ok) {
           const xmlContent = await response.text();
           
@@ -19,6 +23,15 @@ const SitemapJooble = () => {
               headers: { 'Content-Type': 'application/xml; charset=utf-8' }
             });
           }
+        } else {
+          // Fallback to direct edge function call
+          const fallbackResponse = await fetch('https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap-xml');
+          if (fallbackResponse.ok) {
+            const xmlContent = await fallbackResponse.text();
+            document.open();
+            document.write(xmlContent);
+            document.close();
+          }
         }
       } catch (error) {
         console.error('XML yükləmə xətası:', error);
@@ -27,8 +40,8 @@ const SitemapJooble = () => {
       }
     };
 
-    // Kiçik gecikmə ilə XML-i yüklə ki, React tam render olsun
-    setTimeout(loadAndRenderXML, 100);
+    // Immediate load
+    loadAndRenderXML();
   }, []);
 
   return null;

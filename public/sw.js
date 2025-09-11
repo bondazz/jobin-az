@@ -3,10 +3,12 @@
 const SITEMAP_ENDPOINT = 'https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap-xml';
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(self.skipWaiting());
+  // Force immediate activation
+  self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
+  // Take control of all pages immediately
   event.waitUntil(self.clients.claim());
 });
 
