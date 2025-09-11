@@ -8,10 +8,17 @@ const SitemapIndex = () => {
         if (response.ok) {
           const xmlContent = await response.text();
           
-          // Browser pəncərəsini tamamilə XML məzmunu ilə əvəz et
-          document.open('text/xml');
+          // XML content-i birbaşa browser-a göstər
+          document.open();
           document.write(xmlContent);
           document.close();
+          
+          // Content-Type-ı XML olaraq təyin et
+          if (document.contentType !== 'application/xml') {
+            const newResponse = new Response(xmlContent, {
+              headers: { 'Content-Type': 'application/xml; charset=utf-8' }
+            });
+          }
         }
       } catch (error) {
         console.error('XML yükləmə xətası:', error);
