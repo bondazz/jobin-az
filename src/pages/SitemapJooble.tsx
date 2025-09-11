@@ -1,42 +1,34 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 const SitemapJooble = () => {
-  const [xmlContent, setXmlContent] = useState<string>('');
-
   useEffect(() => {
-    const fetchAndDisplayXml = async () => {
+    const loadAndRenderXML = async () => {
       try {
-        const response = await fetch('https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap-xml', {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/xml',
-          }
-        });
-
+        const response = await fetch('https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap-xml');
         if (response.ok) {
-          const xmlText = await response.text();
-          setXmlContent(xmlText);
+          const xmlContent = await response.text();
           
           // XML content-i birbaşa browser-a göstər
           document.open();
-          document.write(xmlText);
+          document.write(xmlContent);
           document.close();
           
           // Content-Type-ı XML olaraq təyin et
           if (document.contentType !== 'application/xml') {
-            const newResponse = new Response(xmlText, {
+            const newResponse = new Response(xmlContent, {
               headers: { 'Content-Type': 'application/xml; charset=utf-8' }
             });
           }
         }
       } catch (error) {
-        console.error('XML fetch error:', error);
-        // Error halında redirect et
+        console.error('XML yükləmə xətası:', error);
+        // Yönləndirmə et əgər xəta varsa
         window.location.href = 'https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap-xml';
       }
     };
 
-    fetchAndDisplayXml();
+    // Kiçik gecikmə ilə XML-i yüklə ki, React tam render olsun
+    setTimeout(loadAndRenderXML, 100);
   }, []);
 
   return null;
