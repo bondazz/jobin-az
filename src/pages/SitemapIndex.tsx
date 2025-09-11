@@ -1,9 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 const SitemapIndex = () => {
-  const [xmlContent, setXmlContent] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(true);
-
   useEffect(() => {
     const fetchSitemapContent = async () => {
       try {
@@ -11,32 +8,38 @@ const SitemapIndex = () => {
         
         if (response.ok) {
           const xmlText = await response.text();
-          setXmlContent(xmlText);
           
-          // Document-i XML kimi göstər
+          // Document-i tamamilə XML ilə əvəz et və düzgün content type təyin et
           document.open();
           document.write(xmlText);
           document.close();
+          
+          // Content type-ı XML olaraq təyin et
+          const meta = document.createElement('meta');
+          meta.httpEquiv = 'Content-Type';
+          meta.content = 'application/xml; charset=UTF-8';
+          document.head.appendChild(meta);
+          
         } else {
-          throw new Error('XML yüklənə bilmədi');
+          // Xəta halında fallback XML
+          const errorXml = '<?xml version="1.0" encoding="UTF-8"?><error>XML sitemap yüklənə bilmədi</error>';
+          document.open();
+          document.write(errorXml);
+          document.close();
         }
       } catch (error) {
         console.error('XML yükləmə xətası:', error);
-        setXmlContent('<?xml version="1.0" encoding="UTF-8"?><error>XML sitemap yüklənə bilmədi</error>');
-      } finally {
-        setLoading(false);
+        const errorXml = '<?xml version="1.0" encoding="UTF-8"?><error>XML sitemap yüklənə bilmədi</error>';
+        document.open();
+        document.write(errorXml);
+        document.close();
       }
     };
 
     fetchSitemapContent();
   }, []);
 
-  // XML məzmunu yüklənərkən
-  if (loading) {
-    return null; // Yükləmə zamanı heç nə göstərmə
-  }
-
-  return null; // XML document.write ilə göstərilir
+  return null;
 };
 
 export default SitemapIndex;
