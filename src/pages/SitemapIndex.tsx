@@ -1,38 +1,27 @@
-import { useEffect } from 'react';
-
 const SitemapIndex = () => {
-  useEffect(() => {
-    const loadXMLContent = async () => {
-      try {
-        const response = await fetch('https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap-xml');
-        if (response.ok) {
-          const xmlText = await response.text();
-          
-          // Bütün HTML məzmununu təmizləyib XML ilə əvəz et
-          document.open('application/xml', 'replace');
-          document.write(xmlText);
-          document.close();
-          
-        } else {
-          // Xəta halında fallback
-          const errorXml = '<?xml version="1.0" encoding="UTF-8"?>\n<error>Sitemap yüklənə bilmədi</error>';
-          document.open('application/xml', 'replace');
-          document.write(errorXml);
-          document.close();
-        }
-      } catch (error) {
-        console.error('XML yükləmə xətası:', error);
-        const errorXml = '<?xml version="1.0" encoding="UTF-8"?>\n<error>Sitemap yüklənə bilmədi</error>';
-        document.open('application/xml', 'replace');
-        document.write(errorXml);
-        document.close();
-      }
-    };
+  // Component yüklənən kimi XML məzmununu əldə et və document-i əvəz et
+  fetch('https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap-xml')
+    .then(response => response.text())
+    .then(xmlContent => {
+      // Bütün HTML strukturunu təmizləyib XML ilə əvəz et
+      document.documentElement.innerHTML = '';
+      
+      // XML content type təyin et
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(xmlContent, 'application/xml');
+      
+      // Document-i tamamilə XML ilə əvəz et
+      document.open('text/xml');
+      document.write(xmlContent);
+      document.close();
+    })
+    .catch(error => {
+      console.error('XML yükləmə xətası:', error);
+      document.open('text/xml');
+      document.write('<?xml version="1.0" encoding="UTF-8"?><error>Sitemap yüklənmədi</error>');
+      document.close();
+    });
 
-    loadXMLContent();
-  }, []);
-
-  // Yükləmə zamanı boş return
   return null;
 };
 
