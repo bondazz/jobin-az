@@ -4,29 +4,32 @@ const SitemapJooble = () => {
   const [sitemapContent, setSitemapContent] = useState('');
 
   useEffect(() => {
-    // Set the content type to XML and hide default HTML structure
-    document.querySelector('html')?.setAttribute('data-content-type', 'application/xml');
+    // Completely remove all default styling and structure
+    document.documentElement.style.margin = '0';
+    document.documentElement.style.padding = '0';
     document.body.style.margin = '0';
     document.body.style.padding = '0';
+    document.body.style.background = 'white';
     document.body.style.fontFamily = 'monospace';
-    document.body.style.fontSize = '12px';
-    document.body.style.backgroundColor = 'white';
+    document.body.style.fontSize = '11px';
+    document.body.style.lineHeight = '1.2';
     
-    // Fetch sitemap content from the edge function
+    // Remove any existing content type meta tags
+    const existingMeta = document.querySelector('meta[http-equiv="Content-Type"]');
+    if (existingMeta) existingMeta.remove();
+    
+    // Add XML content type
+    const meta = document.createElement('meta');
+    meta.setAttribute('http-equiv', 'Content-Type');
+    meta.setAttribute('content', 'application/xml; charset=utf-8');
+    document.head.appendChild(meta);
+    
+    // Fetch sitemap content from the edge function - exact mirror
     const fetchSitemap = async () => {
       try {
         const response = await fetch('https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap-xml');
         const xmlText = await response.text();
         setSitemapContent(xmlText);
-        
-        // Set content type header if possible
-        if (response.headers.get('content-type')) {
-          document.querySelector('meta[http-equiv="Content-Type"]')?.remove();
-          const meta = document.createElement('meta');
-          meta.setAttribute('http-equiv', 'Content-Type');
-          meta.setAttribute('content', 'application/xml; charset=utf-8');
-          document.head.appendChild(meta);
-        }
       } catch (error) {
         setSitemapContent('<?xml version="1.0" encoding="UTF-8"?>\n<!-- Error loading sitemap -->');
         console.error('Error fetching sitemap:', error);
@@ -35,27 +38,28 @@ const SitemapJooble = () => {
 
     fetchSitemap();
     
-    // Return a cleanup function
+    // Cleanup function
     return () => {
-      document.querySelector('html')?.removeAttribute('data-content-type');
       document.querySelector('meta[http-equiv="Content-Type"]')?.remove();
     };
   }, []);
 
-  // Return raw XML content without any wrapper
-  return (
-    <div
-      style={{
-        margin: 0,
-        padding: 0,
-        whiteSpace: 'pre',
-        fontFamily: 'monospace',
-        fontSize: '12px',
-        lineHeight: '1.2'
-      }}
-      dangerouslySetInnerHTML={{ __html: sitemapContent }}
-    />
-  );
+  // Render pure XML without any HTML wrapper - complete mirror effect
+  if (!sitemapContent) {
+    return null;
+  }
+
+  // Replace the entire page content with raw XML
+  useEffect(() => {
+    if (sitemapContent && sitemapContent.trim()) {
+      // Clear everything and write pure XML
+      document.open();
+      document.write(sitemapContent);
+      document.close();
+    }
+  }, [sitemapContent]);
+
+  return null;
 };
 
 export default SitemapJooble;
