@@ -24,6 +24,7 @@ const ReferralJobSubmission = lazy(() => import("./pages/ReferralJobSubmission")
 // XML/SEO pages - can be lazy loaded
 const Sitemap = lazy(() => import("./pages/Sitemap"));
 const SitemapJooble = lazy(() => import("./pages/SitemapJooble"));
+const SitemapIndex = lazy(() => import("./pages/SitemapIndex"));
 const RobotsTxt = lazy(() => import("./pages/RobotsTxt"));
 
 // Admin components - definitely lazy load
@@ -139,6 +140,11 @@ const App = () => (
           <Route path="/sitemapjooble.xml" element={
             <Suspense fallback={<LoadingFallback />}>
               <SitemapJooble />
+            </Suspense>
+          } />
+          <Route path="/sitemap_index.xml" element={
+            <Suspense fallback={<LoadingFallback />}>
+              <SitemapIndex />
             </Suspense>
           } />
           <Route path="/robots.txt" element={
