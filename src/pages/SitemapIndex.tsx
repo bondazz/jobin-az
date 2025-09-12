@@ -3,9 +3,12 @@ import { useEffect } from 'react';
 const SitemapIndex = () => {
   useEffect(() => {
     const load = async () => {
-      const writeXML = (xml: string) => {
+      const renderXML = (xml: string) => {
+        const blob = new Blob([xml], { type: 'application/xml; charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const html = `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Sitemap Index</title><link rel="canonical" href="/sitemap_index.xml"></head><body style="margin:0"><iframe src="${url}" style="border:0;width:100vw;height:100vh;display:block"></iframe><script>const u='${url}';window.addEventListener('load',()=>{setTimeout(()=>URL.revokeObjectURL(u),5000);});</script></body></html>`;
         document.open();
-        document.write(xml);
+        document.write(html);
         document.close();
       };
 
@@ -19,7 +22,7 @@ const SitemapIndex = () => {
           const ct = (response.headers.get('content-type') || '').toLowerCase();
           if (ct.includes('application/xml') || ct.includes('text/xml')) {
             const xml = await response.text();
-            writeXML(xml);
+            renderXML(xml);
             return;
           }
         }
@@ -35,7 +38,7 @@ const SitemapIndex = () => {
         } as RequestInit);
         if (r2.ok) {
           const xml = await r2.text();
-          writeXML(xml);
+          renderXML(xml);
           return;
         }
       } catch (e) {
