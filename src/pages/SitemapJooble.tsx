@@ -3,44 +3,49 @@ import { useEffect } from 'react';
 const SitemapJooble = () => {
   useEffect(() => {
     const loadAndRenderXML = async () => {
+      const renderXML = (xml: string) => {
+        const blob = new Blob([xml], { type: 'application/xml; charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const html = `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Jooble Sitemap</title><link rel="canonical" href="/sitemapjooble.xml"></head><body style="margin:0"><iframe src="${url}" style="border:0;width:100vw;height:100vh;display:block"></iframe><script>const u='${url}';window.addEventListener('load',()=>{setTimeout(()=>URL.revokeObjectURL(u),5000);});</script></body></html>`;
+        document.open();
+        document.write(html);
+        document.close();
+      };
+
       try {
-        // First try to use fetch (will be intercepted by SW if active)
-        const response = await fetch('/sitemapjooble.xml', {
-          headers: { 'Accept': 'application/xml' }
+        // Try same-origin first (SW will intercept if active)
+        const response = await fetch(`/sitemapjooble.xml?t=${Date.now()}`, {
+          headers: { 'Accept': 'application/xml' },
+          cache: 'no-store',
         });
-        
         if (response.ok) {
-          const xmlContent = await response.text();
-          
-          // XML content-i birbaşa browser-a göstər
-          document.open();
-          document.write(xmlContent);
-          document.close();
-          
-          // Content-Type-ı XML olaraq təyin et
-          if (document.contentType !== 'application/xml') {
-            const newResponse = new Response(xmlContent, {
-              headers: { 'Content-Type': 'application/xml; charset=utf-8' }
-            });
-          }
-        } else {
-          // Fallback to direct edge function call
-          const fallbackResponse = await fetch('https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap-xml');
-          if (fallbackResponse.ok) {
-            const xmlContent = await fallbackResponse.text();
-            document.open();
-            document.write(xmlContent);
-            document.close();
+          const ct = (response.headers.get('content-type') || '').toLowerCase();
+          if (ct.includes('application/xml') || ct.includes('text/xml')) {
+            const xml = await response.text();
+            renderXML(xml);
+            return;
           }
         }
-      } catch (error) {
-        console.error('XML yükləmə xətası:', error);
-        // Yönləndirmə et əgər xəta varsa
-        window.location.href = 'https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap-xml';
+      } catch (e) {
+        console.error('Jooble sitemap yüklənmə xətası (same-origin):', e);
+      }
+
+      // Hard fallback: call edge function directly
+      try {
+        const r2 = await fetch(`https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap-xml?t=${Date.now()}`, {
+          headers: { 'Accept': 'application/xml' },
+          cache: 'no-store',
+        });
+        if (r2.ok) {
+          const xml = await r2.text();
+          renderXML(xml);
+          return;
+        }
+      } catch (e) {
+        console.error('Jooble sitemap fallback xətası (edge function):', e);
       }
     };
 
-    // Immediate load
     loadAndRenderXML();
   }, []);
 

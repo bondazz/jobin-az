@@ -2,7 +2,6 @@
 
 const INDEX_ENDPOINT = 'https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap-index';
 const SITEMAP_ENDPOINT = 'https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap-xml';
-const MAIN_ENDPOINT = 'https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap-main';
 
 self.addEventListener('install', (event) => {
   // Force immediate activation
@@ -49,20 +48,14 @@ self.addEventListener('fetch', (event) => {
   const path = url.pathname;
 
   // Sitemap index
-  if (path === '/sitemap_index.xml' || path === '/sitemap.xml') {
+  if (path === '/sitemap_index.xml') {
     event.respondWith(proxyXML(INDEX_ENDPOINT));
     return;
   }
 
-  // Jooble full sitemap (single file)
-  if (path === '/sitemapjooble.xml') {
+  // Main sitemap and all sitemaps use the same endpoint
+  if (path === '/sitemap.xml' || path === '/sitemapjooble.xml' || path === '/sitemap_main.xml') {
     event.respondWith(proxyXML(SITEMAP_ENDPOINT));
-    return;
-  }
-
-  // Main sitemap (manually generated)
-  if (path === '/sitemap_main.xml') {
-    event.respondWith(proxyXML(MAIN_ENDPOINT));
     return;
   }
 
