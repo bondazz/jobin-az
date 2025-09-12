@@ -2,6 +2,7 @@
 
 const INDEX_ENDPOINT = 'https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap-index';
 const SITEMAP_ENDPOINT = 'https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap-xml';
+const MAIN_ENDPOINT = 'https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap-main';
 
 self.addEventListener('install', (event) => {
   // Force immediate activation
@@ -56,6 +57,12 @@ self.addEventListener('fetch', (event) => {
   // Jooble full sitemap (single file)
   if (path === '/sitemapjooble.xml') {
     event.respondWith(proxyXML(SITEMAP_ENDPOINT));
+    return;
+  }
+
+  // Main sitemap (manually generated)
+  if (path === '/sitemap_main.xml') {
+    event.respondWith(proxyXML(MAIN_ENDPOINT));
     return;
   }
 
