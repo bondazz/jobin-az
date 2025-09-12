@@ -34,22 +34,27 @@ const AdminSitemap = () => {
       
       const stats = {
         totalUrls: urls.length,
-        homePages: Array.from(urls).filter(url => 
-          url.querySelector('loc')?.textContent?.endsWith('/') || 
-          url.querySelector('loc')?.textContent?.includes('/about') ||
-          url.querySelector('loc')?.textContent?.includes('/categories') ||
-          url.querySelector('loc')?.textContent?.includes('/companies') ||
-          url.querySelector('loc')?.textContent?.includes('/pricing')
-        ).length,
+        staticPages: Array.from(urls).filter(url => {
+          const loc = url.querySelector('loc')?.textContent || '';
+          return loc === 'https://jooble.az/' || 
+                 loc.includes('/about') || 
+                 loc.includes('/categories') && !loc.includes('/categories/') ||
+                 loc.includes('/companies') && !loc.includes('/companies/') || 
+                 loc.includes('/services') ||
+                 loc.includes('/cv-builder') ||
+                 loc.includes('/favorites');
+        }).length,
         jobPages: Array.from(urls).filter(url => 
           url.querySelector('loc')?.textContent?.includes('/vacancies/')
         ).length,
-        categoryPages: Array.from(urls).filter(url => 
-          url.querySelector('loc')?.textContent?.includes('/categories/')
-        ).length,
-        companyPages: Array.from(urls).filter(url => 
-          url.querySelector('loc')?.textContent?.includes('/companies/')
-        ).length
+        categoryPages: Array.from(urls).filter(url => {
+          const loc = url.querySelector('loc')?.textContent || '';
+          return loc.includes('/categories/') && !loc.includes('/vacancy/');
+        }).length,
+        companyPages: Array.from(urls).filter(url => {
+          const loc = url.querySelector('loc')?.textContent || '';
+          return loc.includes('/companies/') && !loc.includes('/vacancy/');
+        }).length
       };
       
       setSitemapData(stats);
@@ -94,21 +99,23 @@ const AdminSitemap = () => {
           const loc = url.querySelector('loc')?.textContent || '';
           return loc === 'https://jooble.az/' || 
                  loc.includes('/about') || 
-                 loc.includes('/categories') || 
-                 loc.includes('/companies') || 
-                 loc.includes('/pricing') ||
-                 loc.includes('/referral') ||
-                 loc.includes('/cv-builder');
+                 loc.includes('/categories') && !loc.includes('/categories/') ||
+                 loc.includes('/companies') && !loc.includes('/companies/') || 
+                 loc.includes('/services') ||
+                 loc.includes('/cv-builder') ||
+                 loc.includes('/favorites');
         }).length,
         jobPages: Array.from(urls).filter(url => 
-          url.querySelector('loc')?.textContent?.includes('/jobs/')
+          url.querySelector('loc')?.textContent?.includes('/vacancies/')
         ).length,
-        categoryPages: Array.from(urls).filter(url => 
-          url.querySelector('loc')?.textContent?.includes('/categories/')
-        ).length,
-        companyPages: Array.from(urls).filter(url => 
-          url.querySelector('loc')?.textContent?.includes('/companies/')
-        ).length
+        categoryPages: Array.from(urls).filter(url => {
+          const loc = url.querySelector('loc')?.textContent || '';
+          return loc.includes('/categories/') && !loc.includes('/vacancy/');
+        }).length,
+        companyPages: Array.from(urls).filter(url => {
+          const loc = url.querySelector('loc')?.textContent || '';
+          return loc.includes('/companies/') && !loc.includes('/vacancy/');
+        }).length
       };
       
       setMainSitemapData(stats);
@@ -297,6 +304,10 @@ const AdminSitemap = () => {
                         <p className="text-xs text-muted-foreground">Ümumi URL</p>
                       </div>
                       <div className="space-y-1">
+                        <p className="text-2xl font-bold">{sitemapData.staticPages}</p>
+                        <p className="text-xs text-muted-foreground">Statik Səhifələr</p>
+                      </div>
+                      <div className="space-y-1">
                         <p className="text-2xl font-bold">{sitemapData.jobPages}</p>
                         <p className="text-xs text-muted-foreground">İş Elanları</p>
                       </div>
@@ -361,6 +372,10 @@ const AdminSitemap = () => {
                       <div className="space-y-1">
                         <p className="text-2xl font-bold">{mainSitemapData.jobPages}</p>
                         <p className="text-xs text-muted-foreground">İş Elanları</p>
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-2xl font-bold">{mainSitemapData.categoryPages}</p>
+                        <p className="text-xs text-muted-foreground">Kateqoriyalar</p>
                       </div>
                       <div className="space-y-1">
                         <p className="text-2xl font-bold">{mainSitemapData.companyPages}</p>

@@ -22,89 +22,168 @@ serve(async (req) => {
   const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
 
   try {
-    const today = new Date().toISOString();
+    console.log('Fetching sitemap data with SUPABASE_SERVICE_ROLE_KEY...');
+    console.log('Supabase URL:', SUPABASE_URL);
 
-    // Fetch all active data
-    const [jobsRes, companiesRes, categoriesRes] = await Promise.all([
-      supabase.from("jobs").select("id, slug, updated_at").eq("is_active", true).order("updated_at", { ascending: false }),
-      supabase.from("companies").select("id, slug, updated_at").eq("is_active", true).order("updated_at", { ascending: false }),
-      supabase.from("categories").select("id, slug, updated_at").eq("is_active", true).order("updated_at", { ascending: false }),
+    // Fetch ALL data without limits using pagination - same as original sitemap-xml
+    const fetchAllData = async (table: string, select: string, orderBy?: string) => {
+      let allData: any[] = [];
+      let from = 0;
+      const batchSize = 1000;
+      
+      while (true) {
+        const query = supabase
+          .from(table)
+          .select(select)
+          .eq('is_active', true)
+          .range(from, from + batchSize - 1);
+          
+        if (orderBy) {
+          query.order(orderBy);
+        }
+        
+        const { data, error } = await query;
+        
+        if (error) throw error;
+        if (!data || data.length === 0) break;
+        
+        allData = allData.concat(data);
+        
+        if (data.length < batchSize) break;
+        from += batchSize;
+      }
+      
+      return allData;
+    };
+
+    const [jobs, categories, companies] = await Promise.all([
+      fetchAllData('jobs', 'slug, updated_at, category_id, company_id', 'created_at'),
+      fetchAllData('categories', 'id, slug, updated_at', 'name'),
+      fetchAllData('companies', 'id, slug, updated_at', 'name')
     ]);
 
-    const jobs = jobsRes.data || [];
-    const companies = companiesRes.data || [];
-    const categories = categoriesRes.data || [];
+    console.log(`Found ${jobs.length} jobs, ${categories.length} categories, ${companies.length} companies - Total URLs will be approximately ${jobs.length + categories.length + (companies.length * 2) + 7}`);
 
-    let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
-    xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
+    // Build sitemap XML - same structure as original sitemap-xml
+    const baseUrl = 'https://jooble.az';
+    const today = new Date().toISOString().split('T')[0];
+    
+    let xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>${baseUrl}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/about</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/categories</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/companies</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/services</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/cv-builder</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/favorites</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>`;
 
-    // Static pages
-    const staticPages = [
-      { loc: `${SITE_URL}/`, priority: '1.0', changefreq: 'daily' },
-      { loc: `${SITE_URL}/companies`, priority: '0.9', changefreq: 'daily' },
-      { loc: `${SITE_URL}/categories`, priority: '0.9', changefreq: 'daily' },
-      { loc: `${SITE_URL}/about`, priority: '0.8', changefreq: 'monthly' },
-      { loc: `${SITE_URL}/pricing`, priority: '0.7', changefreq: 'monthly' },
-      { loc: `${SITE_URL}/referral`, priority: '0.6', changefreq: 'weekly' },
-      { loc: `${SITE_URL}/cv-builder`, priority: '0.6', changefreq: 'monthly' },
-    ];
-
-    staticPages.forEach(page => {
-      xml += `  <url>\n`;
-      xml += `    <loc>${page.loc}</loc>\n`;
-      xml += `    <lastmod>${today}</lastmod>\n`;
-      xml += `    <changefreq>${page.changefreq}</changefreq>\n`;
-      xml += `    <priority>${page.priority}</priority>\n`;
-      xml += `  </url>\n`;
-    });
-
-    // Categories
-    categories.forEach(cat => {
-      xml += `  <url>\n`;
-      xml += `    <loc>${SITE_URL}/categories/${cat.slug}</loc>\n`;
-      xml += `    <lastmod>${cat.updated_at}</lastmod>\n`;
-      xml += `    <changefreq>weekly</changefreq>\n`;
-      xml += `    <priority>0.8</priority>\n`;
-      xml += `  </url>\n`;
-    });
-
-    // Companies
-    companies.forEach(company => {
-      xml += `  <url>\n`;
-      xml += `    <loc>${SITE_URL}/companies/${company.slug}</loc>\n`;
-      xml += `    <lastmod>${company.updated_at}</lastmod>\n`;
-      xml += `    <changefreq>weekly</changefreq>\n`;
-      xml += `    <priority>0.7</priority>\n`;
-      xml += `  </url>\n`;
-      
-      xml += `  <url>\n`;
-      xml += `    <loc>${SITE_URL}/companies/${company.slug}/about</loc>\n`;
-      xml += `    <lastmod>${company.updated_at}</lastmod>\n`;
-      xml += `    <changefreq>monthly</changefreq>\n`;
-      xml += `    <priority>0.6</priority>\n`;
-      xml += `  </url>\n`;
-      
-      xml += `  <url>\n`;
-      xml += `    <loc>${SITE_URL}/companies/${company.slug}/jobs</loc>\n`;
-      xml += `    <lastmod>${company.updated_at}</lastmod>\n`;
-      xml += `    <changefreq>daily</changefreq>\n`;
-      xml += `    <priority>0.8</priority>\n`;
-      xml += `  </url>\n`;
-    });
-
-    // Jobs
+    // Add job pages - each job gets a vacancy page (correct URL format)
     jobs.forEach(job => {
-      xml += `  <url>\n`;
-      xml += `    <loc>${SITE_URL}/jobs/${job.slug}</loc>\n`;
-      xml += `    <lastmod>${job.updated_at}</lastmod>\n`;
-      xml += `    <changefreq>weekly</changefreq>\n`;
-      xml += `    <priority>0.9</priority>\n`;
-      xml += `  </url>\n`;
+      const lastmod = job.updated_at ? new Date(job.updated_at).toISOString().split('T')[0] : today;
+      xml += `
+  <url>
+    <loc>${baseUrl}/vacancies/${job.slug}</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>`;
     });
 
-    xml += `</urlset>`;
+    // Add category pages - main category page and jobs that belong to each category
+    categories.forEach(category => {
+      const lastmod = category.updated_at ? new Date(category.updated_at).toISOString().split('T')[0] : today;
+      xml += `
+  <url>
+    <loc>${baseUrl}/categories/${category.slug}</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>`;
+      
+      // Add only jobs that actually belong to this category
+      const categoryJobs = jobs.filter(job => job.category_id === category.id);
+      categoryJobs.forEach(job => {
+        xml += `
+  <url>
+    <loc>${baseUrl}/categories/${category.slug}/vacancy/${job.slug}</loc>
+    <lastmod>${job.updated_at ? new Date(job.updated_at).toISOString().split('T')[0] : today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>`;
+      });
+    });
 
-    console.log(`Main sitemap generated with ${staticPages.length + categories.length + companies.length * 3 + jobs.length} URLs`);
+    // Add company pages - main company page, vacancies page, and each job within company
+    companies.forEach(company => {
+      const lastmod = company.updated_at ? new Date(company.updated_at).toISOString().split('T')[0] : today;
+      xml += `
+  <url>
+    <loc>${baseUrl}/companies/${company.slug}</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/companies/${company.slug}/vacancies</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>`;
+      
+      // Add only jobs that actually belong to this company
+      const companyJobs = jobs.filter(job => job.company_id === company.id);
+      companyJobs.forEach(job => {
+        xml += `
+  <url>
+    <loc>${baseUrl}/companies/${company.slug}/vacancy/${job.slug}</loc>
+    <lastmod>${job.updated_at ? new Date(job.updated_at).toISOString().split('T')[0] : today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>`;
+      });
+    });
+
+    xml += `
+</urlset>`;
+
+    const totalUrls = (xml.match(/<url>/g) || []).length;
+    console.log(`Main sitemap generated with ${totalUrls} URLs`);
 
     return new Response(xml, { headers: corsHeaders, status: 200 });
   } catch (error) {
