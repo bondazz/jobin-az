@@ -6,6 +6,12 @@ verify_jwt = false
 [functions.sitemap-index]
 verify_jwt = false
 
+[functions.serve-sitemap]
+verify_jwt = false
+
+[functions.generate-sitemaps]
+verify_jwt = false
+
 [functions.send-verification-email]
 verify_jwt = false
 
