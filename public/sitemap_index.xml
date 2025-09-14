@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
-    <loc>https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap-xml</loc>
+    <loc>https://jooble.az/sitemap-static.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://jooble.az/sitemap-categories.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://jooble.az/sitemap-jobs-1.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://jooble.az/sitemap-companies-1.xml</loc>
   </sitemap>
 </sitemapindex>
