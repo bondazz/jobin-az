@@ -132,32 +132,6 @@ const App = () => (
               </Suspense>
             } />
           </Route>
-          {/* Sitemap routes - outside Layout */}
-          <Route path="/sitemap.xml" element={
-            <Suspense fallback={<LoadingFallback />}>
-              <Sitemap />
-            </Suspense>
-          } />
-          <Route path="/sitemapjooble.xml" element={
-            <Suspense fallback={<LoadingFallback />}>
-              <SitemapJooble />
-            </Suspense>
-          } />
-          <Route path="/sitemap_index.xml" element={
-            <Suspense fallback={<LoadingFallback />}>
-              <SitemapIndex />
-            </Suspense>
-          } />
-          <Route path="/sitemap_main.xml" element={
-            <Suspense fallback={<LoadingFallback />}>
-              <SitemapMain />
-            </Suspense>
-          } />
-          <Route path="/robots.txt" element={
-            <Suspense fallback={<LoadingFallback />}>
-              <RobotsTxt />
-            </Suspense>
-          } />
           {/* Admin routes - outside Layout */}
           <Route path="/admin/login" element={
             <Suspense fallback={<LoadingFallback />}>

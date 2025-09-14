@@ -93,6 +93,7 @@ Disallow: /static/
 
 # Sitemaps
 Sitemap: https://jooble.az/sitemap_index.xml
+Sitemap: https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap-xml
 
 # Host declaration
 Host: https://jooble.az
