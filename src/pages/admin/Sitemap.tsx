@@ -16,42 +16,43 @@ const AdminSitemap = () => {
   const generateSitemap = async () => {
     setIsGenerating(true);
     try {
-      const response = await fetch('https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap-xml');
+      // Get stats by calling the sitemap endpoints directly
+      const [staticResponse, categoriesResponse, jobsResponse, companiesResponse] = await Promise.all([
+        fetch('/sitemap-static.xml'),
+        fetch('/sitemap-categories.xml'),
+        fetch('/sitemap-jobs-1.xml'),
+        fetch('/sitemap-companies-1.xml')
+      ]);
       
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (!staticResponse.ok || !categoriesResponse.ok || !jobsResponse.ok || !companiesResponse.ok) {
+        throw new Error('Sitemap faylları yüklənə bilmədi');
       }
-      
-      const xmlContent = await response.text();
+
+      const [staticXml, categoriesXml, jobsXml, companiesXml] = await Promise.all([
+        staticResponse.text(),
+        categoriesResponse.text(),
+        jobsResponse.text(),
+        companiesResponse.text()
+      ]);
       
       // Parse XML to get stats
       const parser = new DOMParser();
-      const xmlDoc = parser.parseFromString(xmlContent, "text/xml");
-      const urls = xmlDoc.querySelectorAll('url');
+      const staticDoc = parser.parseFromString(staticXml, "text/xml");
+      const categoriesDoc = parser.parseFromString(categoriesXml, "text/xml");
+      const jobsDoc = parser.parseFromString(jobsXml, "text/xml");
+      const companiesDoc = parser.parseFromString(companiesXml, "text/xml");
+      
+      const staticUrls = staticDoc.querySelectorAll('url').length;
+      const categoryUrls = categoriesDoc.querySelectorAll('url').length;
+      const jobUrls = jobsDoc.querySelectorAll('url').length;
+      const companyUrls = companiesDoc.querySelectorAll('url').length;
       
       const stats = {
-        totalUrls: urls.length,
-        staticPages: Array.from(urls).filter(url => {
-          const loc = url.querySelector('loc')?.textContent || '';
-          return loc === 'https://jooble.az/' || 
-                 loc.includes('/about') || 
-                 loc.includes('/categories') && !loc.includes('/categories/') ||
-                 loc.includes('/companies') && !loc.includes('/companies/') || 
-                 loc.includes('/services') ||
-                 loc.includes('/cv-builder') ||
-                 loc.includes('/favorites');
-        }).length,
-        jobPages: Array.from(urls).filter(url => 
-          url.querySelector('loc')?.textContent?.includes('/vacancies/')
-        ).length,
-        categoryPages: Array.from(urls).filter(url => {
-          const loc = url.querySelector('loc')?.textContent || '';
-          return loc.includes('/categories/') && !loc.includes('/vacancy/');
-        }).length,
-        companyPages: Array.from(urls).filter(url => {
-          const loc = url.querySelector('loc')?.textContent || '';
-          return loc.includes('/companies/') && !loc.includes('/vacancy/');
-        }).length
+        totalUrls: staticUrls + categoryUrls + jobUrls + companyUrls,
+        staticPages: staticUrls,
+        jobPages: jobUrls,
+        categoryPages: categoryUrls,
+        companyPages: companyUrls
       };
       
       setSitemapData(stats);
@@ -113,7 +114,7 @@ const AdminSitemap = () => {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <p className="text-sm text-muted-foreground">
-                  Bütün məzmunu /vacancies/ formatında birləşdirilmiş XML yaradır
+                  Verilənlər bazasından avtomatik sitemap yaradır (max 1000 link/fayl)
                 </p>
                 {lastGenerated && (
                   <p className="text-xs text-muted-foreground">
@@ -249,10 +250,10 @@ const AdminSitemap = () => {
             <div className="space-y-2 text-sm">
               <p><strong>Ana sitemap:</strong> https://jooble.az/sitemap.xml</p>
               <p><strong>İndeks sitemap:</strong> https://jooble.az/sitemap_index.xml</p>
-              <p><strong>Robots.txt referansı:</strong> https://jooble.az/sitemap_index.xml</p>
+              <p><strong>Robots.txt referansı:</strong> https://jooble.az/sitemap.xml</p>
               <p><strong>Format:</strong> XML (Google Sitemap Standartı)</p>
               <p><strong>URL formatı:</strong> Bütün iş elanları /vacancies/ ilə başlayır</p>
-              <p><strong>Yeniləmə:</strong> Yeni məzmun əlavə/silindikdə avtomatik əks olunur</p>
+              <p><strong>Yeniləmə:</strong> Verilənlər bazasından avtomatik əks olunur</p>
             </div>
             
             <Separator />

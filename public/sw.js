@@ -1,7 +1,6 @@
 /* Service Worker to mirror sitemap XML from Supabase edge function without redirecting */
 
-const INDEX_ENDPOINT = 'https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap-index';
-const SITEMAP_ENDPOINT = 'https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap-xml';
+const SITEMAP_ENDPOINT = 'https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap';
 
 self.addEventListener('install', (event) => {
   // Force immediate activation
@@ -47,33 +46,16 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
   const path = url.pathname;
 
-  // Sitemap index
-  if (path === '/sitemap_index.xml') {
-    event.respondWith(proxyXML(INDEX_ENDPOINT));
-    return;
-  }
-
-  // Main sitemap and all sitemaps use the same endpoint
-  if (path === '/sitemap.xml' || path === '/sitemapjooble.xml' || path === '/sitemap_main.xml') {
-    event.respondWith(proxyXML(SITEMAP_ENDPOINT));
-    return;
-  }
-
-  // Chunked sitemaps e.g. /sitemap-jobs-1.xml, /sitemap-companies-2.xml, /sitemap-categories.xml, /sitemap-static.xml
-  const chunkMatch = path.match(/^\/sitemap-(jobs|companies)-(\d+)\.xml$/);
-  if (chunkMatch) {
-    const section = chunkMatch[1];
-    const page = parseInt(chunkMatch[2], 10) || 1;
-    event.respondWith(proxyXML(`${SITEMAP_ENDPOINT}?section=${section}&page=${page}`));
-    return;
-  }
-
-  if (path === '/sitemap-categories.xml') {
-    event.respondWith(proxyXML(`${SITEMAP_ENDPOINT}?section=categories`));
-    return;
-  }
-  if (path === '/sitemap-static.xml') {
-    event.respondWith(proxyXML(`${SITEMAP_ENDPOINT}?section=static`));
+  // All sitemap requests go to serve-sitemap function
+  if (path.endsWith('.xml') && (
+    path === '/sitemap.xml' || 
+    path === '/sitemap_index.xml' ||
+    path === '/sitemap_main.xml' ||
+    path === '/sitemapjooble.xml' ||
+    path.startsWith('/sitemap-')
+  )) {
+    const filename = path.substring(1); // Remove leading slash
+    event.respondWith(proxyXML(`${SITEMAP_ENDPOINT}?file=${filename}&t=${Date.now()}`));
     return;
   }
 });
