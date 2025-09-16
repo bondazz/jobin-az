@@ -21,6 +21,7 @@ serve(async (req) => {
 
   const url = new URL(req.url);
   const filename = url.searchParams.get('file') || 'sitemap.xml';
+  const SELF_BASE = `${url.origin}/functions/v1/serve-sitemap`;
   
   try {
     const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
@@ -73,11 +74,11 @@ serve(async (req) => {
       let sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
-    <loc>${SITE_URL}/sitemap-static.xml</loc>
+    <loc>${SELF_BASE}?file=sitemap-static.xml</loc>
     <lastmod>${today}</lastmod>
   </sitemap>
   <sitemap>
-    <loc>${SITE_URL}/sitemap-categories.xml</loc>
+    <loc>${SELF_BASE}?file=sitemap-categories.xml</loc>
     <lastmod>${today}</lastmod>
   </sitemap>`;
 
@@ -85,7 +86,7 @@ serve(async (req) => {
       for (let i = 1; i <= jobChunks; i++) {
         sitemapIndex += `
   <sitemap>
-    <loc>${SITE_URL}/sitemap-jobs-${i}.xml</loc>
+    <loc>${SELF_BASE}?file=sitemap-jobs-${i}.xml</loc>
     <lastmod>${today}</lastmod>
   </sitemap>`;
       }
@@ -94,7 +95,7 @@ serve(async (req) => {
       for (let i = 1; i <= companyChunks; i++) {
         sitemapIndex += `
   <sitemap>
-    <loc>${SITE_URL}/sitemap-companies-${i}.xml</loc>
+    <loc>${SELF_BASE}?file=sitemap-companies-${i}.xml</loc>
     <lastmod>${today}</lastmod>
   </sitemap>`;
       }
