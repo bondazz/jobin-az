@@ -1,4 +1,4 @@
-/* Service Worker v2 to serve dynamic sitemaps from Supabase database */
+/* Service Worker v3 to serve dynamic sitemaps from Supabase database */
 
 const SITEMAP_ENDPOINT = 'https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap';
 
