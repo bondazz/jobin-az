@@ -5,13 +5,63 @@ const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
   'Content-Type': 'application/xml; charset=utf-8',
-  'Cache-Control': 'public, max-age=3600'
+  'Cache-Control': 'public, max-age=3600',
+  'Content-Encoding': 'identity' // Prevent gzip compression
 };
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const SITE_URL = "https://jooble.az";
 const MAX_URLS_PER_FILE = 1000;
+
+// Function to rewrite XML links to jooble.az domain
+const rewriteXmlLinks = (xmlContent: string): string => {
+  return xmlContent
+    .replace(/https?:\/\/[^\/]+\.supabase\.co[^<>]*/g, (match) => {
+      // Extract the path part after the domain
+      const urlMatch = match.match(/https?:\/\/[^\/]+\.supabase\.co(.*)$/);
+      if (urlMatch && urlMatch[1]) {
+        return SITE_URL + urlMatch[1];
+      }
+      return SITE_URL;
+    })
+    .replace(/(<loc>)[^<]*supabase[^<]*(<\/loc>)/g, `$1${SITE_URL}$2`)
+    .replace(/(<loc>)(?!https:\/\/jooble\.az)[^<]*(<\/loc>)/g, (match, start, end) => {
+      const content = match.replace(start, '').replace(end, '');
+      if (content.includes('jooble.az')) return match;
+      if (content.startsWith('/')) return `${start}${SITE_URL}${content}${end}`;
+      if (content.startsWith('http')) return `${start}${SITE_URL}${end}`;
+      return `${start}${SITE_URL}/${content}${end}`;
+    });
+};
+
+// Function to fetch XML from external source or storage
+const fetchSourceXml = async (supabase: any, sourceUrl?: string, storagePath?: string): Promise<string | null> => {
+  try {
+    if (sourceUrl) {
+      console.log(`Fetching XML from URL: ${sourceUrl}`);
+      const response = await fetch(sourceUrl);
+      if (response.ok) {
+        return await response.text();
+      }
+    }
+    
+    if (storagePath) {
+      console.log(`Fetching XML from storage: ${storagePath}`);
+      const { data, error } = await supabase.storage
+        .from('sitemaps')
+        .download(storagePath);
+      
+      if (!error && data) {
+        return await data.text();
+      }
+    }
+  } catch (error) {
+    console.error('Error fetching source XML:', error);
+  }
+  
+  return null;
+};
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -21,13 +71,26 @@ serve(async (req) => {
 
   const url = new URL(req.url);
   const filename = url.searchParams.get('file') || 'sitemap.xml';
-  const SELF_BASE = `${SITE_URL}`;
+  const sourceUrl = url.searchParams.get('source_url');
+  const storagePath = url.searchParams.get('storage_path');
   
   try {
     const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
     const today = new Date().toISOString().split('T')[0];
     
     console.log(`Serving sitemap: ${filename}`);
+
+    // Check if we need to fetch and rewrite external XML
+    if (sourceUrl || storagePath) {
+      console.log('Attempting to fetch external XML source');
+      const sourceXml = await fetchSourceXml(supabase, sourceUrl, storagePath);
+      if (sourceXml) {
+        const rewrittenXml = rewriteXmlLinks(sourceXml);
+        return new Response(rewrittenXml, { headers: corsHeaders });
+      }
+      // If external source fails, fallback to dynamic generation
+      console.log('External source failed, falling back to dynamic generation');
+    }
 
     // Fetch data based on what's needed for the specific file
     const fetchAllData = async (table: string, select: string, orderBy?: string) => {
