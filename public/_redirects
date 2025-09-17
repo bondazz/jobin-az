@@ -2,7 +2,7 @@
 # This ensures Googlebot gets XML directly from jooble.az paths
 
 /sitemap.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap.xml 200
-/sitemap_index.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap.xml 200
+/sitemap_index.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap_index.xml 200
 /sitemap_main.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap_main.xml 200
 /sitemapjooble.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemapjooble.xml 200
 /sitemap-static.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap-static.xml 200
