@@ -1,14 +1,12 @@
-/* Service Worker v3 to serve dynamic sitemaps from Supabase database */
+/* Service Worker - Cloudflare Worker Style for sitemap.xml */
 
 const SITEMAP_ENDPOINT = 'https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap';
 
 self.addEventListener('install', (event) => {
-  // Force immediate activation and clear all caches
   self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
-  // Take control of all pages immediately and clear old caches
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
@@ -20,74 +18,50 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-function streamXML(res) {
-  // Stream pass-through to avoid truncation for large XML
-  const headers = new Headers(res.headers);
-  headers.set('Content-Type', 'application/xml; charset=utf-8');
-  headers.set('Cache-Control', 'no-store, no-cache, must-revalidate');
-  headers.set('Pragma', 'no-cache');
-  return new Response(res.body, {
-    status: res.status,
-    statusText: res.statusText,
-    headers,
-  });
-}
-
-async function proxyXML(url) {
-  try {
-    console.log('SW: Fetching sitemap from:', url);
-    const res = await fetch(url, {
-      method: 'GET',
-      headers: { 
-        'Accept': 'application/xml',
-        'Cache-Control': 'no-cache'
-      },
-      cache: 'no-store',
-    });
-    
-    if (!res.ok) {
-      throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-    }
-    
-    return streamXML(res);
-  } catch (e) {
-    console.error('SW: Error fetching sitemap:', e);
-    const today = new Date().toISOString().split('T')[0];
-    const fallback = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://jooble.az/</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>
-</urlset>`;
-    return new Response(fallback, {
-      status: 200,
-      headers: { 
-        'Content-Type': 'application/xml; charset=utf-8',
-        'Cache-Control': 'no-store'
-      }
-    });
-  }
-}
-
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
-  const path = url.pathname;
 
-  // Intercept ALL XML sitemap requests and serve from edge function
-  if (path.endsWith('.xml') && (
-    path === '/sitemap.xml' || 
-    path === '/sitemap_index.xml' ||
-    path === '/sitemap_main.xml' ||
-    path === '/sitemapjooble.xml' ||
-    path.startsWith('/sitemap-')
-  )) {
-    console.log('SW: Intercepting sitemap request:', path);
-    const filename = path.substring(1); // Remove leading slash
-    const timestamp = Date.now();
-    event.respondWith(proxyXML(`${SITEMAP_ENDPOINT}?file=${filename}&t=${timestamp}`));
-    return;
+  // Yalnız /sitemap.xml üçün işləsin (exact match like Cloudflare Worker)
+  if (url.pathname === "/sitemap.xml") {
+    const upstream = `${SITEMAP_ENDPOINT}?file=sitemap.xml`;
+
+    // Supabase-ə GET/HEAD ötürürük
+    const init = {
+      method: event.request.method === "HEAD" ? "HEAD" : "GET",
+      headers: {
+        // UA optional; bəzən upstream-lər üçün faydalıdır
+        "User-Agent": "ServiceWorker/jooble.az",
+        "Accept": "application/xml,text/xml;q=0.9,*/*;q=0.8",
+      },
+    };
+
+    event.respondWith(
+      fetch(upstream, init).then(resp => {
+        // Header-ları nizamla: XML content-type + cache
+        const headers = new Headers(resp.headers);
+        headers.set("content-type", "application/xml; charset=utf-8");
+        // 1 saat edge cache (istəsəniz artırın/azaldın)
+        headers.set("cache-control", "public, max-age=3600, s-maxage=3600, stale-while-revalidate=600");
+
+        // Body-ni olduğu kimi qaytarırıq (stream)
+        return new Response(resp.body, {
+          status: resp.status,
+          statusText: resp.statusText,
+          headers,
+        });
+      }).catch(e => {
+        // Upstream düşərsə 502 qaytar
+        console.error('Sitemap upstream error:', e);
+        return new Response(
+          `<?xml version="1.0" encoding="UTF-8"?><error>Upstream error</error>`,
+          {
+            status: 502,
+            headers: { "content-type": "application/xml; charset=utf-8" },
+          }
+        );
+      })
+    );
   }
+
+  // Digər bütün path-lar toxunulmaz qalır (originə gedir)
 });
