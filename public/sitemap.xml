@@ -1,6 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <sitemap>
-    <loc>https://jooble.az/sitemap.xml</loc>
-  </sitemap>
+<!--  Static pages sitemap  -->
+<sitemap>
+<loc>https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap-static.xml</loc>
+<lastmod>2025-09-17</lastmod>
+</sitemap>
+<!--  Categories sitemap  -->
+<sitemap>
+<loc>https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap-categories.xml</loc>
+<lastmod>2025-09-17</lastmod>
+</sitemap>
+<!--  Jobs chunk 1 of 1  -->
+<sitemap>
+<loc>https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap-jobs-1.xml</loc>
+<lastmod>2025-09-17</lastmod>
+</sitemap>
+<!--  Companies chunk 1 of 2  -->
+<sitemap>
+<loc>https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap-companies-1.xml</loc>
+<lastmod>2025-09-17</lastmod>
+</sitemap>
+<!--  Companies chunk 2 of 2  -->
+<sitemap>
+<loc>https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap-companies-2.xml</loc>
+<lastmod>2025-09-17</lastmod>
+</sitemap>
 </sitemapindex>
