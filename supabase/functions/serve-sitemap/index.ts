@@ -5,7 +5,7 @@ const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
   'Content-Type': 'application/xml; charset=utf-8',
-  'Cache-Control': 'public, max-age=1800, s-maxage=3600',
+  'Cache-Control': 'no-store, no-cache, must-revalidate',
   'Vary': 'Accept-Encoding',
 };
 
@@ -126,16 +126,18 @@ serve(async (req) => {
     
     console.log(`Serving sitemap: ${filename}`);
 
-    // Check if we need to fetch and rewrite external XML with self-referencing
-    if (sourceUrl || storagePath) {
-      console.log('Attempting to fetch external XML source with jooble.az rewriting');
-      const sourceXml = await fetchSourceXml(supabase, sourceUrl, storagePath);
+    // Prefer manually saved XML from storage for the main sitemap
+    const effectiveStoragePath = storagePath || (filename === 'sitemap.xml' ? 'sitemap.xml' : undefined);
+
+    if (sourceUrl || effectiveStoragePath) {
+      console.log('Attempting to fetch XML source (URL or Storage) with jooble.az rewriting');
+      const sourceXml = await fetchSourceXml(supabase, sourceUrl || undefined, effectiveStoragePath);
       if (sourceXml) {
         // Ensure all sitemap links reference jooble.az properly
         const perfectedXml = ensureJoobleLinks(sourceXml);
         return new Response(perfectedXml, { headers: corsHeaders });
       }
-      console.log('External source failed, falling back to dynamic generation');
+      console.log('External/storage source failed, falling back to dynamic generation');
     }
 
     // Enhanced data fetching with count optimization

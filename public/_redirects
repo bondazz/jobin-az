@@ -1,7 +1,7 @@
 # Netlify-style redirects to serve dynamic sitemaps from Supabase Edge Functions
 # This ensures Googlebot gets XML directly from jooble.az paths
 
-/sitemap.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap.xml 200
+/sitemap.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap.xml&storage_path=sitemap.xml 200
 /sitemap_index.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap_index.xml 200
 /sitemap_main.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap_main.xml 200
 /sitemapjooble.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemapjooble.xml 200

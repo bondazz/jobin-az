@@ -17,3 +17,6 @@ verify_jwt = false
 
 [functions.upload-to-ftp]
 verify_jwt = false
+
+[functions.save-sitemap]
+verify_jwt = false

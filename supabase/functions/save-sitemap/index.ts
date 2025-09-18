@@ -20,6 +20,18 @@ serve(async (req) => {
 
     const { sitemapContent, filename = 'sitemap.xml' } = await req.json();
 
+    // Ensure bucket exists
+    try {
+      const { data: bucket, error: getBucketError } = await supabase.storage.getBucket('sitemaps');
+      if (getBucketError || !bucket) {
+        await supabase.storage.createBucket('sitemaps', {
+          public: false,
+        });
+      }
+    } catch (e) {
+      console.warn('Bucket check/create warning:', e);
+    }
+
     if (!sitemapContent) {
       return new Response(JSON.stringify({ error: 'Sitemap content is required' }), {
         status: 400,
@@ -42,12 +54,12 @@ serve(async (req) => {
       });
     }
 
-    // Save to storage
     const { error: uploadError } = await supabase.storage
       .from('sitemaps')
-      .upload(filename, sitemapContent, {
-        contentType: 'application/xml',
-        upsert: true
+      .upload(filename, new Blob([sitemapContent], { type: 'application/xml;charset=utf-8' }), {
+        contentType: 'application/xml;charset=utf-8',
+        upsert: true,
+        cacheControl: '0',
       });
 
     if (uploadError) {
