@@ -23,7 +23,8 @@ self.addEventListener('fetch', (event) => {
 
   // Yalnız /sitemap.xml üçün işləsin (exact match like Cloudflare Worker)
   if (url.pathname === "/sitemap.xml") {
-    const upstream = `${SITEMAP_ENDPOINT}?file=sitemap.xml`;
+    const version = Date.now().toString();
+    const upstream = `${SITEMAP_ENDPOINT}?file=sitemap.xml&storage_path=sitemap.xml&v=${version}`;
 
     // Supabase-ə GET/HEAD ötürürük
     const init = {
@@ -32,7 +33,10 @@ self.addEventListener('fetch', (event) => {
         // UA optional; bəzən upstream-lər üçün faydalıdır
         "User-Agent": "ServiceWorker/jooble.az",
         "Accept": "application/xml,text/xml;q=0.9,*/*;q=0.8",
+        "Cache-Control": "no-store",
+        "Pragma": "no-cache",
       },
+      cache: "no-store",
     };
 
     event.respondWith(
@@ -40,8 +44,7 @@ self.addEventListener('fetch', (event) => {
         // Header-ları nizamla: XML content-type + cache
         const headers = new Headers(resp.headers);
         headers.set("content-type", "application/xml; charset=utf-8");
-        // 1 saat edge cache (istəsəniz artırın/azaldın)
-        headers.set("cache-control", "public, max-age=3600, s-maxage=3600, stale-while-revalidate=600");
+        headers.set("cache-control", "no-store, no-cache, must-revalidate");
 
         // Body-ni olduğu kimi qaytarırıq (stream)
         return new Response(resp.body, {

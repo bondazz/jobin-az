@@ -117,6 +117,9 @@ const AdminSitemap = () => {
         description: "XML məzmun uğurla yaddaşda saxlanıldı",
       });
 
+      // Force-refresh SW-served sitemap so admin sees changes immediately
+      try { await fetch('/sitemap.xml', { cache: 'no-store', headers: { 'Accept': 'application/xml' } }); } catch {}
+
       setManualXmlContent('');
     } catch (error) {
       console.error('Error saving sitemap:', error);
