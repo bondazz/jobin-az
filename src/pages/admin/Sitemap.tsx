@@ -3,14 +3,18 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { RefreshCw, ExternalLink, CheckCircle, AlertCircle } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+import { RefreshCw, ExternalLink, CheckCircle, AlertCircle, Save, Edit } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 import AdminLayout from '@/components/AdminLayout';
 
 const AdminSitemap = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [lastGenerated, setLastGenerated] = useState<Date | null>(null);
   const [sitemapData, setSitemapData] = useState<any>(null);
+  const [manualXmlContent, setManualXmlContent] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
 
   const generateSitemap = async () => {
@@ -87,6 +91,45 @@ const AdminSitemap = () => {
     window.open('https://search.google.com/search-console', '_blank');
   };
 
+  const saveSitemap = async () => {
+    if (!manualXmlContent.trim()) {
+      toast({
+        title: "Xəta",
+        description: "XML məzmun daxil edin",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('save-sitemap', {
+        body: { 
+          sitemapContent: manualXmlContent,
+          filename: 'sitemap.xml'
+        }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Sitemap yadda saxlanıldı",
+        description: "XML məzmun uğurla yaddaşda saxlanıldı",
+      });
+
+      setManualXmlContent('');
+    } catch (error) {
+      console.error('Error saving sitemap:', error);
+      toast({
+        title: "Xəta baş verdi",
+        description: "Sitemap saxlanılərkən xəta baş verdi",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <AdminLayout>
       <div className="container mx-auto p-6 space-y-6">
@@ -101,6 +144,56 @@ const AdminSitemap = () => {
             Unified XML System
           </Badge>
         </div>
+
+        {/* Manual Sitemap Editor Card */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Edit className="h-5 w-5" />
+              Əl ilə Sitemap Redaktoru
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <p className="text-sm text-muted-foreground">
+                XML məzmunu birbaşa copy-paste edib sitemap.xml faylını yeniləyin
+              </p>
+            </div>
+            
+            <Textarea
+              placeholder="XML məzmunu buraya əlavə edin...
+&lt;urlset xmlns=&quot;http://www.sitemaps.org/schemas/sitemap/0.9&quot;&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://jooble.az&lt;/loc&gt;
+    &lt;lastmod&gt;2025-09-17&lt;/lastmod&gt;
+    &lt;changefreq&gt;daily&lt;/changefreq&gt;
+    &lt;priority&gt;1.0&lt;/priority&gt;
+  &lt;/url&gt;
+&lt;/urlset&gt;"
+              value={manualXmlContent}
+              onChange={(e) => setManualXmlContent(e.target.value)}
+              className="min-h-[200px] font-mono text-sm"
+            />
+            
+            <Button 
+              onClick={saveSitemap} 
+              disabled={isSaving || !manualXmlContent.trim()}
+              className="w-full"
+            >
+              {isSaving ? (
+                <>
+                  <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                  Saxlanılır...
+                </>
+              ) : (
+                <>
+                  <Save className="mr-2 h-4 w-4" />
+                  Sitemap Saxla
+                </>
+              )}
+            </Button>
+          </CardContent>
+        </Card>
 
         <div className="grid gap-6 md:grid-cols-2">
           {/* Unified Sitemap Generator Card */}
