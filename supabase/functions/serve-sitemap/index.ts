@@ -133,7 +133,11 @@ serve(async (req) => {
       console.log('Attempting to fetch XML source (URL or Storage) with jooble.az rewriting');
       const sourceXml = await fetchSourceXml(supabase, sourceUrl || undefined, effectiveStoragePath);
       if (sourceXml) {
-        // Ensure all sitemap links reference jooble.az properly
+        // For manually saved main sitemap, return EXACT content as-is (no rewriting)
+        if (effectiveStoragePath && filename === 'sitemap.xml') {
+          return new Response(sourceXml, { headers: corsHeaders });
+        }
+        // Otherwise ensure internal links point to jooble.az
         const perfectedXml = ensureJoobleLinks(sourceXml);
         return new Response(perfectedXml, { headers: corsHeaders });
       }
