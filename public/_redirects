@@ -12,3 +12,6 @@
 # Chunked sitemaps
 /sitemap-jobs-:page.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap-jobs-:page.xml 200
 /sitemap-companies-:page.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap-companies-:page.xml 200
+
+# Catch-all for non-existent sitemap files - return 404 instead of redirecting to home
+/sitemap*.xml /404.html 404
