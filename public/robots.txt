@@ -92,7 +92,7 @@ Disallow: /_next/
 Disallow: /static/
 
 # Sitemaps
-Sitemap: https://jooble.az/sitemap.xml
+Sitemap: https://storage.jooble.az/sitemap1.xml
 
 # Host declaration
 Host: https://jooble.az
