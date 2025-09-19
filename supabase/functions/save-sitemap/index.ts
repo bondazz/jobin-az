@@ -20,13 +20,15 @@ serve(async (req) => {
 
     const { sitemapContent, filename = 'sitemap.xml' } = await req.json();
 
-    // Ensure bucket exists
+    // Ensure bucket exists and is public
     try {
       const { data: bucket, error: getBucketError } = await supabase.storage.getBucket('sitemaps');
       if (getBucketError || !bucket) {
         await supabase.storage.createBucket('sitemaps', {
-          public: false,
+          public: true,
         });
+      } else if (bucket.public === false) {
+        await supabase.storage.updateBucket('sitemaps', { public: true });
       }
     } catch (e) {
       console.warn('Bucket check/create warning:', e);
