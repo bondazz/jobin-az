@@ -103,18 +103,33 @@ const AdminSitemap = () => {
 
     setIsSaving(true);
     try {
-      const { data, error } = await supabase.functions.invoke('save-sitemap', {
-        body: { 
-          sitemapContent: manualXmlContent,
-          filename: 'sitemap.xml'
-        }
-      });
+      // Save to both sitemap.xml and sitemaps.xml with same content
+      const savePromises = [
+        supabase.functions.invoke('save-sitemap', {
+          body: { 
+            sitemapContent: manualXmlContent,
+            filename: 'sitemap.xml'
+          }
+        }),
+        supabase.functions.invoke('save-sitemap', {
+          body: { 
+            sitemapContent: manualXmlContent,
+            filename: 'sitemaps.xml'
+          }
+        })
+      ];
 
-      if (error) throw error;
+      const results = await Promise.all(savePromises);
+      
+      // Check if any failed
+      const errors = results.filter(result => result.error);
+      if (errors.length > 0) {
+        throw new Error('Bəzi fayllar saxlanılmadı');
+      }
 
       toast({
         title: "Sitemap yadda saxlanıldı",
-        description: "XML məzmun uğurla yaddaşda saxlanıldı",
+        description: "XML məzmun sitemap.xml və sitemaps.xml-də saxlanıldı",
       });
 
       // Force-refresh SW-served sitemap so admin sees changes immediately
