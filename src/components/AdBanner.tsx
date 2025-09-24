@@ -82,7 +82,8 @@ const AdBanner: React.FC<AdBannerProps> = ({ position, className = "" }) => {
                 src={ad.image_url}
                 alt={ad.title}
                 className="w-full h-auto rounded-lg shadow-sm hover:shadow-md transition-shadow"
-                loading="lazy"
+                loading={position === 'header' || position === 'job_details' ? 'eager' : 'lazy'}
+                fetchPriority={position === 'header' ? 'high' : 'auto'}
               />
             </button>
           ) : (
@@ -91,7 +92,8 @@ const AdBanner: React.FC<AdBannerProps> = ({ position, className = "" }) => {
                 src={ad.image_url}
                 alt={ad.title}
                 className="w-full h-auto rounded-lg shadow-sm"
-                loading="lazy"
+                loading={position === 'header' || position === 'job_details' ? 'eager' : 'lazy'}
+                fetchPriority={position === 'header' ? 'high' : 'auto'}
               />
             </div>
           )}
