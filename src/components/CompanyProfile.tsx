@@ -50,7 +50,7 @@ const CompanyProfile = ({ company, onClose, isMobile = false }: CompanyProfilePr
         <div className="sticky top-0 bg-background border-b border-border p-3 flex items-center justify-between z-50 rounded-t-xl shadow-sm">
           <div className="flex items-center gap-3">
             {company.logo ? (
-              <img src={company.logo} alt={company.name} className="w-8 h-8 rounded-md object-cover" />
+              <img src={company.logo} alt={company.name} className="w-8 h-8 rounded-md object-cover" width="32" height="32" decoding="async" />
             ) : (
               <div className="w-8 h-8 rounded-md bg-gradient-primary flex items-center justify-center text-white font-bold text-sm">
                 {company.name.charAt(0)}
@@ -83,7 +83,7 @@ const CompanyProfile = ({ company, onClose, isMobile = false }: CompanyProfilePr
             <div className="relative z-10">
             <div className="flex items-start gap-4 mb-4">
               {company.logo ? (
-                <img src={company.logo} alt={company.name} className="w-16 h-16 rounded-lg object-cover" />
+                <img src={company.logo} alt={company.name} className="w-16 h-16 rounded-lg object-cover" width="64" height="64" decoding="async" />
               ) : (
                 <div className="w-16 h-16 rounded-lg bg-gradient-primary flex items-center justify-center text-white font-bold text-xl">
                   {company.name.charAt(0)}

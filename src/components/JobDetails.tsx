@@ -390,7 +390,7 @@ const JobDetails = ({
           <div className="flex items-center gap-4">
             {/* Company Logo */}
             <div className={`${isMobile ? 'w-12 h-12' : 'w-16 h-16'} rounded-lg bg-muted/30 flex items-center justify-center flex-shrink-0`}>
-              {job.companies?.logo ? <img src={job.companies.logo} alt={job.companies?.name || 'Company'} className={`${isMobile ? 'w-10 h-10' : 'w-14 h-14'} rounded-lg object-cover`} /> : <span className={`${isMobile ? 'text-lg' : 'text-2xl'} font-bold text-primary`}>
+              {job.companies?.logo ? <img src={job.companies.logo} alt={job.companies?.name || 'Company'} className={`${isMobile ? 'w-10 h-10' : 'w-14 h-14'} rounded-lg object-cover`} width={isMobile ? "40" : "56"} height={isMobile ? "40" : "56"} decoding="async" /> : <span className={`${isMobile ? 'text-lg' : 'text-2xl'} font-bold text-primary`}>
                   {(job.companies?.name || job.title).charAt(0)}
                 </span>}
             </div>
