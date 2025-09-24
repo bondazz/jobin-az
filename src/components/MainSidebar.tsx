@@ -181,8 +181,34 @@ const MainSidebar = () => {
       <div className="p-3 border-t border-border/40">
         <div className="bg-gradient-to-br from-primary/10 via-accent/5 to-primary/5 rounded-xl p-4 mb-3 border border-primary/20">
           <div className="flex items-center gap-2 mb-3">
-            <div className="w-6 h-6 bg-gradient-to-r from-primary to-accent rounded-lg flex items-center justify-center">
-              <BarChart3 className="w-3 h-3 text-white" />
+            <div className="w-6 h-6 bg-gradient-to-r from-primary to-accent rounded-lg flex items-center justify-center p-1">
+              <div className="flex items-end justify-center gap-[1px] w-full h-full">
+                <div className="bg-white/90 rounded-[1px] animate-pulse" style={{
+                  width: '2px',
+                  height: '60%',
+                  animation: 'pulse 1.5s ease-in-out infinite'
+                }}></div>
+                <div className="bg-white/90 rounded-[1px]" style={{
+                  width: '2px', 
+                  height: '80%',
+                  animation: 'pulse 1.8s ease-in-out infinite 0.2s'
+                }}></div>
+                <div className="bg-white/90 rounded-[1px]" style={{
+                  width: '2px',
+                  height: '40%', 
+                  animation: 'pulse 1.2s ease-in-out infinite 0.4s'
+                }}></div>
+                <div className="bg-white/90 rounded-[1px]" style={{
+                  width: '2px',
+                  height: '70%',
+                  animation: 'pulse 1.6s ease-in-out infinite 0.6s'
+                }}></div>
+                <div className="bg-white/90 rounded-[1px]" style={{
+                  width: '2px',
+                  height: '90%',
+                  animation: 'pulse 1.4s ease-in-out infinite 0.8s'
+                }}></div>
+              </div>
             </div>
             <h3 className="text-sm font-bold text-foreground">Vakansiya Statistikası</h3>
           </div>
