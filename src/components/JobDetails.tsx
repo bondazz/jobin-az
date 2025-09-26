@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useDynamicSEO } from '@/hooks/useSEO';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -25,8 +24,6 @@ const JobDetails = ({
   const { toast } = useToast();
   const { getUrlWithReferral } = useReferralCode();
   
-  // Apply SEO for job page
-  useDynamicSEO('job', job);
   useEffect(() => {
     if (jobId) {
       fetchJobDetails(jobId);
