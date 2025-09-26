@@ -17,6 +17,7 @@ export interface Job {
   applicationUrl?: string;
   applicationType?: 'website' | 'email';
   applicationEmail?: string;
+  expiration_date?: string;
 }
 
 export interface JobCategory {

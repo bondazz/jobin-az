@@ -49,7 +49,7 @@ const JobListings = ({
 
       // Build base select with joins
       const selectFields = `
-          id, title, location, type, salary, tags, views, created_at, company_id,
+          id, title, location, type, salary, tags, views, created_at, company_id, expiration_date,
           companies!inner (id, name, logo, is_verified),
           categories!inner (name)
         `;
@@ -75,7 +75,8 @@ const JobListings = ({
           category: job.categories?.name || '',
           applicationUrl: '',
           applicationType: 'website' as const,
-          applicationEmail: ''
+          applicationEmail: '',
+          expiration_date: job.expiration_date
         }));
 
       if (isLoadMore) {
@@ -84,6 +85,7 @@ const JobListings = ({
           .from('jobs')
           .select(selectFields)
           .eq('is_active', true)
+          .or('expiration_date.is.null,expiration_date.gt.' + new Date().toISOString())
           .range(currentOffset, currentOffset + JOBS_PER_PAGE - 1)
           .order('created_at', { ascending: false });
 
@@ -106,6 +108,7 @@ const JobListings = ({
           .from('jobs')
           .select(selectFields)
           .eq('is_active', true)
+          .or('expiration_date.is.null,expiration_date.gt.' + new Date().toISOString())
           .overlaps('tags', ['premium'])
           .order('created_at', { ascending: false });
         if (companyId) premiumQuery = premiumQuery.eq('company_id', companyId);
@@ -114,6 +117,7 @@ const JobListings = ({
           .from('jobs')
           .select(selectFields)
           .eq('is_active', true)
+          .or('expiration_date.is.null,expiration_date.gt.' + new Date().toISOString())
           .range(0, JOBS_PER_PAGE - 1)
           .order('created_at', { ascending: false });
         if (companyId) regularQuery = regularQuery.eq('company_id', companyId);

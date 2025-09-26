@@ -22,7 +22,9 @@ import {
   Building2,
   MapPin,
   Clock,
-  DollarSign
+  DollarSign,
+  RefreshCw,
+  Calendar
 } from 'lucide-react';
 
 interface Job {
@@ -45,6 +47,7 @@ interface Job {
   seo_keywords?: string[];
   is_active: boolean;
   created_at: string;
+  expiration_date?: string;
   companies: { name: string } | null;
   categories: { name: string } | null;
 }
@@ -86,6 +89,7 @@ export default function AdminJobs() {
     seo_description: '',
     seo_keywords: '',
     is_active: true,
+    expiration_date: '',
   });
 
   const navigate = useNavigate();
@@ -128,7 +132,7 @@ export default function AdminJobs() {
 
   const fetchData = async () => {
     try {
-      // İş elanlarını yüklə
+      // İş elanlarını yüklə (bitmiş elanlar da daxil olmaqla)
       const jobsResponse = await supabase
         .from('jobs')
         .select(`
@@ -312,6 +316,7 @@ export default function AdminJobs() {
         ...formData,
         tags: formData.tags.split(',').map(t => t.trim()).filter(t => t),
         seo_keywords: formData.seo_keywords.split(',').map(k => k.trim()).filter(k => k),
+        expiration_date: formData.expiration_date || null,
       };
 
       if (editingJob) {
@@ -354,6 +359,45 @@ export default function AdminJobs() {
     }
   };
 
+  // Check if job is expired
+  const isJobExpired = (expirationDate?: string) => {
+    if (!expirationDate) return false;
+    return new Date(expirationDate) <= new Date();
+  };
+
+  // Reactivate expired job with new expiration date
+  const handleReactivate = async (job: Job) => {
+    try {
+      const newExpirationDate = new Date();
+      newExpirationDate.setDate(newExpirationDate.getDate() + 30);
+      
+      const { error } = await supabase
+        .from('jobs')
+        .update({
+          is_active: true,
+          expiration_date: newExpirationDate.toISOString(),
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', job.id);
+
+      if (error) throw error;
+      
+      toast({
+        title: 'Uğurlu',
+        description: `Vakansiya reaktivasiya edildi. Yeni bitmə tarixi: ${newExpirationDate.toLocaleDateString('az-AZ')}`,
+      });
+      
+      fetchData();
+    } catch (error) {
+      console.error('Error reactivating job:', error);
+      toast({
+        title: 'Xəta',
+        description: 'Vakansiyanı reaktivasiya edərkən xəta baş verdi.',
+        variant: 'destructive',
+      });
+    }
+  };
+
   const handleEdit = (job: Job) => {
     setEditingJob(job);
     // Disable auto SEO updates when editing existing job
@@ -376,6 +420,7 @@ export default function AdminJobs() {
       seo_description: job.seo_description || '',
       seo_keywords: job.seo_keywords?.join(', ') || '',
       is_active: job.is_active,
+      expiration_date: job.expiration_date ? new Date(job.expiration_date).toISOString().split('T')[0] : '',
     });
     setIsDialogOpen(true);
   };
@@ -430,6 +475,7 @@ export default function AdminJobs() {
       seo_description: '',
       seo_keywords: '',
       is_active: true,
+      expiration_date: '',
     });
   };
 
@@ -569,6 +615,19 @@ export default function AdminJobs() {
                           ))}
                         </SelectContent>
                       </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="expiration_date">Bitmə Tarixi</Label>
+                      <Input
+                        id="expiration_date"
+                        type="date"
+                        value={formData.expiration_date}
+                        onChange={(e) => setFormData({ ...formData, expiration_date: e.target.value })}
+                        min={new Date().toISOString().split('T')[0]}
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        Boş buraxılırsa, yaradılma tarixindən 30 gün sonra avtomatik bitəcək
+                      </p>
                     </div>
                   </div>
 
@@ -716,79 +775,103 @@ export default function AdminJobs() {
 
         {/* Jobs Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-          {filteredJobs.map((job) => (
-            <Card key={job.id} className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <CardTitle className="text-lg line-clamp-2">{job.title}</CardTitle>
-                    <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
-                      <Building2 className="h-4 w-4" />
-                      {job.companies?.name}
+          {filteredJobs.map((job) => {
+            const expired = isJobExpired(job.expiration_date);
+            
+            return (
+              <Card key={job.id} className={`hover:shadow-lg transition-shadow ${expired ? 'border-orange-200 bg-orange-50/50' : ''}`}>
+                <CardHeader>
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <CardTitle className="text-lg line-clamp-2">{job.title}</CardTitle>
+                      <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
+                        <Building2 className="h-4 w-4" />
+                        {job.companies?.name}
+                      </div>
+                      <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
+                        <MapPin className="h-4 w-4" />
+                        {job.location}
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
-                      <MapPin className="h-4 w-4" />
-                      {job.location}
+                    <div className="flex gap-2">
+                      {expired && (
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          onClick={() => handleReactivate(job)}
+                          className="text-orange-600 border-orange-300 hover:bg-orange-50"
+                          title="Reaktivasiya et"
+                        >
+                          <RefreshCw className="h-4 w-4" />
+                        </Button>
+                      )}
+                      <Button size="sm" variant="outline" onClick={() => handleEdit(job)}>
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => handleDelete(job.id)}>
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
                     </div>
                   </div>
-                  <div className="flex gap-2">
-                    <Button size="sm" variant="outline" onClick={() => handleEdit(job)}>
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <Button size="sm" variant="outline" onClick={() => handleDelete(job.id)}>
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-1">
-                      <Clock className="h-4 w-4" />
-                      {job.type === 'full-time' ? 'Tam zamanlı' :
-                       job.type === 'part-time' ? 'Yarı zamanlı' :
-                       job.type === 'contract' ? 'Müqavilə' : 'Təcrübə'}
-                    </div>
-                    {job.salary && (
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
                       <div className="flex items-center gap-1">
-                        <DollarSign className="h-4 w-4" />
-                        {job.salary}
+                        <Clock className="h-4 w-4" />
+                        {job.type === 'full-time' ? 'Tam zamanlı' :
+                         job.type === 'part-time' ? 'Yarı zamanlı' :
+                         job.type === 'contract' ? 'Müqavilə' : 'Təcrübə'}
+                      </div>
+                      {job.salary && (
+                        <div className="flex items-center gap-1">
+                          <DollarSign className="h-4 w-4" />
+                          {job.salary}
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Eye className="h-4 w-4" />
+                      {job.views} baxış
+                    </div>
+
+                    {job.expiration_date && (
+                      <div className={`flex items-center gap-2 text-sm ${expired ? 'text-orange-600' : 'text-muted-foreground'}`}>
+                        <Calendar className="h-4 w-4" />
+                        {expired ? 'Müddəti bitib' : 'Bitəcək'}: {new Date(job.expiration_date).toLocaleDateString('az-AZ')}
                       </div>
                     )}
-                  </div>
-                  
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Eye className="h-4 w-4" />
-                    {job.views} baxış
-                  </div>
 
-                  {job.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-1">
-                      {job.tags.map((tag, index) => (
-                        <Badge key={index} variant="secondary" className="text-xs">
-                          {tag}
-                        </Badge>
-                      ))}
+                    {job.tags.length > 0 && (
+                      <div className="flex flex-wrap gap-1">
+                        {job.tags.map((tag, index) => (
+                          <Badge key={index} variant="secondary" className="text-xs">
+                            {tag}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex gap-2">
+                        <span className={`text-xs px-2 py-1 rounded-full ${
+                          job.is_active && !expired
+                            ? 'bg-green-100 text-green-800' 
+                            : 'bg-red-100 text-red-800'
+                        }`}>
+                          {job.is_active && !expired ? 'Aktiv' : expired ? 'Müddəti Bitib' : 'Deaktiv'}
+                        </span>
+                      </div>
+                      <span className="text-xs text-muted-foreground">
+                        {new Date(job.created_at).toLocaleDateString('az-AZ')}
+                      </span>
                     </div>
-                  )}
-
-                  <div className="flex items-center justify-between">
-                    <span className={`text-xs px-2 py-1 rounded-full ${
-                      job.is_active 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-red-100 text-red-800'
-                    }`}>
-                      {job.is_active ? 'Aktiv' : 'Deaktiv'}
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      {new Date(job.created_at).toLocaleDateString('az-AZ')}
-                    </span>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
 
         {filteredJobs.length === 0 && (
