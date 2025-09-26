@@ -45,7 +45,7 @@ export const generateJobSEO = (jobTitle: string, company: string, category: stri
     title: `${jobTitle} - ${company} | İş Elanları`,
     description: `${company} şirkətində ${jobTitle} vakansiyası. ${category} sahəsində iş imkanları və tələblər.`,
     keywords: `${jobTitle}, ${company}, ${category}, iş elanları, vakansiya, Azərbaycan`,
-    url: `/vakansiyalar/${jobTitle.toLowerCase().replace(/\s+/g, '-')}`
+    url: `/vacancies/${jobTitle.toLowerCase().replace(/\s+/g, '-')}`
   };
 };
 
@@ -54,7 +54,7 @@ export const generateCategorySEO = (categoryName: string, jobCount: number): SEO
     title: `${categoryName} Vakansiyaları | İş Elanları`,
     description: `${categoryName} sahəsində ${jobCount} aktiv vakansiya. Azərbaycanda ${categoryName} işləri və iş imkanları.`,
     keywords: `${categoryName}, vakansiya, iş elanları, Azərbaycan, ${categoryName} işləri`,
-    url: `/kateqoriyalar/${categoryName.toLowerCase().replace(/\s+/g, '-')}`
+    url: `/categories/${categoryName.toLowerCase().replace(/\s+/g, '-')}`
   };
 };
 
@@ -63,7 +63,7 @@ export const generateCompanySEO = (companyName: string, jobCount: number): SEOMe
     title: `${companyName} Şirkəti | İş Elanları`,
     description: `${companyName} şirkətində ${jobCount} aktiv vakansiya. ${companyName} haqqında məlumat və iş imkanları.`,
     keywords: `${companyName}, şirkət, vakansiya, iş elanları, Azərbaycan, ${companyName} işləri`,
-    url: `/sirketler/${companyName.toLowerCase().replace(/\s+/g, '-')}`
+    url: `/companies/${companyName.toLowerCase().replace(/\s+/g, '-')}`
   };
 };
 
