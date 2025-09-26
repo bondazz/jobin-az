@@ -501,9 +501,9 @@ const JobDetails = ({
 
           {/* Job Description */}
           <div className="space-y-3">
-            <h3 className={`${isMobile ? 'text-lg' : 'text-xl'} font-bold text-foreground`}>
-              {job.title} İş Təsviri {job.location && `- ${job.location}`}
-            </h3>
+            <h2 className={`${isMobile ? 'text-lg' : 'text-xl'} font-bold text-foreground text-center`}>
+              Vakansiya - {job.companies?.name || 'Şirkət'} ve {job.title}
+            </h2>
             <div className={`${isMobile ? 'text-sm' : 'text-base'} text-foreground leading-relaxed rich-text-content`} dangerouslySetInnerHTML={{
             __html: job.description
           }} />
