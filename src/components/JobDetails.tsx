@@ -447,6 +447,25 @@ const JobDetails = ({
         </div>
 
         <div className={`${isMobile ? 'p-4' : 'p-6'} space-y-4`}>
+          {/* Expiration Date - at the very top */}
+          {job.expiration_date && (
+            <>
+              <div className="flex items-center justify-start">
+                <div className={`inline-flex items-center gap-2 ${isMobile ? 'px-3 py-1.5' : 'px-4 py-2'} rounded-md border border-orange-300/70 bg-orange-100/20 text-orange-700 dark:text-orange-300 shadow-sm backdrop-blur-sm`}>
+                  <Clock className={`${isMobile ? 'w-4 h-4' : 'w-4 h-4'} text-orange-600 dark:text-orange-400`} />
+                  <span className={`${isMobile ? 'text-sm' : 'text-sm'} font-medium`}>
+                    Son tarix {new Date(job.expiration_date).toLocaleDateString('tr-TR', { 
+                      day: '2-digit', 
+                      month: '2-digit', 
+                      year: 'numeric' 
+                    })}
+                  </span>
+                </div>
+              </div>
+              <Separator />
+            </>
+          )}
+
           {/* Job Info and Action Buttons Combined Layout */}
           <div className={`${isMobile ? 'space-y-3' : 'flex items-start gap-4'}`}>
             {/* Job Info Grid - More compact */}
@@ -506,25 +525,6 @@ const JobDetails = ({
           </div>
 
           <Separator />
-
-          {/* Expiration Date */}
-          {job.expiration_date && (
-            <>
-              <div className="flex items-center justify-start">
-                <div className={`inline-flex items-center gap-2 ${isMobile ? 'px-3 py-1.5' : 'px-4 py-2'} rounded-md border border-orange-300 bg-orange-50 text-orange-700 shadow-sm`}>
-                  <Clock className={`${isMobile ? 'w-4 h-4' : 'w-4 h-4'} text-orange-600`} />
-                  <span className={`${isMobile ? 'text-sm' : 'text-sm'} font-medium`}>
-                    Son tarix {new Date(job.expiration_date).toLocaleDateString('az-AZ', { 
-                      day: 'numeric', 
-                      month: 'short', 
-                      year: 'numeric' 
-                    })}
-                  </span>
-                </div>
-              </div>
-              <Separator />
-            </>
-          )}
 
           {/* Contact Information */}
           {(job.companies?.email || job.companies?.phone || job.companies?.website) && <div className="space-y-3">
