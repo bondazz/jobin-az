@@ -510,10 +510,10 @@ const JobDetails = ({
           {/* Expiration Date */}
           {job.expiration_date && (
             <>
-              <div className="flex items-center justify-center">
-                <div className={`inline-flex items-center gap-2 ${isMobile ? 'px-3 py-2' : 'px-4 py-3'} rounded-lg border border-orange-200 bg-orange-50/50 text-orange-700`}>
-                  <Clock className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} text-orange-600`} />
-                  <span className={`${isMobile ? 'text-sm' : 'text-base'} font-medium`}>
+              <div className="flex items-center justify-start">
+                <div className={`inline-flex items-center gap-2 ${isMobile ? 'px-3 py-1.5' : 'px-4 py-2'} rounded-md border border-orange-300 bg-orange-50 text-orange-700 shadow-sm`}>
+                  <Clock className={`${isMobile ? 'w-4 h-4' : 'w-4 h-4'} text-orange-600`} />
+                  <span className={`${isMobile ? 'text-sm' : 'text-sm'} font-medium`}>
                     Son tarix {new Date(job.expiration_date).toLocaleDateString('az-AZ', { 
                       day: 'numeric', 
                       month: 'short', 
