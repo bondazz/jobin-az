@@ -221,6 +221,7 @@ export type Database = {
           company_id: string | null
           created_at: string
           description: string
+          expiration_date: string | null
           id: string
           is_active: boolean
           location: string
@@ -243,6 +244,7 @@ export type Database = {
           company_id?: string | null
           created_at?: string
           description: string
+          expiration_date?: string | null
           id?: string
           is_active?: boolean
           location: string
@@ -265,6 +267,7 @@ export type Database = {
           company_id?: string | null
           created_at?: string
           description?: string
+          expiration_date?: string | null
           id?: string
           is_active?: boolean
           location?: string
@@ -679,6 +682,93 @@ export type Database = {
       }
     }
     Views: {
+      jobs_active: {
+        Row: {
+          application_email: string | null
+          application_type: string | null
+          application_url: string | null
+          category_id: string | null
+          company_id: string | null
+          created_at: string | null
+          description: string | null
+          expiration_date: string | null
+          id: string | null
+          is_active: boolean | null
+          location: string | null
+          salary: string | null
+          seo_description: string | null
+          seo_keywords: string[] | null
+          seo_title: string | null
+          slug: string | null
+          tags: string[] | null
+          title: string | null
+          type: string | null
+          updated_at: string | null
+          views: number | null
+        }
+        Insert: {
+          application_email?: string | null
+          application_type?: string | null
+          application_url?: string | null
+          category_id?: string | null
+          company_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          expiration_date?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          location?: string | null
+          salary?: string | null
+          seo_description?: string | null
+          seo_keywords?: string[] | null
+          seo_title?: string | null
+          slug?: string | null
+          tags?: string[] | null
+          title?: string | null
+          type?: string | null
+          updated_at?: string | null
+          views?: number | null
+        }
+        Update: {
+          application_email?: string | null
+          application_type?: string | null
+          application_url?: string | null
+          category_id?: string | null
+          company_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          expiration_date?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          location?: string | null
+          salary?: string | null
+          seo_description?: string | null
+          seo_keywords?: string[] | null
+          seo_title?: string | null
+          slug?: string | null
+          tags?: string[] | null
+          title?: string | null
+          type?: string | null
+          updated_at?: string | null
+          views?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jobs_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       jobs_public: {
         Row: {
           application_type: string | null
@@ -810,6 +900,10 @@ export type Database = {
       increment_job_views: {
         Args: { job_id: string }
         Returns: undefined
+      }
+      is_job_expired: {
+        Args: { job_expiration_date: string }
+        Returns: boolean
       }
       log_referral_click: {
         Args: { code: string; ua: string }
