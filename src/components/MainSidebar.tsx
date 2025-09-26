@@ -150,7 +150,7 @@ const MainSidebar = () => {
               }`} 
               style={{ animationDelay: `${index * 50}ms` }}
             >
-              <a href={item.path} className="flex items-center justify-between w-full">
+              <Link to={getUrlWithReferral(item.path)} className="flex items-center justify-between w-full">
                 <div className="flex items-center gap-3">
                   <div className={`w-7 h-7 rounded-md flex items-center justify-center ${
                     isActivePath(item.path) ? 'bg-white/20' : 'bg-primary/10'
@@ -171,7 +171,7 @@ const MainSidebar = () => {
                     {item.count}
                   </Badge>
                 )}
-              </a>
+              </Link>
             </Button>
           ))}
         </div>

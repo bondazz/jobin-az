@@ -11,8 +11,6 @@ import { lazy, Suspense } from "react";
 import Index from "./pages/Index";
 
 // Non-critical pages - lazy load
-const Vacancies = lazy(() => import("./pages/Vacancies"));
-const Bildirisler = lazy(() => import("./pages/Bildirisler"));
 const Categories = lazy(() => import("./pages/Categories"));
 const Companies = lazy(() => import("./pages/Companies"));
 const About = lazy(() => import("./pages/About"));
@@ -60,16 +58,8 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Index />} />
-            <Route path="/vacancies" element={
-              <Suspense fallback={<LoadingFallback />}>
-                <Vacancies />
-              </Suspense>
-            } />
-            <Route path="/vacancies/:jobSlug" element={
-              <Suspense fallback={<LoadingFallback />}>
-                <Vacancies />
-              </Suspense>
-            } />
+            <Route path="/vacancies" element={<Index />} />
+            <Route path="/vacancies/:jobSlug" element={<Index />} />
             <Route path="/categories" element={
               <Suspense fallback={<LoadingFallback />}>
                 <Categories />
@@ -115,16 +105,8 @@ const App = () => (
                 <SavedJobs />
               </Suspense>
             } />
-            <Route path="/bildirisler" element={
-              <Suspense fallback={<LoadingFallback />}>
-                <Bildirisler />
-              </Suspense>
-            } />
-            <Route path="/bildirisler/:jobSlug" element={
-              <Suspense fallback={<LoadingFallback />}>
-                <Bildirisler />
-              </Suspense>
-            } />
+            <Route path="/bildirisler" element={<Index />} />
+            <Route path="/bildirisler/:jobSlug" element={<Index />} />
             <Route path="/cv-builder" element={
               <Suspense fallback={<LoadingFallback />}>
                 <CVBuilder />

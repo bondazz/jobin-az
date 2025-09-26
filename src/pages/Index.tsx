@@ -1,6 +1,6 @@
 
 import { useState, useEffect, useCallback, memo, Suspense, lazy } from 'react';
-import { useSearchParams, useParams, useNavigate } from 'react-router-dom';
+import { useSearchParams, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Job } from '@/types/job';
 import JobListings from '@/components/JobListings';
@@ -28,21 +28,46 @@ const Index = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { jobSlug } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { getUrlWithReferral } = useReferralCode();
 
   // Dynamic SEO for job pages
   useDynamicSEO('job', jobSlug ? jobData : null);
 
-  // Default SEO setup for main page
+  // SEO setup based on current route
   useEffect(() => {
+    const currentPath = location.pathname;
+    
     if (!jobSlug) {
-      const updateSEO = async () => {
-        const seoData = await generatePageSEO('home');
-        updatePageMeta(seoData);
-      };
-      updateSEO();
+      if (currentPath === '/vacancies' || currentPath.startsWith('/vacancies/')) {
+        // SEO for vacancies pages but canonical points to home
+        updatePageMeta({
+          title: "Vakansiyalar | İş Elanları Azərbaycan - Jooble",
+          description: "Azərbaycanda aktiv vakansiyalar və iş elanları. Müxtəlif sahələrdə iş imkanları, maaş məlumatları və şirkət təfərrüatları.",
+          keywords: "vakansiyalar, iş elanları, Azərbaycan işləri, aktiv elanlar, iş axtarışı",
+          url: "/" // Canonical always points to home
+        });
+      } else if (currentPath === '/bildirisler' || currentPath.startsWith('/bildirisler/')) {
+        // SEO for bildirisler pages but canonical points to home
+        updatePageMeta({
+          title: "Bildirişlər | İş Elanları və Vakansiyalar - Jooble Azərbaycan",
+          description: "Azərbaycanda ən son iş bildirişləri və vakansiyalar. Yeni əlavə edilən iş elanları və imkanları.",
+          keywords: "bildirişlər, iş elanları, yeni vakansiyalar, Azərbaycan işləri, iş imkanları",
+          url: "/" // Canonical always points to home
+        });
+      } else {
+        // Default homepage SEO
+        const updateSEO = async () => {
+          const seoData = await generatePageSEO('home');
+          updatePageMeta({
+            ...seoData,
+            url: "/" // Canonical always points to home
+          });
+        };
+        updateSEO();
+      }
     }
-  }, [jobSlug]);
+  }, [location.pathname, jobSlug]);
 
   // Generate WebSite structured data for homepage
   const generateWebsiteSchema = () => {
