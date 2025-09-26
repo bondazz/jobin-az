@@ -8,6 +8,7 @@ import { MapPin, Calendar, Users, Clock, Building, Star, Share2, Bookmark, Eye, 
 import VerifyBadge from '@/components/ui/verify-badge';
 import AdBanner from './AdBanner';
 import { useReferralCode } from '@/hooks/useReferralCode';
+import { Link } from 'react-router-dom';
 interface JobDetailsProps {
   jobId: string | null;
   isMobile?: boolean;
@@ -47,12 +48,12 @@ const JobDetails = ({
     setLoading(true);
     try {
       // First try to find by ID, then by slug
-      let {
+        let {
         data,
         error
       } = await supabase.from('jobs').select(`
           id, application_type, salary, company_id, title, is_active, updated_at, type, location, seo_keywords, seo_description, views, category_id, seo_title, created_at, slug, application_url, tags, description,
-          companies:company_id(name, logo, website, email, phone, is_verified),
+          companies:company_id(name, logo, website, email, phone, is_verified, slug),
           categories:category_id(name)
         `).eq('id', id).single();
 
@@ -60,7 +61,7 @@ const JobDetails = ({
       if (error && error.code === 'PGRST116') {
         const slugResult = await supabase.from('jobs').select(`
             id, application_type, salary, company_id, title, is_active, updated_at, type, location, seo_keywords, seo_description, views, category_id, seo_title, created_at, slug, application_url, tags, description,
-            companies:company_id(name, logo, website, email, phone, is_verified),
+            companies:company_id(name, logo, website, email, phone, is_verified, slug),
             categories:category_id(name)
           `).eq('slug', id).single();
         data = slugResult.data;
@@ -399,9 +400,17 @@ const JobDetails = ({
             {/* Job Title and Company */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
-                <h2 className={`${isMobile ? 'text-sm' : 'text-base'} font-semibold text-foreground truncate`}>
-                  {job.companies?.name || 'Şirkət'} {job.location && `- ${job.location}`}
-                </h2>
+                {job.companies?.slug ? (
+                  <Link to={`/companies/${job.companies.slug}`}>
+                    <h2 className={`${isMobile ? 'text-sm' : 'text-base'} font-semibold text-foreground truncate hover:text-primary transition-colors`}>
+                      {job.companies?.name || 'Şirkət'}
+                    </h2>
+                  </Link>
+                ) : (
+                  <h2 className={`${isMobile ? 'text-sm' : 'text-base'} font-semibold text-foreground truncate`}>
+                    {job.companies?.name || 'Şirkət'}
+                  </h2>
+                )}
                 {job.companies?.is_verified && <VerifyBadge size={isMobile ? 14 : 16} />}
               </div>
               <h1 className={`${isMobile ? 'text-base' : 'text-lg'} font-bold text-foreground`}>
