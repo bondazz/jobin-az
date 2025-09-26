@@ -3,7 +3,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Layout from "./components/Layout";
-import CanonicalRedirect from "./components/CanonicalRedirect";
 
 // Lazy load all components for better performance
 import { lazy, Suspense } from "react";
@@ -59,11 +58,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Index />} />
-            <Route path="/vacancies" element={
-              <CanonicalRedirect>
-                <Index />
-              </CanonicalRedirect>
-            } />
+            <Route path="/vacancies" element={<Index />} />
             <Route path="/vacancies/:jobSlug" element={<Index />} />
             <Route path="/categories" element={
               <Suspense fallback={<LoadingFallback />}>
@@ -110,11 +105,7 @@ const App = () => (
                 <SavedJobs />
               </Suspense>
             } />
-            <Route path="/bildirisler" element={
-              <CanonicalRedirect>
-                <Index />
-              </CanonicalRedirect>
-            } />
+            <Route path="/bildirisler" element={<Index />} />
             <Route path="/cv-builder" element={
               <Suspense fallback={<LoadingFallback />}>
                 <CVBuilder />

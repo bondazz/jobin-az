@@ -129,12 +129,12 @@ export const generatePageSEO = async (page: string, additionalInfo?: string): Pr
   return baseSEO;
 };
 
-// Normalize URL for canonical purposes
+// Normalize URL for canonical purposes - point all variants to main domain
 const normalizeUrl = (url: string): string => {
   // Remove trailing slash except for root
   const normalized = url === '/' ? '/' : url.replace(/\/$/, '');
   
-  // Handle duplicate routes - always use the canonical version
+  // Handle duplicate routes - always use canonical root path
   const canonicalRoutes: { [key: string]: string } = {
     '/vacancies': '/',  // /vacancies should canonically point to /
     '/bildirisler': '/' // /bildirisler should canonically point to /
@@ -171,7 +171,7 @@ export const updatePageMeta = (metadata: SEOMetadata) => {
   
   // Get canonical URL - normalize to prevent duplicate content issues
   const canonicalUrl = normalizeUrl(metadata.url);
-  const fullCanonicalUrl = `${window.location.origin}${canonicalUrl}`;
+  const fullCanonicalUrl = `https://jooble.az${canonicalUrl}`;
   
   // Update canonical URL
   const canonicalLink = document.querySelector('link[rel="canonical"]');

@@ -1,9 +1,7 @@
 # Netlify-style redirects to serve dynamic sitemaps from Supabase Edge Functions
 # This ensures Googlebot gets XML directly from jooble.az paths
 
-# Canonical URL redirects - redirect duplicate content to main URLs
-/vacancies / 301
-/bildirisler / 301
+# Canonical URLs handled via meta tags instead of redirects
 
 /sitemap.xml https://igrtzfvphltnoiwedbtz.supabase.co/storage/v1/object/public/sitemaps/sitemap.xml 200
 /sitemaps.xml https://igrtzfvphltnoiwedbtz.supabase.co/storage/v1/object/public/sitemaps/sitemaps.xml 200
