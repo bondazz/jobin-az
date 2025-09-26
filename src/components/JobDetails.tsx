@@ -387,38 +387,61 @@ const JobDetails = ({
       />
       
       <div id="job-details-printable" className={`h-full overflow-y-auto bg-background ${isMobile ? 'pt-16 pb-20' : 'pb-24'}`}>
-        {/* Minimalist Header with Company Logo */}
-        <div className={`${isMobile ? 'p-4 pt-6' : 'p-6'} border-b border-border`}>
-          <div className="flex items-center gap-4">
-            {/* Company Logo */}
-            <div className={`${isMobile ? 'w-12 h-12' : 'w-16 h-16'} rounded-lg bg-muted/30 flex items-center justify-center flex-shrink-0`}>
-              {job.companies?.logo ? <img src={job.companies.logo} alt={job.companies?.name || 'Company'} className={`${isMobile ? 'w-10 h-10' : 'w-14 h-14'} rounded-lg object-cover`} width={isMobile ? "40" : "56"} height={isMobile ? "40" : "56"} decoding="async" /> : <span className={`${isMobile ? 'text-lg' : 'text-2xl'} font-bold text-primary`}>
+        {/* Enhanced Header with Company Profile */}
+        <div className={`${isMobile ? 'p-5' : 'p-8'} border-b border-border/50 bg-gradient-to-r from-background to-muted/20`}>
+          <div className="flex items-start gap-6">
+            {/* Premium Company Logo */}
+            <div className={`${isMobile ? 'w-16 h-16' : 'w-20 h-20'} rounded-2xl bg-gradient-to-br from-primary/5 to-primary/15 border border-primary/10 flex items-center justify-center flex-shrink-0 shadow-sm`}>
+              {job.companies?.logo ? (
+                <img 
+                  src={job.companies.logo} 
+                  alt={job.companies?.name || 'Company'} 
+                  className={`${isMobile ? 'w-12 h-12' : 'w-16 h-16'} rounded-xl object-cover`} 
+                  width={isMobile ? "48" : "64"} 
+                  height={isMobile ? "48" : "64"} 
+                  decoding="async" 
+                />
+              ) : (
+                <span className={`${isMobile ? 'text-xl' : 'text-3xl'} font-bold text-primary`}>
                   {(job.companies?.name || job.title).charAt(0)}
-                </span>}
+                </span>
+              )}
             </div>
             
-            {/* Job Title and Company */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
+            {/* Job Information */}
+            <div className="flex-1 min-w-0 space-y-3">
+              {/* Company Name with Link */}
+              <div className="flex items-center gap-3">
                 {job.companies?.slug ? (
                   <Link to={`/companies/${job.companies.slug}`}>
-                    <h2 className={`${isMobile ? 'text-sm' : 'text-base'} font-semibold text-foreground truncate hover:text-primary transition-colors`}>
+                    <h2 className={`${isMobile ? 'text-base' : 'text-lg'} font-semibold text-muted-foreground hover:text-primary transition-all duration-200 truncate`}>
                       {job.companies?.name || 'Şirkət'}
                     </h2>
                   </Link>
                 ) : (
-                  <h2 className={`${isMobile ? 'text-sm' : 'text-base'} font-semibold text-foreground truncate`}>
+                  <h2 className={`${isMobile ? 'text-base' : 'text-lg'} font-semibold text-muted-foreground truncate`}>
                     {job.companies?.name || 'Şirkət'}
                   </h2>
                 )}
-                {job.companies?.is_verified && <VerifyBadge size={isMobile ? 14 : 16} />}
+                {job.companies?.is_verified && <VerifyBadge size={isMobile ? 16 : 18} />}
               </div>
-              <h1 className={`${isMobile ? 'text-base' : 'text-lg'} font-bold text-foreground`}>
-                {job.title} {job.categories?.name && `- ${job.categories.name} Vakansiyası`} {job.salary && job.salary !== 'Müzakirə' && `(${job.salary})`}
+              
+              {/* Job Title - Main Focus */}
+              <h1 className={`${isMobile ? 'text-lg' : 'text-2xl'} font-bold text-foreground leading-tight`}>
+                {job.title}
               </h1>
-              <Badge variant="outline" className={`${isMobile ? 'text-xs' : 'text-sm'} mt-1`}>
-                {job.categories?.name || 'Kateqoriya'}
-              </Badge>
+              
+              {/* Job Meta Information */}
+              <div className="flex flex-wrap items-center gap-3">
+                <Badge variant="secondary" className={`${isMobile ? 'text-xs' : 'text-sm'} font-medium bg-primary/10 text-primary border-0`}>
+                  {job.categories?.name || 'Kateqoriya'}
+                </Badge>
+                {job.salary && job.salary !== 'Müzakirə' && (
+                  <Badge variant="outline" className={`${isMobile ? 'text-xs' : 'text-sm'} font-medium border-muted-foreground/30 text-muted-foreground`}>
+                    {job.salary}
+                  </Badge>
+                )}
+              </div>
             </div>
           </div>
         </div>
