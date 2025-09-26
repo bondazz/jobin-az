@@ -38,10 +38,47 @@ export const useDynamicSEO = (
 
     switch (type) {
       case 'job':
+        // Generate location-based keywords
+        const locationKeywords = data.location ? [
+          `${data.location}da iş`,
+          `${data.location} vakansiya`,
+          `${data.location} iş elanları`
+        ].join(', ') : '';
+        
+        // Generate salary-based keywords
+        const salaryKeywords = data.salary && data.salary !== 'Müzakirə' ? [
+          `${data.salary} maaş`,
+          `yüksək maaşlı iş`,
+          `maaşlı vakansiya`
+        ].join(', ') : 'müzakirə maaş, iş imkanı';
+        
+        // Enhanced title with location and category
+        const enhancedTitle = data.seo_title || 
+          `${data.title} ${data.location ? `- ${data.location}` : ''} | ${data.company?.name || 'İş Elanı'} | ${data.category?.name || ''} Vakansiyası`;
+        
+        // Enhanced description with more details
+        const enhancedDescription = data.seo_description || 
+          `${data.company?.name || 'Şirkət'}də ${data.title} vakansiyası ${data.location ? `${data.location}da` : 'Azərbaycanda'}. ${data.category?.name || ''} sahəsində ${data.salary || 'müzakirə maaşı ilə'} iş imkanı. İndi müraciət edin!`;
+        
+        // Comprehensive keywords
+        const comprehensiveKeywords = data.seo_keywords?.join(', ') || [
+          data.title,
+          data.company?.name || '',
+          data.category?.name || '',
+          locationKeywords,
+          salaryKeywords,
+          'iş elanları Azərbaycan',
+          'vakansiya',
+          'iş axtarışı',
+          'karyera imkanları',
+          'iş tap',
+          'müraciət et'
+        ].filter(Boolean).join(', ');
+
         metadata = {
-          title: data.seo_title || `${data.title} - ${data.company?.name || 'İş Elanı'} | Jooble`,
-          description: data.seo_description || `${data.company?.name || 'Şirkət'}də ${data.title} vakansiyası. ${data.location} yerində iş imkanı.`,
-          keywords: data.seo_keywords?.join(', ') || `${data.title}, ${data.company?.name || ''}, ${data.category?.name || ''}, iş elanları, vakansiya, Azərbaycan`,
+          title: enhancedTitle,
+          description: enhancedDescription,
+          keywords: comprehensiveKeywords,
           url: `/vacancies/${data.slug}`
         };
         break;

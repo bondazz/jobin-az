@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useDynamicSEO } from '@/hooks/useSEO';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -23,6 +24,9 @@ const JobDetails = ({
   const [revealingEmail, setRevealingEmail] = useState(false);
   const { toast } = useToast();
   const { getUrlWithReferral } = useReferralCode();
+  
+  // Apply SEO for job page
+  useDynamicSEO('job', job);
   useEffect(() => {
     if (jobId) {
       fetchJobDetails(jobId);
@@ -399,12 +403,12 @@ const JobDetails = ({
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
                 <h2 className={`${isMobile ? 'text-sm' : 'text-base'} font-semibold text-foreground truncate`}>
-                  {job.companies?.name || 'Şirkət'}
+                  {job.companies?.name || 'Şirkət'} {job.location && `- ${job.location}`}
                 </h2>
                 {job.companies?.is_verified && <VerifyBadge size={isMobile ? 14 : 16} />}
               </div>
-              <h1 className={`${isMobile ? 'text-base' : 'text-lg'} font-bold text-foreground truncate`}>
-                {job.title}
+              <h1 className={`${isMobile ? 'text-base' : 'text-lg'} font-bold text-foreground`}>
+                {job.title} {job.categories?.name && `- ${job.categories.name} Vakansiyası`} {job.salary && job.salary !== 'Müzakirə' && `(${job.salary})`}
               </h1>
               <Badge variant="outline" className={`${isMobile ? 'text-xs' : 'text-sm'} mt-1`}>
                 {job.categories?.name || 'Kateqoriya'}
@@ -468,7 +472,9 @@ const JobDetails = ({
 
           {/* Job Description */}
           <div className="space-y-3">
-            <h3 className={`${isMobile ? 'text-lg' : 'text-xl'} font-bold text-foreground`}>Təsvir</h3>
+            <h3 className={`${isMobile ? 'text-lg' : 'text-xl'} font-bold text-foreground`}>
+              {job.title} İş Təsviri {job.location && `- ${job.location}`}
+            </h3>
             <div className={`${isMobile ? 'text-sm' : 'text-base'} text-foreground leading-relaxed rich-text-content`} dangerouslySetInnerHTML={{
             __html: job.description
           }} />
@@ -478,7 +484,9 @@ const JobDetails = ({
 
           {/* Contact Information */}
           {(job.companies?.email || job.companies?.phone || job.companies?.website) && <div className="space-y-3">
-              <h3 className={`${isMobile ? 'text-lg' : 'text-xl'} font-bold text-foreground`}>Əlaqə</h3>
+              <h3 className={`${isMobile ? 'text-lg' : 'text-xl'} font-bold text-foreground`}>
+                {job.companies?.name || 'Şirkət'} - Əlaqə Məlumatları
+              </h3>
               <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2'} gap-3`}>
                 {job.companies?.email && <div className={`flex items-center gap-2 ${isMobile ? 'p-2' : 'p-3'} rounded-lg bg-muted/30`}>
                     <Mail className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} text-primary flex-shrink-0`} />
