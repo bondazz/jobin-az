@@ -52,7 +52,7 @@ const JobDetails = ({
         data,
         error
       } = await supabase.from('jobs').select(`
-          id, application_type, salary, company_id, title, is_active, updated_at, type, location, seo_keywords, seo_description, views, category_id, seo_title, created_at, slug, application_url, tags, description,
+          id, application_type, salary, company_id, title, is_active, updated_at, type, location, seo_keywords, seo_description, views, category_id, seo_title, created_at, slug, application_url, tags, description, expiration_date,
           companies:company_id(name, logo, website, email, phone, is_verified, slug),
           categories:category_id(name)
         `).eq('id', id).single();
@@ -60,7 +60,7 @@ const JobDetails = ({
       // If not found by ID, try by slug
       if (error && error.code === 'PGRST116') {
         const slugResult = await supabase.from('jobs').select(`
-            id, application_type, salary, company_id, title, is_active, updated_at, type, location, seo_keywords, seo_description, views, category_id, seo_title, created_at, slug, application_url, tags, description,
+            id, application_type, salary, company_id, title, is_active, updated_at, type, location, seo_keywords, seo_description, views, category_id, seo_title, created_at, slug, application_url, tags, description, expiration_date,
             companies:company_id(name, logo, website, email, phone, is_verified, slug),
             categories:category_id(name)
           `).eq('slug', id).single();
@@ -450,18 +450,11 @@ const JobDetails = ({
           {/* Job Info and Action Buttons Combined Layout */}
           <div className={`${isMobile ? 'space-y-3' : 'flex items-start gap-4'}`}>
             {/* Job Info Grid - More compact */}
-            <div className={`${isMobile ? 'w-full' : 'flex-1'} grid ${isMobile ? 'grid-cols-2 gap-2' : 'grid-cols-4 gap-3'}`}>
+            <div className={`${isMobile ? 'w-full' : 'flex-1'} grid ${isMobile ? 'grid-cols-2 gap-2' : 'grid-cols-3 gap-3'}`}>
               <div className={`flex items-center gap-2 ${isMobile ? 'p-2' : 'p-2'} rounded-md bg-muted/20`}>
                 <MapPin className={`${isMobile ? 'w-3 h-3' : 'w-3 h-3'} text-primary flex-shrink-0`} />
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-medium text-foreground truncate">{job.location}</p>
-                </div>
-              </div>
-
-              <div className={`flex items-center gap-2 ${isMobile ? 'p-2' : 'p-2'} rounded-md bg-muted/20`}>
-                <Clock className={`${isMobile ? 'w-3 h-3' : 'w-3 h-3'} text-primary flex-shrink-0`} />
-                <div className="min-w-0 flex-1">
-                  <p className="text-xs font-medium text-foreground truncate">{job.type}</p>
                 </div>
               </div>
 
@@ -513,6 +506,25 @@ const JobDetails = ({
           </div>
 
           <Separator />
+
+          {/* Expiration Date */}
+          {job.expiration_date && (
+            <>
+              <div className="flex items-center justify-center">
+                <div className={`inline-flex items-center gap-2 ${isMobile ? 'px-3 py-2' : 'px-4 py-3'} rounded-lg border border-orange-200 bg-orange-50/50 text-orange-700`}>
+                  <Clock className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} text-orange-600`} />
+                  <span className={`${isMobile ? 'text-sm' : 'text-base'} font-medium`}>
+                    Son tarix {new Date(job.expiration_date).toLocaleDateString('az-AZ', { 
+                      day: 'numeric', 
+                      month: 'short', 
+                      year: 'numeric' 
+                    })}
+                  </span>
+                </div>
+              </div>
+              <Separator />
+            </>
+          )}
 
           {/* Contact Information */}
           {(job.companies?.email || job.companies?.phone || job.companies?.website) && <div className="space-y-3">
