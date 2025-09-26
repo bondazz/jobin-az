@@ -485,10 +485,10 @@ const JobDetails = ({
                   })}
                 </Button>
               )}
-              <div className={`${isMobile ? 'flex-1' : 'flex-1'} border border-primary/30 text-primary text-xs rounded-md px-3 py-1.5 flex items-center justify-center`}>
+              <Button variant="outline" size="sm" className={`${isMobile ? 'flex-1' : 'flex-1'} border-primary/30 hover:bg-primary hover:text-white ${isSaved ? 'bg-primary text-white' : 'text-primary'} text-xs`} onClick={handleSaveJob}>
                 <Bookmark className={`w-3 h-3 ${isMobile ? 'mr-1' : 'mr-1'} ${isSaved ? 'fill-current' : ''}`} />
                 {isSaved ? 'Saxlanıldı' : 'Saxla'}
-              </div>
+              </Button>
               <Button variant="outline" size="sm" className={`${isMobile ? 'flex-1' : 'flex-1'} border-primary/30 text-primary hover:bg-primary hover:text-white text-xs`} onClick={handleShare}>
                 <Share2 className={`w-3 h-3 ${isMobile ? 'mr-1' : 'mr-1'}`} />
                 Paylaş
