@@ -73,7 +73,7 @@ export const generatePageSEO = async (page: string, additionalInfo?: string): Pr
   const defaultSeoData: Record<string, SEOMetadata> = {
     home: {
       title: settings.site_title || 'İş Elanları | Jooble Azərbaycan - Ən Yaxşı İş İmkanları',
-      description: settings.site_description || 'Azərbaycanda ən yaxşı iş elanları və vakansiyalar. Minlərlə şirkət və iş imkanı bir yerdə. İndi qeydiyyatdan keçin və arzuladığınız işi tapın.',
+      description: settings.site_description || 'Azərbaycanda ən yaxşı iš elanları və vakansiyalar. Minlərlə şirkət və iş imkanı bir yerdə. İndi qeydiyyatdan keçin və arzuladığınız işi tapın.',
       keywords: settings.site_keywords || 'iş elanları, vakansiya, Azərbaycan, iş axtarışı, karyera, şirkət, maaş',
       url: '/'
     },
@@ -82,6 +82,12 @@ export const generatePageSEO = async (page: string, additionalInfo?: string): Pr
       description: 'Azərbaycanda aktiv vakansiyalar və iş elanları. Müxtəlif sahələrdə iş imkanları, maaş məlumatları və şirkət təfərrüatları.',
       keywords: 'vakansiyalar, iş elanları, Azərbaycan işləri, aktiv elanlar',
       url: '/vacancies'
+    },
+    'aktiv-vakansiya': {
+      title: 'Aktiv Vakansiyalar | İş Elanları Azərbaycan',
+      description: 'Azərbaycanda aktiv vakansiyalar və iş elanları. Müxtəlif sahələrdə güncel iş imkanları, maaş məlumatları və şirkət təfərrüatları.',
+      keywords: 'aktiv vakansiyalar, iş elanları, Azərbaycan işləri, güncel elanlar',
+      url: '/aktiv-vakansiya'
     },
     categories: {
       title: 'İş Kateqoriyaları | Sahələr üzrə Vakansiyalar',
@@ -137,7 +143,7 @@ const normalizeUrl = (url: string): string => {
   // Handle duplicate routes - always use canonical root path
   const canonicalRoutes: { [key: string]: string } = {
     '/vacancies': '/',  // /vacancies should canonically point to /
-    '/bildirisler': '/' // /bildirisler should canonically point to /
+    '/aktiv-vakansiya': '/' // /aktiv-vakansiya should canonically point to /
   };
   
   return canonicalRoutes[normalized] || normalized;

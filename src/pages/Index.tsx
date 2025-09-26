@@ -47,12 +47,12 @@ const Index = () => {
           keywords: "vakansiyalar, iş elanları, Azərbaycan işləri, aktiv elanlar, iş axtarışı",
           url: "/" // Canonical always points to home
         });
-      } else if (currentPath === '/bildirisler' || currentPath.startsWith('/bildirisler/')) {
-        // SEO for bildirisler pages but canonical points to home
+      } else if (currentPath === '/aktiv-vakansiya' || currentPath.startsWith('/aktiv-vakansiya/')) {
+        // SEO for aktiv-vakansiya pages but canonical points to home
         updatePageMeta({
-          title: "Bildirişlər | İş Elanları və Vakansiyalar - Jooble Azərbaycan",
-          description: "Azərbaycanda ən son iş bildirişləri və vakansiyalar. Yeni əlavə edilən iş elanları və imkanları.",
-          keywords: "bildirişlər, iş elanları, yeni vakansiyalar, Azərbaycan işləri, iş imkanları",
+          title: "Aktiv Vakansiyalar | İş Elanları Azərbaycan - Jooble",
+          description: "Azərbaycanda aktiv vakansiyalar və iş elanları. Müxtəlif sahələrdə güncel iş imkanları və yeni əlavə edilən vakansiyalar.",
+          keywords: "aktiv vakansiyalar, iş elanları, güncel elanlar, Azərbaycan işləri, yeni vakansiyalar",
           url: "/" // Canonical always points to home
         });
       } else {

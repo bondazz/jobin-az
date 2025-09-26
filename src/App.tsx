@@ -105,8 +105,8 @@ const App = () => (
                 <SavedJobs />
               </Suspense>
             } />
-            <Route path="/bildirisler" element={<Index />} />
-            <Route path="/bildirisler/:jobSlug" element={<Index />} />
+            <Route path="/aktiv-vakansiya" element={<Index />} />
+            <Route path="/aktiv-vakansiya/:jobSlug" element={<Index />} />
             <Route path="/cv-builder" element={
               <Suspense fallback={<LoadingFallback />}>
                 <CVBuilder />
