@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { 
   Home, 
   Briefcase, 
@@ -86,63 +87,65 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-4 py-6 space-y-2">
-          {menuItems.map((item) => {
-            const isActive = isActivePath(item.path);
-            const Icon = item.icon;
-            
-            return (
-              <Button
-                key={item.path}
-                variant={isActive ? "default" : "ghost"}
-                className={`w-full justify-start h-12 text-left transition-all duration-200 ${
-                  isActive 
-                    ? 'bg-primary text-primary-foreground shadow-lg hover:bg-primary/90' 
-                    : 'hover:bg-muted/50 hover:scale-[1.02]'
-                }`}
-                onClick={() => navigate(item.path)}
-              >
-                <Icon className="mr-3 h-5 w-5" />
-                {item.name}
-              </Button>
-            );
-          })}
+        <ScrollArea className="flex-1 px-4 py-3">
+          <nav className="space-y-1">
+            {menuItems.map((item) => {
+              const isActive = isActivePath(item.path);
+              const Icon = item.icon;
+              
+              return (
+                <Button
+                  key={item.path}
+                  variant={isActive ? "default" : "ghost"}
+                  className={`w-full justify-start h-10 text-left transition-all duration-200 ${
+                    isActive 
+                      ? 'bg-primary text-primary-foreground shadow-lg hover:bg-primary/90' 
+                      : 'hover:bg-muted/50 hover:scale-[1.02]'
+                  }`}
+                  onClick={() => navigate(item.path)}
+                >
+                  <Icon className="mr-3 h-4 w-4" />
+                  {item.name}
+                </Button>
+              );
+            })}
 
-          {/* Referral submenu */}
-          <div className="pt-2">
-            <Button
-              variant={location.pathname.startsWith('/admin/referral') || location.pathname.startsWith('/admin/withdrawal') ? 'default' : 'ghost'}
-              className="w-full justify-start h-12 text-left"
-              onClick={() => { /* visual group only */ }}
-            >
-              <span className="mr-3 h-5 w-5">🤝</span>
-              Referral
-            </Button>
-            <div className="pl-8 mt-1 space-y-1">
+            {/* Referral submenu */}
+            <div className="pt-1">
               <Button
-                variant={isActivePath('/admin/referrals') ? 'default' : 'ghost'}
-                className="w-full justify-start h-10"
-                onClick={() => navigate('/admin/referrals')}
+                variant={location.pathname.startsWith('/admin/referral') || location.pathname.startsWith('/admin/withdrawal') ? 'default' : 'ghost'}
+                className="w-full justify-start h-10 text-left"
+                onClick={() => { /* visual group only */ }}
               >
-                Referrallar
+                <span className="mr-3 h-4 w-4">🤝</span>
+                Referral
               </Button>
-              <Button
-                variant={isActivePath('/admin/withdrawals') ? 'default' : 'ghost'}
-                className="w-full justify-start h-10"
-                onClick={() => navigate('/admin/withdrawals')}
-              >
-                Çıxarışlar
-              </Button>
-              <Button
-                variant={isActivePath('/admin/referral-jobs') ? 'default' : 'ghost'}
-                className="w-full justify-start h-10"
-                onClick={() => navigate('/admin/referral-jobs')}
-              >
-                Elan müraciətləri
-              </Button>
+              <div className="pl-6 mt-1 space-y-1">
+                <Button
+                  variant={isActivePath('/admin/referrals') ? 'default' : 'ghost'}
+                  className="w-full justify-start h-9 text-sm"
+                  onClick={() => navigate('/admin/referrals')}
+                >
+                  Referrallar
+                </Button>
+                <Button
+                  variant={isActivePath('/admin/withdrawals') ? 'default' : 'ghost'}
+                  className="w-full justify-start h-9 text-sm"
+                  onClick={() => navigate('/admin/withdrawals')}
+                >
+                  Çıxarışlar
+                </Button>
+                <Button
+                  variant={isActivePath('/admin/referral-jobs') ? 'default' : 'ghost'}
+                  className="w-full justify-start h-9 text-sm"
+                  onClick={() => navigate('/admin/referral-jobs')}
+                >
+                  Elan müraciətləri
+                </Button>
+              </div>
             </div>
-          </div>
-        </nav>
+          </nav>
+        </ScrollArea>
 
         {/* Logout Section */}
         <div className="p-4 border-t border-border/50">
@@ -178,66 +181,68 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 px-4 py-6 space-y-2">
-              {menuItems.map((item) => {
-                const isActive = isActivePath(item.path);
-                const Icon = item.icon;
-                
-                return (
-                  <Button
-                    key={item.path}
-                    variant={isActive ? "default" : "ghost"}
-                    className={`w-full justify-start h-12 text-left transition-all duration-200 ${
-                      isActive 
-                        ? 'bg-primary text-primary-foreground shadow-lg' 
-                        : 'hover:bg-muted/50'
-                    }`}
-                    onClick={() => {
-                      navigate(item.path);
-                      setSidebarOpen(false);
-                    }}
-                  >
-                    <Icon className="mr-3 h-5 w-5" />
-                    {item.name}
-                  </Button>
-                );
-              })}
+            <ScrollArea className="flex-1 px-4 py-3">
+              <nav className="space-y-1">
+                {menuItems.map((item) => {
+                  const isActive = isActivePath(item.path);
+                  const Icon = item.icon;
+                  
+                  return (
+                    <Button
+                      key={item.path}
+                      variant={isActive ? "default" : "ghost"}
+                      className={`w-full justify-start h-10 text-left transition-all duration-200 ${
+                        isActive 
+                          ? 'bg-primary text-primary-foreground shadow-lg' 
+                          : 'hover:bg-muted/50'
+                      }`}
+                      onClick={() => {
+                        navigate(item.path);
+                        setSidebarOpen(false);
+                      }}
+                    >
+                      <Icon className="mr-3 h-4 w-4" />
+                      {item.name}
+                    </Button>
+                  );
+                })}
 
-              {/* Referral submenu */}
-              <div className="pt-2">
-                <Button
-                  variant={location.pathname.startsWith('/admin/referral') || location.pathname.startsWith('/admin/withdrawal') ? 'default' : 'ghost'}
-                  className="w-full justify-start h-12 text-left"
-                  onClick={() => { /* visual group only */ }}
-                >
-                  <span className="mr-3 h-5 w-5">🤝</span>
-                  Referral
-                </Button>
-                <div className="pl-8 mt-1 space-y-1">
+                {/* Referral submenu */}
+                <div className="pt-1">
                   <Button
-                    variant={isActivePath('/admin/referrals') ? 'default' : 'ghost'}
-                    className="w-full justify-start h-10"
-                    onClick={() => { navigate('/admin/referrals'); setSidebarOpen(false); }}
+                    variant={location.pathname.startsWith('/admin/referral') || location.pathname.startsWith('/admin/withdrawal') ? 'default' : 'ghost'}
+                    className="w-full justify-start h-10 text-left"
+                    onClick={() => { /* visual group only */ }}
                   >
-                    Referrallar
+                    <span className="mr-3 h-4 w-4">🤝</span>
+                    Referral
                   </Button>
-                  <Button
-                    variant={isActivePath('/admin/withdrawals') ? 'default' : 'ghost'}
-                    className="w-full justify-start h-10"
-                    onClick={() => { navigate('/admin/withdrawals'); setSidebarOpen(false); }}
-                  >
-                    Çıxarışlar
-                  </Button>
-                  <Button
-                    variant={isActivePath('/admin/referral-jobs') ? 'default' : 'ghost'}
-                    className="w-full justify-start h-10"
-                    onClick={() => { navigate('/admin/referral-jobs'); setSidebarOpen(false); }}
-                  >
-                    Elan müraciətləri
-                  </Button>
+                  <div className="pl-6 mt-1 space-y-1">
+                    <Button
+                      variant={isActivePath('/admin/referrals') ? 'default' : 'ghost'}
+                      className="w-full justify-start h-9 text-sm"
+                      onClick={() => { navigate('/admin/referrals'); setSidebarOpen(false); }}
+                    >
+                      Referrallar
+                    </Button>
+                    <Button
+                      variant={isActivePath('/admin/withdrawals') ? 'default' : 'ghost'}
+                      className="w-full justify-start h-9 text-sm"
+                      onClick={() => { navigate('/admin/withdrawals'); setSidebarOpen(false); }}
+                    >
+                      Çıxarışlar
+                    </Button>
+                    <Button
+                      variant={isActivePath('/admin/referral-jobs') ? 'default' : 'ghost'}
+                      className="w-full justify-start h-9 text-sm"
+                      onClick={() => { navigate('/admin/referral-jobs'); setSidebarOpen(false); }}
+                    >
+                      Elan müraciətləri
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            </nav>
+              </nav>
+            </ScrollArea>
 
             {/* Logout Section */}
             <div className="p-4 border-t border-border/50">
