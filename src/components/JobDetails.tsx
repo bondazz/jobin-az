@@ -447,25 +447,6 @@ const JobDetails = ({
         </div>
 
         <div className={`${isMobile ? 'p-4' : 'p-6'} space-y-4`}>
-          {/* Expiration Date - at the very top */}
-          {job.expiration_date && (
-            <>
-              <div className="flex items-center justify-start">
-                <div className={`inline-flex items-center gap-2 ${isMobile ? 'px-3 py-1.5' : 'px-4 py-2'} rounded-md border border-orange-300/70 bg-orange-100/20 text-orange-700 dark:text-orange-300 shadow-sm backdrop-blur-sm`}>
-                  <Clock className={`${isMobile ? 'w-4 h-4' : 'w-4 h-4'} text-orange-600 dark:text-orange-400`} />
-                  <span className={`${isMobile ? 'text-sm' : 'text-sm'} font-medium`}>
-                    Son tarix {new Date(job.expiration_date).toLocaleDateString('tr-TR', { 
-                      day: '2-digit', 
-                      month: '2-digit', 
-                      year: 'numeric' 
-                    })}
-                  </span>
-                </div>
-              </div>
-              <Separator />
-            </>
-          )}
-
           {/* Job Info and Action Buttons Combined Layout */}
           <div className={`${isMobile ? 'space-y-3' : 'flex items-start gap-4'}`}>
             {/* Job Info Grid - More compact */}
@@ -493,7 +474,17 @@ const JobDetails = ({
             </div>
 
             {/* Action Buttons - More compact */}
-            <div className={`${isMobile ? 'flex flex-row gap-2' : 'flex flex-row gap-2 min-w-[200px]'}`}>
+            <div className={`${isMobile ? 'flex flex-row gap-2' : 'flex flex-row gap-2 min-w-[250px]'}`}>
+              {job.expiration_date && (
+                <Button variant="outline" size="sm" className={`${isMobile ? 'flex-1' : 'flex-1'} border-orange-300/70 text-orange-600 hover:bg-orange-100 hover:text-orange-700 text-xs`}>
+                  <Clock className={`w-3 h-3 ${isMobile ? 'mr-1' : 'mr-1'}`} />
+                  {new Date(job.expiration_date).toLocaleDateString('az-AZ', { 
+                    day: '2-digit', 
+                    month: '2-digit', 
+                    year: 'numeric' 
+                  })}
+                </Button>
+              )}
               <Button variant="outline" size="sm" className={`${isMobile ? 'flex-1' : 'flex-1'} border-primary/30 hover:bg-primary hover:text-white ${isSaved ? 'bg-primary text-white' : 'text-primary'} text-xs`} onClick={handleSaveJob}>
                 <Bookmark className={`w-3 h-3 ${isMobile ? 'mr-1' : 'mr-1'} ${isSaved ? 'fill-current' : ''}`} />
                 {isSaved ? 'Saxlanıldı' : 'Saxla'}
