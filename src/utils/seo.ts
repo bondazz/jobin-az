@@ -129,6 +129,20 @@ export const generatePageSEO = async (page: string, additionalInfo?: string): Pr
   return baseSEO;
 };
 
+// Normalize URL for canonical purposes
+const normalizeUrl = (url: string): string => {
+  // Remove trailing slash except for root
+  const normalized = url === '/' ? '/' : url.replace(/\/$/, '');
+  
+  // Handle duplicate routes - always use the canonical version
+  const canonicalRoutes: { [key: string]: string } = {
+    '/vacancies': '/',  // /vacancies should canonically point to /
+    '/bildirisler': '/' // /bildirisler should canonically point to /
+  };
+  
+  return canonicalRoutes[normalized] || normalized;
+};
+
 export const updatePageMeta = (metadata: SEOMetadata) => {
   // Update document title
   document.title = metadata.title;
@@ -155,14 +169,18 @@ export const updatePageMeta = (metadata: SEOMetadata) => {
     document.head.appendChild(newMetaKeywords);
   }
   
+  // Get canonical URL - normalize to prevent duplicate content issues
+  const canonicalUrl = normalizeUrl(metadata.url);
+  const fullCanonicalUrl = `${window.location.origin}${canonicalUrl}`;
+  
   // Update canonical URL
   const canonicalLink = document.querySelector('link[rel="canonical"]');
   if (canonicalLink) {
-    canonicalLink.setAttribute('href', `${window.location.origin}${metadata.url}`);
+    canonicalLink.setAttribute('href', fullCanonicalUrl);
   } else {
     const newCanonicalLink = document.createElement('link');
     newCanonicalLink.rel = 'canonical';
-    newCanonicalLink.href = `${window.location.origin}${metadata.url}`;
+    newCanonicalLink.href = fullCanonicalUrl;
     document.head.appendChild(newCanonicalLink);
   }
 
@@ -181,7 +199,19 @@ export const updatePageMeta = (metadata: SEOMetadata) => {
 
   updateOGTag('og:title', metadata.title);
   updateOGTag('og:description', metadata.description);
-  updateOGTag('og:url', `${window.location.origin}${metadata.url}`);
+  updateOGTag('og:url', fullCanonicalUrl);
   updateOGTag('og:type', 'website');
   updateOGTag('og:site_name', 'Jooble Azərbaycan');
+  
+  // Add hreflang for multi-language support
+  const hreflangLink = document.querySelector('link[rel="alternate"][hreflang="az"]');
+  if (hreflangLink) {
+    hreflangLink.setAttribute('href', fullCanonicalUrl);
+  } else {
+    const newHreflangLink = document.createElement('link');
+    newHreflangLink.rel = 'alternate';
+    newHreflangLink.hreflang = 'az';
+    newHreflangLink.href = fullCanonicalUrl;
+    document.head.appendChild(newHreflangLink);
+  }
 };
