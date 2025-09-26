@@ -428,7 +428,7 @@ const JobDetails = ({
               
               {/* Job Title - Main Focus */}
               <h1 className={`${isMobile ? 'text-lg' : 'text-2xl'} font-bold text-foreground leading-tight`}>
-                {job.title} vakansiya
+                {job.title} vakansiyası
               </h1>
               
               {/* Job Meta Information */}
