@@ -25,6 +25,14 @@ const JobDetails = ({
   const { toast } = useToast();
   const { getUrlWithReferral } = useReferralCode();
   
+  // Check if job is expired
+  const isJobExpired = (expirationDate?: string) => {
+    if (!expirationDate) return false;
+    return new Date(expirationDate) <= new Date();
+  };
+  
+  const expired = job && isJobExpired(job.expiration_date);
+  
   useEffect(() => {
     if (jobId) {
       fetchJobDetails(jobId);
@@ -476,9 +484,9 @@ const JobDetails = ({
             {/* Action Buttons - More compact */}
             <div className={`${isMobile ? 'flex flex-row gap-2' : 'flex flex-row gap-2 min-w-[250px]'}`}>
               {job.expiration_date && (
-                <Button variant="outline" size="sm" className={`${isMobile ? 'flex-1' : 'flex-1'} border-orange-300/70 text-orange-600 hover:bg-orange-100 hover:text-orange-700 text-xs`}>
+                <Button variant="outline" size="sm" className={`${isMobile ? 'flex-1' : 'flex-1'} ${expired ? 'border-red-300/70 text-red-600 bg-red-50' : 'border-orange-300/70 text-orange-600 hover:bg-orange-100 hover:text-orange-700'} text-xs`}>
                   <Clock className={`w-3 h-3 ${isMobile ? 'mr-1' : 'mr-1'}`} />
-                  {new Date(job.expiration_date).toLocaleDateString('az-AZ', { 
+                  {expired ? 'Müddəti bitib' : new Date(job.expiration_date).toLocaleDateString('az-AZ', { 
                     day: '2-digit', 
                     month: '2-digit', 
                     year: 'numeric' 
@@ -557,7 +565,15 @@ const JobDetails = ({
 
       {/* Sticky Apply Button - Positioned above bottom navigation on mobile/tablet */}
       <div className="fixed bottom-20 right-6 md:bottom-24 md:right-6 lg:bottom-8 lg:right-8 z-50 no-print">
-        {job.application_type === 'website' && job.application_url ? (
+        {expired ? (
+          <Button 
+            size="sm" 
+            className="bg-red-100 text-red-600 font-medium shadow-lg text-sm px-4 py-2 rounded-md cursor-not-allowed" 
+            disabled
+          >
+            Müddəti bitib
+          </Button>
+        ) : job.application_type === 'website' && job.application_url ? (
           <Button 
             size="sm" 
             onClick={() => window.open(job.application_url, '_blank')} 
