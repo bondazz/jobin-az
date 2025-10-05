@@ -215,14 +215,22 @@ const Categories = () => {
         {/* Right Section - Filtered Jobs or Job Details */}
         <div className="hidden lg:block flex-1 bg-gradient-to-br from-job-details to-primary/3 animate-slide-in-right">
           {selectedJob ? <JobDetails jobId={selectedJob.id} /> : selectedCategory ? <JobListings selectedJob={null} onJobSelect={handleJobSelect} selectedCategory={selectedCategory} showHeader={false} /> : <div className="h-full flex items-center justify-center p-8">
-              <div className="text-center">
+              <div className="text-center max-w-2xl mx-auto">
                 <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4">
                   <Tag className="w-8 h-8 text-white" />
                 </div>
-                <h2 className="text-xl font-bold text-foreground mb-2">Kateqoriya Seçin</h2>
-                <p className="text-muted-foreground text-sm max-w-sm">
-                  Sol tərəfdən bir kateqoriya seçin və həmin sahədəki vakansiyaları görün
-                </p>
+                <h2 className="text-xl font-bold text-foreground mb-4">İş Kateqoriyaları və Vakansiyalar</h2>
+                <div className="text-muted-foreground text-sm leading-relaxed space-y-3 text-left px-4">
+                  <p>
+                    Platformamızda <strong>iş elanları</strong> müxtəlif kateqoriyalara ayrılmışdır. Hər bir <strong>iş kateqoriyası</strong> üzrə yüzlərlə <strong>vakansiya</strong> təqdim edirik. IT, maliyyə, satış, marketinq, mühəndislik, insan resursları, mühasibatlıq və digər sahələrdə <strong>iş axtarışı</strong> edən peşəkarlar üçün uyğun <strong>iş təklifləri</strong> tapa bilərsiniz.
+                  </p>
+                  <p>
+                    Müxtəlif səviyyələrdə - giriş səviyyəsi, orta səviyyə və yüksək səviyyəli <strong>iş imkanları</strong> mövcuddur. <Link to="/companies" className="text-primary hover:underline font-medium">Şirkətlərimiz</Link> səhifəsində önəmli işəgötürənlərin profillərini nəzərdən keçirə və <Link to="/about" className="text-primary hover:underline font-medium">haqqımızda</Link> bölməsində xidmətlərimiz barədə ətraflı məlumat əldə edə bilərsiniz.
+                  </p>
+                  <p className="text-xs pt-2">
+                    <Link to="/pricing" className="text-primary hover:underline">Qiymətləndirmə</Link> və premium xüsusiyyətlər haqqında məlumat əldə edin.
+                  </p>
+                </div>
               </div>
             </div>}
         </div>
