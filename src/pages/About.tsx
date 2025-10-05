@@ -339,7 +339,7 @@ const About = () => {
               </Link>
 
               {/* Premium Features */}
-              <Link to="/pricing" className="block group">
+              <Link to="/services" className="block group">
                 <Card className="h-full border-border/50 shadow-card hover:shadow-card-hover transition-all duration-300 animate-fade-in hover:scale-[1.02] cursor-pointer" style={{
               animationDelay: '750ms'
             }}>
