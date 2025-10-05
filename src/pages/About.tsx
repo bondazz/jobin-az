@@ -19,7 +19,6 @@ const About = () => {
       const seoData = await generatePageSEO('about');
       updatePageMeta(seoData);
     };
-    
     updateSEO();
     fetchAboutContent();
   }, []);
@@ -28,7 +27,6 @@ const About = () => {
   const generateAboutPageSchema = () => {
     const headerData = aboutData.header;
     const contactData = aboutData.contact?.content || [];
-    
     return {
       "@context": "https://schema.org",
       "@type": "AboutPage",
@@ -97,12 +95,9 @@ const About = () => {
   const contactData = aboutData.contact?.content || [];
   return <div className="h-full overflow-y-auto bg-gradient-to-br from-background to-primary/5">
       {/* AboutPage Structured Data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(generateAboutPageSchema())
-        }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{
+      __html: JSON.stringify(generateAboutPageSchema())
+    }} />
       
       {/* Mobile Header */}
       <MobileHeader />
@@ -192,7 +187,9 @@ const About = () => {
 
               {/* Companies */}
               <Link to="/companies" className="block group">
-                <Card className="h-full border-border/50 shadow-card hover:shadow-card-hover transition-all duration-300 animate-fade-in hover:scale-[1.02] cursor-pointer" style={{ animationDelay: '150ms' }}>
+                <Card className="h-full border-border/50 shadow-card hover:shadow-card-hover transition-all duration-300 animate-fade-in hover:scale-[1.02] cursor-pointer" style={{
+              animationDelay: '150ms'
+            }}>
                   <CardContent className="p-6">
                     <div className="flex flex-col items-center text-center space-y-4">
                       <div className="w-14 h-14 bg-gradient-primary rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
@@ -215,7 +212,9 @@ const About = () => {
 
               {/* Categories */}
               <Link to="/categories" className="block group">
-                <Card className="h-full border-border/50 shadow-card hover:shadow-card-hover transition-all duration-300 animate-fade-in hover:scale-[1.02] cursor-pointer" style={{ animationDelay: '300ms' }}>
+                <Card className="h-full border-border/50 shadow-card hover:shadow-card-hover transition-all duration-300 animate-fade-in hover:scale-[1.02] cursor-pointer" style={{
+              animationDelay: '300ms'
+            }}>
                   <CardContent className="p-6">
                     <div className="flex flex-col items-center text-center space-y-4">
                       <div className="w-14 h-14 bg-gradient-primary rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
@@ -238,7 +237,9 @@ const About = () => {
 
               {/* Referral System */}
               <Link to="/referral" className="block group">
-                <Card className="h-full border-border/50 shadow-card hover:shadow-card-hover transition-all duration-300 animate-fade-in hover:scale-[1.02] cursor-pointer" style={{ animationDelay: '450ms' }}>
+                <Card className="h-full border-border/50 shadow-card hover:shadow-card-hover transition-all duration-300 animate-fade-in hover:scale-[1.02] cursor-pointer" style={{
+              animationDelay: '450ms'
+            }}>
                   <CardContent className="p-6">
                     <div className="flex flex-col items-center text-center space-y-4">
                       <div className="w-14 h-14 bg-gradient-primary rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
@@ -261,7 +262,9 @@ const About = () => {
 
               {/* Direct Job Submission */}
               <Link to="/referral/submit" className="block group">
-                <Card className="h-full border-border/50 shadow-card hover:shadow-card-hover transition-all duration-300 animate-fade-in hover:scale-[1.02] cursor-pointer" style={{ animationDelay: '600ms' }}>
+                <Card className="h-full border-border/50 shadow-card hover:shadow-card-hover transition-all duration-300 animate-fade-in hover:scale-[1.02] cursor-pointer" style={{
+              animationDelay: '600ms'
+            }}>
                   <CardContent className="p-6">
                     <div className="flex flex-col items-center text-center space-y-4">
                       <div className="w-14 h-14 bg-gradient-primary rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
@@ -284,7 +287,9 @@ const About = () => {
 
               {/* Premium Features */}
               <Link to="/pricing" className="block group">
-                <Card className="h-full border-border/50 shadow-card hover:shadow-card-hover transition-all duration-300 animate-fade-in hover:scale-[1.02] cursor-pointer" style={{ animationDelay: '750ms' }}>
+                <Card className="h-full border-border/50 shadow-card hover:shadow-card-hover transition-all duration-300 animate-fade-in hover:scale-[1.02] cursor-pointer" style={{
+              animationDelay: '750ms'
+            }}>
                   <CardContent className="p-6">
                     <div className="flex flex-col items-center text-center space-y-4">
                       <div className="w-14 h-14 bg-gradient-primary rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
@@ -306,21 +311,7 @@ const About = () => {
               </Link>
 
               {/* Database content features if available */}
-              {featuresData.map((feature: any, index: number) => (
-                <Card key={index} className="h-full border-border/50 shadow-card hover:shadow-card-hover transition-all duration-300 animate-fade-in" style={{ animationDelay: `${(index + 6) * 150}ms` }}>
-                  <CardContent className="p-6">
-                    <div className="flex flex-col items-center text-center space-y-4">
-                      <div className="w-14 h-14 bg-gradient-primary rounded-xl flex items-center justify-center">
-                        <span className="text-2xl">{feature.icon}</span>
-                      </div>
-                      <div>
-                        <h3 className="text-lg font-bold text-foreground mb-2">{feature.title}</h3>
-                        <p className="text-sm text-muted-foreground leading-relaxed">{feature.description}</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+              {featuresData.map((feature: any, index: number) => {})}
             </div>
           </div>}
 
