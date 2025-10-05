@@ -549,10 +549,20 @@ const Companies = () => {
               </div>
             </div> : 
             <div className="flex items-center justify-center h-full">
-              <div className="text-center">
+              <div className="text-center max-w-2xl mx-auto px-4">
                 <Building className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-foreground mb-2">Şirkət seçin</h3>
-                <p className="text-muted-foreground">Şirkət haqqında ətraflı məlumat almaq üçün sol tərəfdən şirkət seçin</p>
+                <h3 className="text-lg font-semibold text-foreground mb-4">Azərbaycanda Aparıcı İşəgötürənlər</h3>
+                <div className="text-muted-foreground text-sm leading-relaxed space-y-3 text-left">
+                  <p>
+                    Platformamızda Azərbaycanın ən nüfuzlu və güvənilən <strong>şirkətləri</strong> təqdim edirik. Hər bir <strong>işəgötürən</strong> profili ilə tanış olaraq müxtəlif sahələrdə - IT, maliyyə, neft və qaz, tikinti, turizm, sağlamlıq və digər sektorlarda mövcud olan <strong>iş elanları</strong> və <strong>vakansiyalar</strong> haqqında məlumat əldə edə bilərsiniz.
+                  </p>
+                  <p>
+                    <strong>Karyera qurmaq</strong> istəyən namizədlər üçün şirkətlərin detallı məlumatları, şirkət mədəniyyəti, iş şəraiti və açıq <strong>iş imkanları</strong> barədə geniş informasiya təqdim edirik. Şirkətləri <Link to="/categories" className="text-primary hover:underline font-medium">kateqoriyalar</Link> üzrə araşdıra və <Link to="/about" className="text-primary hover:underline font-medium">haqqımızda</Link> səhifəmizdən xidmətlərimiz barədə ətraflı məlumat əldə edə bilərsiniz.
+                  </p>
+                  <p className="text-xs pt-2">
+                    Premium xüsusiyyətlər barədə məlumat üçün <Link to="/pricing" className="text-primary hover:underline">qiymətləndirmə</Link> səhifəmizə baxa bilərsiniz.
+                  </p>
+                </div>
               </div>
             </div>
           }
