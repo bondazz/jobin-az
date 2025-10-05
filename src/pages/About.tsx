@@ -7,6 +7,7 @@ import BottomNavigation from '@/components/BottomNavigation';
 import MobileHeader from '@/components/MobileHeader';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { Link } from 'react-router-dom';
 const About = () => {
   const [aboutData, setAboutData] = useState<any>({});
   const [loading, setLoading] = useState(true);
@@ -144,9 +145,19 @@ const About = () => {
               <CardTitle className="text-2xl text-center">{missionData.title}</CardTitle>
             </CardHeader>
             <CardContent className="text-center">
-              <p className="text-lg text-muted-foreground leading-relaxed max-w-4xl mx-auto">
-                {missionData.description}
-              </p>
+              <div className="space-y-4">
+                <p className="text-lg text-muted-foreground leading-relaxed max-w-4xl mx-auto">
+                  {missionData.description}
+                </p>
+                <div className="text-sm text-muted-foreground leading-relaxed max-w-4xl mx-auto space-y-3 pt-4 border-t border-border/30 mt-6">
+                  <p>
+                    Platformamız Azərbaycanda <strong>iş axtarışı</strong> prosesini sadələşdirmək və <strong>iş elanları</strong> ilə <strong>namizədlər</strong> arasında körpü yaratmaq məqsədi ilə fəaliyyət göstərir. Minlərlə <strong>vakansiya</strong>, yüzlərlə <strong>şirkət profili</strong> və müxtəlif sahələrdə <strong>iş imkanları</strong> təqdim edirik.
+                  </p>
+                  <p>
+                    Platformamızda IT, maliyyə, satış, marketinq, mühəndislik və digər peşə sahələrində <strong>iş təklifləri</strong> tapa bilərsiniz. <Link to="/categories" className="text-primary hover:underline font-medium">Kateqoriyalar</Link> səhifəmizdə müxtəlif sahələr üzrə <strong>iş elanlarını</strong> nəzərdən keçirə, <Link to="/companies" className="text-primary hover:underline font-medium">şirkətlər</Link> bölməsində aparıcı işəgötürənlərlə tanış ola və <Link to="/pricing" className="text-primary hover:underline font-medium">qiymətləndirmə</Link> səhifəmizdə premium xüsusiyyətlərimiz haqqında məlumat əldə edə bilərsiniz.
+                  </p>
+                </div>
+              </div>
             </CardContent>
           </Card>}
 
