@@ -176,11 +176,16 @@ const JobDetails = ({
             <AdBanner position="job_details" />
           </div>
           
-          <div className="space-y-3 mb-8">
-            <h2 className="text-2xl font-bold text-foreground">İş Təfərrüatları</h2>
-            <p className="text-muted-foreground max-w-md mx-auto">
-              Hərhansı bir iş elanına toxunaraq təfərrüatlı məlumat əldə edə bilərsiniz
-            </p>
+          <div className="space-y-3 mb-8 max-w-2xl mx-auto">
+            <h2 className="text-2xl font-bold text-foreground">Azərbaycanda İş Elanları və Vakansiyalar</h2>
+            <div className="text-muted-foreground text-sm leading-relaxed space-y-2 px-4">
+              <p>
+                Platformamızda minlərlə <strong>iş elanı</strong> və <strong>vakansiya</strong> təqdim olunur. Azərbaycanda <strong>iş axtarışı</strong> edən hər kəs üçün ən münasib iş imkanlarını bir yerdə toplamışıq. Müxtəlif sahələrdə - maliyyə, IT, satış, marketinq, mühəndislik, mühasibatlıq və digər peşə sahələrində <strong>iş təklifləri</strong> tapa bilərsiniz.
+              </p>
+              <p>
+                <strong>Karyera qurmaq</strong> istəyən namizədlər üçün hər gün yeni <strong>iş elanları</strong> əlavə edilir. Tam ştat, yarımştat və uzaqdan işləmək imkanları ilə müxtəlif <strong>vakansiyalar</strong> arasından seçim edə bilərsiniz. <Link to="/about" className="text-primary hover:underline font-medium">Haqqımızda</Link> səhifəmizdə platformamız və xidmətlərimiz barədə ətraflı məlumat əldə edə bilərsiniz.
+              </p>
+            </div>
           </div>
 
           {/* Interactive Job Workflow Illustration */}
