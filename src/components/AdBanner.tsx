@@ -75,13 +75,13 @@ const AdBanner: React.FC<AdBannerProps> = ({ position, className = "" }) => {
           {ad.link_url ? (
             <button
               onClick={() => handleAdClick(ad)}
-              className="w-full block hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg"
+              className="w-full h-[60px] block hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg overflow-hidden"
               aria-label={`Reklam: ${ad.title}`}
             >
               <img
                 src={ad.image_url}
                 alt={ad.title}
-                className="w-full h-auto rounded-lg shadow-sm hover:shadow-md transition-shadow max-w-[350px] max-h-[350px] mx-auto object-contain"
+                className="w-full h-full rounded-lg shadow-sm hover:shadow-md transition-shadow object-cover"
                 loading={position === 'header' || position === 'job_details' ? 'eager' : 'lazy'}
                 fetchPriority={position === 'header' ? 'high' : 'auto'}
                 decoding="async"
@@ -89,11 +89,11 @@ const AdBanner: React.FC<AdBannerProps> = ({ position, className = "" }) => {
               />
             </button>
           ) : (
-            <div className="w-full">
+            <div className="w-full h-[60px] overflow-hidden rounded-lg">
               <img
                 src={ad.image_url}
                 alt={ad.title}
-                className="w-full h-auto rounded-lg shadow-sm max-w-[350px] max-h-[350px] mx-auto object-contain"
+                className="w-full h-full rounded-lg shadow-sm object-cover"
                 loading={position === 'header' || position === 'job_details' ? 'eager' : 'lazy'}
                 fetchPriority={position === 'header' ? 'high' : 'auto'}
                 decoding="async"
