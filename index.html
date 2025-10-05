@@ -10,12 +10,12 @@
     
     <!-- Performance optimizations -->
     <link rel="dns-prefetch" href="//igrtzfvphltnoiwedbtz.supabase.co">
-    <link rel="preconnect" href="https://igrtzfvphltnoiwedbtz.supabase.co">
+    <link rel="preconnect" href="https://igrtzfvphltnoiwedbtz.supabase.co" crossorigin>
+    <link rel="dns-prefetch" href="//www.googletagmanager.com">
     
-    <!-- Preload critical resources -->
-    <link rel="preload" as="style" href="/src/index.css">
+    <!-- Preload critical resources for faster FCP -->
+    <link rel="modulepreload" href="/src/main.tsx">
     
-    <!-- Critical CSS will be inlined by Vite -->
     <title>Azərbaycanda İş Elanları və Vakansiyalar 2025 | Jooble</title>
     <meta name="description" content="Azərbaycanda iş axtarırsınız? Jooble.az-da minlərlə aktual vakansiya sizi gözləyir! Ən son iş elanlarını tapın və karyeranıza bu gün başlayın!" />
     <meta name="author" content="Jooble" />
@@ -72,14 +72,14 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-C0N2ELTLL8"></script>
+    <!-- Google Analytics - Deferred for better FCP -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-C0N2ELTLL8');
     </script>
+    <script defer src="https://www.googletagmanager.com/gtag/js?id=G-C0N2ELTLL8"></script>
     
     <!-- Structured Data -->
     <script type="application/ld+json">
