@@ -81,7 +81,7 @@ const AdBanner: React.FC<AdBannerProps> = ({ position, className = "" }) => {
               <img
                 src={ad.image_url}
                 alt={ad.title}
-                className="w-full h-auto rounded-lg shadow-sm hover:shadow-md transition-shadow"
+                className={`w-full h-auto rounded-lg shadow-sm hover:shadow-md transition-shadow ${position === 'job_details' ? 'max-w-[400px] max-h-[400px] mx-auto object-contain' : ''}`}
                 loading={position === 'header' || position === 'job_details' ? 'eager' : 'lazy'}
                 fetchPriority={position === 'header' ? 'high' : 'auto'}
                 decoding="async"
@@ -93,7 +93,7 @@ const AdBanner: React.FC<AdBannerProps> = ({ position, className = "" }) => {
               <img
                 src={ad.image_url}
                 alt={ad.title}
-                className="w-full h-auto rounded-lg shadow-sm"
+                className={`w-full h-auto rounded-lg shadow-sm ${position === 'job_details' ? 'max-w-[400px] max-h-[400px] mx-auto object-contain' : ''}`}
                 loading={position === 'header' || position === 'job_details' ? 'eager' : 'lazy'}
                 fetchPriority={position === 'header' ? 'high' : 'auto'}
                 decoding="async"
