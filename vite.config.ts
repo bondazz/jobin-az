@@ -26,6 +26,8 @@ export default defineConfig(({ command, mode }) => ({
     },
   },
   build: {
+    // Inline CSS into JS to eliminate render-blocking CSS
+    cssCodeSplit: false,
     rollupOptions: {
       output: {
         manualChunks: {
