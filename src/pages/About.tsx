@@ -36,7 +36,7 @@ const About = () => {
         // Keep within bounds 580-1458
         return Math.max(580, Math.min(1458, newValue));
       });
-    }, 2000);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, []);
