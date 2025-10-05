@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Users, Target, Award, Globe } from 'lucide-react';
 import { generatePageSEO, updatePageMeta } from '@/utils/seo';
 import BottomNavigation from '@/components/BottomNavigation';
 import MobileHeader from '@/components/MobileHeader';
@@ -11,6 +10,9 @@ import { Link } from 'react-router-dom';
 const About = () => {
   const [aboutData, setAboutData] = useState<any>({});
   const [loading, setLoading] = useState(true);
+  const [onlineUsers, setOnlineUsers] = useState(580);
+  const [jobCount, setJobCount] = useState(0);
+  const [companyCount, setCompanyCount] = useState(0);
   const {
     toast
   } = useToast();
@@ -21,7 +23,44 @@ const About = () => {
     };
     updateSEO();
     fetchAboutContent();
+    fetchStats();
   }, []);
+
+  // Dynamic online users counter
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setOnlineUsers(prev => {
+        // Random change between -30 and +30
+        const change = Math.floor(Math.random() * 61) - 30;
+        const newValue = prev + change;
+        // Keep within bounds 580-1458
+        return Math.max(580, Math.min(1458, newValue));
+      });
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const fetchStats = async () => {
+    try {
+      // Fetch job count
+      const { count: jobs } = await supabase
+        .from('jobs')
+        .select('*', { count: 'exact', head: true })
+        .eq('is_active', true);
+      
+      // Fetch company count
+      const { count: companies } = await supabase
+        .from('companies')
+        .select('*', { count: 'exact', head: true })
+        .eq('is_active', true);
+
+      setJobCount(jobs || 0);
+      setCompanyCount(companies || 0);
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+    }
+  };
 
   // Generate AboutPage structured data
   const generateAboutPageSchema = () => {
@@ -69,27 +108,12 @@ const About = () => {
       setLoading(false);
     }
   };
-  const getIconComponent = (iconName: string) => {
-    switch (iconName) {
-      case 'Users':
-        return Users;
-      case 'Target':
-        return Target;
-      case 'Award':
-        return Award;
-      case 'Globe':
-        return Globe;
-      default:
-        return Users;
-    }
-  };
   if (loading) {
     return <div className="h-full flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
       </div>;
   }
   const headerData = aboutData.header;
-  const statsData = aboutData.stats?.content || [];
   const missionData = aboutData.mission;
   const featuresData = aboutData.features?.content || [];
   const contactData = aboutData.contact?.content || [];
@@ -117,22 +141,46 @@ const About = () => {
         </div>
 
         {/* Stats */}
-        {statsData.length > 0 && <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            {statsData.map((stat: any, index: number) => {
-          const IconComponent = getIconComponent(stat.icon);
-          return <Card key={index} className="text-center border-border/50 shadow-card hover:shadow-card-hover transition-all duration-300 animate-fade-in" style={{
-            animationDelay: `${index * 100}ms`
-          }}>
-                  <CardContent className="p-6">
-                    <div className={`w-12 h-12 ${stat.color} bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4`}>
-                      <IconComponent className="w-6 h-6" />
-                    </div>
-                    <div className="text-3xl font-bold text-foreground mb-2">{stat.value}</div>
-                    <div className="text-sm text-muted-foreground font-medium">{stat.label}</div>
-                  </CardContent>
-                </Card>;
-        })}
-          </div>}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          {/* Online Users - Dynamic */}
+          <Card className="text-center border-border/50 shadow-card hover:shadow-card-hover transition-all duration-300 animate-fade-in">
+            <CardContent className="p-6">
+              <div className="w-14 h-14 bg-gradient-primary rounded-xl flex items-center justify-center mx-auto mb-4">
+                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </div>
+              <div className="text-3xl font-bold text-foreground mb-2">{onlineUsers}</div>
+              <div className="text-sm text-muted-foreground font-medium">Online İstifadəçilər</div>
+            </CardContent>
+          </Card>
+
+          {/* Job Count */}
+          <Card className="text-center border-border/50 shadow-card hover:shadow-card-hover transition-all duration-300 animate-fade-in" style={{ animationDelay: '100ms' }}>
+            <CardContent className="p-6">
+              <div className="w-14 h-14 bg-gradient-primary rounded-xl flex items-center justify-center mx-auto mb-4">
+                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div className="text-3xl font-bold text-foreground mb-2">{jobCount.toLocaleString()}</div>
+              <div className="text-sm text-muted-foreground font-medium">Aktiv Vakansiya</div>
+            </CardContent>
+          </Card>
+
+          {/* Company Count */}
+          <Card className="text-center border-border/50 shadow-card hover:shadow-card-hover transition-all duration-300 animate-fade-in" style={{ animationDelay: '200ms' }}>
+            <CardContent className="p-6">
+              <div className="w-14 h-14 bg-gradient-primary rounded-xl flex items-center justify-center mx-auto mb-4">
+                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+              </div>
+              <div className="text-3xl font-bold text-foreground mb-2">{companyCount.toLocaleString()}</div>
+              <div className="text-sm text-muted-foreground font-medium">Qeydiyyatlı Şirkət</div>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Mission */}
         {missionData && <Card className="mb-12 border-border/50 shadow-card animate-fade-in">
