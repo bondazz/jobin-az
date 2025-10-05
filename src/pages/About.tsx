@@ -261,7 +261,7 @@ const About = () => {
               </Link>
 
               {/* Direct Job Submission */}
-              <Link to="/referral/submit" className="block group">
+              <Link to="/add_job" className="block group">
                 <Card className="h-full border-border/50 shadow-card hover:shadow-card-hover transition-all duration-300 animate-fade-in hover:scale-[1.02] cursor-pointer" style={{
               animationDelay: '600ms'
             }}>
