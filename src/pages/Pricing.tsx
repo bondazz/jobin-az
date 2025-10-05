@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, Star, Zap, Crown } from 'lucide-react';
-import PremiumIcon from '@/components/ui/premium-icon';
+import { Check, Star, Zap, Crown, Briefcase, TrendingUp } from 'lucide-react';
 import { generatePageSEO, updatePageMeta } from '@/utils/seo';
 import BottomNavigation from '@/components/BottomNavigation';
 import MobileHeader from '@/components/MobileHeader';
@@ -121,14 +120,19 @@ const Pricing = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-16 xl:pt-8">
         {/* Header */}
         <div className="text-center mb-16 animate-fade-in">
-          <div className="flex items-center justify-center gap-2 mb-6">
-            <PremiumIcon size={40} />
-            <h1 className="text-5xl font-bold bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
-              Qiymət Planları
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <div className="p-3 bg-gradient-primary rounded-xl shadow-elegant">
+              <Briefcase className="w-8 h-8 text-primary-foreground" />
+            </div>
+            <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">
+              Qiymət Planları və Xidmətlər
             </h1>
+            <div className="p-3 bg-gradient-primary rounded-xl shadow-elegant">
+              <TrendingUp className="w-8 h-8 text-primary-foreground" />
+            </div>
           </div>
           <p className="text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
-            Azərbaycanda peşəkar işçi axtarışı üçün ideal platforma. <Link to="/vacancies" className="text-primary hover:underline font-semibold">Vakansiyalar</Link> yerləşdirin, iş elanlarınızı yayımlayın və ən yaxşı namizədləri sürətlə tapın. Effektiv işəgötürmə həlli ilə vaxt və büdcəyə qənaət edin.
+            Azərbaycanda peşəkar işçi axtarışı üçün ideal platforma. <Link to="/vacancies" className="text-primary hover:underline font-semibold transition-colors">Vakansiyalar</Link> yerləşdirin, iş elanlarınızı yayımlayın və ən yaxşı namizədləri sürətlə tapın. Effektiv işəgötürmə həlli ilə vaxt və büdcəyə qənaət edin.
           </p>
         </div>
 
