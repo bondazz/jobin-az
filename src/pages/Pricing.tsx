@@ -228,7 +228,7 @@ const Pricing = () => {
                 </h3>
                 <div className="space-y-4 text-muted-foreground leading-relaxed">
                   <p>
-                    <Link to="/vakancies" className="text-foreground font-bold hover:text-primary transition-colors">
+                    <Link to="/vacancies" className="text-foreground font-bold hover:text-primary transition-colors">
                       Jooble.az
                     </Link> rəsmi qeydiyyatdan keçmiş hüquqi şəxsdir və bütün ödənişlər 
                     bank köçürməsi ilə qəbul olunur. Xidmətlərimizə görə bütün vergi və rəsmi sənədlər qanunvericiliyə uyğun təqdim edilir.
