@@ -37,24 +37,25 @@ const About = () => {
         return Math.max(580, Math.min(1458, newValue));
       });
     }, 5000);
-
     return () => clearInterval(interval);
   }, []);
-
   const fetchStats = async () => {
     try {
       // Fetch job count
-      const { count: jobs } = await supabase
-        .from('jobs')
-        .select('*', { count: 'exact', head: true })
-        .eq('is_active', true);
-      
-      // Fetch company count
-      const { count: companies } = await supabase
-        .from('companies')
-        .select('*', { count: 'exact', head: true })
-        .eq('is_active', true);
+      const {
+        count: jobs
+      } = await supabase.from('jobs').select('*', {
+        count: 'exact',
+        head: true
+      }).eq('is_active', true);
 
+      // Fetch company count
+      const {
+        count: companies
+      } = await supabase.from('companies').select('*', {
+        count: 'exact',
+        head: true
+      }).eq('is_active', true);
       setJobCount(jobs || 0);
       setCompanyCount(companies || 0);
     } catch (error) {
@@ -156,7 +157,9 @@ const About = () => {
           </Card>
 
           {/* Job Count */}
-          <Card className="text-center border-border/50 shadow-card hover:shadow-card-hover transition-all duration-300 animate-fade-in" style={{ animationDelay: '100ms' }}>
+          <Card className="text-center border-border/50 shadow-card hover:shadow-card-hover transition-all duration-300 animate-fade-in" style={{
+          animationDelay: '100ms'
+        }}>
             <CardContent className="p-6">
               <div className="w-14 h-14 bg-gradient-primary rounded-xl flex items-center justify-center mx-auto mb-4">
                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -169,7 +172,9 @@ const About = () => {
           </Card>
 
           {/* Company Count */}
-          <Card className="text-center border-border/50 shadow-card hover:shadow-card-hover transition-all duration-300 animate-fade-in" style={{ animationDelay: '200ms' }}>
+          <Card className="text-center border-border/50 shadow-card hover:shadow-card-hover transition-all duration-300 animate-fade-in" style={{
+          animationDelay: '200ms'
+        }}>
             <CardContent className="p-6">
               <div className="w-14 h-14 bg-gradient-primary rounded-xl flex items-center justify-center mx-auto mb-4">
                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -177,7 +182,7 @@ const About = () => {
                 </svg>
               </div>
               <div className="text-3xl font-bold text-foreground mb-2">{companyCount.toLocaleString()}</div>
-              <div className="text-sm text-muted-foreground font-medium">Qeydiyyatlı Şirkət</div>
+              <div className="text-sm text-muted-foreground font-medium">Şirkət sayı</div>
             </CardContent>
           </Card>
         </div>
