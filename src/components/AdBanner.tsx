@@ -77,6 +77,7 @@ const AdBanner: React.FC<AdBannerProps> = ({ position, className = "" }) => {
               onClick={() => handleAdClick(ad)}
               className="w-full block hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg"
               aria-label={`Reklam: ${ad.title}`}
+              style={{ aspectRatio: '16/9' }}
             >
               <img
                 src={ad.image_url}
@@ -86,10 +87,12 @@ const AdBanner: React.FC<AdBannerProps> = ({ position, className = "" }) => {
                 fetchPriority={position === 'header' || position === 'job_listing' ? 'high' : 'auto'}
                 decoding="async"
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                width="1600"
+                height="900"
               />
             </button>
           ) : (
-            <div className="w-full">
+            <div className="w-full" style={{ aspectRatio: '16/9' }}>
               <img
                 src={ad.image_url}
                 alt={ad.title}
@@ -98,6 +101,8 @@ const AdBanner: React.FC<AdBannerProps> = ({ position, className = "" }) => {
                 fetchPriority={position === 'header' || position === 'job_listing' ? 'high' : 'auto'}
                 decoding="async"
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                width="1600"
+                height="900"
               />
             </div>
           )}
