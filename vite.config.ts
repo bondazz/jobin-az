@@ -26,8 +26,6 @@ export default defineConfig(({ command, mode }) => ({
     },
   },
   build: {
-    // Inline CSS into JS to eliminate render-blocking CSS
-    cssCodeSplit: false,
     rollupOptions: {
       output: {
         manualChunks: {
@@ -52,8 +50,7 @@ export default defineConfig(({ command, mode }) => ({
         }
       }
     },
-    // Target modern browsers to avoid unnecessary polyfills
-    target: ['es2020', 'edge88', 'firefox78', 'chrome87', 'safari14'],
+    target: 'esnext',
     minify: mode === 'production' ? 'esbuild' : false
   }
 }));

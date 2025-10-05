@@ -15,8 +15,6 @@ const MobileHeader = ({ showCloseButton = false, onClose }: MobileHeaderProps) =
         <img 
           src="/lovable-uploads/e888818f-70b8-405b-a5e8-f62f8e842525.png" 
           alt="Jooble" 
-          width="105"
-          height="27"
           className="object-contain dark:brightness-0 dark:invert" 
           style={{ width: '105px', height: '27px' }}
         />
