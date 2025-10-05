@@ -3,18 +3,22 @@
 const SITEMAP_ENDPOINT = 'https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap';
 
 self.addEventListener('install', (event) => {
-  self.skipWaiting();
+  // Install immediately without waiting
+  event.waitUntil(self.skipWaiting());
 });
 
 self.addEventListener('activate', (event) => {
+  // Activate immediately and claim clients
   event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => caches.delete(cacheName))
-      );
-    }).then(() => {
-      return self.clients.claim();
-    })
+    Promise.all([
+      self.clients.claim(),
+      // Clear old caches if any
+      caches.keys().then(cacheNames => {
+        return Promise.all(
+          cacheNames.map(cacheName => caches.delete(cacheName))
+        );
+      })
+    ])
   );
 });
 
