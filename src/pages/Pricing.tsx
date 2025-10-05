@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -223,7 +224,9 @@ const Pricing = () => {
                 </h3>
                 <div className="space-y-4 text-muted-foreground leading-relaxed">
                   <p>
-                    <strong className="text-foreground">Jooble.az</strong> rəsmi qeydiyyatdan keçmiş hüquqi şəxsdir və bütün ödənişlər 
+                    <Link to="/vakancies" className="text-foreground font-bold hover:text-primary transition-colors">
+                      Jooble.az
+                    </Link> rəsmi qeydiyyatdan keçmiş hüquqi şəxsdir və bütün ödənişlər 
                     bank köçürməsi ilə qəbul olunur. Xidmətlərimizə görə bütün vergi və rəsmi sənədlər qanunvericiliyə uyğun təqdim edilir.
                   </p>
                   <p>
