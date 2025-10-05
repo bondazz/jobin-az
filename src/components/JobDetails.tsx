@@ -187,7 +187,7 @@ const JobDetails = ({
           <div className="flex justify-center">
             <svg width="800" height="400" viewBox="20 20 1060 546" fill="none" xmlns="http://www.w3.org/2000/svg" 
                  style={{"--accent":"#FF6A1A", "--brand":"#2B8CFF", "--ink":"#1f2937", "--inkWeak":"#64748b", "--card":"rgba(0,0,0,.06)", "--card2":"rgba(0,0,0,.10)"} as React.CSSProperties} 
-                 aria-hidden="true" className="w-full max-w-4xl">
+                 aria-hidden="true" className="hidden w-full max-w-4xl">
               <defs>
                 <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
                   <feDropShadow dx="0" dy="10" stdDeviation="18" floodOpacity=".12"/>
