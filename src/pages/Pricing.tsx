@@ -128,7 +128,7 @@ const Pricing = () => {
             </h1>
           </div>
           <p className="text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
-            İşəgötürənlər üçün ideal həll: vakansiyalarınızı yerləşdirin, ən uyğun namizədləri tez tapın. Effektiv elanlarla vaxtınıza və büdcənizə qənaət edin.
+            Azərbaycanda peşəkar işçi axtarışı üçün ideal platforma. <Link to="/vakancies" className="text-primary hover:underline font-semibold">Vakansiyalar</Link> yerləşdirin, iş elanlarınızı yayımlayın və ən yaxşı namizədləri sürətlə tapın. Effektiv işəgötürmə həlli ilə vaxt və büdcəyə qənaət edin.
           </p>
         </div>
 
