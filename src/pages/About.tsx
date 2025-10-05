@@ -166,20 +166,161 @@ const About = () => {
             <h2 className="text-3xl font-bold text-center mb-8 text-foreground">
               {aboutData.features?.title || 'Nə Təklif Edirik'}
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {featuresData.map((feature: any, index: number) => <Card key={index} className="border-border/50 shadow-card hover:shadow-card-hover transition-all duration-300 animate-fade-in" style={{
-            animationDelay: `${index * 150}ms`
-          }}>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Job Listings */}
+              <Link to="/" className="block group">
+                <Card className="h-full border-border/50 shadow-card hover:shadow-card-hover transition-all duration-300 animate-fade-in hover:scale-[1.02] cursor-pointer">
                   <CardContent className="p-6">
-                    <div className="flex items-start gap-4">
-                      <div className="text-3xl">{feature.icon}</div>
+                    <div className="flex flex-col items-center text-center space-y-4">
+                      <div className="w-14 h-14 bg-gradient-primary rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                      </div>
                       <div>
-                        <h3 className="text-xl font-bold text-foreground mb-2">{feature.title}</h3>
-                        <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
+                        <h3 className="text-lg font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+                          İş Elanları və Vakansiyalar
+                        </h3>
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                          Minlərlə aktiv <strong>iş elanı</strong> və <strong>vakansiya</strong> arasından sizə uyğun olanı tapın və müraciət edin.
+                        </p>
                       </div>
                     </div>
                   </CardContent>
-                </Card>)}
+                </Card>
+              </Link>
+
+              {/* Companies */}
+              <Link to="/companies" className="block group">
+                <Card className="h-full border-border/50 shadow-card hover:shadow-card-hover transition-all duration-300 animate-fade-in hover:scale-[1.02] cursor-pointer" style={{ animationDelay: '150ms' }}>
+                  <CardContent className="p-6">
+                    <div className="flex flex-col items-center text-center space-y-4">
+                      <div className="w-14 h-14 bg-gradient-primary rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+                          Şirkət Profilleri
+                        </h3>
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                          Yüzlərlə <strong>şirkət profili</strong> ilə tanış olun və işəgötürənlər haqqında ətraflı məlumat əldə edin.
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+
+              {/* Categories */}
+              <Link to="/categories" className="block group">
+                <Card className="h-full border-border/50 shadow-card hover:shadow-card-hover transition-all duration-300 animate-fade-in hover:scale-[1.02] cursor-pointer" style={{ animationDelay: '300ms' }}>
+                  <CardContent className="p-6">
+                    <div className="flex flex-col items-center text-center space-y-4">
+                      <div className="w-14 h-14 bg-gradient-primary rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+                          Kateqoriya üzrə Axtarış
+                        </h3>
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                          Müxtəlif <strong>iş sahələri</strong> və <strong>kateqoriyalar</strong> üzrə axtarış edin və uyğun vakansiyaları tapın.
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+
+              {/* Referral System */}
+              <Link to="/referral" className="block group">
+                <Card className="h-full border-border/50 shadow-card hover:shadow-card-hover transition-all duration-300 animate-fade-in hover:scale-[1.02] cursor-pointer" style={{ animationDelay: '450ms' }}>
+                  <CardContent className="p-6">
+                    <div className="flex flex-col items-center text-center space-y-4">
+                      <div className="w-14 h-14 bg-gradient-primary rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+                          Referal Sistemi
+                        </h3>
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                          Platformamızı paylaşın, <strong>referal linkləri</strong> ilə qazanc əldə edin və <strong>passiv gəlir</strong> əldə edin.
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+
+              {/* Direct Job Submission */}
+              <Link to="/referral/submit" className="block group">
+                <Card className="h-full border-border/50 shadow-card hover:shadow-card-hover transition-all duration-300 animate-fade-in hover:scale-[1.02] cursor-pointer" style={{ animationDelay: '600ms' }}>
+                  <CardContent className="p-6">
+                    <div className="flex flex-col items-center text-center space-y-4">
+                      <div className="w-14 h-14 bg-gradient-primary rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+                          Birbaşa Elan Müraciəti
+                        </h3>
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                          Sayt üzərindən birbaşa <strong>iş elanı göndərin</strong>, şirkətinizin vakansiyalarını dərc etdirin və namizədlər tapın.
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+
+              {/* Premium Features */}
+              <Link to="/pricing" className="block group">
+                <Card className="h-full border-border/50 shadow-card hover:shadow-card-hover transition-all duration-300 animate-fade-in hover:scale-[1.02] cursor-pointer" style={{ animationDelay: '750ms' }}>
+                  <CardContent className="p-6">
+                    <div className="flex flex-col items-center text-center space-y-4">
+                      <div className="w-14 h-14 bg-gradient-primary rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+                          Premium Xüsusiyyətlər
+                        </h3>
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                          <strong>Premium üzvlük</strong> ilə əlavə imkanlardan yararlanın və iş axtarışınızı daha effektiv edin.
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+
+              {/* Database content features if available */}
+              {featuresData.map((feature: any, index: number) => (
+                <Card key={index} className="h-full border-border/50 shadow-card hover:shadow-card-hover transition-all duration-300 animate-fade-in" style={{ animationDelay: `${(index + 6) * 150}ms` }}>
+                  <CardContent className="p-6">
+                    <div className="flex flex-col items-center text-center space-y-4">
+                      <div className="w-14 h-14 bg-gradient-primary rounded-xl flex items-center justify-center">
+                        <span className="text-2xl">{feature.icon}</span>
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-foreground mb-2">{feature.title}</h3>
+                        <p className="text-sm text-muted-foreground leading-relaxed">{feature.description}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </div>}
 
