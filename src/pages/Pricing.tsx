@@ -131,9 +131,9 @@ const Pricing = () => {
               <TrendingUp className="w-8 h-8 text-primary-foreground" />
             </div>
           </div>
-          <p className="text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
+          <h2 className="text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed font-normal">
             Azərbaycanda peşəkar işçi axtarışı üçün ideal platforma. <Link to="/vacancies" className="text-primary hover:underline font-semibold transition-colors">Vakansiyalar</Link> yerləşdirin, iş elanlarınızı yayımlayın və ən yaxşı namizədləri sürətlə tapın. Effektiv işəgötürmə həlli ilə vaxt və büdcəyə qənaət edin.
-          </p>
+          </h2>
         </div>
 
         {/* Pricing Cards */}
