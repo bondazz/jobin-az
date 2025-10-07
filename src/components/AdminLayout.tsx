@@ -13,7 +13,8 @@ import {
   Menu,
   X,
   DollarSign,
-  Megaphone
+  Megaphone,
+  Globe
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -61,6 +62,11 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
       name: 'Reklamlar',
       path: '/admin/advertisements',
       icon: Megaphone,
+    },
+    {
+      name: 'Google İndeksləmə',
+      path: '/admin/google-indexing',
+      icon: Globe,
     },
     {
       name: 'Tənzimləmələr',

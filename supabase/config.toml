@@ -20,3 +20,6 @@ verify_jwt = false
 
 [functions.save-sitemap]
 verify_jwt = false
+
+[functions.google-indexing]
+verify_jwt = true
