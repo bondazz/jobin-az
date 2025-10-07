@@ -95,7 +95,12 @@ const GoogleIndexing = () => {
       });
 
       if (response.error) {
+        console.error("Response error:", response.error);
         throw response.error;
+      }
+
+      if (!response.data) {
+        throw new Error("Cavab məlumatı tapılmadı");
       }
 
       setResults(response.data.results);
@@ -104,7 +109,11 @@ const GoogleIndexing = () => {
       toast.success(`${successCount} / ${urls.length} URL uğurla indeksə göndərildi`);
     } catch (error: any) {
       console.error("Indexing error:", error);
-      toast.error(error.message || "İndeksləmə zamanı xəta baş verdi");
+      const errorMessage = error.message || "İndeksləmə zamanı xəta baş verdi";
+      toast.error(errorMessage, {
+        description: "Zəhmət olmasa konsol loglarını yoxlayın və ya Google məlumatlarınızı yenidən yoxlayın",
+        duration: 5000,
+      });
     } finally {
       setLoading(false);
     }

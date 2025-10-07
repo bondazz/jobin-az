@@ -75,13 +75,23 @@ serve(async (req) => {
 
     // Import crypto key
     const encoder = new TextEncoder();
-    const privateKeyData = privateKey.replace(/\\n/g, '\n');
+    
+    // Handle both escaped and actual newlines
+    let privateKeyData = privateKey;
+    if (privateKeyData.includes('\\n')) {
+      privateKeyData = privateKeyData.replace(/\\n/g, '\n');
+    }
+    
+    // Remove PEM header/footer and whitespace
     const pemHeader = '-----BEGIN PRIVATE KEY-----';
     const pemFooter = '-----END PRIVATE KEY-----';
     const pemContents = privateKeyData
       .replace(pemHeader, '')
       .replace(pemFooter, '')
-      .replace(/\s/g, '');
+      .trim()
+      .replace(/\s+/g, '');
+    
+    console.log('PEM contents length:', pemContents.length);
     
     const binaryDer = Uint8Array.from(atob(pemContents), c => c.charCodeAt(0));
     
