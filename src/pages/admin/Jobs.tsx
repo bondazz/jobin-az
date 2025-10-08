@@ -24,7 +24,8 @@ import {
   Clock,
   DollarSign,
   RefreshCw,
-  Calendar
+  Calendar,
+  Globe
 } from 'lucide-react';
 
 interface Job {
@@ -425,6 +426,41 @@ export default function AdminJobs() {
     setIsDialogOpen(true);
   };
 
+  const handleGoogleIndex = async (job: Job) => {
+    try {
+      setLoading(true);
+      const jobUrl = `https://jooble.az/vacancies/${job.slug}`;
+      
+      const { data, error } = await supabase.functions.invoke('google-indexing', {
+        body: { 
+          action: 'batch',
+          urls: [jobUrl]
+        }
+      });
+
+      if (error) throw error;
+
+      const result = data?.results?.[0];
+      if (result?.success) {
+        toast({
+          title: "Uğurlu!",
+          description: `Vakansiya Google-a indexləmə üçün göndərildi`,
+        });
+      } else {
+        throw new Error(result?.error || 'İndeksləmə uğursuz oldu');
+      }
+    } catch (error: any) {
+      console.error('Google indexing error:', error);
+      toast({
+        title: "Xəta",
+        description: error.message || "İndeksləmə zamanı xəta baş verdi",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleDelete = async (id: string) => {
     if (!confirm('Bu vakansiyanı silmək istədiyinizə əminsiniz?')) return;
 
@@ -805,6 +841,14 @@ export default function AdminJobs() {
                           <RefreshCw className="h-4 w-4" />
                         </Button>
                       )}
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        onClick={() => handleGoogleIndex(job)}
+                        title="Google-a indexləmə üçün göndər"
+                      >
+                        <Globe className="h-4 w-4" />
+                      </Button>
                       <Button size="sm" variant="outline" onClick={() => handleEdit(job)}>
                         <Edit className="h-4 w-4" />
                       </Button>
