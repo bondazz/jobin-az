@@ -11,8 +11,10 @@ import AdminLayout from '@/components/AdminLayout';
 
 const AdminSitemap = () => {
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isGeneratingNew, setIsGeneratingNew] = useState(false);
   const [lastGenerated, setLastGenerated] = useState<Date | null>(null);
   const [sitemapData, setSitemapData] = useState<any>(null);
+  const [newSitemapStats, setNewSitemapStats] = useState<any>(null);
   const [manualXmlContent, setManualXmlContent] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
@@ -89,6 +91,36 @@ const AdminSitemap = () => {
 
   const openGoogleSearchConsole = () => {
     window.open('https://search.google.com/search-console', '_blank');
+  };
+
+  const generateNewSitemap = async () => {
+    setIsGeneratingNew(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('indexnew');
+
+      if (error) throw error;
+
+      if (data?.success) {
+        setNewSitemapStats(data.stats);
+        setLastGenerated(new Date());
+        
+        toast({
+          title: "Sitemap uğurla yaradıldı!",
+          description: `${data.stats.totalUrls} link əlavə edildi`,
+        });
+      } else {
+        throw new Error(data?.error || 'Sitemap yaratma uğursuz oldu');
+      }
+    } catch (error: any) {
+      console.error('Error generating new sitemap:', error);
+      toast({
+        title: "Xəta baş verdi",
+        description: error.message || "Sitemap yaratma zamanı xəta baş verdi",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGeneratingNew(false);
+    }
   };
 
   const saveSitemap = async () => {
@@ -214,6 +246,126 @@ const AdminSitemap = () => {
         </Card>
 
         <div className="grid gap-6 md:grid-cols-2">
+          {/* New Sitemap Generator Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <RefreshCw className="h-5 w-5" />
+                Yeni Sitemap Generatoru
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  Bütün linkləri ayrı-ayrı sitemap fayllarına toplayır və storage-a yükləyir
+                </p>
+                {lastGenerated && newSitemapStats && (
+                  <p className="text-xs text-muted-foreground">
+                    Son yaradılma: {lastGenerated.toLocaleString('az-AZ')}
+                  </p>
+                )}
+              </div>
+              
+              <Button 
+                onClick={generateNewSitemap} 
+                disabled={isGeneratingNew}
+                className="w-full"
+              >
+                {isGeneratingNew ? (
+                  <>
+                    <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                    Yaradılır...
+                  </>
+                ) : (
+                  <>
+                    <RefreshCw className="mr-2 h-4 w-4" />
+                    Sitemap Yarat
+                  </>
+                )}
+              </Button>
+
+              <Separator />
+
+              <div className="space-y-2">
+                <Button 
+                  variant="outline" 
+                  onClick={() => window.open('/sitemap_index.xml', '_blank')}
+                  className="w-full"
+                >
+                  <ExternalLink className="mr-2 h-4 w-4" />
+                  sitemap_index.xml
+                </Button>
+                
+                <Button 
+                  variant="outline" 
+                  onClick={() => window.open('/sitemap_static.xml', '_blank')}
+                  className="w-full"
+                >
+                  <ExternalLink className="mr-2 h-4 w-4" />
+                  sitemap_static.xml
+                </Button>
+
+                <Button 
+                  variant="outline" 
+                  onClick={() => window.open('/sitemap_categories.xml', '_blank')}
+                  className="w-full"
+                >
+                  <ExternalLink className="mr-2 h-4 w-4" />
+                  sitemap_categories.xml
+                </Button>
+
+                <Button 
+                  variant="outline" 
+                  onClick={() => window.open('/sitemap_companies.xml', '_blank')}
+                  className="w-full"
+                >
+                  <ExternalLink className="mr-2 h-4 w-4" />
+                  sitemap_companies.xml
+                </Button>
+
+                <Button 
+                  variant="outline" 
+                  onClick={() => window.open('/sitemap_jobs.xml', '_blank')}
+                  className="w-full"
+                >
+                  <ExternalLink className="mr-2 h-4 w-4" />
+                  sitemap_jobs.xml
+                </Button>
+              </div>
+
+              {newSitemapStats && (
+                <>
+                  <Separator />
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-semibold">Yaradılan Fayllar:</h4>
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div>
+                        <p className="font-medium">{newSitemapStats.staticPages}</p>
+                        <p className="text-muted-foreground">Statik Səhifələr</p>
+                      </div>
+                      <div>
+                        <p className="font-medium">{newSitemapStats.categories}</p>
+                        <p className="text-muted-foreground">Kateqoriyalar</p>
+                      </div>
+                      <div>
+                        <p className="font-medium">{newSitemapStats.companies}</p>
+                        <p className="text-muted-foreground">Şirkət Səhifələri</p>
+                      </div>
+                      <div>
+                        <p className="font-medium">{newSitemapStats.jobs}</p>
+                        <p className="text-muted-foreground">İş Elanları</p>
+                      </div>
+                      <div className="col-span-2">
+                        <p className="font-bold text-lg">{newSitemapStats.totalUrls}</p>
+                        <p className="text-muted-foreground">Ümumi URL</p>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+            </CardContent>
+          </Card>
+
           {/* Unified Sitemap Generator Card */}
           <Card>
             <CardHeader>

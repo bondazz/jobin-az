@@ -11,6 +11,10 @@
 /sitemapjooble.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemapjooble.xml 200
 /sitemap-static.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap-static.xml 200
 /sitemap-categories.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap-categories.xml 200
+/sitemap_static.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap_static.xml 200
+/sitemap_categories.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap_categories.xml 200
+/sitemap_companies.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap_companies.xml 200
+/sitemap_jobs.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap_jobs.xml 200
 
 # Chunked sitemaps
 /sitemap-jobs-:page.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap-jobs-:page.xml 200
