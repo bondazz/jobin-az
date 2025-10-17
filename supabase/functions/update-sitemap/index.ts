@@ -67,10 +67,11 @@ Deno.serve(async (req) => {
       console.warn('⚠️ Delete warning:', deleteError.message)
     }
 
-    // Yeni faylı yüklə
+// Yeni faylı yüklə (Blob kimi)
+    const xmlBlob = new Blob([xmlContent], { type: 'application/xml' });
     const { error: uploadError } = await supabase.storage
       .from('sitemaps')
-      .upload(fileName, xmlContent, {
+      .upload(fileName, xmlBlob, {
         contentType: 'application/xml',
         cacheControl: '3600',
         upsert: true
