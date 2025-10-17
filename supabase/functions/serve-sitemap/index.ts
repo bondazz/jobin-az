@@ -133,7 +133,8 @@ serve(async (req) => {
       'sitemap_static.xml',
       'sitemap_categories.xml',
       'sitemap_companies.xml',
-      'sitemap_jobs.xml'
+      'sitemap_jobs.xml',
+      'sitemap_new.xml'
     ];
     
     const effectiveStoragePath = storagePath || (sitemapFiles.includes(filename) ? filename : undefined);
