@@ -1,20 +1,13 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
 
 const NotFound = () => {
   const location = useLocation();
-  const navigate = useNavigate();
 
   useEffect(() => {
-    // Only log and redirect for actual page routes, not asset files
-    console.error(
-      "404 Error: User attempted to access non-existent route:",
-      location.pathname
-    );
-    
-    // Redirect to home page after logging the error
-    navigate("/", { replace: true });
-  }, [location.pathname, navigate]);
+    // Log only; do NOT auto-redirect. Keep user on 404 page to avoid unexpected redirects (e.g., for sitemap and XML paths).
+    console.error("404 Error: User attempted to access non-existent route:", location.pathname);
+  }, [location.pathname]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
