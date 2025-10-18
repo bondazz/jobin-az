@@ -4,12 +4,31 @@ const SitemapNew = () => {
   useEffect(() => {
     const loadAndRenderXML = async () => {
       const renderXML = (xml: string) => {
-        const blob = new Blob([xml], { type: 'application/xml; charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const html = `<!DOCTYPE html><html lang="az"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Sitemap New</title><link rel="canonical" href="/sitemap_new.xml"></head><body style="margin:0"><iframe src="${url}" style="border:0;width:100vw;height:100vh;display:block"></iframe><script>const u='${url}';window.addEventListener('load',()=>{setTimeout(()=>URL.revokeObjectURL(u),5000);});</script></body></html>`;
+        // Set proper content type and render XML directly
+        const html = `<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sitemap</title>
+  <link rel="canonical" href="https://jooble.az/sitemap_new.xml">
+</head>
+<body style="margin:0;padding:0">
+  <pre style="margin:0;padding:20px;font-family:monospace;white-space:pre-wrap;word-wrap:break-word">${xml.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
+</body>
+</html>`;
+        
+        // Replace current document
         document.open();
         document.write(html);
         document.close();
+        
+        // Set proper content type header
+        if (document.contentType !== 'application/xml') {
+          const blob = new Blob([xml], { type: 'application/xml; charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          window.location.replace(url);
+        }
       };
 
       // 1) Try same-origin path first (ideal when _redirects works)
