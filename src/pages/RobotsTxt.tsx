@@ -60,10 +60,11 @@ Disallow: /_next/
 Disallow: /static/
 
 # Sitemaps
-Sitemap: https://jooble.az/sitemapjooble.xml
+Sitemap: https://storage.jooble.az/public/sitemap.xml
+Sitemap: https://storage.jooble.az/sitemap.xml
 
 # Host declaration
-Host: https://jooble.az`}
+Host: jooble.az`}
     </pre>
   );
 };
