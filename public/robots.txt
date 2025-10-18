@@ -1,99 +1,12 @@
-# Robots.txt for jooble.az
-# SEO optimized configuration
+# Xos geldin
 
-# Allow all crawlers access to all content
 User-agent: *
 Allow: /
 
-# Specific crawler permissions
-User-agent: Googlebot
-Allow: /
-Crawl-delay: 1
-
-User-agent: Bingbot
-Allow: /
-Crawl-delay: 1
-
-User-agent: Yandexbot
-Allow: /
-Crawl-delay: 1
-
-# --- OpenAI və əlaqəli ---
-User-agent: GPTBot
-Allow: /
-User-agent: OAI-SearchBot
-Allow: /
-User-agent: ChatGPT-User
-Allow: /
-User-agent: Google-Extended
-Allow: /
-
-# --- Anthropic (Claude) ---
-User-agent: anthropic-ai
-Allow: /
-
-# --- Perplexity ---
-User-agent: PerplexityBot
-Allow: /
-
-# --- Common Crawl ---
-User-agent: CCBot
-Allow: /
-
-# --- Neeva / You.com / Kagi / Brave ---
-User-agent: YouBot
-Allow: /
-User-agent: KagiBot
-Allow: /
-User-agent: NeevaBot
-Allow: /
-User-agent: BraveBot
-Allow: /
-
-# --- Sosial şəbəkələr (meta preview üçün) ---
-User-agent: facebookexternalhit
-Allow: /
-User-agent: WhatsApp
-Allow: /
-User-agent: snapchat
-Allow: /
-User-agent: TelegramBot
-Allow: /
-User-agent: Twitterbot
-Allow: /
-User-agent: LinkedInBot
-Allow: /
-
-# --- Digər məşhur AI data toplayıcılar ---
-User-agent: Applebot
-Allow: /
-User-agent: Applebot-Extended
-Allow: /
-User-agent: AmazonBot
-Allow: /
-User-agent: Bytespider
-Allow: /
-User-agent: Baiduspider
-Allow: /
-User-agent: Sogou spider
-Allow: /
-User-agent: FriendlyCrawler
-Allow: /
-User-agent: cohere-training-data-crawler
-Allow: /
-User-agent: img2dataset
-Allow: /
-
-# Prevent crawling of admin areas
-User-agent: *
-Disallow: /admin/
-Disallow: /api/
-Disallow: /_next/
-Disallow: /static/
-
-# Sitemaps
+# Sitemap location
 Sitemap: https://storage.jooble.az/public/sitemap.xml
-Sitemap: https://storage.jooble.az/sitemap.xml
 
 # Host declaration
 Host: jooble.az
+
+# Yaxshi yol
