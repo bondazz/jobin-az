@@ -25,12 +25,12 @@ serve(async (req) => {
   const page = parseInt(url.searchParams.get("page") || "0");
 
   try {
-    // Get total count of active jobs
+    // Get total count of active jobs (including null expiration dates)
     const { count } = await supabase
       .from("jobs")
       .select("id", { count: "exact", head: true })
       .eq("is_active", true)
-      .gt("expiration_date", new Date().toISOString());
+      .or(`expiration_date.is.null,expiration_date.gt.${new Date().toISOString()}`);
 
     const totalJobs = count || 0;
     const totalPages = Math.max(1, Math.ceil(totalJobs / PAGE_SIZE));
@@ -45,7 +45,7 @@ serve(async (req) => {
       for (let p = 1; p <= totalPages; p++) {
         xml += `  <sitemap>\n`;
         xml += `    <loc>${SITE_URL}/sitemap_job.xml?page=${p}</loc>\n`;
-        xml += `    <lastmod>${new Date().toISOString()}</lastmod>\n`;
+        xml += `    <lastmod>${new Date().toISOString().split('.')[0]}Z</lastmod>\n`;
         xml += `  </sitemap>\n`;
       }
 
@@ -68,7 +68,7 @@ serve(async (req) => {
       .from("jobs")
       .select("slug, updated_at")
       .eq("is_active", true)
-      .gt("expiration_date", new Date().toISOString())
+      .or(`expiration_date.is.null,expiration_date.gt.${new Date().toISOString()}`)
       .order("created_at", { ascending: false })
       .range(from, to);
 
@@ -81,9 +81,15 @@ serve(async (req) => {
     xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
 
     for (const job of jobs || []) {
+      if (!job.slug) continue;
+      
+      const lastmod = job.updated_at 
+        ? new Date(job.updated_at).toISOString().split('.')[0] + 'Z'
+        : new Date().toISOString().split('.')[0] + 'Z';
+      
       xml += `  <url>\n`;
-      xml += `    <loc>${SITE_URL}/?job=${job.slug}</loc>\n`;
-      xml += `    <lastmod>${new Date(job.updated_at).toISOString()}</lastmod>\n`;
+      xml += `    <loc>${SITE_URL}/?job=${encodeURIComponent(job.slug)}</loc>\n`;
+      xml += `    <lastmod>${lastmod}</lastmod>\n`;
       xml += `    <changefreq>daily</changefreq>\n`;
       xml += `    <priority>0.8</priority>\n`;
       xml += `  </url>\n`;
