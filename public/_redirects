@@ -5,7 +5,7 @@
 
 /sitemap.xml https://igrtzfvphltnoiwedbtz.supabase.co/storage/v1/object/public/sitemaps/sitemap.xml 200
 /sitemaps.xml https://igrtzfvphltnoiwedbtz.supabase.co/storage/v1/object/public/sitemaps/sitemaps.xml 200
-/sitemap_new.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap_new.xml 200
+/sitemap_new.xml https://igrtzfvphltnoiwedbtz.supabase.co/storage/v1/object/public/sitemaps/sitemap_new.xml 200
 /sitemap1.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap-xml 200
 /sitemap_index.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap_index.xml 200
 /sitemap_main.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap_main.xml 200
