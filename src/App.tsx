@@ -26,7 +26,6 @@ const Sitemap = lazy(() => import("./pages/Sitemap"));
 const SitemapJooble = lazy(() => import("./pages/SitemapJooble"));
 const SitemapIndex = lazy(() => import("./pages/SitemapIndex"));
 const SitemapMain = lazy(() => import("./pages/SitemapMain"));
-const SitemapNew = lazy(() => import("./pages/SitemapNew"));
 const RobotsTxt = lazy(() => import("./pages/RobotsTxt"));
 
 // Admin components - definitely lazy load
@@ -199,11 +198,6 @@ const App = () => (
           <Route path="/admin/google-indexing" element={
             <Suspense fallback={<LoadingFallback />}>
               <AdminGoogleIndexing />
-            </Suspense>
-          } />
-          <Route path="/sitemap_new.xml" element={
-            <Suspense fallback={<LoadingFallback />}>
-              <SitemapNew />
             </Suspense>
           } />
           <Route path="*" element={
