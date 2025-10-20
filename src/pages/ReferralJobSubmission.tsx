@@ -208,7 +208,7 @@ const ReferralJobSubmission = () => {
             <div className="max-w-4xl mx-auto">
               <Card className="shadow-xl border-0 bg-card/95 backdrop-blur-sm">
                 <CardHeader className="bg-gradient-to-r from-primary/10 via-accent/5 to-primary/10">
-                  <CardTitle className="text-2xl font-bold text-center text-foreground">Elan Məlumatları</CardTitle>
+                  <CardTitle className="text-2xl font-bold text-center text-foreground">İş Elanı Yerləşdir</CardTitle>
                   <p className="text-muted-foreground text-center mt-2">
                     Aşağıdakı formu dolduraraq iş elanınızı yerləşdirə bilərsiniz
                   </p>
