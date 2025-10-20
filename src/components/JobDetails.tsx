@@ -190,7 +190,7 @@ const JobDetails = ({
           </div>
           
           <div className="space-y-3 mb-8 max-w-2xl mx-auto">
-            <h2 className="text-2xl font-bold text-foreground">Azərbaycanda İş Elanları və Vakansiyalar</h2>
+            <h1 className="text-2xl font-bold text-foreground">Azərbaycanda <span className="text-primary">İş Elanları və Vakansiyalar</span></h1>
             <div className="text-muted-foreground text-sm leading-relaxed space-y-2 px-4">
               <p>
                 Platformamızda minlərlə <strong>iş elanı</strong> və <strong>vakansiya</strong> təqdim olunur. Azərbaycanda <strong>iş axtarışı</strong> edən hər kəs üçün ən münasib iş imkanlarını bir yerdə toplamışıq. Müxtəlif sahələrdə - maliyyə, IT, satış, marketinq, mühəndislik, mühasibatlıq və digər peşə sahələrində <strong>iş təklifləri</strong> tapa bilərsiniz.
