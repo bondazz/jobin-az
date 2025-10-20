@@ -249,9 +249,7 @@ const ReferralJobSubmission = () => {
 
                     {/* Job Details */}
                     <div className="space-y-6">
-                     <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2 text-center">
-                       Elan təfərrüatları
-                     </h3>
+                     <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2 text-center">İş elanı haqqında məlumat</h3>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
