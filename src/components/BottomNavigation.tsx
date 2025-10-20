@@ -44,7 +44,7 @@ const BottomNavigation = ({
   };
   const mainNavItems = [{
     icon: Briefcase,
-    label: 'İşlər',
+    label: 'Vakansiyalar',
     count: jobsCount,
     path: '/vacancies'
   }, {
