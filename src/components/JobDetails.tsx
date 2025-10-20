@@ -22,17 +22,19 @@ const JobDetails = ({
   const [isSaved, setIsSaved] = useState(false);
   const [applicationEmail, setApplicationEmail] = useState<string | null>(null);
   const [revealingEmail, setRevealingEmail] = useState(false);
-  const { toast } = useToast();
-  const { getUrlWithReferral } = useReferralCode();
-  
+  const {
+    toast
+  } = useToast();
+  const {
+    getUrlWithReferral
+  } = useReferralCode();
+
   // Check if job is expired
   const isJobExpired = (expirationDate?: string) => {
     if (!expirationDate) return false;
     return new Date(expirationDate) <= new Date();
   };
-  
   const expired = job && isJobExpired(job.expiration_date);
-  
   useEffect(() => {
     if (jobId) {
       fetchJobDetails(jobId);
@@ -56,7 +58,7 @@ const JobDetails = ({
     setLoading(true);
     try {
       // First try to find by ID, then by slug
-        let {
+      let {
         data,
         error
       } = await supabase.from('jobs').select(`
@@ -144,20 +146,31 @@ const JobDetails = ({
       description: 'İş elanının linki panoa kopyalandı'
     });
   };
-
   const handleRevealEmail = async () => {
     if (!job?.id) return;
     try {
       setRevealingEmail(true);
-      const { data, error } = await supabase.rpc('get_job_application_email', { job_uuid: job.id });
+      const {
+        data,
+        error
+      } = await supabase.rpc('get_job_application_email', {
+        job_uuid: job.id
+      });
       setRevealingEmail(false);
       if (error || !data) {
-        toast({ title: 'E-mail tapılmadı', description: 'Bu elan üçün e-mail mövcud deyil', variant: 'destructive' as any });
+        toast({
+          title: 'E-mail tapılmadı',
+          description: 'Bu elan üçün e-mail mövcud deyil',
+          variant: 'destructive' as any
+        });
         return;
       }
       setApplicationEmail(data);
       await navigator.clipboard.writeText(data);
-      toast({ title: 'E-mail kopyalandı', description: `${data} panoya kopyalandı` });
+      toast({
+        title: 'E-mail kopyalandı',
+        description: `${data} panoya kopyalandı`
+      });
     } catch (e) {
       setRevealingEmail(false);
       console.error('Error revealing email:', e);
@@ -190,19 +203,24 @@ const JobDetails = ({
 
           {/* Interactive Job Workflow Illustration */}
           <div className="flex justify-center">
-            <svg width="800" height="400" viewBox="20 20 1060 546" fill="none" xmlns="http://www.w3.org/2000/svg" 
-                 style={{"--accent":"#FF6A1A", "--brand":"#2B8CFF", "--ink":"#1f2937", "--inkWeak":"#64748b", "--card":"rgba(0,0,0,.06)", "--card2":"rgba(0,0,0,.10)"} as React.CSSProperties} 
-                 aria-hidden="true" className="hidden w-full max-w-4xl">
+            <svg width="800" height="400" viewBox="20 20 1060 546" fill="none" xmlns="http://www.w3.org/2000/svg" style={{
+            "--accent": "#FF6A1A",
+            "--brand": "#2B8CFF",
+            "--ink": "#1f2937",
+            "--inkWeak": "#64748b",
+            "--card": "rgba(0,0,0,.06)",
+            "--card2": "rgba(0,0,0,.10)"
+          } as React.CSSProperties} aria-hidden="true" className="hidden w-full max-w-4xl">
               <defs>
                 <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
-                  <feDropShadow dx="0" dy="10" stdDeviation="18" floodOpacity=".12"/>
+                  <feDropShadow dx="0" dy="10" stdDeviation="18" floodOpacity=".12" />
                 </filter>
                 <path id="shimmer" x1="0" y1="0" x2="1" y2="0" d="">
-                  <stop offset="-0.2" stopColor="rgba(255,255,255,0)"/>
-                  <stop offset="0.5" stopColor="rgba(255,255,255,.45)"/>
-                  <stop offset="1.2" stopColor="rgba(255,255,255,0)"/>
-                  <animate attributeName="x1" values="0;1" dur="1.6s" repeatCount="indefinite"/>
-                  <animate attributeName="x2" values="1;2" dur="1.6s" repeatCount="indefinite"/>
+                  <stop offset="-0.2" stopColor="rgba(255,255,255,0)" />
+                  <stop offset="0.5" stopColor="rgba(255,255,255,.45)" />
+                  <stop offset="1.2" stopColor="rgba(255,255,255,0)" />
+                  <animate attributeName="x1" values="0;1" dur="1.6s" repeatCount="indefinite" />
+                  <animate attributeName="x2" values="1;2" dur="1.6s" repeatCount="indefinite" />
                 </path>
               </defs>
               <style>{`
@@ -249,75 +267,69 @@ const JobDetails = ({
               `}</style>
               
               <g transform="translate(32 40)">
-                <path x="0" y="0" width="240" height="560" rx="22" className="card2" filter="url(#shadow)" d="M20.167 0H199.833A20.167 20.167 0 0 1 220 20.167V493.167A20.167 20.167 0 0 1 199.833 513.333H20.167A20.167 20.167 0 0 1 0 493.167V20.167A20.167 20.167 0 0 1 20.167 0z"/>
+                <path x="0" y="0" width="240" height="560" rx="22" className="card2" filter="url(#shadow)" d="M20.167 0H199.833A20.167 20.167 0 0 1 220 20.167V493.167A20.167 20.167 0 0 1 199.833 513.333H20.167A20.167 20.167 0 0 1 0 493.167V20.167A20.167 20.167 0 0 1 20.167 0z" />
                 <g transform="translate(24 28)">
-                  <path x="0" y="0" width="192" height="44" rx="12" className="card" d="M11 0H165A11 11 0 0 1 176 11V29.333A11 11 0 0 1 165 40.333H11A11 11 0 0 1 0 29.333V11A11 11 0 0 1 11 0z"/>
+                  <path x="0" y="0" width="192" height="44" rx="12" className="card" d="M11 0H165A11 11 0 0 1 176 11V29.333A11 11 0 0 1 165 40.333H11A11 11 0 0 1 0 29.333V11A11 11 0 0 1 11 0z" />
                   <text x="16" y="30" fontSize="22" fontWeight="800" fontFamily="Inter,ui-sans-serif,system-ui" className="ink">Jooble.</text>
-                  <path cx="10" cy="10" r="6" className="accent" d="M179.667 20.167A5.5 5.5 0 0 1 174.167 25.667A5.5 5.5 0 0 1 168.667 20.167A5.5 5.5 0 0 1 179.667 20.167z"/>
+                  <path cx="10" cy="10" r="6" className="accent" d="M179.667 20.167A5.5 5.5 0 0 1 174.167 25.667A5.5 5.5 0 0 1 168.667 20.167A5.5 5.5 0 0 1 179.667 20.167z" />
                 </g>
                 <g transform="translate(24 96)" opacity=".9">
-                  <path x="0" y="0" width="192" height="40" rx="12" className="card" d="M11 0H165A11 11 0 0 1 176 11V25.667A11 11 0 0 1 165 36.667H11A11 11 0 0 1 0 25.667V11A11 11 0 0 1 11 0z"/>
-                  <path x="0" y="52" width="192" height="40" rx="12" className="card" d="M11 47.667H165A11 11 0 0 1 176 58.667V73.333A11 11 0 0 1 165 84.333H11A11 11 0 0 1 0 73.333V58.667A11 11 0 0 1 11 47.667z"/>
-                  <path x="0" y="104" width="192" height="40" rx="12" className="card" d="M11 95.333H165A11 11 0 0 1 176 106.333V121A11 11 0 0 1 165 132H11A11 11 0 0 1 0 121V106.333A11 11 0 0 1 11 95.333z"/>
-                  <path x="0" y="156" width="192" height="40" rx="12" className="card" d="M11 143H165A11 11 0 0 1 176 154V168.667A11 11 0 0 1 165 179.667H11A11 11 0 0 1 0 168.667V154A11 11 0 0 1 11 143z"/>
-                  <path x="0" y="208" width="192" height="40" rx="12" className="card" d="M11 190.667H165A11 11 0 0 1 176 201.667V216.333A11 11 0 0 1 165 227.333H11A11 11 0 0 1 0 216.333V201.667A11 11 0 0 1 11 190.667z"/>
+                  <path x="0" y="0" width="192" height="40" rx="12" className="card" d="M11 0H165A11 11 0 0 1 176 11V25.667A11 11 0 0 1 165 36.667H11A11 11 0 0 1 0 25.667V11A11 11 0 0 1 11 0z" />
+                  <path x="0" y="52" width="192" height="40" rx="12" className="card" d="M11 47.667H165A11 11 0 0 1 176 58.667V73.333A11 11 0 0 1 165 84.333H11A11 11 0 0 1 0 73.333V58.667A11 11 0 0 1 11 47.667z" />
+                  <path x="0" y="104" width="192" height="40" rx="12" className="card" d="M11 95.333H165A11 11 0 0 1 176 106.333V121A11 11 0 0 1 165 132H11A11 11 0 0 1 0 121V106.333A11 11 0 0 1 11 95.333z" />
+                  <path x="0" y="156" width="192" height="40" rx="12" className="card" d="M11 143H165A11 11 0 0 1 176 154V168.667A11 11 0 0 1 165 179.667H11A11 11 0 0 1 0 168.667V154A11 11 0 0 1 11 143z" />
+                  <path x="0" y="208" width="192" height="40" rx="12" className="card" d="M11 190.667H165A11 11 0 0 1 176 201.667V216.333A11 11 0 0 1 165 227.333H11A11 11 0 0 1 0 216.333V201.667A11 11 0 0 1 11 190.667z" />
                 </g>
               </g>
               
               <g transform="translate(288 40)">
-                <path x="0" y="0" width="480" height="560" rx="22" className="card2" filter="url(#shadow)" d="M20.167 0H419.833A20.167 20.167 0 0 1 440 20.167V493.167A20.167 20.167 0 0 1 419.833 513.333H20.167A20.167 20.167 0 0 1 0 493.167V20.167A20.167 20.167 0 0 1 20.167 0z"/>
-                <path x="20" y="20" width="340" height="36" rx="12" className="card" d="M29.333 18.333H319A11 11 0 0 1 330 29.333V40.333A11 11 0 0 1 319 51.333H29.333A11 11 0 0 1 18.333 40.333V29.333A11 11 0 0 1 29.333 18.333z"/>
-                <path x="372" y="20" width="88" height="36" rx="12" className="brand" d="M352 18.333H410.667A11 11 0 0 1 421.667 29.333V40.333A11 11 0 0 1 410.667 51.333H352A11 11 0 0 1 341 40.333V29.333A11 11 0 0 1 352 18.333z"/>
+                <path x="0" y="0" width="480" height="560" rx="22" className="card2" filter="url(#shadow)" d="M20.167 0H419.833A20.167 20.167 0 0 1 440 20.167V493.167A20.167 20.167 0 0 1 419.833 513.333H20.167A20.167 20.167 0 0 1 0 493.167V20.167A20.167 20.167 0 0 1 20.167 0z" />
+                <path x="20" y="20" width="340" height="36" rx="12" className="card" d="M29.333 18.333H319A11 11 0 0 1 330 29.333V40.333A11 11 0 0 1 319 51.333H29.333A11 11 0 0 1 18.333 40.333V29.333A11 11 0 0 1 29.333 18.333z" />
+                <path x="372" y="20" width="88" height="36" rx="12" className="brand" d="M352 18.333H410.667A11 11 0 0 1 421.667 29.333V40.333A11 11 0 0 1 410.667 51.333H352A11 11 0 0 1 341 40.333V29.333A11 11 0 0 1 352 18.333z" />
                 <g transform="translate(20 76)">
-                  <path x="0" y="0" width="440" height="88" rx="16" className="card" d="M14.667 0H388.667A14.667 14.667 0 0 1 403.333 14.667V66A14.667 14.667 0 0 1 388.667 80.667H14.667A14.667 14.667 0 0 1 0 66V14.667A14.667 14.667 0 0 1 14.667 0z"/>
-                  <path x="0" y="108" width="440" height="88" rx="16" className="card" d="M14.667 99H388.667A14.667 14.667 0 0 1 403.333 113.667V165A14.667 14.667 0 0 1 388.667 179.667H14.667A14.667 14.667 0 0 1 0 165V113.667A14.667 14.667 0 0 1 14.667 99z"/>
-                  <path id="chosen" x="0" y="216" width="440" height="88" rx="16" className="card" stroke="var(--accent)" strokeWidth="1.8333333333333333" d="M14.667 198H388.667A14.667 14.667 0 0 1 403.333 212.667V264A14.667 14.667 0 0 1 388.667 278.667H14.667A14.667 14.667 0 0 1 0 264V212.667A14.667 14.667 0 0 1 14.667 198z"/>
-                  <path x="0" y="324" width="440" height="88" rx="16" className="card" d="M14.667 297H388.667A14.667 14.667 0 0 1 403.333 311.667V363A14.667 14.667 0 0 1 388.667 377.667H14.667A14.667 14.667 0 0 1 0 363V311.667A14.667 14.667 0 0 1 14.667 297z"/>
-                  <path x="0" y="432" width="440" height="88" rx="16" className="card" d="M14.667 396H388.667A14.667 14.667 0 0 1 403.333 410.667V462A14.667 14.667 0 0 1 388.667 476.667H14.667A14.667 14.667 0 0 1 0 462V410.667A14.667 14.667 0 0 1 14.667 396z"/>
+                  <path x="0" y="0" width="440" height="88" rx="16" className="card" d="M14.667 0H388.667A14.667 14.667 0 0 1 403.333 14.667V66A14.667 14.667 0 0 1 388.667 80.667H14.667A14.667 14.667 0 0 1 0 66V14.667A14.667 14.667 0 0 1 14.667 0z" />
+                  <path x="0" y="108" width="440" height="88" rx="16" className="card" d="M14.667 99H388.667A14.667 14.667 0 0 1 403.333 113.667V165A14.667 14.667 0 0 1 388.667 179.667H14.667A14.667 14.667 0 0 1 0 165V113.667A14.667 14.667 0 0 1 14.667 99z" />
+                  <path id="chosen" x="0" y="216" width="440" height="88" rx="16" className="card" stroke="var(--accent)" strokeWidth="1.8333333333333333" d="M14.667 198H388.667A14.667 14.667 0 0 1 403.333 212.667V264A14.667 14.667 0 0 1 388.667 278.667H14.667A14.667 14.667 0 0 1 0 264V212.667A14.667 14.667 0 0 1 14.667 198z" />
+                  <path x="0" y="324" width="440" height="88" rx="16" className="card" d="M14.667 297H388.667A14.667 14.667 0 0 1 403.333 311.667V363A14.667 14.667 0 0 1 388.667 377.667H14.667A14.667 14.667 0 0 1 0 363V311.667A14.667 14.667 0 0 1 14.667 297z" />
+                  <path x="0" y="432" width="440" height="88" rx="16" className="card" d="M14.667 396H388.667A14.667 14.667 0 0 1 403.333 410.667V462A14.667 14.667 0 0 1 388.667 476.667H14.667A14.667 14.667 0 0 1 0 462V410.667A14.667 14.667 0 0 1 14.667 396z" />
                   <g opacity=".22">
-                    <path x="18" y="18" width="270" height="12" rx="6" className="ink" d="M22 16.5H258.5A5.5 5.5 0 0 1 264 22V22A5.5 5.5 0 0 1 258.5 27.5H22A5.5 5.5 0 0 1 16.5 22V22A5.5 5.5 0 0 1 22 16.5z"/>
-                    <path x="18" y="40" width="210" height="10" rx="5" className="weak" d="M21.083 36.667H204.417A4.583 4.583 0 0 1 209 41.25V41.25A4.583 4.583 0 0 1 204.417 45.833H21.083A4.583 4.583 0 0 1 16.5 41.25V41.25A4.583 4.583 0 0 1 21.083 36.667z"/>
-                    <path x="18" y="126" width="250" height="12" rx="6" className="ink" d="M22 115.5H240.167A5.5 5.5 0 0 1 245.667 121V121A5.5 5.5 0 0 1 240.167 126.5H22A5.5 5.5 0 0 1 16.5 121V121A5.5 5.5 0 0 1 22 115.5z"/>
-                    <path x="18" y="148" width="190" height="10" rx="5" className="weak" d="M21.083 135.667H186.083A4.583 4.583 0 0 1 190.667 140.25V140.25A4.583 4.583 0 0 1 186.083 144.833H21.083A4.583 4.583 0 0 1 16.5 140.25V140.25A4.583 4.583 0 0 1 21.083 135.667z"/>
-                    <path x="18" y="234" width="280" height="12" rx="6" className="ink" d="M22 214.5H267.667A5.5 5.5 0 0 1 273.167 220V220A5.5 5.5 0 0 1 267.667 225.5H22A5.5 5.5 0 0 1 16.5 220V220A5.5 5.5 0 0 1 22 214.5z"/>
-                    <path x="18" y="256" width="200" height="10" rx="5" className="weak" d="M21.083 234.667H195.25A4.583 4.583 0 0 1 199.833 239.25V239.25A4.583 4.583 0 0 1 195.25 243.833H21.083A4.583 4.583 0 0 1 16.5 239.25V239.25A4.583 4.583 0 0 1 21.083 234.667z"/>
+                    <path x="18" y="18" width="270" height="12" rx="6" className="ink" d="M22 16.5H258.5A5.5 5.5 0 0 1 264 22V22A5.5 5.5 0 0 1 258.5 27.5H22A5.5 5.5 0 0 1 16.5 22V22A5.5 5.5 0 0 1 22 16.5z" />
+                    <path x="18" y="40" width="210" height="10" rx="5" className="weak" d="M21.083 36.667H204.417A4.583 4.583 0 0 1 209 41.25V41.25A4.583 4.583 0 0 1 204.417 45.833H21.083A4.583 4.583 0 0 1 16.5 41.25V41.25A4.583 4.583 0 0 1 21.083 36.667z" />
+                    <path x="18" y="126" width="250" height="12" rx="6" className="ink" d="M22 115.5H240.167A5.5 5.5 0 0 1 245.667 121V121A5.5 5.5 0 0 1 240.167 126.5H22A5.5 5.5 0 0 1 16.5 121V121A5.5 5.5 0 0 1 22 115.5z" />
+                    <path x="18" y="148" width="190" height="10" rx="5" className="weak" d="M21.083 135.667H186.083A4.583 4.583 0 0 1 190.667 140.25V140.25A4.583 4.583 0 0 1 186.083 144.833H21.083A4.583 4.583 0 0 1 16.5 140.25V140.25A4.583 4.583 0 0 1 21.083 135.667z" />
+                    <path x="18" y="234" width="280" height="12" rx="6" className="ink" d="M22 214.5H267.667A5.5 5.5 0 0 1 273.167 220V220A5.5 5.5 0 0 1 267.667 225.5H22A5.5 5.5 0 0 1 16.5 220V220A5.5 5.5 0 0 1 22 214.5z" />
+                    <path x="18" y="256" width="200" height="10" rx="5" className="weak" d="M21.083 234.667H195.25A4.583 4.583 0 0 1 199.833 239.25V239.25A4.583 4.583 0 0 1 195.25 243.833H21.083A4.583 4.583 0 0 1 16.5 239.25V239.25A4.583 4.583 0 0 1 21.083 234.667z" />
                   </g>
                 </g>
               </g>
               
-              <path id="divider" x="784" y="40" width="2" height="560" className="ink" opacity=".22" d="M718.667 36"/>
+              <path id="divider" x="784" y="40" width="2" height="560" className="ink" opacity=".22" d="M718.667 36" />
               
               <g id="panelWrap" transform="translate(808 40)" filter="url(#shadow)">
-                <path x="808" y="40" width="360" height="560" rx="22" className="card2" d="M760.833 36.667H1050.5A20.167 20.167 0 0 1 1070.667 56.833V529.833A20.167 20.167 0 0 1 1050.5 550H760.833A20.167 20.167 0 0 1 740.667 529.833V56.833A20.167 20.167 0 0 1 760.833 36.667z"/>
-                <path x="808" y="52" width="300" height="10" rx="5" fill="url(#shimmer)" d="M745.25 47.667H1011.083A4.583 4.583 0 0 1 1015.667 52.25V52.25A4.583 4.583 0 0 1 1011.083 56.833H745.25A4.583 4.583 0 0 1 740.667 52.25V52.25A4.583 4.583 0 0 1 745.25 47.667z"/>
-                <path x="808" y="72" width="210" height="10" rx="5" fill="url(#shimmer)" d="M745.25 66H928.583A4.583 4.583 0 0 1 933.167 70.583V70.583A4.583 4.583 0 0 1 928.583 75.167H745.25A4.583 4.583 0 0 1 740.667 70.583V70.583A4.583 4.583 0 0 1 745.25 66z"/>
-                <path x="808" y="110" width="316" height="10" rx="5" fill="url(#shimmer)" d="M745.25 100.833H1025.75A4.583 4.583 0 0 1 1030.333 105.417V105.417A4.583 4.583 0 0 1 1025.75 110H745.25A4.583 4.583 0 0 1 740.667 105.417V105.417A4.583 4.583 0 0 1 745.25 100.833z"/>
-                <path x="808" y="130" width="284" height="10" rx="5" fill="url(#shimmer)" d="M745.25 119.167H996.417A4.583 4.583 0 0 1 1001 123.75V123.75A4.583 4.583 0 0 1 996.417 128.333H745.25A4.583 4.583 0 0 1 740.667 123.75V123.75A4.583 4.583 0 0 1 745.25 119.167z"/>
-                <path x="808" y="150" width="260" height="10" rx="5" fill="url(#shimmer)" d="M745.25 137.5H974.417A4.583 4.583 0 0 1 979 142.083V142.083A4.583 4.583 0 0 1 974.417 146.667H745.25A4.583 4.583 0 0 1 740.667 142.083V142.083A4.583 4.583 0 0 1 745.25 137.5z"/>
-                <path x="808" y="170" width="320" height="10" rx="5" fill="url(#shimmer)" d="M745.25 155.833H1029.417A4.583 4.583 0 0 1 1034 160.417V160.417A4.583 4.583 0 0 1 1029.417 165H745.25A4.583 4.583 0 0 1 740.667 160.417V160.417A4.583 4.583 0 0 1 745.25 155.833z"/>
-                <path x="808" y="190" width="270" height="10" rx="5" fill="url(#shimmer)" d="M745.25 174.167H983.583A4.583 4.583 0 0 1 988.167 178.75V178.75A4.583 4.583 0 0 1 983.583 183.333H745.25A4.583 4.583 0 0 1 740.667 178.75V178.75A4.583 4.583 0 0 1 745.25 174.167z"/>
+                <path x="808" y="40" width="360" height="560" rx="22" className="card2" d="M760.833 36.667H1050.5A20.167 20.167 0 0 1 1070.667 56.833V529.833A20.167 20.167 0 0 1 1050.5 550H760.833A20.167 20.167 0 0 1 740.667 529.833V56.833A20.167 20.167 0 0 1 760.833 36.667z" />
+                <path x="808" y="52" width="300" height="10" rx="5" fill="url(#shimmer)" d="M745.25 47.667H1011.083A4.583 4.583 0 0 1 1015.667 52.25V52.25A4.583 4.583 0 0 1 1011.083 56.833H745.25A4.583 4.583 0 0 1 740.667 52.25V52.25A4.583 4.583 0 0 1 745.25 47.667z" />
+                <path x="808" y="72" width="210" height="10" rx="5" fill="url(#shimmer)" d="M745.25 66H928.583A4.583 4.583 0 0 1 933.167 70.583V70.583A4.583 4.583 0 0 1 928.583 75.167H745.25A4.583 4.583 0 0 1 740.667 70.583V70.583A4.583 4.583 0 0 1 745.25 66z" />
+                <path x="808" y="110" width="316" height="10" rx="5" fill="url(#shimmer)" d="M745.25 100.833H1025.75A4.583 4.583 0 0 1 1030.333 105.417V105.417A4.583 4.583 0 0 1 1025.75 110H745.25A4.583 4.583 0 0 1 740.667 105.417V105.417A4.583 4.583 0 0 1 745.25 100.833z" />
+                <path x="808" y="130" width="284" height="10" rx="5" fill="url(#shimmer)" d="M745.25 119.167H996.417A4.583 4.583 0 0 1 1001 123.75V123.75A4.583 4.583 0 0 1 996.417 128.333H745.25A4.583 4.583 0 0 1 740.667 123.75V123.75A4.583 4.583 0 0 1 745.25 119.167z" />
+                <path x="808" y="150" width="260" height="10" rx="5" fill="url(#shimmer)" d="M745.25 137.5H974.417A4.583 4.583 0 0 1 979 142.083V142.083A4.583 4.583 0 0 1 974.417 146.667H745.25A4.583 4.583 0 0 1 740.667 142.083V142.083A4.583 4.583 0 0 1 745.25 137.5z" />
+                <path x="808" y="170" width="320" height="10" rx="5" fill="url(#shimmer)" d="M745.25 155.833H1029.417A4.583 4.583 0 0 1 1034 160.417V160.417A4.583 4.583 0 0 1 1029.417 165H745.25A4.583 4.583 0 0 1 740.667 160.417V160.417A4.583 4.583 0 0 1 745.25 155.833z" />
+                <path x="808" y="190" width="270" height="10" rx="5" fill="url(#shimmer)" d="M745.25 174.167H983.583A4.583 4.583 0 0 1 988.167 178.75V178.75A4.583 4.583 0 0 1 983.583 183.333H745.25A4.583 4.583 0 0 1 740.667 178.75V178.75A4.583 4.583 0 0 1 745.25 174.167z" />
                 <g id="cta">
-                  <path x="900" y="400" width="100" height="44" rx="12" className="accent"
-                        transform="translate(24 0)"
-                        d="M751.667 458.333H872.667A11 11 0 0 1 883.667 469.333V487.667A11 11 0 0 1 872.667 498.667H751.667A11 11 0 0 1 740.667 487.667V469.333A11 11 0 0 1 751.667 458.333z"/>
-                  <path x="900" y="800" width="150" height="44" rx="12" className="card"
-                        d="M751.667 458.333H867.167A11 11 0 0 1 878.167 469.333V487.667A11 11 0 0 1 867.167 498.667H751.667A11 11 0 0 1 740.667 487.667V469.333A11 11 0 0 1 751.667 458.333z"/>
+                  <path x="900" y="400" width="100" height="44" rx="12" className="accent" transform="translate(24 0)" d="M751.667 458.333H872.667A11 11 0 0 1 883.667 469.333V487.667A11 11 0 0 1 872.667 498.667H751.667A11 11 0 0 1 740.667 487.667V469.333A11 11 0 0 1 751.667 458.333z" />
+                  <path x="900" y="800" width="150" height="44" rx="12" className="card" d="M751.667 458.333H867.167A11 11 0 0 1 878.167 469.333V487.667A11 11 0 0 1 867.167 498.667H751.667A11 11 0 0 1 740.667 487.667V469.333A11 11 0 0 1 751.667 458.333z" />
                 </g>
                 <g transform="translate(836.167 478.5)">
-                  <path id="tick"
-                        d="m-7.333 0 7.333 7.333L12.833 -5.5"
-                        fill="none" stroke="#fff" strokeWidth="3.6666666666666665"
-                        strokeLinecap="round" strokeLinejoin="round"/>
+                  <path id="tick" d="m-7.333 0 7.333 7.333L12.833 -5.5" fill="none" stroke="#fff" strokeWidth="3.6666666666666665" strokeLinecap="round" strokeLinejoin="round" />
                 </g>
               </g>
               
               <g id="cursor">
-                <path points="0,0 26,12 12,16 16,30" fill="#fff" stroke="rgba(0,0,0,.28)" strokeWidth="1.0999999999999999" d="M0 0L23.833 11L11 14.667L14.667 27.5Z"/>
+                <path points="0,0 26,12 12,16 16,30" fill="#fff" stroke="rgba(0,0,0,.28)" strokeWidth="1.0999999999999999" d="M0 0L23.833 11L11 14.667L14.667 27.5Z" />
               </g>
               
               <g id="ripple" opacity="0">
-                <path r="14" className="accent" d="Maaaaaaaaz"/>
-                <path r="14" className="accent" opacity=".25" d="Maaaaaaaaz"/>
+                <path r="14" className="accent" d="Maaaaaaaaz" />
+                <path r="14" className="accent" opacity=".25" d="Maaaaaaaaz" />
               </g>
             </svg>
           </div>
@@ -328,12 +340,12 @@ const JobDetails = ({
   const generateJobPostingSchema = () => {
     const baseUrl = window.location.origin;
     const jobUrl = `${baseUrl}/vacancies/${job.slug}`;
-    
     const schema: any = {
       "@context": "https://schema.org",
       "@type": "JobPosting",
       "title": job.title,
-      "description": job.description.replace(/<[^>]*>/g, ''), // Remove HTML tags
+      "description": job.description.replace(/<[^>]*>/g, ''),
+      // Remove HTML tags
       "identifier": {
         "@type": "PropertyValue",
         "name": job.companies?.name || "Company",
@@ -354,10 +366,7 @@ const JobDetails = ({
         "sameAs": job.companies?.website || "",
         "logo": job.companies?.logo || ""
       },
-      "employmentType": job.type === 'full-time' ? 'FULL_TIME' : 
-                       job.type === 'part-time' ? 'PART_TIME' : 
-                       job.type === 'contract' ? 'CONTRACTOR' : 
-                       job.type === 'internship' ? 'INTERN' : 'FULL_TIME',
+      "employmentType": job.type === 'full-time' ? 'FULL_TIME' : job.type === 'part-time' ? 'PART_TIME' : job.type === 'contract' ? 'CONTRACTOR' : job.type === 'internship' ? 'INTERN' : 'FULL_TIME',
       "url": jobUrl,
       "industry": job.categories?.name || "",
       "workHours": job.type === 'full-time' ? "40 hours per week" : undefined,
@@ -386,18 +395,13 @@ const JobDetails = ({
       validThrough.setDate(validThrough.getDate() + 30);
       schema.validThrough = validThrough.toISOString();
     }
-
     return schema;
   };
-
   return <>
       {/* JobPosting Structured Data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(generateJobPostingSchema())
-        }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{
+      __html: JSON.stringify(generateJobPostingSchema())
+    }} />
       
       <div id="job-details-printable" className={`h-full overflow-y-auto bg-background ${isMobile ? 'pt-16 pb-20' : 'pb-24'}`}>
         {/* Enhanced Header with Company Profile */}
@@ -405,37 +409,22 @@ const JobDetails = ({
           <div className="flex items-start gap-6">
             {/* Premium Company Logo */}
             <div className={`${isMobile ? 'w-16 h-16' : 'w-20 h-20'} rounded-2xl bg-gradient-to-br from-primary/5 to-primary/15 border border-primary/10 flex items-center justify-center flex-shrink-0 shadow-sm`}>
-              {job.companies?.logo ? (
-                <img 
-                  src={job.companies.logo} 
-                  alt={job.companies?.name || 'Company'} 
-                  className={`${isMobile ? 'w-12 h-12' : 'w-16 h-16'} rounded-xl object-cover`} 
-                  width={isMobile ? "48" : "64"} 
-                  height={isMobile ? "48" : "64"} 
-                  decoding="async" 
-                />
-              ) : (
-                <span className={`${isMobile ? 'text-xl' : 'text-3xl'} font-bold text-primary`}>
+              {job.companies?.logo ? <img src={job.companies.logo} alt={job.companies?.name || 'Company'} className={`${isMobile ? 'w-12 h-12' : 'w-16 h-16'} rounded-xl object-cover`} width={isMobile ? "48" : "64"} height={isMobile ? "48" : "64"} decoding="async" /> : <span className={`${isMobile ? 'text-xl' : 'text-3xl'} font-bold text-primary`}>
                   {(job.companies?.name || job.title).charAt(0)}
-                </span>
-              )}
+                </span>}
             </div>
             
             {/* Job Information */}
             <div className="flex-1 min-w-0 space-y-3">
               {/* Company Name with Link */}
               <div className="flex items-center gap-3">
-                {job.companies?.slug ? (
-                  <Link to={`/companies/${job.companies.slug}`}>
+                {job.companies?.slug ? <Link to={`/companies/${job.companies.slug}`}>
                     <h2 className={`${isMobile ? 'text-base' : 'text-lg'} font-semibold text-muted-foreground hover:text-primary transition-all duration-200 truncate`}>
                       {job.companies?.name || 'Şirkət'}
                     </h2>
-                  </Link>
-                ) : (
-                  <h2 className={`${isMobile ? 'text-base' : 'text-lg'} font-semibold text-muted-foreground truncate`}>
+                  </Link> : <h2 className={`${isMobile ? 'text-base' : 'text-lg'} font-semibold text-muted-foreground truncate`}>
                     {job.companies?.name || 'Şirkət'}
-                  </h2>
-                )}
+                  </h2>}
                 {job.companies?.is_verified && <VerifyBadge size={isMobile ? 16 : 18} />}
               </div>
               
@@ -449,11 +438,9 @@ const JobDetails = ({
                 <Badge variant="secondary" className={`${isMobile ? 'text-xs' : 'text-sm'} font-medium bg-primary/10 text-primary border-0`}>
                   {job.categories?.name || 'Kateqoriya'}
                 </Badge>
-                {job.salary && job.salary !== 'Müzakirə' && (
-                  <Badge variant="outline" className={`${isMobile ? 'text-xs' : 'text-sm'} font-medium border-muted-foreground/30 text-muted-foreground`}>
+                {job.salary && job.salary !== 'Müzakirə' && <Badge variant="outline" className={`${isMobile ? 'text-xs' : 'text-sm'} font-medium border-muted-foreground/30 text-muted-foreground`}>
                     {job.salary}
-                  </Badge>
-                )}
+                  </Badge>}
               </div>
             </div>
           </div>
@@ -488,16 +475,14 @@ const JobDetails = ({
 
             {/* Action Buttons - More compact */}
             <div className={`${isMobile ? 'flex flex-row gap-2' : 'flex flex-row gap-2 min-w-[250px]'}`}>
-              {job.expiration_date && (
-                <Button variant="outline" size="sm" className={`${isMobile ? 'flex-1' : 'flex-1'} ${expired ? 'border-red-300/70 text-red-600 bg-red-50' : 'border-orange-300/70 text-orange-600 hover:bg-orange-100 hover:text-orange-700'} text-xs`}>
+              {job.expiration_date && <Button variant="outline" size="sm" className={`${isMobile ? 'flex-1' : 'flex-1'} ${expired ? 'border-red-300/70 text-red-600 bg-red-50' : 'border-orange-300/70 text-orange-600 hover:bg-orange-100 hover:text-orange-700'} text-xs`}>
                   <Clock className={`w-3 h-3 ${isMobile ? 'mr-1' : 'mr-1'}`} />
-                  {expired ? 'Müddəti bitib' : new Date(job.expiration_date).toLocaleDateString('az-AZ', { 
-                    day: '2-digit', 
-                    month: '2-digit', 
-                    year: 'numeric' 
-                  })}
-                </Button>
-              )}
+                  {expired ? 'Müddəti bitib' : new Date(job.expiration_date).toLocaleDateString('az-AZ', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+              })}
+                </Button>}
               <Button variant="outline" size="sm" className={`${isMobile ? 'flex-1' : 'flex-1'} border-primary/30 hover:bg-primary hover:text-white ${isSaved ? 'bg-primary text-white' : 'text-primary'} text-xs`} onClick={handleSaveJob}>
                 <Bookmark className={`w-3 h-3 ${isMobile ? 'mr-1' : 'mr-1'} ${isSaved ? 'fill-current' : ''}`} />
                 {isSaved ? 'Saxlanıldı' : 'Saxla'}
@@ -570,57 +555,37 @@ const JobDetails = ({
 
       {/* Sticky Apply Button - Positioned above bottom navigation on mobile/tablet */}
       <div className="fixed bottom-20 right-6 md:bottom-24 md:right-6 lg:bottom-8 lg:right-8 z-50 no-print">
-        {expired ? (
-          <Button 
-            size="sm" 
-            className="bg-red-100 text-red-600 font-medium shadow-lg text-sm px-4 py-2 rounded-md cursor-not-allowed" 
-            disabled
-          >
+        {expired ? <Button size="sm" className="bg-red-100 text-red-600 font-medium shadow-lg text-sm px-4 py-2 rounded-md cursor-not-allowed" disabled>
             Müddəti bitib
-          </Button>
-        ) : job.application_type === 'website' && job.application_url ? (
-          <Button 
-            size="sm" 
-            onClick={() => window.open(job.application_url, '_blank')} 
-            className="bg-primary hover:bg-primary/90 text-white font-medium shadow-lg text-sm px-4 py-2 rounded-md"
-          >
+          </Button> : job.application_type === 'website' && job.application_url ? <Button size="sm" onClick={() => window.open(job.application_url, '_blank')} className="bg-primary hover:bg-primary/90 text-white font-medium shadow-lg text-sm px-4 py-2 rounded-md">
             Müraciət et
-          </Button>
-        ) : job.application_type === 'email' ? (
-          <Button 
-            size="sm" 
-            className="bg-primary hover:bg-primary/90 text-white font-medium shadow-lg text-sm px-4 py-2 rounded-md" 
-            onClick={handleRevealEmail}
-            disabled={revealingEmail}
-          >
+          </Button> : job.application_type === 'email' ? <Button size="sm" className="bg-primary hover:bg-primary/90 text-white font-medium shadow-lg text-sm px-4 py-2 rounded-md" onClick={handleRevealEmail} disabled={revealingEmail}>
             {applicationEmail ? 'E-mail kopyalandı' : 'Müraciət et'}
-          </Button>
-        ) : (
-          <Button 
-            size="sm" 
-            className="bg-muted hover:bg-muted/90 text-muted-foreground font-medium shadow-lg text-sm px-4 py-2 rounded-md" 
-            disabled
-          >
+          </Button> : <Button size="sm" className="bg-muted hover:bg-muted/90 text-muted-foreground font-medium shadow-lg text-sm px-4 py-2 rounded-md" disabled>
             Müraciət et
-          </Button>
-        )}
+          </Button>}
       </div>
 
       {/* Interactive Job Workflow Illustration */}
       <div className="flex justify-center py-4 mt-8">
-        <svg width="800" height="400" viewBox="20 20 1060 546" fill="none" xmlns="http://www.w3.org/2000/svg" 
-             style={{"--accent":"#FF6A1A", "--brand":"#2B8CFF", "--ink":"#1f2937", "--inkWeak":"#64748b", "--card":"rgba(0,0,0,.06)", "--card2":"rgba(0,0,0,.10)"} as React.CSSProperties} 
-             aria-hidden="true" className="w-full max-w-4xl">
+        <svg width="800" height="400" viewBox="20 20 1060 546" fill="none" xmlns="http://www.w3.org/2000/svg" style={{
+        "--accent": "#FF6A1A",
+        "--brand": "#2B8CFF",
+        "--ink": "#1f2937",
+        "--inkWeak": "#64748b",
+        "--card": "rgba(0,0,0,.06)",
+        "--card2": "rgba(0,0,0,.10)"
+      } as React.CSSProperties} aria-hidden="true" className="w-full max-w-4xl">
           <defs>
             <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
-              <feDropShadow dx="0" dy="10" stdDeviation="18" floodOpacity=".12"/>
+              <feDropShadow dx="0" dy="10" stdDeviation="18" floodOpacity=".12" />
             </filter>
             <path id="shimmer" x1="0" y1="0" x2="1" y2="0" d="">
-              <stop offset="-0.2" stopColor="rgba(255,255,255,0)"/>
-              <stop offset="0.5" stopColor="rgba(255,255,255,.45)"/>
-              <stop offset="1.2" stopColor="rgba(255,255,255,0)"/>
-              <animate attributeName="x1" values="0;1" dur="1.6s" repeatCount="indefinite"/>
-              <animate attributeName="x2" values="1;2" dur="1.6s" repeatCount="indefinite"/>
+              <stop offset="-0.2" stopColor="rgba(255,255,255,0)" />
+              <stop offset="0.5" stopColor="rgba(255,255,255,.45)" />
+              <stop offset="1.2" stopColor="rgba(255,255,255,0)" />
+              <animate attributeName="x1" values="0;1" dur="1.6s" repeatCount="indefinite" />
+              <animate attributeName="x2" values="1;2" dur="1.6s" repeatCount="indefinite" />
             </path>
           </defs>
           <style>{`
@@ -667,75 +632,69 @@ const JobDetails = ({
           `}</style>
           
           <g transform="translate(32 40)">
-            <path x="0" y="0" width="240" height="560" rx="22" className="card2" filter="url(#shadow)" d="M20.167 0H199.833A20.167 20.167 0 0 1 220 20.167V493.167A20.167 20.167 0 0 1 199.833 513.333H20.167A20.167 20.167 0 0 1 0 493.167V20.167A20.167 20.167 0 0 1 20.167 0z"/>
+            <path x="0" y="0" width="240" height="560" rx="22" className="card2" filter="url(#shadow)" d="M20.167 0H199.833A20.167 20.167 0 0 1 220 20.167V493.167A20.167 20.167 0 0 1 199.833 513.333H20.167A20.167 20.167 0 0 1 0 493.167V20.167A20.167 20.167 0 0 1 20.167 0z" />
             <g transform="translate(24 28)">
-              <path x="0" y="0" width="192" height="44" rx="12" className="card" d="M11 0H165A11 11 0 0 1 176 11V29.333A11 11 0 0 1 165 40.333H11A11 11 0 0 1 0 29.333V11A11 11 0 0 1 11 0z"/>
+              <path x="0" y="0" width="192" height="44" rx="12" className="card" d="M11 0H165A11 11 0 0 1 176 11V29.333A11 11 0 0 1 165 40.333H11A11 11 0 0 1 0 29.333V11A11 11 0 0 1 11 0z" />
               <text x="16" y="30" fontSize="22" fontWeight="800" fontFamily="Inter,ui-sans-serif,system-ui" className="ink">Jooble.</text>
-              <path cx="10" cy="10" r="6" className="accent" d="M179.667 20.167A5.5 5.5 0 0 1 174.167 25.667A5.5 5.5 0 0 1 168.667 20.167A5.5 5.5 0 0 1 179.667 20.167z"/>
+              <path cx="10" cy="10" r="6" className="accent" d="M179.667 20.167A5.5 5.5 0 0 1 174.167 25.667A5.5 5.5 0 0 1 168.667 20.167A5.5 5.5 0 0 1 179.667 20.167z" />
             </g>
             <g transform="translate(24 96)" opacity=".9">
-              <path x="0" y="0" width="192" height="40" rx="12" className="card" d="M11 0H165A11 11 0 0 1 176 11V25.667A11 11 0 0 1 165 36.667H11A11 11 0 0 1 0 25.667V11A11 11 0 0 1 11 0z"/>
-              <path x="0" y="52" width="192" height="40" rx="12" className="card" d="M11 47.667H165A11 11 0 0 1 176 58.667V73.333A11 11 0 0 1 165 84.333H11A11 11 0 0 1 0 73.333V58.667A11 11 0 0 1 11 47.667z"/>
-              <path x="0" y="104" width="192" height="40" rx="12" className="card" d="M11 95.333H165A11 11 0 0 1 176 106.333V121A11 11 0 0 1 165 132H11A11 11 0 0 1 0 121V106.333A11 11 0 0 1 11 95.333z"/>
-              <path x="0" y="156" width="192" height="40" rx="12" className="card" d="M11 143H165A11 11 0 0 1 176 154V168.667A11 11 0 0 1 165 179.667H11A11 11 0 0 1 0 168.667V154A11 11 0 0 1 11 143z"/>
-              <path x="0" y="208" width="192" height="40" rx="12" className="card" d="M11 190.667H165A11 11 0 0 1 176 201.667V216.333A11 11 0 0 1 165 227.333H11A11 11 0 0 1 0 216.333V201.667A11 11 0 0 1 11 190.667z"/>
+              <path x="0" y="0" width="192" height="40" rx="12" className="card" d="M11 0H165A11 11 0 0 1 176 11V25.667A11 11 0 0 1 165 36.667H11A11 11 0 0 1 0 25.667V11A11 11 0 0 1 11 0z" />
+              <path x="0" y="52" width="192" height="40" rx="12" className="card" d="M11 47.667H165A11 11 0 0 1 176 58.667V73.333A11 11 0 0 1 165 84.333H11A11 11 0 0 1 0 73.333V58.667A11 11 0 0 1 11 47.667z" />
+              <path x="0" y="104" width="192" height="40" rx="12" className="card" d="M11 95.333H165A11 11 0 0 1 176 106.333V121A11 11 0 0 1 165 132H11A11 11 0 0 1 0 121V106.333A11 11 0 0 1 11 95.333z" />
+              <path x="0" y="156" width="192" height="40" rx="12" className="card" d="M11 143H165A11 11 0 0 1 176 154V168.667A11 11 0 0 1 165 179.667H11A11 11 0 0 1 0 168.667V154A11 11 0 0 1 11 143z" />
+              <path x="0" y="208" width="192" height="40" rx="12" className="card" d="M11 190.667H165A11 11 0 0 1 176 201.667V216.333A11 11 0 0 1 165 227.333H11A11 11 0 0 1 0 216.333V201.667A11 11 0 0 1 11 190.667z" />
             </g>
           </g>
           
           <g transform="translate(288 40)">
-            <path x="0" y="0" width="480" height="560" rx="22" className="card2" filter="url(#shadow)" d="M20.167 0H419.833A20.167 20.167 0 0 1 440 20.167V493.167A20.167 20.167 0 0 1 419.833 513.333H20.167A20.167 20.167 0 0 1 0 493.167V20.167A20.167 20.167 0 0 1 20.167 0z"/>
-            <path x="20" y="20" width="340" height="36" rx="12" className="card" d="M29.333 18.333H319A11 11 0 0 1 330 29.333V40.333A11 11 0 0 1 319 51.333H29.333A11 11 0 0 1 18.333 40.333V29.333A11 11 0 0 1 29.333 18.333z"/>
-            <path x="372" y="20" width="88" height="36" rx="12" className="brand" d="M352 18.333H410.667A11 11 0 0 1 421.667 29.333V40.333A11 11 0 0 1 410.667 51.333H352A11 11 0 0 1 341 40.333V29.333A11 11 0 0 1 352 18.333z"/>
+            <path x="0" y="0" width="480" height="560" rx="22" className="card2" filter="url(#shadow)" d="M20.167 0H419.833A20.167 20.167 0 0 1 440 20.167V493.167A20.167 20.167 0 0 1 419.833 513.333H20.167A20.167 20.167 0 0 1 0 493.167V20.167A20.167 20.167 0 0 1 20.167 0z" />
+            <path x="20" y="20" width="340" height="36" rx="12" className="card" d="M29.333 18.333H319A11 11 0 0 1 330 29.333V40.333A11 11 0 0 1 319 51.333H29.333A11 11 0 0 1 18.333 40.333V29.333A11 11 0 0 1 29.333 18.333z" />
+            <path x="372" y="20" width="88" height="36" rx="12" className="brand" d="M352 18.333H410.667A11 11 0 0 1 421.667 29.333V40.333A11 11 0 0 1 410.667 51.333H352A11 11 0 0 1 341 40.333V29.333A11 11 0 0 1 352 18.333z" />
             <g transform="translate(20 76)">
-              <path x="0" y="0" width="440" height="88" rx="16" className="card" d="M14.667 0H388.667A14.667 14.667 0 0 1 403.333 14.667V66A14.667 14.667 0 0 1 388.667 80.667H14.667A14.667 14.667 0 0 1 0 66V14.667A14.667 14.667 0 0 1 14.667 0z"/>
-              <path x="0" y="108" width="440" height="88" rx="16" className="card" d="M14.667 99H388.667A14.667 14.667 0 0 1 403.333 113.667V165A14.667 14.667 0 0 1 388.667 179.667H14.667A14.667 14.667 0 0 1 0 165V113.667A14.667 14.667 0 0 1 14.667 99z"/>
-              <path id="chosen" x="0" y="216" width="440" height="88" rx="16" className="card" stroke="var(--accent)" strokeWidth="1.8333333333333333" d="M14.667 198H388.667A14.667 14.667 0 0 1 403.333 212.667V264A14.667 14.667 0 0 1 388.667 278.667H14.667A14.667 14.667 0 0 1 0 264V212.667A14.667 14.667 0 0 1 14.667 198z"/>
-              <path x="0" y="324" width="440" height="88" rx="16" className="card" d="M14.667 297H388.667A14.667 14.667 0 0 1 403.333 311.667V363A14.667 14.667 0 0 1 388.667 377.667H14.667A14.667 14.667 0 0 1 0 363V311.667A14.667 14.667 0 0 1 14.667 297z"/>
-              <path x="0" y="432" width="440" height="88" rx="16" className="card" d="M14.667 396H388.667A14.667 14.667 0 0 1 403.333 410.667V462A14.667 14.667 0 0 1 388.667 476.667H14.667A14.667 14.667 0 0 1 0 462V410.667A14.667 14.667 0 0 1 14.667 396z"/>
+              <path x="0" y="0" width="440" height="88" rx="16" className="card" d="M14.667 0H388.667A14.667 14.667 0 0 1 403.333 14.667V66A14.667 14.667 0 0 1 388.667 80.667H14.667A14.667 14.667 0 0 1 0 66V14.667A14.667 14.667 0 0 1 14.667 0z" />
+              <path x="0" y="108" width="440" height="88" rx="16" className="card" d="M14.667 99H388.667A14.667 14.667 0 0 1 403.333 113.667V165A14.667 14.667 0 0 1 388.667 179.667H14.667A14.667 14.667 0 0 1 0 165V113.667A14.667 14.667 0 0 1 14.667 99z" />
+              <path id="chosen" x="0" y="216" width="440" height="88" rx="16" className="card" stroke="var(--accent)" strokeWidth="1.8333333333333333" d="M14.667 198H388.667A14.667 14.667 0 0 1 403.333 212.667V264A14.667 14.667 0 0 1 388.667 278.667H14.667A14.667 14.667 0 0 1 0 264V212.667A14.667 14.667 0 0 1 14.667 198z" />
+              <path x="0" y="324" width="440" height="88" rx="16" className="card" d="M14.667 297H388.667A14.667 14.667 0 0 1 403.333 311.667V363A14.667 14.667 0 0 1 388.667 377.667H14.667A14.667 14.667 0 0 1 0 363V311.667A14.667 14.667 0 0 1 14.667 297z" />
+              <path x="0" y="432" width="440" height="88" rx="16" className="card" d="M14.667 396H388.667A14.667 14.667 0 0 1 403.333 410.667V462A14.667 14.667 0 0 1 388.667 476.667H14.667A14.667 14.667 0 0 1 0 462V410.667A14.667 14.667 0 0 1 14.667 396z" />
               <g opacity=".22">
-                <path x="18" y="18" width="270" height="12" rx="6" className="ink" d="M22 16.5H258.5A5.5 5.5 0 0 1 264 22V22A5.5 5.5 0 0 1 258.5 27.5H22A5.5 5.5 0 0 1 16.5 22V22A5.5 5.5 0 0 1 22 16.5z"/>
-                <path x="18" y="40" width="210" height="10" rx="5" className="weak" d="M21.083 36.667H204.417A4.583 4.583 0 0 1 209 41.25V41.25A4.583 4.583 0 0 1 204.417 45.833H21.083A4.583 4.583 0 0 1 16.5 41.25V41.25A4.583 4.583 0 0 1 21.083 36.667z"/>
-                <path x="18" y="126" width="250" height="12" rx="6" className="ink" d="M22 115.5H240.167A5.5 5.5 0 0 1 245.667 121V121A5.5 5.5 0 0 1 240.167 126.5H22A5.5 5.5 0 0 1 16.5 121V121A5.5 5.5 0 0 1 22 115.5z"/>
-                <path x="18" y="148" width="190" height="10" rx="5" className="weak" d="M21.083 135.667H186.083A4.583 4.583 0 0 1 190.667 140.25V140.25A4.583 4.583 0 0 1 186.083 144.833H21.083A4.583 4.583 0 0 1 16.5 140.25V140.25A4.583 4.583 0 0 1 21.083 135.667z"/>
-                <path x="18" y="234" width="280" height="12" rx="6" className="ink" d="M22 214.5H267.667A5.5 5.5 0 0 1 273.167 220V220A5.5 5.5 0 0 1 267.667 225.5H22A5.5 5.5 0 0 1 16.5 220V220A5.5 5.5 0 0 1 22 214.5z"/>
-                <path x="18" y="256" width="200" height="10" rx="5" className="weak" d="M21.083 234.667H195.25A4.583 4.583 0 0 1 199.833 239.25V239.25A4.583 4.583 0 0 1 195.25 243.833H21.083A4.583 4.583 0 0 1 16.5 239.25V239.25A4.583 4.583 0 0 1 21.083 234.667z"/>
+                <path x="18" y="18" width="270" height="12" rx="6" className="ink" d="M22 16.5H258.5A5.5 5.5 0 0 1 264 22V22A5.5 5.5 0 0 1 258.5 27.5H22A5.5 5.5 0 0 1 16.5 22V22A5.5 5.5 0 0 1 22 16.5z" />
+                <path x="18" y="40" width="210" height="10" rx="5" className="weak" d="M21.083 36.667H204.417A4.583 4.583 0 0 1 209 41.25V41.25A4.583 4.583 0 0 1 204.417 45.833H21.083A4.583 4.583 0 0 1 16.5 41.25V41.25A4.583 4.583 0 0 1 21.083 36.667z" />
+                <path x="18" y="126" width="250" height="12" rx="6" className="ink" d="M22 115.5H240.167A5.5 5.5 0 0 1 245.667 121V121A5.5 5.5 0 0 1 240.167 126.5H22A5.5 5.5 0 0 1 16.5 121V121A5.5 5.5 0 0 1 22 115.5z" />
+                <path x="18" y="148" width="190" height="10" rx="5" className="weak" d="M21.083 135.667H186.083A4.583 4.583 0 0 1 190.667 140.25V140.25A4.583 4.583 0 0 1 186.083 144.833H21.083A4.583 4.583 0 0 1 16.5 140.25V140.25A4.583 4.583 0 0 1 21.083 135.667z" />
+                <path x="18" y="234" width="280" height="12" rx="6" className="ink" d="M22 214.5H267.667A5.5 5.5 0 0 1 273.167 220V220A5.5 5.5 0 0 1 267.667 225.5H22A5.5 5.5 0 0 1 16.5 220V220A5.5 5.5 0 0 1 22 214.5z" />
+                <path x="18" y="256" width="200" height="10" rx="5" className="weak" d="M21.083 234.667H195.25A4.583 4.583 0 0 1 199.833 239.25V239.25A4.583 4.583 0 0 1 195.25 243.833H21.083A4.583 4.583 0 0 1 16.5 239.25V239.25A4.583 4.583 0 0 1 21.083 234.667z" />
               </g>
             </g>
           </g>
           
-          <path id="divider" x="784" y="40" width="2" height="560" className="ink" opacity=".22" d="M718.667 36"/>
+          <path id="divider" x="784" y="40" width="2" height="560" className="ink" opacity=".22" d="M718.667 36" />
           
           <g id="panelWrap" transform="translate(808 40)" filter="url(#shadow)">
-            <path x="808" y="40" width="360" height="560" rx="22" className="card2" d="M760.833 36.667H1050.5A20.167 20.167 0 0 1 1070.667 56.833V529.833A20.167 20.167 0 0 1 1050.5 550H760.833A20.167 20.167 0 0 1 740.667 529.833V56.833A20.167 20.167 0 0 1 760.833 36.667z"/>
-            <path x="808" y="52" width="300" height="10" rx="5" fill="url(#shimmer)" d="M745.25 47.667H1011.083A4.583 4.583 0 0 1 1015.667 52.25V52.25A4.583 4.583 0 0 1 1011.083 56.833H745.25A4.583 4.583 0 0 1 740.667 52.25V52.25A4.583 4.583 0 0 1 745.25 47.667z"/>
-            <path x="808" y="72" width="210" height="10" rx="5" fill="url(#shimmer)" d="M745.25 66H928.583A4.583 4.583 0 0 1 933.167 70.583V70.583A4.583 4.583 0 0 1 928.583 75.167H745.25A4.583 4.583 0 0 1 740.667 70.583V70.583A4.583 4.583 0 0 1 745.25 66z"/>
-            <path x="808" y="110" width="316" height="10" rx="5" fill="url(#shimmer)" d="M745.25 100.833H1025.75A4.583 4.583 0 0 1 1030.333 105.417V105.417A4.583 4.583 0 0 1 1025.75 110H745.25A4.583 4.583 0 0 1 740.667 105.417V105.417A4.583 4.583 0 0 1 745.25 100.833z"/>
-            <path x="808" y="130" width="284" height="10" rx="5" fill="url(#shimmer)" d="M745.25 119.167H996.417A4.583 4.583 0 0 1 1001 123.75V123.75A4.583 4.583 0 0 1 996.417 128.333H745.25A4.583 4.583 0 0 1 740.667 123.75V123.75A4.583 4.583 0 0 1 745.25 119.167z"/>
-            <path x="808" y="150" width="260" height="10" rx="5" fill="url(#shimmer)" d="M745.25 137.5H974.417A4.583 4.583 0 0 1 979 142.083V142.083A4.583 4.583 0 0 1 974.417 146.667H745.25A4.583 4.583 0 0 1 740.667 142.083V142.083A4.583 4.583 0 0 1 745.25 137.5z"/>
-            <path x="808" y="170" width="320" height="10" rx="5" fill="url(#shimmer)" d="M745.25 155.833H1029.417A4.583 4.583 0 0 1 1034 160.417V160.417A4.583 4.583 0 0 1 1029.417 165H745.25A4.583 4.583 0 0 1 740.667 160.417V160.417A4.583 4.583 0 0 1 745.25 155.833z"/>
-            <path x="808" y="190" width="270" height="10" rx="5" fill="url(#shimmer)" d="M745.25 174.167H983.583A4.583 4.583 0 0 1 988.167 178.75V178.75A4.583 4.583 0 0 1 983.583 183.333H745.25A4.583 4.583 0 0 1 740.667 178.75V178.75A4.583 4.583 0 0 1 745.25 174.167z"/>
+            <path x="808" y="40" width="360" height="560" rx="22" className="card2" d="M760.833 36.667H1050.5A20.167 20.167 0 0 1 1070.667 56.833V529.833A20.167 20.167 0 0 1 1050.5 550H760.833A20.167 20.167 0 0 1 740.667 529.833V56.833A20.167 20.167 0 0 1 760.833 36.667z" />
+            <path x="808" y="52" width="300" height="10" rx="5" fill="url(#shimmer)" d="M745.25 47.667H1011.083A4.583 4.583 0 0 1 1015.667 52.25V52.25A4.583 4.583 0 0 1 1011.083 56.833H745.25A4.583 4.583 0 0 1 740.667 52.25V52.25A4.583 4.583 0 0 1 745.25 47.667z" />
+            <path x="808" y="72" width="210" height="10" rx="5" fill="url(#shimmer)" d="M745.25 66H928.583A4.583 4.583 0 0 1 933.167 70.583V70.583A4.583 4.583 0 0 1 928.583 75.167H745.25A4.583 4.583 0 0 1 740.667 70.583V70.583A4.583 4.583 0 0 1 745.25 66z" />
+            <path x="808" y="110" width="316" height="10" rx="5" fill="url(#shimmer)" d="M745.25 100.833H1025.75A4.583 4.583 0 0 1 1030.333 105.417V105.417A4.583 4.583 0 0 1 1025.75 110H745.25A4.583 4.583 0 0 1 740.667 105.417V105.417A4.583 4.583 0 0 1 745.25 100.833z" />
+            <path x="808" y="130" width="284" height="10" rx="5" fill="url(#shimmer)" d="M745.25 119.167H996.417A4.583 4.583 0 0 1 1001 123.75V123.75A4.583 4.583 0 0 1 996.417 128.333H745.25A4.583 4.583 0 0 1 740.667 123.75V123.75A4.583 4.583 0 0 1 745.25 119.167z" />
+            <path x="808" y="150" width="260" height="10" rx="5" fill="url(#shimmer)" d="M745.25 137.5H974.417A4.583 4.583 0 0 1 979 142.083V142.083A4.583 4.583 0 0 1 974.417 146.667H745.25A4.583 4.583 0 0 1 740.667 142.083V142.083A4.583 4.583 0 0 1 745.25 137.5z" />
+            <path x="808" y="170" width="320" height="10" rx="5" fill="url(#shimmer)" d="M745.25 155.833H1029.417A4.583 4.583 0 0 1 1034 160.417V160.417A4.583 4.583 0 0 1 1029.417 165H745.25A4.583 4.583 0 0 1 740.667 160.417V160.417A4.583 4.583 0 0 1 745.25 155.833z" />
+            <path x="808" y="190" width="270" height="10" rx="5" fill="url(#shimmer)" d="M745.25 174.167H983.583A4.583 4.583 0 0 1 988.167 178.75V178.75A4.583 4.583 0 0 1 983.583 183.333H745.25A4.583 4.583 0 0 1 740.667 178.75V178.75A4.583 4.583 0 0 1 745.25 174.167z" />
             <g id="cta">
-              <path x="900" y="400" width="100" height="44" rx="12" className="accent"
-                    transform="translate(24 0)"
-                    d="M751.667 458.333H872.667A11 11 0 0 1 883.667 469.333V487.667A11 11 0 0 1 872.667 498.667H751.667A11 11 0 0 1 740.667 487.667V469.333A11 11 0 0 1 751.667 458.333z"/>
-              <path x="900" y="800" width="150" height="44" rx="12" className="card"
-                    d="M751.667 458.333H867.167A11 11 0 0 1 878.167 469.333V487.667A11 11 0 0 1 867.167 498.667H751.667A11 11 0 0 1 740.667 487.667V469.333A11 11 0 0 1 751.667 458.333z"/>
+              <path x="900" y="400" width="100" height="44" rx="12" className="accent" transform="translate(24 0)" d="M751.667 458.333H872.667A11 11 0 0 1 883.667 469.333V487.667A11 11 0 0 1 872.667 498.667H751.667A11 11 0 0 1 740.667 487.667V469.333A11 11 0 0 1 751.667 458.333z" />
+              <path x="900" y="800" width="150" height="44" rx="12" className="card" d="M751.667 458.333H867.167A11 11 0 0 1 878.167 469.333V487.667A11 11 0 0 1 867.167 498.667H751.667A11 11 0 0 1 740.667 487.667V469.333A11 11 0 0 1 751.667 458.333z" />
             </g>
             <g transform="translate(836.167 478.5)">
-              <path id="tick"
-                    d="m-7.333 0 7.333 7.333L12.833 -5.5"
-                    fill="none" stroke="#fff" strokeWidth="3.6666666666666665"
-                    strokeLinecap="round" strokeLinejoin="round"/>
+              <path id="tick" d="m-7.333 0 7.333 7.333L12.833 -5.5" fill="none" stroke="#fff" strokeWidth="3.6666666666666665" strokeLinecap="round" strokeLinejoin="round" />
             </g>
           </g>
           
           <g id="cursor">
-            <path points="0,0 26,12 12,16 16,30" fill="#fff" stroke="rgba(0,0,0,.28)" strokeWidth="1.0999999999999999" d="M0 0L23.833 11L11 14.667L14.667 27.5Z"/>
+            <path points="0,0 26,12 12,16 16,30" fill="#fff" stroke="rgba(0,0,0,.28)" strokeWidth="1.0999999999999999" d="M0 0L23.833 11L11 14.667L14.667 27.5Z" />
           </g>
           
           <g id="ripple" opacity="0">
-            <path r="14" className="accent" d="Maaaaaaaaz"/>
-            <path r="14" className="accent" opacity=".25" d="Maaaaaaaaz"/>
+            <path r="14" className="accent" d="Maaaaaaaaz" />
+            <path r="14" className="accent" opacity=".25" d="Maaaaaaaaz" />
           </g>
         </svg>
       </div>
