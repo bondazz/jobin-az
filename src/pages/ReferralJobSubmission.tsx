@@ -14,8 +14,12 @@ import { generatePageSEO, updatePageMeta } from '@/utils/seo';
 import { useReferralCode } from '@/hooks/useReferralCode';
 const ReferralJobSubmission = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
-  const { referralCode } = useReferralCode();
+  const {
+    toast
+  } = useToast();
+  const {
+    referralCode
+  } = useReferralCode();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     // Applicant information
@@ -84,10 +88,10 @@ const ReferralJobSubmission = () => {
   const formatPhoneNumber = (value: string) => {
     // Remove all non-digits
     const digits = value.replace(/\D/g, '');
-    
+
     // Limit to 10 digits
     const limitedDigits = digits.slice(0, 10);
-    
+
     // Format as (050) 993 77 66
     if (limitedDigits.length >= 6) {
       return `(${limitedDigits.slice(0, 3)}) ${limitedDigits.slice(3, 6)} ${limitedDigits.slice(6, 8)} ${limitedDigits.slice(8, 10)}`;
@@ -97,7 +101,6 @@ const ReferralJobSubmission = () => {
       return limitedDigits;
     }
   };
-
   const handleInputChange = (field: string, value: string) => {
     if (field === 'applicant_phone') {
       const formattedPhone = formatPhoneNumber(value);
@@ -142,19 +145,17 @@ const ReferralJobSubmission = () => {
 
       // Only check referral if code exists
       if (referralCode) {
-        const { data, error } = await supabase
-          .from('referrals')
-          .select('user_id')
-          .eq('code', referralCode)
-          .eq('is_active', true)
-          .maybeSingle();
-        
-        console.log('Referral lookup result:', { data, error });
-        
+        const {
+          data,
+          error
+        } = await supabase.from('referrals').select('user_id').eq('code', referralCode).eq('is_active', true).maybeSingle();
+        console.log('Referral lookup result:', {
+          data,
+          error
+        });
         if (error) {
           console.error('Error looking up referral:', error);
         }
-        
         referralData = data;
       }
 
@@ -164,7 +165,6 @@ const ReferralJobSubmission = () => {
         referral_user_id: referralData?.user_id || null,
         ...formData
       };
-
       console.log('Submission data:', submissionData);
       const {
         error
@@ -300,9 +300,7 @@ const ReferralJobSubmission = () => {
           <div className="max-w-2xl mx-auto">
             <Card className="shadow-xl border-0 bg-card/95 backdrop-blur-sm">
               <CardHeader className="bg-gradient-to-r from-primary/10 via-accent/5 to-primary/10 p-4">
-                <CardTitle className="text-xl font-bold text-center text-foreground">
-                  Birləşik Elan Yerləşdir
-                </CardTitle>
+                <CardTitle className="font-bold text-center text-foreground text-xl">İş Elanı Yerləşdir</CardTitle>
                 <p className="text-muted-foreground text-center mt-2 text-sm">
                   Aşağıdakı formu dolduraraq iş elanınızı yerləşdirə bilərsiniz
                 </p>
