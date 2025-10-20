@@ -128,13 +128,39 @@ const App = () => (
                 <ReferralJobSubmission />
               </Suspense>
             } />
-            <Route path="/about" element={
-              <Suspense fallback={<LoadingFallback />}>
-                <About />
-              </Suspense>
-            } />
-          </Route>
-          {/* Admin routes - outside Layout */}
+          <Route path="/about" element={
+            <Suspense fallback={<LoadingFallback />}>
+              <About />
+            </Suspense>
+          } />
+        </Route>
+        {/* XML/SEO routes - outside Layout for direct XML rendering */}
+        <Route path="/sitemap_jooble.xml" element={
+          <Suspense fallback={<LoadingFallback />}>
+            <SitemapJooble />
+          </Suspense>
+        } />
+        <Route path="/sitemap.xml" element={
+          <Suspense fallback={<LoadingFallback />}>
+            <Sitemap />
+          </Suspense>
+        } />
+        <Route path="/sitemap_index.xml" element={
+          <Suspense fallback={<LoadingFallback />}>
+            <SitemapIndex />
+          </Suspense>
+        } />
+        <Route path="/sitemap_main.xml" element={
+          <Suspense fallback={<LoadingFallback />}>
+            <SitemapMain />
+          </Suspense>
+        } />
+        <Route path="/robots.txt" element={
+          <Suspense fallback={<LoadingFallback />}>
+            <RobotsTxt />
+          </Suspense>
+        } />
+        {/* Admin routes - outside Layout */}
           <Route path="/admin/login" element={
             <Suspense fallback={<LoadingFallback />}>
               <AdminLogin />
