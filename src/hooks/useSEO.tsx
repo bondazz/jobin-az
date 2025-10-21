@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { updatePageMeta, SEOMetadata, getSiteSettings } from '@/utils/seo';
+import { useEffect } from "react";
+import { updatePageMeta, SEOMetadata, getSiteSettings } from "@/utils/seo";
 
 interface UseSEOProps {
   title: string;
@@ -8,62 +8,65 @@ interface UseSEOProps {
   url?: string;
 }
 
-export const useSEO = ({ title, description, keywords = '', url }: UseSEOProps) => {
+export const useSEO = ({ title, description, keywords = "", url }: UseSEOProps) => {
   useEffect(() => {
     const updateSEO = async () => {
       const settings = await getSiteSettings();
-      
+
       const metadata: SEOMetadata = {
-        title: title || settings.site_title || 'Jooble Azərbaycan',
-        description: description || settings.site_description || 'İş elanları və vakansiyalar',
-        keywords: keywords || settings.site_keywords || 'iş elanları, vakansiya, Azərbaycan',
-        url: url || window.location.pathname
+        title: title || settings.site_title || "Jooble Azərbaycan",
+        description: description || settings.site_description || "İş elanları və vakansiyalar",
+        keywords: keywords || settings.site_keywords || "iş elanları, vakansiya, Azərbaycan",
+        url: url || window.location.pathname,
       };
-      
+
       updatePageMeta(metadata);
     };
-    
+
     updateSEO();
   }, [title, description, keywords, url]);
 };
 
-export const useDynamicSEO = (
-  type: 'job' | 'company' | 'category',
-  data: any
-) => {
+export const useDynamicSEO = (type: "job" | "company" | "category", data: any) => {
   useEffect(() => {
     if (!data) return;
 
     let metadata: SEOMetadata;
 
     switch (type) {
-      case 'job':
+      case "job":
         metadata = {
-          title: data.seo_title || `${data.title} | ${data.company?.name || 'İş Elanı'}`,
-          description: data.seo_description || `${data.company?.name || 'Şirkət'}də ${data.title} vakansiyası`,
-          keywords: data.seo_keywords?.join(', ') || `${data.title}, ${data.company?.name || ''}, vakansiya, iş elanları`,
-          url: `/vacancies/${data.slug}`
+          title: data.seo_title || `${data.title} | ${data.company?.name || "İş Elanı"}`,
+          description: data.seo_description || `${data.company?.name || "Şirkət"}də ${data.title} vakansiyası`,
+          keywords:
+            data.seo_keywords?.join(", ") || `${data.title}, ${data.company?.name || ""}, vakansiya, iş elanları`,
+          url: `/vacancies/${data.slug}`,
         };
         break;
-        
-      case 'company':
+
+      case "company":
         metadata = {
           title: data.seo_title || `${data.name} | Şirkət Profili - Jooble`,
-          description: data.seo_description || `${data.name} şirkəti haqqında məlumat və aktiv vakansiyalar. ${data.description || ''}`,
-          keywords: data.seo_keywords?.join(', ') || `${data.name}, şirkət, vakansiya, iş elanları, Azərbaycan`,
-          url: `/companies/${data.slug}`
+          description:
+            data.seo_description ||
+            `${data.name} şirkəti haqqında məlumat, iş elanları və vakansiyalar. ${data.description || ""}`,
+          keywords: data.seo_keywords?.join(", ") || `${data.name}, şirkət, vakansiya, iş elanları, Azərbaycan`,
+          url: `/companies/${data.slug}`,
         };
         break;
-        
-      case 'category':
+
+      case "category":
         metadata = {
           title: data.seo_title || `${data.name} Vakansiyaları | İş Elanları - Jooble`,
-          description: data.seo_description || `${data.name} sahəsində aktiv vakansiyalar və iş elanları. ${data.description || ''}`,
-          keywords: data.seo_keywords?.join(', ') || `${data.name}, vakansiya, iş elanları, Azərbaycan, ${data.name} işləri`,
-          url: `/categories/${data.slug}`
+          description:
+            data.seo_description ||
+            `${data.name} sahəsində aktiv vakansiyalar və iş elanları. ${data.description || ""}`,
+          keywords:
+            data.seo_keywords?.join(", ") || `${data.name}, vakansiya, iş elanları, Azərbaycan, ${data.name} işləri`,
+          url: `/categories/${data.slug}`,
         };
         break;
-        
+
       default:
         return;
     }
