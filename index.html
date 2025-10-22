@@ -142,23 +142,49 @@
   </head>
 
   <body>
-    <!-- SEO üçün minimal, təbii məzmun (açar sözlər əlavə edildi) -->
+    <!-- SEO üçün minimal, lakin güclü struktur -->
     <h1 style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">
-      İş elanları və vakansiyalar — Jooble.az
+      İş elanları, is elanları və vakansiyalar — Jooble.az
     </h1>
-    <p class="visually-hidden" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">
-      Jooble.az-da ən son <strong>vakansiyalar</strong> və uyğun <strong>vakansiya</strong> tapın.
-    </p>
 
-    <nav
-      aria-label="Vakansiyalar"
-      class="visually-hidden"
+    <section
+      aria-label="İş elanları və vakansiyalar"
       style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;"
     >
-      <a href="/vacancies">Bütün vakansiyalar</a>
-      <a href="/add_job">Vakansiya yerləşdir</a>
+      <h2>Jooble.az – Azərbaycanda iş elanları və vakansiyalar platforması</h2>
+      <p>
+        Jooble.az-da minlərlə <strong>iş elanları</strong>, müxtəlif sahələr üzrə <strong>is elanları</strong> və ən son
+        <strong>vakansiyalar</strong> sizi gözləyir. Axtardığınız <strong>vakansiya</strong> üçün şəhər, sahə və əmək
+        haqqına görə filtrlərdən istifadə edin və karyeranıza bu gün başlayın.
+      </p>
+    </section>
+
+    <nav
+      aria-label="Kateqoriyalar və bağlantılar"
+      style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;"
+    >
+      <ul>
+        <li><a href="/vacancies">Bütün iş elanları və vakansiyalar</a></li>
+        <li><a href="/categories">Kateqoriyalar üzrə is elanları</a></li>
+        <li><a href="/add_job">Yeni vakansiya yerləşdir</a></li>
+        <li><a href="/vacancies/baku">Bakı iş elanları</a></li>
+        <li><a href="/vacancies/remote">Remote is elanları</a></li>
+        <li><a href="/vacancies/it">IT vakansiyalar</a></li>
+        <li><a href="/vacancies/finance">Maliyyə sahəsində iş elanları</a></li>
+      </ul>
     </nav>
 
+    <footer
+      aria-label="Əlavə məlumat"
+      style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;"
+    >
+      <p>
+        Ən son <strong>iş elanları</strong>, <strong>is elanları</strong> və <strong>vakansiyalar</strong> Jooble.az
+        platformasında gündəlik yenilənir. Karyera inkişafınızı <strong>vakansiya</strong> axtarışı ilə bu gün başlayın.
+      </p>
+    </footer>
+
+    <!-- React root -->
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
