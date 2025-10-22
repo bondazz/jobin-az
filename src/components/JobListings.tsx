@@ -6,7 +6,6 @@ import { Job } from '@/types/job';
 import JobCard from './JobCard';
 import AdBanner from './AdBanner';
 import { Search, MapPin, Loader2 } from 'lucide-react';
-
 interface JobListingsProps {
   selectedJob: Job | null;
   onJobSelect: (job: Job) => void;
@@ -16,7 +15,6 @@ interface JobListingsProps {
   showOnlySaved?: boolean;
   companyId?: string;
 }
-
 const JobListings = ({
   selectedJob,
   onJobSelect,
@@ -44,7 +42,6 @@ const JobListings = ({
         setLoading(true);
         setOffset(0);
       }
-
       const currentOffset = isLoadMore ? offset : 0;
 
       // Build base select with joins
@@ -55,47 +52,40 @@ const JobListings = ({
         `;
 
       // Helper to transform rows to Job
-      const transform = (data: any[] = []): Job[] =>
-        data.map((job: any) => ({
-          id: job.id,
-          title: job.title,
-          company: job.companies?.name || '',
-          company_id: job.company_id,
-          companyLogo: job.companies?.logo,
-          isVerified: job.companies?.is_verified || false,
-          location: job.location,
-          type: job.type as 'full-time' | 'part-time' | 'contract' | 'internship',
-          salary: job.salary,
-          description: '', // List view doesn't need description
-          tags: (job.tags || []).filter((tag: string) =>
-            tag === 'premium' || tag === 'new' || tag === 'urgent' || tag === 'remote'
-          ) as ('premium' | 'new' | 'urgent' | 'remote')[],
-          views: job.views,
-          postedAt: formatDate(job.created_at),
-          category: job.categories?.name || '',
-          applicationUrl: '',
-          applicationType: 'website' as const,
-          applicationEmail: '',
-          expiration_date: job.expiration_date
-        }));
-
+      const transform = (data: any[] = []): Job[] => data.map((job: any) => ({
+        id: job.id,
+        title: job.title,
+        company: job.companies?.name || '',
+        company_id: job.company_id,
+        companyLogo: job.companies?.logo,
+        isVerified: job.companies?.is_verified || false,
+        location: job.location,
+        type: job.type as 'full-time' | 'part-time' | 'contract' | 'internship',
+        salary: job.salary,
+        description: '',
+        // List view doesn't need description
+        tags: (job.tags || []).filter((tag: string) => tag === 'premium' || tag === 'new' || tag === 'urgent' || tag === 'remote') as ('premium' | 'new' | 'urgent' | 'remote')[],
+        views: job.views,
+        postedAt: formatDate(job.created_at),
+        category: job.categories?.name || '',
+        applicationUrl: '',
+        applicationType: 'website' as const,
+        applicationEmail: '',
+        expiration_date: job.expiration_date
+      }));
       if (isLoadMore) {
         // Load more REGULAR (non-premium) jobs only
-        let regularQuery = supabase
-          .from('jobs')
-          .select(selectFields)
-          .eq('is_active', true)
-          .or('expiration_date.is.null,expiration_date.gt.' + new Date().toISOString())
-          .range(currentOffset, currentOffset + JOBS_PER_PAGE - 1)
-          .order('created_at', { ascending: false });
-
+        let regularQuery = supabase.from('jobs').select(selectFields).eq('is_active', true).or('expiration_date.is.null,expiration_date.gt.' + new Date().toISOString()).range(currentOffset, currentOffset + JOBS_PER_PAGE - 1).order('created_at', {
+          ascending: false
+        });
         if (companyId) regularQuery = regularQuery.eq('company_id', companyId);
-
-        const { data: regularData, error: regularError } = await regularQuery;
+        const {
+          data: regularData,
+          error: regularError
+        } = await regularQuery;
         if (regularError) throw regularError;
-
         const regularTransformed = transform(regularData);
-        setJobs((prev) => {
+        setJobs(prev => {
           const seen = new Set(prev.map(j => j.id));
           const filteredNew = regularTransformed.filter(j => !seen.has(j.id));
           return [...prev, ...filteredNew];
@@ -104,31 +94,23 @@ const JobListings = ({
         setOffset(currentOffset + JOBS_PER_PAGE);
       } else {
         // Initial load: fetch ALL premium first, then first page of regular
-        let premiumQuery = supabase
-          .from('jobs')
-          .select(selectFields)
-          .eq('is_active', true)
-          .or('expiration_date.is.null,expiration_date.gt.' + new Date().toISOString())
-          .overlaps('tags', ['premium'])
-          .order('created_at', { ascending: false });
+        let premiumQuery = supabase.from('jobs').select(selectFields).eq('is_active', true).or('expiration_date.is.null,expiration_date.gt.' + new Date().toISOString()).overlaps('tags', ['premium']).order('created_at', {
+          ascending: false
+        });
         if (companyId) premiumQuery = premiumQuery.eq('company_id', companyId);
-
-        let regularQuery = supabase
-          .from('jobs')
-          .select(selectFields)
-          .eq('is_active', true)
-          .or('expiration_date.is.null,expiration_date.gt.' + new Date().toISOString())
-          .range(0, JOBS_PER_PAGE - 1)
-          .order('created_at', { ascending: false });
+        let regularQuery = supabase.from('jobs').select(selectFields).eq('is_active', true).or('expiration_date.is.null,expiration_date.gt.' + new Date().toISOString()).range(0, JOBS_PER_PAGE - 1).order('created_at', {
+          ascending: false
+        });
         if (companyId) regularQuery = regularQuery.eq('company_id', companyId);
-
-        const [{ data: premiumData, error: premiumError }, { data: regularData, error: regularError }] = await Promise.all([
-          premiumQuery,
-          regularQuery
-        ]);
+        const [{
+          data: premiumData,
+          error: premiumError
+        }, {
+          data: regularData,
+          error: regularError
+        }] = await Promise.all([premiumQuery, regularQuery]);
         if (premiumError) throw premiumError;
         if (regularError) throw regularError;
-
         const premiumTransformed = transform(premiumData);
         const regularTransformed = transform(regularData);
 
@@ -141,7 +123,6 @@ const JobListings = ({
             merged.push(j);
           }
         }
-
         setJobs(merged);
         setHasMore(regularTransformed.length === JOBS_PER_PAGE);
         setOffset(JOBS_PER_PAGE);
@@ -153,7 +134,6 @@ const JobListings = ({
       setLoadingMore(false);
     }
   }, [companyId, offset]);
-
   useEffect(() => {
     fetchJobs(false);
   }, [companyId]);
@@ -175,12 +155,10 @@ const JobListings = ({
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
       const scrollHeight = document.documentElement.scrollHeight;
       const clientHeight = window.innerHeight;
-      
       if (scrollTop + clientHeight >= scrollHeight - 1000 && hasMore && !loadingMore && !loading) {
         fetchJobs(true);
       }
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, [hasMore, loadingMore, loading, fetchJobs]);
@@ -190,29 +168,25 @@ const JobListings = ({
     setOffset(0);
     fetchJobs(false);
   }, [selectedCategory, companyFilter, showOnlySaved]);
-  
+
   // Debounced search for performance
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
   const [debouncedLocationFilter, setDebouncedLocationFilter] = useState('');
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearchQuery(searchQuery);
     }, 300);
     return () => clearTimeout(timer);
   }, [searchQuery]);
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedLocationFilter(locationFilter);
     }, 300);
     return () => clearTimeout(timer);
   }, [locationFilter]);
-
   const filteredJobs = useMemo(() => {
     // Early return for empty jobs
     if (jobs.length === 0) return [];
-    
     let jobsToFilter = jobs;
 
     // Optimized saved jobs filtering
@@ -221,28 +195,24 @@ const JobListings = ({
       if (savedJobIds.length === 0) return [];
       jobsToFilter = jobs.filter(job => savedJobIds.includes(job.id));
     }
-    
+
     // Optimized filtering with early exits
     const searchLower = debouncedSearchQuery.toLowerCase();
     const locationLower = debouncedLocationFilter.toLowerCase();
-    
     const filtered = jobsToFilter.filter(job => {
       // Quick category check first (fastest)
       if (selectedCategory && job.category !== selectedCategory) return false;
       if (companyFilter && job.company_id !== companyFilter) return false;
-      
+
       // Search checks last (slower)
-      if (searchLower && !job.title.toLowerCase().includes(searchLower) && 
-          !job.company.toLowerCase().includes(searchLower)) return false;
+      if (searchLower && !job.title.toLowerCase().includes(searchLower) && !job.company.toLowerCase().includes(searchLower)) return false;
       if (locationLower && !job.location.toLowerCase().includes(locationLower)) return false;
-      
       return true;
     });
 
     // Premium first: consider 'premium' tag anywhere in the array
     const premiumJobs: Job[] = [];
     const regularJobs: Job[] = [];
-    
     for (const job of filtered) {
       if (job.tags?.includes('premium')) {
         premiumJobs.push(job);
@@ -250,7 +220,6 @@ const JobListings = ({
         regularJobs.push(job);
       }
     }
-
     return [...premiumJobs, ...regularJobs];
   }, [jobs, debouncedSearchQuery, debouncedLocationFilter, selectedCategory, companyFilter, showOnlySaved]);
   const getCategoryLabel = (category: string) => {
@@ -273,20 +242,7 @@ const JobListings = ({
         </div>}
 
       {/* SEO Hero Section - Visible only on main vacancies page */}
-      {showHeader && !companyId && !selectedCategory && (
-        <div className="bg-gradient-to-br from-primary/10 via-background to-accent/5 border-b border-border/30 px-4 py-6">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-3 leading-tight">
-              Vakansiyalar və İş Elanları
-            </h1>
-            <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-              Azərbaycanda son vakansiyalar və ən son iş elanları hər gün yenilənir. 
-              İş axtaranların uyğun iş tapmaq və müraciət edə bilər imkanları. 
-              CV nizi hazırlayın və aktiv iş elanlar və vakansiyalara müraciət edin.
-            </p>
-          </div>
-        </div>
-      )}
+      {showHeader && !companyId && !selectedCategory}
 
       {/* Compact Search Section - Max height 73px */}
       {showHeader && !companyId && <div className="relative overflow-hidden bg-gradient-to-br from-background via-primary/8 to-accent/5 border-b border-border/30 max-h-[73px]">
@@ -297,23 +253,13 @@ const JobListings = ({
               {/* Job Search Input */}
               <div className="relative flex-1 min-w-0">
                 <Search className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-3 h-3 sm:w-4 sm:h-4" />
-                <Input
-                  placeholder="İş axtarın..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-7 sm:pl-10 bg-background/60 backdrop-blur-sm border-border/60 focus:border-primary/60 text-xs sm:text-sm h-8 sm:h-9 w-full"
-                />
+                <Input placeholder="İş axtarın..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="pl-7 sm:pl-10 bg-background/60 backdrop-blur-sm border-border/60 focus:border-primary/60 text-xs sm:text-sm h-8 sm:h-9 w-full" />
               </div>
               
               {/* Location Filter */}
               <div className="relative flex-1 min-w-0">
                 <MapPin className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-3 h-3 sm:w-4 sm:h-4" />
-                <Input
-                  placeholder="Şəhər"
-                  value={locationFilter}
-                  onChange={(e) => setLocationFilter(e.target.value)}
-                  className="pl-7 sm:pl-10 bg-background/60 backdrop-blur-sm border-border/60 focus:border-primary/60 text-xs sm:text-sm h-8 sm:h-9 w-full"
-                />
+                <Input placeholder="Şəhər" value={locationFilter} onChange={e => setLocationFilter(e.target.value)} className="pl-7 sm:pl-10 bg-background/60 backdrop-blur-sm border-border/60 focus:border-primary/60 text-xs sm:text-sm h-8 sm:h-9 w-full" />
               </div>
             </div>
           </div>
@@ -352,24 +298,14 @@ const JobListings = ({
         </div>
         
         {/* Load More Button / Loading Indicator */}
-        {hasMore && !loading && (
-          <div className="flex justify-center py-8">
-            {loadingMore ? (
-              <div className="flex items-center gap-2 text-muted-foreground">
+        {hasMore && !loading && <div className="flex justify-center py-8">
+            {loadingMore ? <div className="flex items-center gap-2 text-muted-foreground">
                 <Loader2 className="w-4 h-4 animate-spin" />
                 <span className="text-sm">Daha çox elan yüklənir...</span>
-              </div>
-            ) : (
-              <Button 
-                variant="outline" 
-                onClick={() => fetchJobs(true)}
-                className="px-6 py-2 border-primary/30 text-primary hover:bg-primary hover:text-white transition-all duration-300"
-              >
+              </div> : <Button variant="outline" onClick={() => fetchJobs(true)} className="px-6 py-2 border-primary/30 text-primary hover:bg-primary hover:text-white transition-all duration-300">
                 Daha çox elan
-              </Button>
-            )}
-          </div>
-        )}
+              </Button>}
+          </div>}
       </div>
     </div>;
 };
