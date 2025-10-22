@@ -86,7 +86,10 @@
 
     <!-- Additional SEO Meta Tags -->
     <meta name="robots" content="index, follow" />
-    <meta name="keywords" content="iş axtarışı, vakansiya, iş elanları, is elanlari, karyera, Azərbaycan, job search, career, job seeker, vakansiyalar" />
+    <meta
+      name="keywords"
+      content="iş axtarışı, vakansiya, iş elanları, is elanlari, karyera, Azərbaycan, job search, career, job seeker, vakansiyalar"
+    />
     <meta name="theme-color" content="#1e40af" />
     <meta name="application-name" content="Jooble" />
     <meta name="apple-mobile-web-app-title" content="Jooble" />
@@ -137,9 +140,25 @@
       }
     </script>
   </head>
-      
-  </body>
+
   <body>
+    <!-- SEO üçün minimal, təbii məzmun (açar sözlər əlavə edildi) -->
+    <h1 style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">
+      İş elanları və vakansiyalar — Jooble.az
+    </h1>
+    <p class="visually-hidden" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">
+      Jooble.az-da ən son <strong>vakansiyalar</strong> və uyğun <strong>vakansiya</strong> tapın.
+    </p>
+
+    <nav
+      aria-label="Vakansiyalar"
+      class="visually-hidden"
+      style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;"
+    >
+      <a href="/vacancies">Bütün vakansiyalar</a>
+      <a href="/add_job">Vakansiya yerləşdir</a>
+    </nav>
+
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
