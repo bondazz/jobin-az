@@ -150,9 +150,13 @@ const MainSidebar = () => {
         <div className="bg-gradient-to-br from-primary/10 via-accent/5 to-primary/5 rounded-xl p-4 mb-3 border border-primary/20">
           <div className="flex items-center gap-2 mb-3">
             <a href="https://www.liveinternet.ru/click" target="_blank" rel="noopener noreferrer">
-              <img id="licnt846B" width="24" height="24" style={{border: 0}} title="LiveInternet" src="https://counter.yadro.ru/logo?50.6" alt=""/>
+              <img id="licnt846B" width="24" height="24" style={{
+              border: 0
+            }} title="LiveInternet" src="https://counter.yadro.ru/logo?50.6" alt="" />
             </a>
-            <script dangerouslySetInnerHTML={{__html: `(function(d,s){d.getElementById("licnt846B").src="https://counter.yadro.ru/hit?t50.6;r"+escape(d.referrer)+((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+(s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)`}} />
+            <script dangerouslySetInnerHTML={{
+            __html: `(function(d,s){d.getElementById("licnt846B").src="https://counter.yadro.ru/hit?t50.6;r"+escape(d.referrer)+((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+(s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)`
+          }} />
             <h3 className="text-sm font-bold text-foreground">Vakansiya Statistikası</h3>
           </div>
           
@@ -194,13 +198,11 @@ const MainSidebar = () => {
             <div className="w-1 h-1 bg-primary rounded-full"></div>
             <span className="font-medium">© 2024 Jooble. İş elanları və vakansiyalar</span>
           </div>
-          <div className="flex items-center gap-2 mt-2">
-            <a href="https://www.liveinternet.ru/click" target="_blank" rel="noopener noreferrer">
-              <img id="licnt846B" width="31" height="31" style={{border: 0}} title="LiveInternet" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7" alt="LiveInternet counter"/>
-            </a>
-          </div>
+          
         </div>
-        <script dangerouslySetInnerHTML={{__html: `(function(d,s){d.getElementById("licnt846B").src="https://counter.yadro.ru/hit?t50.6;r"+escape(d.referrer)+((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+(s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)`}} />
+        <script dangerouslySetInnerHTML={{
+        __html: `(function(d,s){d.getElementById("licnt846B").src="https://counter.yadro.ru/hit?t50.6;r"+escape(d.referrer)+((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+(s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)`
+      }} />
       </div>
     </aside>;
 };
