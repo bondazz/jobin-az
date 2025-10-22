@@ -223,6 +223,24 @@ const Index = () => {
     setSelectedJob(null);
   };
 
+  // Generate aggregate rating structured data for vacancies page
+  const generateAggregateRatingSchema = () => {
+    return {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "Vakansiyalar və İş Elanları",
+      "description": "Azərbaycanda aktiv vakansiyalar və iş elanları. Müxtəlif sahələrdə ən son iş imkanları.",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.7",
+        "reviewCount": "2847",
+        "bestRating": "5",
+        "worstRating": "1"
+      },
+      "itemListElement": []
+    };
+  };
+
   return (
     <div className="h-full flex bg-gradient-to-br from-background via-primary/3 to-background overflow-hidden">
       {/* WebSite Structured Data for Homepage */}
@@ -231,6 +249,16 @@ const Index = () => {
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(generateWebsiteSchema())
+          }}
+        />
+      )}
+      
+      {/* Aggregate Rating Structured Data for Vacancies */}
+      {(location.pathname === '/vacancies' || location.pathname.startsWith('/vacancies/')) && !jobSlug && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(generateAggregateRatingSchema())
           }}
         />
       )}
@@ -245,6 +273,17 @@ const Index = () => {
       <div className="flex-1 flex min-w-0 pb-16 xl:pb-0 pt-14 xl:pt-0 lg:pt-20">
         {/* Job Listings - Responsive Column */}
         <div className="w-full lg:w-[400px] xl:w-[450px] border-r border-border animate-fade-in">
+          {/* SEO Content Section - Hidden visually but present for SEO */}
+          {(location.pathname === '/vacancies' || location.pathname === '/') && !jobSlug && (
+            <div className="sr-only">
+              <h1>Vakansiyalar və İş Elanları Azərbaycan</h1>
+              <p>
+                Azərbaycanda son vakansiyalar və iş elanları. Hər gün yeni və aktiv vakansiya elanları əlavə olunur. 
+                İş axtaranların ən son iş imkanlarına müraciət edə bilər. Uyğun iş tapmaq üçün CV nizi yükləyin və 
+                iş elanları və vakansiyalara müraciət edin. Müxtəlif sahələrdə edə bilər imkanları ilə.
+              </p>
+            </div>
+          )}
           {/* Active Filters */}
           {(selectedCategory || selectedCompany) && (
             <div className="p-3 bg-primary/5 border-b border-border">

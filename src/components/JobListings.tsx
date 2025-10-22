@@ -272,6 +272,22 @@ const JobListings = ({
           
         </div>}
 
+      {/* SEO Hero Section - Visible only on main vacancies page */}
+      {showHeader && !companyId && !selectedCategory && (
+        <div className="bg-gradient-to-br from-primary/10 via-background to-accent/5 border-b border-border/30 px-4 py-6">
+          <div className="max-w-4xl mx-auto text-center">
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-3 leading-tight">
+              Vakansiyalar və İş Elanları
+            </h1>
+            <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-2xl mx-auto">
+              Azərbaycanda son vakansiyalar və ən son iş elanları hər gün yenilənir. 
+              İş axtaranların uyğun iş tapmaq və müraciət edə bilər imkanları. 
+              CV nizi hazırlayın və aktiv iş elanlar və vakansiyalara müraciət edin.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Compact Search Section - Max height 73px */}
       {showHeader && !companyId && <div className="relative overflow-hidden bg-gradient-to-br from-background via-primary/8 to-accent/5 border-b border-border/30 max-h-[73px]">
           <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-60"></div>
