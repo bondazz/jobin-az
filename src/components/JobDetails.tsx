@@ -183,7 +183,7 @@ const JobDetails = ({
   }
   if (!job) {
     return <div className="h-full flex flex-col items-center justify-center bg-gradient-to-br from-job-details to-primary/3">
-        <div className="text-center p-8 animate-fade-in">
+        <div className="text-center p-8 animate-fade-in h-full overflow-y-auto scrollbar-hide">
           {/* Banner Advertisement */}
           <div className="max-w-[500px] mx-auto mb-6">
             <AdBanner position="job_details" />
