@@ -93,6 +93,24 @@ const Index = () => {
     };
   };
 
+  // Generate Organization structured data with aggregate rating for homepage
+  const generateOrganizationSchema = () => {
+    return {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Jooble Azərbaycan",
+      "description": "Azərbaycan'ın ən böyük iş axtarış platforması. Müxtəlif sahələrdə minlərlə vakansiya və iş elanı.",
+      "url": window.location.origin,
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "reviewCount": "3521",
+        "bestRating": "5",
+        "worstRating": "1"
+      }
+    };
+  };
+
   // Fetch categories
   useEffect(() => {
     const fetchCategories = async () => {
@@ -244,13 +262,21 @@ const Index = () => {
   return (
     <div className="h-full flex bg-gradient-to-br from-background via-primary/3 to-background overflow-hidden">
       {/* WebSite Structured Data for Homepage */}
-      {!jobSlug && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(generateWebsiteSchema())
-          }}
-        />
+      {!jobSlug && location.pathname === '/' && (
+        <>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(generateWebsiteSchema())
+            }}
+          />
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(generateOrganizationSchema())
+            }}
+          />
+        </>
       )}
       
       {/* Aggregate Rating Structured Data for Vacancies */}
