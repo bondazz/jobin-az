@@ -241,50 +241,42 @@ const Index = () => {
     setSelectedJob(null);
   };
 
-  // Generate aggregate rating structured data for vacancies page
-  const generateAggregateRatingSchema = () => {
+  // Generate organization schema for vacancies page with aggregate rating
+  const generateVacanciesOrganizationSchema = () => {
     return {
       "@context": "https://schema.org",
-      "@type": "ItemList",
-      "name": "Vakansiyalar və İş Elanları",
-      "description": "Azərbaycanda aktiv vakansiyalar və iş elanları. Müxtəlif sahələrdə ən son iş imkanları.",
+      "@type": "Organization",
+      "name": "Jooble Azərbaycan",
+      "description": "Azərbaycan'ın ən böyük iş axtarış platforması. Müxtəlif sahələrdə minlərlə vakansiya və iş elanı.",
+      "url": window.location.origin,
       "aggregateRating": {
         "@type": "AggregateRating",
         "ratingValue": "4.7",
         "reviewCount": "2847",
         "bestRating": "5",
         "worstRating": "1"
-      },
-      "itemListElement": []
+      }
     };
   };
 
   return (
     <div className="h-full flex bg-gradient-to-br from-background via-primary/3 to-background overflow-hidden">
-      {/* WebSite Structured Data for Homepage */}
+      {/* Organization Structured Data for Homepage */}
       {!jobSlug && location.pathname === '/' && (
-        <>
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{
-              __html: JSON.stringify(generateWebsiteSchema())
-            }}
-          />
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{
-              __html: JSON.stringify(generateOrganizationSchema())
-            }}
-          />
-        </>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(generateOrganizationSchema())
+          }}
+        />
       )}
       
-      {/* Aggregate Rating Structured Data for Vacancies */}
+      {/* Organization Structured Data for Vacancies */}
       {(location.pathname === '/vacancies' || location.pathname.startsWith('/vacancies/')) && !jobSlug && (
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(generateAggregateRatingSchema())
+            __html: JSON.stringify(generateVacanciesOrganizationSchema())
           }}
         />
       )}
