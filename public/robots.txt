@@ -5,6 +5,7 @@ Allow: /
 
 # Sitemap location
 Sitemap: https://storage.jooble.az/public/sitemap.xml
+Sitemap: https://storage.jooble.az/sitemap.xml
 
 # Host declaration
 Host: jooble.az
