@@ -5,11 +5,11 @@ export default async (request: Request, context: any) => {
   const pathParts = url.pathname.split('/');
   
   // Detect route type and slug
-  const routeType = pathParts[1]; // 'job', 'company', or 'category'
+  const routeType = pathParts[1]; // 'vacancies' or 'companies'
   const slug = pathParts[2];
   
   // Only handle dynamic routes with slugs
-  if (!slug || !['job', 'company', 'category'].includes(routeType)) {
+  if (!slug || !['vacancies', 'companies'].includes(routeType)) {
     return context.next();
   }
 
@@ -29,7 +29,7 @@ export default async (request: Request, context: any) => {
     let structuredData: any = null;
 
     // Fetch data based on route type
-    if (routeType === 'job') {
+    if (routeType === 'vacancies') {
       const result = await supabase
         .from('jobs')
         .select(`
@@ -48,7 +48,7 @@ export default async (request: Request, context: any) => {
         seoTitle = data.seo_title || `${data.title} - ${data.companies?.name || 'İş Elanı'} | Jooble.az`;
         seoDescription = data.seo_description || data.description?.substring(0, 160) || 'İş elanı';
         seoKeywords = data.seo_keywords?.join(', ') || data.title;
-        pageUrl = `https://jooble.az/job/${slug}`;
+        pageUrl = `https://jooble.az/vacancies/${slug}`;
 
         // Job Posting structured data
         structuredData = {
@@ -83,7 +83,7 @@ export default async (request: Request, context: any) => {
           "validThrough": data.expiration_date || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
         };
       }
-    } else if (routeType === 'company') {
+    } else if (routeType === 'companies') {
       const result = await supabase
         .from('companies')
         .select('*')
@@ -98,7 +98,7 @@ export default async (request: Request, context: any) => {
         seoTitle = data.seo_title || `${data.name} - Şirkət Profili | Jooble.az`;
         seoDescription = data.seo_description || data.description?.substring(0, 160) || `${data.name} haqqında məlumat`;
         seoKeywords = data.seo_keywords?.join(', ') || data.name;
-        pageUrl = `https://jooble.az/company/${slug}`;
+        pageUrl = `https://jooble.az/companies/${slug}`;
 
         // Organization structured data
         structuredData = {
@@ -113,49 +113,6 @@ export default async (request: Request, context: any) => {
           ...(data.phone ? { "telephone": data.phone } : {})
         };
       }
-    } else if (routeType === 'category') {
-      const result = await supabase
-        .from('categories')
-        .select('*')
-        .eq('slug', slug)
-        .eq('is_active', true)
-        .single();
-      
-      data = result.data;
-      error = result.error;
-
-      if (data) {
-        seoTitle = data.seo_title || `${data.name} - İş Elanları | Jooble.az`;
-        seoDescription = data.seo_description || `${data.name} sahəsində iş elanları`;
-        seoKeywords = data.seo_keywords?.join(', ') || data.name;
-        pageUrl = `https://jooble.az/category/${slug}`;
-
-        // BreadcrumbList structured data
-        structuredData = {
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          "itemListElement": [
-            {
-              "@type": "ListItem",
-              "position": 1,
-              "name": "Ana Səhifə",
-              "item": "https://jooble.az"
-            },
-            {
-              "@type": "ListItem",
-              "position": 2,
-              "name": "Kateqoriyalar",
-              "item": "https://jooble.az/categories"
-            },
-            {
-              "@type": "ListItem",
-              "position": 3,
-              "name": data.name,
-              "item": pageUrl
-            }
-          ]
-        };
-      }
     }
 
     if (error || !data) {
@@ -167,9 +124,9 @@ export default async (request: Request, context: any) => {
     const response = await context.next();
     const html = await response.text();
 
-    const ogImage = routeType === 'job' 
+    const ogImage = routeType === 'vacancies' 
       ? (data.companies?.logo || 'https://jooble.az/placeholder.svg')
-      : routeType === 'company'
+      : routeType === 'companies'
       ? (data.logo || 'https://jooble.az/placeholder.svg')
       : 'https://jooble.az/placeholder.svg';
 
@@ -221,4 +178,4 @@ export default async (request: Request, context: any) => {
   }
 };
 
-export const config = { path: ['/job/*', '/company/*', '/category/*'] };
+export const config = { path: ['/vacancies/*', '/companies/*'] };
