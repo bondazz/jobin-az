@@ -131,40 +131,44 @@ export default async (request: Request, context: any) => {
       : 'https://jooble.az/placeholder.svg';
 
     // Inject meta tags into HTML
-    const modifiedHtml = html
-      .replace(
-        /<title>.*?<\/title>/i,
-        `<title>${seoTitle}</title>`
-      )
-      .replace(
-        /<meta\s+name="description"\s+content=".*?">/i,
-        `<meta name="description" content="${seoDescription}">`
-      )
-      .replace(
-        /<meta\s+name="keywords"\s+content=".*?">/i,
-        `<meta name="keywords" content="${seoKeywords}">`
-      )
-      .replace(
-        '</head>',
-        `
-    <!-- Dynamic SEO Meta Tags -->
-    <meta property="og:title" content="${seoTitle}">
-    <meta property="og:description" content="${seoDescription}">
+    // Clean existing meta tags comprehensively and inject server-side SEO to avoid flicker
+    const safeTitle = (seoTitle || '').replace(/"/g, '&quot;');
+    const safeDescription = (seoDescription || '').replace(/"/g, '&quot;');
+    const safeKeywords = (seoKeywords || '').replace(/"/g, '&quot;');
+
+    const cleanedHtml = html
+      // Remove existing title
+      .replace(/<title>[\s\S]*?<\/title>/i, '')
+      // Remove standard meta tags
+      .replace(/<meta[^>]*name=["']description["'][^>]*\/?>(?=)/gi, '')
+      .replace(/<meta[^>]*name=["']keywords["'][^>]*\/?>(?=)/gi, '')
+      // Remove Open Graph and Twitter tags
+      .replace(/<meta[^>]*property=["']og:[^"']+["'][^>]*\/?>(?=)/gi, '')
+      .replace(/<meta[^>]*name=["']twitter:[^"']+["'][^>]*\/?>(?=)/gi, '')
+      // Remove canonical links
+      .replace(/<link[^>]*rel=["']canonical["'][^>]*\/?>(?=)/gi, '');
+
+    const headInjection = `
+    <title>${safeTitle}</title>
+    <meta name="description" content="${safeDescription}">
+    <meta name="keywords" content="${safeKeywords}">
+    <meta property="og:title" content="${safeTitle}">
+    <meta property="og:description" content="${safeDescription}">
     <meta property="og:url" content="${pageUrl}">
     <meta property="og:type" content="website">
     <meta property="og:image" content="${ogImage}">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="${seoTitle}">
-    <meta name="twitter:description" content="${seoDescription}">
+    <meta name="twitter:title" content="${safeTitle}">
+    <meta name="twitter:description" content="${safeDescription}">
     <meta name="twitter:image" content="${ogImage}">
     <link rel="canonical" href="${pageUrl}">
-    ${structuredData ? `
-    <!-- Structured Data -->
+    ${structuredData ? `<!-- Structured Data -->
     <script type="application/ld+json">
     ${JSON.stringify(structuredData, null, 2)}
     </script>` : ''}
-  </head>`
-      );
+    `;
+
+    const modifiedHtml = cleanedHtml.replace('</head>', `${headInjection}\n</head>`);
 
     return new Response(modifiedHtml, {
       headers: {
