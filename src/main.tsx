@@ -11,7 +11,7 @@ createRoot(document.getElementById("root")!).render(
 );
 
 // Register Service Worker for sitemap handling only (non-blocking)
-if ('serviceWorker' in navigator) {
+if ('serviceWorker' in navigator && !navigator.userAgent.includes('ReactSnap')) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js', { 
       updateViaCache: 'none',

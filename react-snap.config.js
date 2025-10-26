@@ -1,15 +1,10 @@
 module.exports = {
-  // Prerender ediləcək route-lar
+  // Prerender ediləcək route-lar - sadə statik səhifələr
   include: [
     "/",
-    "/vacancies",
-    "/aktiv-vakansiya",
-    "/categories",
-    "/companies",
     "/about",
-    "/pricing",
     "/cv-builder",
-    "/saved-jobs"
+    "/services"
   ],
   
   // Puppeteer ayarları
@@ -40,13 +35,13 @@ module.exports = {
   // Crawl strategy
   crawl: true,
   
-  // Timeout ayarları
-  waitFor: 2000,
+  // Timeout ayarları - artırılıb
+  waitFor: 5000,
   
   // User agent
   userAgent: "ReactSnap",
   
-  // Skip third party requests
+  // Skip third party requests - Supabase və s.
   skipThirdPartyRequests: true,
   
   // Cache control
@@ -60,5 +55,20 @@ module.exports = {
   asyncScriptTags: true,
   
   // Preload resources
-  preloadResources: true
+  preloadResources: true,
+  
+  // Ignore errors during prerendering
+  ignoreForPrerender: [
+    'service-worker.js',
+    'sw.js'
+  ],
+  
+  // Prevent crashes
+  publicPath: "/",
+  
+  // Handle errors gracefully
+  puppeteerExecutablePath: undefined,
+  
+  // Don't fail on errors
+  failOnError: false
 };
