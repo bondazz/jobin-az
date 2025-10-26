@@ -10,10 +10,6 @@ interface UseSEOProps {
 
 export const useSEO = ({ title, description, keywords = "", url }: UseSEOProps) => {
   useEffect(() => {
-    // Avoid client-side meta overrides on SSR-managed dynamic routes
-    const isManagedRoute = typeof window !== 'undefined' && /^(\/vacancies|\/companies)\//.test(window.location.pathname);
-    if (isManagedRoute) return;
-
     const updateSEO = async () => {
       const settings = await getSiteSettings();
 
@@ -34,10 +30,6 @@ export const useSEO = ({ title, description, keywords = "", url }: UseSEOProps) 
 export const useDynamicSEO = (type: "job" | "company" | "category", data: any) => {
   useEffect(() => {
     if (!data) return;
-
-    // Avoid client-side meta overrides on SSR-managed dynamic routes
-    const isManagedRoute = typeof window !== 'undefined' && /^(\/vacancies|\/companies)\//.test(window.location.pathname);
-    if (isManagedRoute) return;
 
     let metadata: SEOMetadata;
 
