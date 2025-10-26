@@ -294,7 +294,7 @@ const Index = () => {
           {/* SEO Content Section - Hidden visually but present for SEO */}
           {(location.pathname === '/vacancies' || location.pathname === '/') && !jobSlug && (
             <div className="sr-only">
-              <h1>Vakansiyalar və İş Elanları Azərbaycan</h1>
+              <h2>Vakansiyalar və İş Elanları Azərbaycan</h2>
               <p>
                 Azərbaycanda son vakansiyalar və iş elanları. Hər gün yeni və aktiv vakansiya elanları əlavə olunur. 
                 İş axtaranların ən son iş imkanlarına müraciət edə bilər. Uyğun iş tapmaq üçün CV nizi yükləyin və 
