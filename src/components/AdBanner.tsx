@@ -83,7 +83,6 @@ const AdBanner: React.FC<AdBannerProps> = ({ position, className = "" }) => {
                 alt={ad.title}
                 className={`w-full h-auto rounded-lg shadow-sm hover:shadow-md transition-shadow ${position === 'job_details' ? 'max-w-[400px] max-h-[400px] mx-auto object-contain' : ''}`}
                 loading={position === 'header' || position === 'job_details' ? 'eager' : 'lazy'}
-                fetchPriority={position === 'header' ? 'high' : 'auto'}
                 decoding="async"
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
               />
@@ -95,7 +94,6 @@ const AdBanner: React.FC<AdBannerProps> = ({ position, className = "" }) => {
                 alt={ad.title}
                 className={`w-full h-auto rounded-lg shadow-sm ${position === 'job_details' ? 'max-w-[400px] max-h-[400px] mx-auto object-contain' : ''}`}
                 loading={position === 'header' || position === 'job_details' ? 'eager' : 'lazy'}
-                fetchPriority={position === 'header' ? 'high' : 'auto'}
                 decoding="async"
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
               />
