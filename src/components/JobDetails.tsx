@@ -483,9 +483,9 @@ const JobDetails = ({
               </div>
               
               {/* Job Title - Main Focus */}
-              <h1 className={`${isMobile ? 'text-lg' : 'text-2xl'} font-bold text-foreground leading-tight`}>
+              <h2 className={`${isMobile ? 'text-lg' : 'text-2xl'} font-bold text-foreground leading-tight`}>
                 {job.title} vakansiyası
-              </h1>
+              </h2>
               
               {/* Job Meta Information */}
               <div className="flex flex-wrap items-center gap-3">
@@ -556,12 +556,12 @@ const JobDetails = ({
 
           {/* Job Description */}
           <div className="space-y-3">
-            <h2 className={`${isMobile ? 'text-lg' : 'text-xl'} font-bold text-foreground text-center relative`}>
+            <h1 className={`${isMobile ? 'text-lg' : 'text-xl'} font-bold text-foreground text-center relative`}>
               <span className="relative px-4 inline-block">
-                {job.title} vakansiya - {job.companies?.name || 'Şirkət'} iş elanı
+                {job.title} vakansiyası - {job.companies?.name || 'Şirkət'} iş elanları
                 <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary rounded-full transform scale-x-110"></span>
               </span>
-            </h2>
+            </h1>
             <div className={`${isMobile ? 'text-sm' : 'text-base'} text-foreground leading-relaxed rich-text-content`} dangerouslySetInnerHTML={{
             __html: job.description
           }} />
@@ -571,9 +571,9 @@ const JobDetails = ({
 
           {/* Contact Information */}
           {(job.companies?.email || job.companies?.phone || job.companies?.website) && <div className="space-y-3">
-              <h3 className={`${isMobile ? 'text-lg' : 'text-xl'} font-bold text-foreground`}>
+              <h2 className={`${isMobile ? 'text-lg' : 'text-xl'} font-bold text-foreground`}>
                 {job.companies?.name || 'Şirkət'} - Əlaqə Məlumatları
-              </h3>
+              </h2>
               <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2'} gap-3`}>
                 {job.companies?.email && <div className={`flex items-center gap-2 ${isMobile ? 'p-2' : 'p-3'} rounded-lg bg-muted/30`}>
                     <Mail className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} text-primary flex-shrink-0`} />
