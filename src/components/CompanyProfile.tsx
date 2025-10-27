@@ -56,7 +56,7 @@ const CompanyProfile = ({ company, onClose, isMobile = false }: CompanyProfilePr
                 {company.name.charAt(0)}
               </div>
             )}
-            <h1 className="text-lg font-bold text-foreground truncate">{company.name}</h1>
+            <h2 className="text-lg font-bold text-foreground truncate">{company.name}</h2>
           </div>
           <Button variant="ghost" size="sm" onClick={() => {
             setIsClosing(true);

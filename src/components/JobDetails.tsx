@@ -12,10 +12,12 @@ import { Link } from 'react-router-dom';
 interface JobDetailsProps {
   jobId: string | null;
   isMobile?: boolean;
+  primaryHeading?: boolean; // controls whether this instance renders the main H1
 }
 const JobDetails = ({
   jobId,
-  isMobile = false
+  isMobile = false,
+  primaryHeading = true
 }: JobDetailsProps) => {
   const [job, setJob] = useState<any>(null);
   const [loading, setLoading] = useState(false);
@@ -556,12 +558,18 @@ const JobDetails = ({
 
           {/* Job Description */}
           <div className="space-y-3">
-            <h1 className={`${isMobile ? 'text-lg' : 'text-xl'} font-bold text-foreground text-center relative`}>
-              <span className="relative px-4 inline-block">
-                {job.title} vakansiyası - {job.companies?.name || 'Şirkət'} iş elanları
-                <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary rounded-full transform scale-x-110"></span>
-              </span>
-            </h1>
+            {(() => {
+              const HeadingTag = (primaryHeading ? 'h1' : 'h2') as keyof JSX.IntrinsicElements;
+              return (
+                <HeadingTag className={`${isMobile ? 'text-lg' : 'text-xl'} font-bold text-foreground text-center relative`}>
+                  <span className="relative px-4 inline-block">
+                    {job.title} vakansiyası - {job.companies?.name || 'Şirkət'} iş elanları
+                    <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary rounded-full transform scale-x-110"></span>
+                  </span>
+                </HeadingTag>
+              );
+            })()}
+
             <div className={`${isMobile ? 'text-sm' : 'text-base'} text-foreground leading-relaxed rich-text-content`} dangerouslySetInnerHTML={{
             __html: job.description
           }} />

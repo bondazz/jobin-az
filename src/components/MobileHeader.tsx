@@ -22,7 +22,7 @@ const MobileHeader = ({ showCloseButton = false, onClose }: MobileHeaderProps) =
             />
           </button>
           <div className="seoTop__content">
-            <h1 className="text-xs text-muted-foreground">İş elanları, vakansiyalar</h1>
+            <h2 className="text-xs text-muted-foreground">İş elanları, vakansiyalar</h2>
           </div>
         </div>
         

@@ -42,9 +42,9 @@ const JobSidebar = ({ selectedCategory, onCategorySelect }: JobSidebarProps) => 
             <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-job-tag-premium rounded-full animate-pulse-slow"></div>
           </div>
           <div>
-            <h1 className="text-lg font-bold bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
+            <h2 className="text-lg font-bold bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
               JobSearch
-            </h1>
+            </h2>
             <p className="text-xs text-muted-foreground font-medium">Dream jobs</p>
           </div>
         </div>

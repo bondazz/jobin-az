@@ -96,7 +96,7 @@ const SavedJobs = () => {
               navigate('/favorites');
             }} 
           />
-          <JobDetails jobId={selectedJob.id} isMobile={true} />
+          <JobDetails jobId={selectedJob.id} isMobile={true} primaryHeading={false} />
         </div>
       )}
 

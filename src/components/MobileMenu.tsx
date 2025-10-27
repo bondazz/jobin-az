@@ -56,7 +56,7 @@ const MobileMenu = ({ selectedCategory, onCategorySelect }: MobileMenuProps) => 
                 <Search className="w-4 h-4 text-white" />
               </div>
               <div>
-                <h1 className="text-lg font-bold text-foreground">JobSearch</h1>
+                <h2 className="text-lg font-bold text-foreground">JobSearch</h2>
                 <p className="text-xs text-muted-foreground">Find your dream job</p>
               </div>
             </div>

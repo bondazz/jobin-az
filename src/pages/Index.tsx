@@ -378,7 +378,7 @@ const Index = () => {
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
               </div>
             }>
-              <JobDetails jobId={selectedJob?.id || null} isMobile={true} />
+              <JobDetails jobId={selectedJob?.id || null} isMobile={true} primaryHeading={false} />
             </Suspense>
           </div>
         </div>
