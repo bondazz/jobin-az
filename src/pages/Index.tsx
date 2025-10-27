@@ -282,7 +282,7 @@ const Index = () => {
       )}
       
       {/* Mobile Header */}
-      <MobileHeader />
+      <MobileHeader isJobPage={!!jobSlug} />
       
       {/* Header Advertisement */}
       <AdBanner position="header" className="hidden lg:block absolute top-0 left-72 right-0 p-3 z-10" />
@@ -370,6 +370,7 @@ const Index = () => {
           <MobileHeader 
             showCloseButton={true} 
             onClose={() => setSelectedJob(null)} 
+            isJobPage={true}
           />
           {/* Job Details with proper spacing */}
           <div className="flex-1 overflow-y-auto pb-20">

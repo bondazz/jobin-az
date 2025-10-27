@@ -4,9 +4,10 @@ import { useNavigate } from 'react-router-dom';
 interface MobileHeaderProps {
   showCloseButton?: boolean;
   onClose?: () => void;
+  isJobPage?: boolean;
 }
 
-const MobileHeader = ({ showCloseButton = false, onClose }: MobileHeaderProps) => {
+const MobileHeader = ({ showCloseButton = false, onClose, isJobPage = false }: MobileHeaderProps) => {
   const navigate = useNavigate();
 
   return (
@@ -22,7 +23,11 @@ const MobileHeader = ({ showCloseButton = false, onClose }: MobileHeaderProps) =
             />
           </button>
           <div className="seoTop__content">
-            <h2 className="text-xs text-muted-foreground">İş elanları, vakansiyalar</h2>
+            {isJobPage ? (
+              <p className="text-xs text-muted-foreground">İş elanları, vakansiyalar</p>
+            ) : (
+              <h2 className="text-xs text-muted-foreground">İş elanları, vakansiyalar</h2>
+            )}
           </div>
         </div>
         
