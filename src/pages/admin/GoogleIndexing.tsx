@@ -6,8 +6,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Link, Loader2, RefreshCw, Globe } from "lucide-react";
+import { Link, Loader2, RefreshCw, Globe, CalendarIcon } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 const GoogleIndexing = () => {
   const navigate = useNavigate();
@@ -19,6 +24,9 @@ const GoogleIndexing = () => {
     totalCompanies: 0,
     totalCategories: 0,
   });
+  const [showDateDialog, setShowDateDialog] = useState(false);
+  const [startDate, setStartDate] = useState<Date | undefined>(undefined);
+  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
 
   useEffect(() => {
     checkAuth();
@@ -135,18 +143,36 @@ const GoogleIndexing = () => {
   };
 
   const generateJobUrls = async () => {
+    if (!startDate || !endDate) {
+      toast.error("Tarix aralığını seçin");
+      return;
+    }
+
+    if (endDate < startDate) {
+      toast.error("Son tarix başlanğıc tarixindən əvvəl ola bilməz");
+      return;
+    }
+
     setLoading(true);
+    setShowDateDialog(false);
+    
     try {
-      const { data: jobs } = await supabase
+      let query = supabase
         .from("jobs")
-        .select("slug")
+        .select("slug, created_at")
         .eq("is_active", true)
+        .gte("created_at", startDate.toISOString())
+        .lte("created_at", endDate.toISOString())
         .limit(200);
 
-      if (jobs) {
+      const { data: jobs } = await query;
+
+      if (jobs && jobs.length > 0) {
         const urls = jobs.map(job => `https://jooble.az/vakansiyalar/${job.slug}`);
         setIndexingUrls(urls.join("\n"));
-        toast.success(`${jobs.length} vakansiya URL-i yaradıldı`);
+        toast.success(`${jobs.length} vakansiya URL-i yaradıldı (${format(startDate, "dd.MM.yyyy")} - ${format(endDate, "dd.MM.yyyy")})`);
+      } else {
+        toast.warning("Seçilmiş tarix aralığında vakansiya tapılmadı");
       }
     } catch (error) {
       toast.error("URL-lərin yaradılması zamanı xəta");
@@ -277,7 +303,7 @@ const GoogleIndexing = () => {
               <TabsContent value="jobs" className="space-y-4">
                 <div className="text-center py-8">
                   <Button 
-                    onClick={generateJobUrls}
+                    onClick={() => setShowDateDialog(true)}
                     disabled={loading}
                     size="lg"
                     className="gap-2"
@@ -290,7 +316,7 @@ const GoogleIndexing = () => {
                     Vakansiya URL-lərini Yarat
                   </Button>
                   <p className="text-sm text-muted-foreground mt-4">
-                    Aktiv vakansiyaların URL-lərini avtomatik yaradır (max 200)
+                    Tarix aralığına görə aktiv vakansiyaların URL-lərini yaradır (max 200)
                   </p>
                 </div>
                 {indexingUrls && (
@@ -376,6 +402,87 @@ const GoogleIndexing = () => {
             )}
           </CardContent>
         </Card>
+
+        <Dialog open={showDateDialog} onOpenChange={setShowDateDialog}>
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle>Tarix Aralığı Seçin</DialogTitle>
+              <DialogDescription>
+                Vakansiyaların paylaşılma tarixinə görə filtrlə
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Başlanğıc tarixi</label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !startDate && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {startDate ? format(startDate, "dd.MM.yyyy") : "Tarix seçin"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={startDate}
+                      onSelect={setStartDate}
+                      initialFocus
+                      className="pointer-events-auto"
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Son tarix</label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !endDate && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {endDate ? format(endDate, "dd.MM.yyyy") : "Tarix seçin"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={endDate}
+                      onSelect={setEndDate}
+                      initialFocus
+                      className="pointer-events-auto"
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+
+              <Button 
+                onClick={generateJobUrls}
+                disabled={!startDate || !endDate || loading}
+                className="w-full mt-4"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                    Yaradılır...
+                  </>
+                ) : (
+                  "URL-ləri Yarat"
+                )}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
