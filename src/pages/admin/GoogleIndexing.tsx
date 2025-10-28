@@ -168,7 +168,7 @@ const GoogleIndexing = () => {
       const { data: jobs } = await query;
 
       if (jobs && jobs.length > 0) {
-        const urls = jobs.map(job => `https://jooble.az/vakansiyalar/${job.slug}`);
+        const urls = jobs.map(job => `https://jooble.az/vacancies/${job.slug}`);
         setIndexingUrls(urls.join("\n"));
         toast.success(`${jobs.length} vakansiya URL-i yaradıldı (${format(startDate, "dd.MM.yyyy")} - ${format(endDate, "dd.MM.yyyy")})`);
       } else {
