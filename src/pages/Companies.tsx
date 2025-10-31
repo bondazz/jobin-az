@@ -182,19 +182,59 @@ const Companies = () => {
       
       if (debouncedSearchTerm.trim()) {
         console.log('🔍 Axtarış edilir:', debouncedSearchTerm);
+        // Get companies with their job counts
         const { data, error } = await supabase
           .from('companies')
           .select(`
             id, name, slug, logo, background_image, description, website, email, phone, address, seo_title, seo_description, seo_keywords, about_seo_title, about_seo_description, jobs_seo_title, jobs_seo_description, is_verified, is_active, created_at, updated_at,
-            jobs!inner(count)
+            jobs!company_id(id)
           `)
           .eq('is_active', true)
           .ilike('name', `%${debouncedSearchTerm.trim()}%`);
         
-        // Count jobs for each company and sort by job count
-        const companiesWithJobCount = (data || []).map(company => ({
+        // Create unique companies with job counts using Map
+        const companiesMap = new Map();
+        data?.forEach(row => {
+          if (!companiesMap.has(row.id)) {
+            companiesMap.set(row.id, {
+              id: row.id,
+              name: row.name,
+              slug: row.slug,
+              logo: row.logo,
+              background_image: row.background_image,
+              description: row.description,
+              website: row.website,
+              email: row.email,
+              phone: row.phone,
+              address: row.address,
+              seo_title: row.seo_title,
+              seo_description: row.seo_description,
+              seo_keywords: row.seo_keywords,
+              about_seo_title: row.about_seo_title,
+              about_seo_description: row.about_seo_description,
+              jobs_seo_title: row.jobs_seo_title,
+              jobs_seo_description: row.jobs_seo_description,
+              is_verified: row.is_verified,
+              is_active: row.is_active,
+              created_at: row.created_at,
+              updated_at: row.updated_at,
+              jobIds: []
+            });
+          }
+          // Add job IDs
+          if (row.jobs && Array.isArray(row.jobs)) {
+            row.jobs.forEach((job: any) => {
+              if (job.id && !companiesMap.get(row.id).jobIds.includes(job.id)) {
+                companiesMap.get(row.id).jobIds.push(job.id);
+              }
+            });
+          }
+        });
+        
+        // Convert to array and add job count, then sort
+        const companiesWithJobCount = Array.from(companiesMap.values()).map(company => ({
           ...company,
-          jobCount: company.jobs?.length || 0
+          jobCount: company.jobIds.length
         })).sort((a, b) => b.jobCount - a.jobCount);
         
         if (error) throw error;
@@ -213,15 +253,54 @@ const Companies = () => {
           .from('companies')
           .select(`
             id, name, slug, logo, background_image, description, website, email, phone, address, seo_title, seo_description, seo_keywords, about_seo_title, about_seo_description, jobs_seo_title, jobs_seo_description, is_verified, is_active, created_at, updated_at,
-            jobs!left(id)
+            jobs!company_id(id)
           `)
           .eq('is_active', true);
         
+        // Create unique companies with job counts
+        const companiesMap = new Map();
+        initialData?.forEach(row => {
+          if (!companiesMap.has(row.id)) {
+            companiesMap.set(row.id, {
+              id: row.id,
+              name: row.name,
+              slug: row.slug,
+              logo: row.logo,
+              background_image: row.background_image,
+              description: row.description,
+              website: row.website,
+              email: row.email,
+              phone: row.phone,
+              address: row.address,
+              seo_title: row.seo_title,
+              seo_description: row.seo_description,
+              seo_keywords: row.seo_keywords,
+              about_seo_title: row.about_seo_title,
+              about_seo_description: row.about_seo_description,
+              jobs_seo_title: row.jobs_seo_title,
+              jobs_seo_description: row.jobs_seo_description,
+              is_verified: row.is_verified,
+              is_active: row.is_active,
+              created_at: row.created_at,
+              updated_at: row.updated_at,
+              jobIds: []
+            });
+          }
+          // Add job IDs
+          if (row.jobs && Array.isArray(row.jobs)) {
+            row.jobs.forEach((job: any) => {
+              if (job.id && !companiesMap.get(row.id).jobIds.includes(job.id)) {
+                companiesMap.get(row.id).jobIds.push(job.id);
+              }
+            });
+          }
+        });
+        
         // Count jobs and sort by count descending, then take first 15
-        const sortedInitial = (initialData || [])
+        const sortedInitial = Array.from(companiesMap.values())
           .map(company => ({
             ...company,
-            jobCount: company.jobs?.length || 0
+            jobCount: company.jobIds.length
           }))
           .sort((a, b) => b.jobCount - a.jobCount)
           .slice(0, 15);
@@ -265,7 +344,7 @@ const Companies = () => {
           .from('companies')
           .select(`
             id, name, slug, logo, background_image, description, website, email, phone, address, seo_title, seo_description, seo_keywords, about_seo_title, about_seo_description, jobs_seo_title, jobs_seo_description, is_verified, is_active, created_at, updated_at,
-            jobs!left(id)
+            jobs!company_id(id)
           `)
           .eq('is_active', true);
         
@@ -274,11 +353,50 @@ const Companies = () => {
         console.log(`✅ Background səhifə ${currentPage + 1}: ${data?.length || 0} şirkət`);
         
         if (data && data.length > 0) {
-          // Add job counts to companies
-          const companiesWithCounts = data.map(company => ({
+          // Create unique companies with job counts
+          const companiesMap = new Map();
+          data.forEach(row => {
+            if (!companiesMap.has(row.id)) {
+              companiesMap.set(row.id, {
+                id: row.id,
+                name: row.name,
+                slug: row.slug,
+                logo: row.logo,
+                background_image: row.background_image,
+                description: row.description,
+                website: row.website,
+                email: row.email,
+                phone: row.phone,
+                address: row.address,
+                seo_title: row.seo_title,
+                seo_description: row.seo_description,
+                seo_keywords: row.seo_keywords,
+                about_seo_title: row.about_seo_title,
+                about_seo_description: row.about_seo_description,
+                jobs_seo_title: row.jobs_seo_title,
+                jobs_seo_description: row.jobs_seo_description,
+                is_verified: row.is_verified,
+                is_active: row.is_active,
+                created_at: row.created_at,
+                updated_at: row.updated_at,
+                jobIds: []
+              });
+            }
+            // Add job IDs
+            if (row.jobs && Array.isArray(row.jobs)) {
+              row.jobs.forEach((job: any) => {
+                if (job.id && !companiesMap.get(row.id).jobIds.includes(job.id)) {
+                  companiesMap.get(row.id).jobIds.push(job.id);
+                }
+              });
+            }
+          });
+          
+          const companiesWithCounts = Array.from(companiesMap.values()).map(company => ({
             ...company,
-            jobCount: company.jobs?.length || 0
+            jobCount: company.jobIds.length
           }));
+          
           allCompaniesData = [...allCompaniesData, ...companiesWithCounts];
           console.log(`📈 Background cəmi: ${allCompaniesData.length} şirkət`);
           hasMoreData = false; // Load all at once since we're already fetching everything
@@ -383,16 +501,26 @@ const Companies = () => {
                   <div 
                     key={company.id} 
                     onClick={() => handleCompanyClick(company)} 
-                    className={`group cursor-pointer p-3 rounded-lg border transition-all duration-200 ease-smooth
+                    className={`group cursor-pointer p-3 rounded-lg border transition-all duration-200 ease-smooth relative
                       hover:shadow-card-hover hover:-translate-y-0.5 animate-fade-in
-                      w-full max-w-full min-w-0 h-[60px] flex flex-row items-center justify-between backdrop-blur-sm
+                      w-full max-w-full min-w-0 min-h-[60px] flex flex-row items-start justify-between backdrop-blur-sm
                       ${selectedCompany?.id === company.id ? 'border-primary bg-gradient-to-r from-primary/20 to-primary/5 shadow-elegant ring-1 ring-primary/50' : 'bg-job-card border-border/50 hover:border-primary/40 hover:shadow-card-hover'}`} 
                     style={{
                       animationDelay: `${index * 50}ms`
                     }}
                   >
-                    {/* Left Section - Company Info */}
-                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                    {/* Job Count Badge - Top Right */}
+                    <div className="absolute top-2 right-2">
+                      <div className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-primary/10 border border-primary/20">
+                        <Briefcase className="w-3 h-3 text-primary" />
+                        <span className="text-xs font-semibold text-primary">
+                          {(company as any).jobCount || 0}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Company Info */}
+                    <div className="flex items-center gap-3 flex-1 min-w-0 pr-16">
                       <div className="relative flex-shrink-0">
                         {company.logo ? (
                           <img src={company.logo} alt={company.name} className="w-8 h-8 rounded-md object-cover" />
@@ -416,16 +544,6 @@ const Companies = () => {
                             <p className="text-muted-foreground text-xs truncate">{company.address || 'Ünvan yoxdur'}</p>
                           </div>
                         </div>
-                      </div>
-                    </div>
-
-                    {/* Right Section - Job Count */}
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                      <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-primary/10 border border-primary/20">
-                        <Briefcase className="w-3.5 h-3.5 text-primary" />
-                        <span className="text-xs font-semibold text-primary">
-                          {(company as any).jobCount || 0}
-                        </span>
                       </div>
                     </div>
                   </div>
