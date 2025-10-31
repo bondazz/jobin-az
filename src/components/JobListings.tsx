@@ -31,7 +31,20 @@ const JobListings = ({
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [offset, setOffset] = useState(0);
+  const [displayCount, setDisplayCount] = useState(15);
   const JOBS_PER_PAGE = 25;
+
+  // Turkish character normalization for better search
+  const normalizeTurkish = (str: string): string => {
+    return str
+      .toLowerCase()
+      .replace(/ı/g, 'i')
+      .replace(/ğ/g, 'g')
+      .replace(/ü/g, 'u')
+      .replace(/ş/g, 's')
+      .replace(/ö/g, 'o')
+      .replace(/ç/g, 'c');
+  };
 
   // Optimize job fetching - premium first, then regular with pagination
   const fetchJobs = useCallback(async (isLoadMore = false) => {
@@ -149,41 +162,15 @@ const JobListings = ({
     return `${Math.ceil(diffDays / 30)} ay əvvəl`;
   };
 
-  // Infinite scroll handler
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      const scrollHeight = document.documentElement.scrollHeight;
-      const clientHeight = window.innerHeight;
-      if (scrollTop + clientHeight >= scrollHeight - 1000 && hasMore && !loadingMore && !loading) {
-        fetchJobs(true);
-      }
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [hasMore, loadingMore, loading, fetchJobs]);
-
   // Reset when filters change
   useEffect(() => {
     setOffset(0);
     fetchJobs(false);
   }, [selectedCategory, companyFilter, showOnlySaved]);
 
-  // Debounced search for performance
-  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
-  const [debouncedLocationFilter, setDebouncedLocationFilter] = useState('');
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearchQuery(searchQuery);
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedLocationFilter(locationFilter);
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [locationFilter]);
+  // Instant search - no debounce needed
+  const normalizedSearchQuery = normalizeTurkish(searchQuery);
+  const normalizedLocationFilter = normalizeTurkish(locationFilter);
   const filteredJobs = useMemo(() => {
     // Early return for empty jobs
     if (jobs.length === 0) return [];
@@ -196,17 +183,24 @@ const JobListings = ({
       jobsToFilter = jobs.filter(job => savedJobIds.includes(job.id));
     }
 
-    // Optimized filtering with early exits
-    const searchLower = debouncedSearchQuery.toLowerCase();
-    const locationLower = debouncedLocationFilter.toLowerCase();
+    // Optimized filtering with Turkish character support
     const filtered = jobsToFilter.filter(job => {
       // Quick category check first (fastest)
       if (selectedCategory && job.category !== selectedCategory) return false;
       if (companyFilter && job.company_id !== companyFilter) return false;
 
-      // Search checks last (slower)
-      if (searchLower && !job.title.toLowerCase().includes(searchLower) && !job.company.toLowerCase().includes(searchLower)) return false;
-      if (locationLower && !job.location.toLowerCase().includes(locationLower)) return false;
+      // Search checks with Turkish character normalization
+      if (normalizedSearchQuery) {
+        const normalizedTitle = normalizeTurkish(job.title);
+        const normalizedCompany = normalizeTurkish(job.company);
+        if (!normalizedTitle.includes(normalizedSearchQuery) && !normalizedCompany.includes(normalizedSearchQuery)) {
+          return false;
+        }
+      }
+      if (normalizedLocationFilter) {
+        const normalizedLocation = normalizeTurkish(job.location);
+        if (!normalizedLocation.includes(normalizedLocationFilter)) return false;
+      }
       return true;
     });
 
@@ -221,7 +215,40 @@ const JobListings = ({
       }
     }
     return [...premiumJobs, ...regularJobs];
-  }, [jobs, debouncedSearchQuery, debouncedLocationFilter, selectedCategory, companyFilter, showOnlySaved]);
+  }, [jobs, normalizedSearchQuery, normalizedLocationFilter, selectedCategory, companyFilter, showOnlySaved]);
+
+  // Display only a subset of jobs for better performance
+  const displayedJobs = useMemo(() => {
+    return filteredJobs.slice(0, displayCount);
+  }, [filteredJobs, displayCount]);
+
+  // Reset display count when filters change
+  useEffect(() => {
+    setDisplayCount(15);
+  }, [searchQuery, locationFilter, selectedCategory, companyFilter, showOnlySaved]);
+
+  // Infinite scroll handler - load more from DB and increase display count
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight;
+      const clientHeight = window.innerHeight;
+      
+      if (scrollTop + clientHeight >= scrollHeight - 1000) {
+        // If we're showing fewer jobs than filtered, just show more
+        if (displayCount < filteredJobs.length) {
+          setDisplayCount(prev => Math.min(prev + 15, filteredJobs.length));
+        }
+        // If we've shown all filtered jobs and there are more in DB, fetch more
+        else if (hasMore && !loadingMore && !loading) {
+          fetchJobs(true);
+        }
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [hasMore, loadingMore, loading, fetchJobs, displayCount, filteredJobs.length]);
+
   const getCategoryLabel = (category: string) => {
     const categoryMap: Record<string, string> = {
       'Technology': 'Texnologiya',
@@ -270,7 +297,7 @@ const JobListings = ({
         <div className="flex flex-col gap-2 justify-center items-center w-full max-w-full px-2 py-[12px] lg:max-w-[550px]">
           {loading ? <div className="flex items-center justify-center py-16">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-            </div> : filteredJobs.length > 0 ? filteredJobs.map((job, index) => <div key={`job-${job.id}`} className="w-full max-w-full min-w-0">
+            </div> : displayedJobs.length > 0 ? displayedJobs.map((job, index) => <div key={`job-${job.id}`} className="w-full max-w-full min-w-0">
                 {/* Advertisement Banner every 6 jobs */}
                 {index > 0 && index % 6 === 0 && <AdBanner position="job_listing" className="mb-2 animate-fade-in" />}
                 
@@ -297,14 +324,12 @@ const JobListings = ({
             </div>}
         </div>
         
-        {/* Load More Button / Loading Indicator */}
-        {hasMore && !loading && <div className="flex justify-center py-8">
-            {loadingMore ? <div className="flex items-center gap-2 text-muted-foreground">
-                <Loader2 className="w-4 h-4 animate-spin" />
-                <span className="text-sm">Daha çox elan yüklənir...</span>
-              </div> : <Button variant="outline" onClick={() => fetchJobs(true)} className="px-6 py-2 border-primary/30 text-primary hover:bg-primary hover:text-white transition-all duration-300">
-                Daha çox elan
-              </Button>}
+        {/* Auto-loading indicator */}
+        {(displayCount < filteredJobs.length || (hasMore && !loading)) && <div className="flex justify-center py-8">
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span className="text-sm">Yüklənir...</span>
+            </div>
           </div>}
       </div>
     </div>;
