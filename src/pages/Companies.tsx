@@ -184,41 +184,59 @@ const Companies = () => {
         console.log('🔍 Axtarış edilir:', debouncedSearchTerm);
         const { data, error } = await supabase
           .from('companies')
-          .select('id, name, slug, logo, background_image, description, website, email, phone, address, seo_title, seo_description, seo_keywords, about_seo_title, about_seo_description, jobs_seo_title, jobs_seo_description, is_verified, is_active, created_at, updated_at')
+          .select(`
+            id, name, slug, logo, background_image, description, website, email, phone, address, seo_title, seo_description, seo_keywords, about_seo_title, about_seo_description, jobs_seo_title, jobs_seo_description, is_verified, is_active, created_at, updated_at,
+            jobs!inner(count)
+          `)
           .eq('is_active', true)
-          .ilike('name', `%${debouncedSearchTerm.trim()}%`)
-          .order('name');
+          .ilike('name', `%${debouncedSearchTerm.trim()}%`);
+        
+        // Count jobs for each company and sort by job count
+        const companiesWithJobCount = (data || []).map(company => ({
+          ...company,
+          jobCount: company.jobs?.length || 0
+        })).sort((a, b) => b.jobCount - a.jobCount);
         
         if (error) throw error;
         console.log('✅ Axtarış nəticəsi:', data?.length || 0);
         
         // Search zamanı bütün nəticələri göstər
-        setAllCompanies(data || []);
-        setCompanies(data || []);
+        setAllCompanies(companiesWithJobCount as any);
+        setCompanies(companiesWithJobCount as any);
         setHasMore(false);
         setLoading(false); // Search zamanı da loading-i söndür
       } else {
         console.log('⚡ İLK 15 ŞİRKƏTİ ANINDA YÜKLƏYİRİK');
         
-        // İlk 15 şirkəti anında yüklə
+        // İlk 15 şirkəti anında yüklə - elan sayına görə sıralı
         const { data: initialData, error: initialError } = await supabase
           .from('companies')
-          .select('id, name, slug, logo, background_image, description, website, email, phone, address, seo_title, seo_description, seo_keywords, about_seo_title, about_seo_description, jobs_seo_title, jobs_seo_description, is_verified, is_active, created_at, updated_at')
-          .eq('is_active', true)
-          .order('name')
-          .limit(15);
+          .select(`
+            id, name, slug, logo, background_image, description, website, email, phone, address, seo_title, seo_description, seo_keywords, about_seo_title, about_seo_description, jobs_seo_title, jobs_seo_description, is_verified, is_active, created_at, updated_at,
+            jobs!left(id)
+          `)
+          .eq('is_active', true);
+        
+        // Count jobs and sort by count descending, then take first 15
+        const sortedInitial = (initialData || [])
+          .map(company => ({
+            ...company,
+            jobCount: company.jobs?.length || 0
+          }))
+          .sort((a, b) => b.jobCount - a.jobCount)
+          .slice(0, 15);
         
         if (initialError) throw initialError;
         
-        console.log(`✅ İlk batch: ${initialData?.length || 0} şirkət anında yükləndi`);
+        console.log(`✅ İlk batch: ${sortedInitial?.length || 0} şirkət anında yükləndi`);
         
         // İlk şirkətləri anında göstər
-        setCompanies(initialData || []);
+        setCompanies(sortedInitial as any);
         setLoading(false); // Loading-i burada söndür
         
         // Background-da qalan şirkətləri yüklə
         console.log('🔄 Background-da qalan şirkətlər yüklənir...');
-        loadRemainingCompaniesInBackground(initialData || []);
+        loadRemainingCompaniesInBackground(sortedInitial as any);
       }
 
     } catch (error) {
@@ -245,24 +263,25 @@ const Companies = () => {
         
         const { data, error } = await supabase
           .from('companies')
-          .select('id, name, slug, logo, background_image, description, website, email, phone, address, seo_title, seo_description, seo_keywords, about_seo_title, about_seo_description, jobs_seo_title, jobs_seo_description, is_verified, is_active, created_at, updated_at')
-          .eq('is_active', true)
-          .order('name')
-          .range(offset + currentPage * pageSize, offset + (currentPage + 1) * pageSize - 1);
+          .select(`
+            id, name, slug, logo, background_image, description, website, email, phone, address, seo_title, seo_description, seo_keywords, about_seo_title, about_seo_description, jobs_seo_title, jobs_seo_description, is_verified, is_active, created_at, updated_at,
+            jobs!left(id)
+          `)
+          .eq('is_active', true);
         
         if (error) throw error;
         
         console.log(`✅ Background səhifə ${currentPage + 1}: ${data?.length || 0} şirkət`);
         
         if (data && data.length > 0) {
-          allCompaniesData = [...allCompaniesData, ...data];
+          // Add job counts to companies
+          const companiesWithCounts = data.map(company => ({
+            ...company,
+            jobCount: company.jobs?.length || 0
+          }));
+          allCompaniesData = [...allCompaniesData, ...companiesWithCounts];
           console.log(`📈 Background cəmi: ${allCompaniesData.length} şirkət`);
-          
-          if (data.length < pageSize) {
-            hasMoreData = false;
-          } else {
-            currentPage++;
-          }
+          hasMoreData = false; // Load all at once since we're already fetching everything
         } else {
           hasMoreData = false;
         }
@@ -270,16 +289,19 @@ const Companies = () => {
       
       console.log(`🎉 BACKGROUND TAMAMLANDI! ${allCompaniesData.length} şirkət yükləndi`);
       
+      // Sort all companies by job count descending
+      const sortedCompanies = allCompaniesData.sort((a, b) => (b as any).jobCount - (a as any).jobCount);
+      
       // Background yükləmə tamamlandıqda state-i yenilə
-      setAllCompanies(allCompaniesData);
+      setAllCompanies(sortedCompanies);
       
       // İlk 50 şirkəti göstər (15 + 35)
-      const initialDisplayed = allCompaniesData.slice(0, COMPANIES_PER_PAGE);
+      const initialDisplayed = sortedCompanies.slice(0, COMPANIES_PER_PAGE);
       setCompanies(initialDisplayed);
       setDisplayPage(0);
-      setHasMore(allCompaniesData.length > COMPANIES_PER_PAGE);
+      setHasMore(sortedCompanies.length > COMPANIES_PER_PAGE);
       
-      console.log(`📱 Background tamamlandı: ${initialDisplayed.length} şirkət göstərilir (${allCompaniesData.length} təklifindən)`);
+      console.log(`📱 Background tamamlandı: ${initialDisplayed.length} şirkət göstərilir (${sortedCompanies.length} təklifindən)`);
       
     } catch (error) {
       console.error('❌ Background yükləmə xətası:', error);
@@ -397,8 +419,14 @@ const Companies = () => {
                       </div>
                     </div>
 
-                    {/* Right Section - Empty for cleaner look */}
-                    <div className="flex items-center gap-2 flex-shrink-0 text-xs text-muted-foreground">
+                    {/* Right Section - Job Count */}
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-primary/10 border border-primary/20">
+                        <Briefcase className="w-3.5 h-3.5 text-primary" />
+                        <span className="text-xs font-semibold text-primary">
+                          {(company as any).jobCount || 0}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 ))}
