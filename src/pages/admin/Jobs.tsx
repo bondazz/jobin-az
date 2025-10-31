@@ -66,6 +66,7 @@ interface Category {
 export default function AdminJobs() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [companies, setCompanies] = useState<Company[]>([]);
+  const [allCompanies, setAllCompanies] = useState<Company[]>([]);
   const [filteredCompanies, setFilteredCompanies] = useState<Company[]>([]);
   const [companySearchTerm, setCompanySearchTerm] = useState('');
   const [companySearchLoading, setCompanySearchLoading] = useState(false);
@@ -161,6 +162,7 @@ export default function AdminJobs() {
         name: c.name
       }));
       
+      setAllCompanies(formattedInitialCompanies);
       setCompanies(formattedInitialCompanies);
       setFilteredCompanies(formattedInitialCompanies);
       
@@ -194,7 +196,7 @@ export default function AdminJobs() {
       const term = companySearchTerm.trim();
       // If no term, show initial companies (already limited)
       if (!term) {
-        setFilteredCompanies(companies.slice(0, 50));
+        setFilteredCompanies(allCompanies.slice(0, 50));
         setCompanySearchLoading(false);
         return;
       }
@@ -221,12 +223,11 @@ export default function AdminJobs() {
 
       const results = (data ?? []).map(c => ({ id: c.id, name: c.name }));
       setFilteredCompanies(results);
-      // Ensure selected company can be found by SEO generator later
-      setCompanies(prev => {
+      // Ensure selected company is in allCompanies for display
+      setAllCompanies(prev => {
         const map = new Map(prev.map(c => [c.id, c]));
         for (const r of results) map.set(r.id, r);
-        // Keep size reasonable
-        return Array.from(map.values()).slice(0, 200);
+        return Array.from(map.values());
       });
       setCompanySearchLoading(false);
     };
@@ -235,14 +236,14 @@ export default function AdminJobs() {
     return () => {
       isActive = false;
     };
-  }, [companySearchTerm]);
+  }, [companySearchTerm, allCompanies]);
 
   // Auto-generate SEO fields and slug for new job based on title and company
   useEffect(() => {
     if (editingJob) return; // only for creating new vacancy
 
     const title = formData.title?.trim();
-    const companyName = companies.find(c => c.id === formData.company_id)?.name?.trim();
+    const companyName = allCompanies.find(c => c.id === formData.company_id)?.name?.trim();
 
     if (!title || !companyName) return;
 
@@ -285,7 +286,7 @@ export default function AdminJobs() {
     });
 
     setLastGeneratedSEO({ title: seoTitle, description: seoDescription });
-  }, [formData.title, formData.company_id, companies, editingJob, seoTitleEdited, seoDescEdited]);
+  }, [formData.title, formData.company_id, allCompanies, editingJob, seoTitleEdited, seoDescEdited]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -545,26 +546,27 @@ export default function AdminJobs() {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="company_id">Şirkət</Label>
-                      <Select 
+                       <Select 
                         value={formData.company_id} 
                         onValueChange={(value) => {
                           setFormData({ ...formData, company_id: value });
+                          // Ensure selected company is in allCompanies for display
                           const selected = filteredCompanies.find(c => c.id === value);
-                          if (selected) {
-                            setCompanies((prev) =>
-                              prev.some(c => c.id === selected.id) ? prev : [selected, ...prev].slice(0, 200)
-                            );
+                          if (selected && !allCompanies.find(c => c.id === value)) {
+                            setAllCompanies(prev => [...prev, selected]);
                           }
                         }}
                         onOpenChange={(open) => {
                           if (!open) {
                             setCompanySearchTerm('');
-                            setFilteredCompanies(companies.slice(0, 50));
+                            setFilteredCompanies(allCompanies.slice(0, 50));
                           }
                         }}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Şirkət seçin" />
+                          <SelectValue placeholder="Şirkət seçin">
+                            {formData.company_id && allCompanies.find(c => c.id === formData.company_id)?.name}
+                          </SelectValue>
                         </SelectTrigger>
                         <SelectContent>
                           <div className="p-2 sticky top-0 bg-background z-10">

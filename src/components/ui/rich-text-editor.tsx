@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { cn } from '@/lib/utils';
@@ -32,7 +32,11 @@ const formats = [
   'align', 'link', 'image'
 ];
 
-export function RichTextEditor({ value, onChange, placeholder, className }: RichTextEditorProps) {
+export const RichTextEditor = React.memo(({ value, onChange, placeholder, className }: RichTextEditorProps) => {
+  const editorStyle = useMemo(() => ({
+    minHeight: '150px'
+  }), []);
+
   return (
     <div className={cn("rich-text-editor", className)}>
       <ReactQuill
@@ -41,11 +45,11 @@ export function RichTextEditor({ value, onChange, placeholder, className }: Rich
         placeholder={placeholder}
         modules={modules}
         formats={formats}
-        style={{
-          minHeight: '150px'
-        }}
+        style={editorStyle}
         className="bg-background text-foreground [&_.ql-editor]:min-h-[120px] [&_.ql-toolbar]:border-input [&_.ql-container]:border-input [&_.ql-editor]:text-foreground"
       />
     </div>
   );
-}
+});
+
+RichTextEditor.displayName = 'RichTextEditor';
