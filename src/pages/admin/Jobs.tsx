@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -68,9 +68,11 @@ export default function AdminJobs() {
   const [companies, setCompanies] = useState<Company[]>([]);
   const [filteredCompanies, setFilteredCompanies] = useState<Company[]>([]);
   const [companySearchTerm, setCompanySearchTerm] = useState('');
+  const [companySearchLoading, setCompanySearchLoading] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const searchIdRef = useRef(0);
   const [editingJob, setEditingJob] = useState<Job | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -143,33 +145,24 @@ export default function AdminJobs() {
         `)
         .order('created_at', { ascending: false });
 
-      // Şirkətləri optimizasiya ilə yüklə
-      console.log('⚡ VAKANSIYA PANEL - İLK 15 ŞİRKƏTİ ANINDA YÜKLƏYİRİK');
-      
-      // İlk 15 şirkəti anında yüklə
+      // Şirkətləri çox yükləmədən ilk 50-ni gətir
+      console.log('⚡ VAKANSIYA PANEL - İLK 50 ŞİRKƏT');
       const { data: initialCompanies, error: initialError } = await supabase
         .from('companies')
         .select('id, name')
         .eq('is_active', true)
         .order('name')
-        .limit(15);
+        .limit(50);
       
       if (initialError) throw initialError;
       
-      console.log(`✅ Vakansiya ilk batch: ${initialCompanies?.length || 0} şirkət anında yükləndi`);
-      
-      // İlk şirkətləri göstər
-      const formattedInitialCompanies = initialCompanies?.map(company => ({
-        id: company.id,
-        name: company.name
-      })) || [];
+      const formattedInitialCompanies = (initialCompanies ?? []).map(c => ({
+        id: c.id,
+        name: c.name
+      }));
       
       setCompanies(formattedInitialCompanies);
       setFilteredCompanies(formattedInitialCompanies);
-      
-      // Background-da qalan şirkətləri yüklə
-      console.log('🔄 Vakansiya background-da qalan şirkətlər yüklənir...');
-      loadRemainingCompaniesForJobsInBackground(formattedInitialCompanies);
       
       // Kateqoriyaları yüklə
       const categoriesResponse = await supabase
@@ -191,72 +184,58 @@ export default function AdminJobs() {
     }
   };
 
-  // Background-da qalan şirkətləri yüklə (jobs üçün)
-  const loadRemainingCompaniesForJobsInBackground = async (initialCompanies: Company[]) => {
-    try {
-      console.log('📊 Jobs background-da BÜTÜN ŞİRKƏTLƏRİ YÜKLƏYİRİK');
-      
-      let allCompaniesData: Company[] = [...initialCompanies];
-      let pageSize = 1000;
-      let currentPage = 0;
-      let hasMoreData = true;
-      let offset = 15; // İlk 15-i artıq yüklədik
-      
-      while (hasMoreData) {
-        console.log(`📖 Jobs background səhifə ${currentPage + 1} yüklənir...`);
-        
-        const { data, error } = await supabase
-          .from('companies')
-          .select('id, name')
-          .eq('is_active', true)
-          .order('name')
-          .range(offset + currentPage * pageSize, offset + (currentPage + 1) * pageSize - 1);
-        
-        if (error) throw error;
-        
-        console.log(`✅ Jobs background səhifə ${currentPage + 1}: ${data?.length || 0} şirkət`);
-        
-        if (data && data.length > 0) {
-          const formattedCompanies = data.map(company => ({
-            id: company.id,
-            name: company.name
-          }));
-          
-          allCompaniesData = [...allCompaniesData, ...formattedCompanies];
-          console.log(`📈 Jobs background cəmi: ${allCompaniesData.length} şirkət`);
-          
-          if (data.length < pageSize) {
-            hasMoreData = false;
-          } else {
-            currentPage++;
-          }
-        } else {
-          hasMoreData = false;
-        }
-      }
-      
-      console.log(`🎉 JOBS BACKGROUND TAMAMLANDI! ${allCompaniesData.length} şirkət yükləndi`);
-      
-      // Background yükləmə tamamlandıqda state-i yenilə
-      setCompanies(allCompaniesData);
-      setFilteredCompanies(allCompaniesData);
-      
-    } catch (error) {
-      console.error('❌ Jobs background yükləmə xətası:', error);
-    }
-  };
+  // Background load removed: server-side company search is used for performance.
 
-  // Filter companies based on search term
+
+  // Server-side company search for instant, non-freezing results
   useEffect(() => {
-    if (companySearchTerm.trim()) {
-      const filtered = companies.filter(company => 
-        company.name.toLowerCase().includes(companySearchTerm.toLowerCase())
-      );
-      setFilteredCompanies(filtered);
-    } else {
-      setFilteredCompanies(companies);
-    }
-  }, [companySearchTerm, companies]);
+    let isActive = true;
+    const run = async () => {
+      const term = companySearchTerm.trim();
+      // If no term, show initial companies (already limited)
+      if (!term) {
+        setFilteredCompanies(companies.slice(0, 50));
+        setCompanySearchLoading(false);
+        return;
+      }
+      setCompanySearchLoading(true);
+      const currentId = ++searchIdRef.current;
+
+      const { data, error } = await supabase
+        .from('companies')
+        .select('id, name')
+        .eq('is_active', true)
+        .ilike('name', `%${term}%`)
+        .order('name')
+        .limit(50);
+
+      // Ignore if this effect has been cleaned up or if a newer search finished
+      if (!isActive || searchIdRef.current !== currentId) return;
+
+      if (error) {
+        console.error('Şirkət axtarışı xətası:', error);
+        setFilteredCompanies([]);
+        setCompanySearchLoading(false);
+        return;
+      }
+
+      const results = (data ?? []).map(c => ({ id: c.id, name: c.name }));
+      setFilteredCompanies(results);
+      // Ensure selected company can be found by SEO generator later
+      setCompanies(prev => {
+        const map = new Map(prev.map(c => [c.id, c]));
+        for (const r of results) map.set(r.id, r);
+        // Keep size reasonable
+        return Array.from(map.values()).slice(0, 200);
+      });
+      setCompanySearchLoading(false);
+    };
+
+    run();
+    return () => {
+      isActive = false;
+    };
+  }, [companySearchTerm]);
 
   // Auto-generate SEO fields and slug for new job based on title and company
   useEffect(() => {
@@ -568,7 +547,21 @@ export default function AdminJobs() {
                       <Label htmlFor="company_id">Şirkət</Label>
                       <Select 
                         value={formData.company_id} 
-                        onValueChange={(value) => setFormData({ ...formData, company_id: value })}
+                        onValueChange={(value) => {
+                          setFormData({ ...formData, company_id: value });
+                          const selected = filteredCompanies.find(c => c.id === value);
+                          if (selected) {
+                            setCompanies((prev) =>
+                              prev.some(c => c.id === selected.id) ? prev : [selected, ...prev].slice(0, 200)
+                            );
+                          }
+                        }}
+                        onOpenChange={(open) => {
+                          if (!open) {
+                            setCompanySearchTerm('');
+                            setFilteredCompanies(companies.slice(0, 50));
+                          }
+                        }}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Şirkət seçin" />
@@ -584,16 +577,16 @@ export default function AdminJobs() {
                             />
                           </div>
                           <div className="max-h-60 overflow-auto">
-                            {/* Yalnız ilk 100 şirkəti və ya axtarış nəticələrini göstər */}
-                            {(companySearchTerm.trim() ? filteredCompanies : filteredCompanies.slice(0, 100)).map((company) => (
-                              <SelectItem key={company.id} value={company.id}>
-                                {company.name}
-                              </SelectItem>
-                            ))}
-                            {!companySearchTerm.trim() && filteredCompanies.length > 100 && (
-                              <div className="p-2 text-xs text-center text-muted-foreground">
-                                Daha çox şirkət görmək üçün axtarış edin...
-                              </div>
+                            {companySearchLoading ? (
+                              <div className="p-2 text-sm text-muted-foreground">Axtarılır...</div>
+                            ) : filteredCompanies.length > 0 ? (
+                              filteredCompanies.map((company) => (
+                                <SelectItem key={company.id} value={company.id}>
+                                  {company.name}
+                                </SelectItem>
+                              ))
+                            ) : (
+                              <div className="p-2 text-sm text-muted-foreground">Nəticə tapılmadı</div>
                             )}
                           </div>
                         </SelectContent>
