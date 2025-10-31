@@ -34,7 +34,8 @@ const MobileHeader = ({ showCloseButton = false, onClose, isJobPage = false }: M
         {showCloseButton && onClose && (
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-lg bg-muted/50 hover:bg-destructive/20 hover:text-destructive text-muted-foreground transition-all duration-300 flex items-center justify-center text-lg font-bold"
+            className="w-8 h-8 rounded-lg bg-card hover:bg-primary hover:text-primary-foreground text-foreground border border-border transition-all duration-300 flex items-center justify-center text-xl font-semibold shadow-sm hover:shadow-md"
+            style={{ transition: 'var(--transition-smooth)' }}
           >
             ×
           </button>
