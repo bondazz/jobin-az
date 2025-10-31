@@ -13,6 +13,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import AdminLayout from '@/components/AdminLayout';
+import { FixedSizeList as List } from 'react-window';
 import { 
   Plus, 
   Edit, 
@@ -20,8 +21,6 @@ import {
   Search, 
   Eye,
   Building2,
-  MapPin,
-  Clock,
   DollarSign,
   RefreshCw,
   Calendar,
@@ -809,110 +808,94 @@ export default function AdminJobs() {
         </div>
 
         {/* Jobs List */}
-        <div className="flex flex-col gap-4">
-          {filteredJobs.map((job) => {
-            const expired = isJobExpired(job.expiration_date);
-            
-            return (
-              <Card key={job.id} className={`hover:shadow-lg transition-shadow ${expired ? 'border-orange-200 bg-orange-50/50' : ''}`}>
-                <CardHeader className="pb-3">
-                  <div className="flex justify-between items-center gap-4">
-                    <div className="flex items-center gap-6 flex-1">
-                      <div className="flex-1">
-                        <CardTitle className="text-lg line-clamp-1">{job.title}</CardTitle>
-                      </div>
-                      <div className="flex items-center gap-6 text-sm text-muted-foreground">
-                        <div className="flex items-center gap-1">
-                          <Building2 className="h-4 w-4" />
-                          {job.companies?.name}
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <MapPin className="h-4 w-4" />
-                          {job.location}
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Clock className="h-4 w-4" />
-                          {job.type === 'full-time' ? 'Tam zamanlı' :
-                           job.type === 'part-time' ? 'Yarı zamanlı' :
-                           job.type === 'contract' ? 'Müqavilə' : 'Təcrübə'}
-                        </div>
-                        {job.salary && (
-                          <div className="flex items-center gap-1">
-                            <DollarSign className="h-4 w-4" />
-                            {job.salary}
+        <div className="border rounded-lg">
+          <List
+            height={800}
+            itemCount={filteredJobs.length}
+            itemSize={60}
+            width="100%"
+          >
+            {({ index, style }) => {
+              const job = filteredJobs[index];
+              const expired = isJobExpired(job.expiration_date);
+              
+              return (
+                <div style={style} className="px-2">
+                  <Card className={`hover:shadow-md transition-shadow h-[56px] ${expired ? 'border-orange-200 bg-orange-50/50' : ''}`}>
+                    <CardContent className="p-3">
+                      <div className="flex justify-between items-center gap-4">
+                        <div className="flex items-center gap-4 flex-1 min-w-0">
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-medium text-sm line-clamp-1">{job.title}</h3>
                           </div>
-                        )}
-                        <div className="flex items-center gap-1">
-                          <Eye className="h-4 w-4" />
-                          {job.views} baxış
+                          <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                            <div className="flex items-center gap-1">
+                              <Building2 className="h-3 w-3" />
+                              <span className="line-clamp-1">{job.companies?.name}</span>
+                            </div>
+                            {job.salary && (
+                              <div className="flex items-center gap-1">
+                                <DollarSign className="h-3 w-3" />
+                                {job.salary}
+                              </div>
+                            )}
+                            <div className="flex items-center gap-1">
+                              <Eye className="h-3 w-3" />
+                              {job.views}
+                            </div>
+                            {job.expiration_date && (
+                              <div className={`flex items-center gap-1 ${expired ? 'text-orange-600' : ''}`}>
+                                <Calendar className="h-3 w-3" />
+                                {new Date(job.expiration_date).toLocaleDateString('az-AZ')}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex gap-1 flex-shrink-0">
+                          {expired && (
+                            <Button 
+                              size="sm" 
+                              variant="outline" 
+                              onClick={() => handleReactivate(job)}
+                              className="h-7 w-7 p-0 text-orange-600 border-orange-300"
+                              title="Reaktivasiya"
+                            >
+                              <RefreshCw className="h-3 w-3" />
+                            </Button>
+                          )}
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            onClick={() => handleGoogleIndex(job)}
+                            className="h-7 w-7 p-0"
+                            title="Google indexləmə"
+                          >
+                            <Globe className="h-3 w-3" />
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            onClick={() => handleEdit(job)}
+                            className="h-7 w-7 p-0"
+                          >
+                            <Edit className="h-3 w-3" />
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            onClick={() => handleDelete(job.id)}
+                            className="h-7 w-7 p-0"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
                         </div>
                       </div>
-                    </div>
-                    <div className="flex gap-2 flex-shrink-0">
-                      {expired && (
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
-                          onClick={() => handleReactivate(job)}
-                          className="text-orange-600 border-orange-300 hover:bg-orange-50"
-                          title="Reaktivasiya et"
-                        >
-                          <RefreshCw className="h-4 w-4" />
-                        </Button>
-                      )}
-                      <Button 
-                        size="sm" 
-                        variant="outline" 
-                        onClick={() => handleGoogleIndex(job)}
-                        title="Google-a indexləmə üçün göndər"
-                      >
-                        <Globe className="h-4 w-4" />
-                      </Button>
-                      <Button size="sm" variant="outline" onClick={() => handleEdit(job)}>
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button size="sm" variant="outline" onClick={() => handleDelete(job.id)}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-4">
-                      {job.expiration_date && (
-                        <div className={`flex items-center gap-1 text-sm ${expired ? 'text-orange-600' : 'text-muted-foreground'}`}>
-                          <Calendar className="h-4 w-4" />
-                          {expired ? 'Müddəti bitib' : 'Bitəcək'}: {new Date(job.expiration_date).toLocaleDateString('az-AZ')}
-                        </div>
-                      )}
-                      {job.tags.length > 0 && (
-                        <div className="flex flex-wrap gap-1">
-                          {job.tags.map((tag, index) => (
-                            <Badge key={index} variant="secondary" className="text-xs">
-                              {tag}
-                            </Badge>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <span className={`text-xs px-2 py-1 rounded-full ${
-                        job.is_active && !expired
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-red-100 text-red-800'
-                      }`}>
-                        {job.is_active && !expired ? 'Aktiv' : expired ? 'Müddəti Bitib' : 'Deaktiv'}
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        {new Date(job.created_at).toLocaleDateString('az-AZ')}
-                      </span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
+                    </CardContent>
+                  </Card>
+                </div>
+              );
+            }}
+          </List>
         </div>
 
         {filteredJobs.length === 0 && (
