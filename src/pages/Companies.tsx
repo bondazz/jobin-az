@@ -536,7 +536,7 @@ const Companies = () => {
                     </div>
 
                     {/* Company Info */}
-                    <div className="flex items-center gap-3 flex-1 min-w-0 pr-16">
+                    <div className="flex items-center gap-3 flex-1 min-w-0 pr-16 overflow-hidden">
                       <div className="relative flex-shrink-0">
                         {company.logo ? (
                           <img src={company.logo} alt={company.name} className="w-8 h-8 rounded-md object-cover" />
@@ -547,17 +547,17 @@ const Companies = () => {
                         )}
                       </div>
                       
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors duration-200 truncate">
+                      <div className="flex-1 min-w-0 overflow-hidden">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <h3 className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors duration-200 truncate flex-1 min-w-0">
                             {company.name}
                           </h3>
-                          {company.is_verified && <VerifyBadge size={16} />}
+                          {company.is_verified && <VerifyBadge size={16} className="flex-shrink-0" />}
                         </div>
-                        <div className="flex items-center gap-2 mt-0">
-                          <div className="flex items-center gap-1">
-                            <MapPin className="w-3 h-3 text-muted-foreground" />
-                            <p className="text-muted-foreground text-xs truncate">{company.address || 'Ünvan yoxdur'}</p>
+                        <div className="flex items-center gap-2 mt-0 min-w-0">
+                          <div className="flex items-center gap-1 min-w-0 overflow-hidden flex-1">
+                            <MapPin className="w-3 h-3 text-muted-foreground flex-shrink-0" />
+                            <p className="text-muted-foreground text-xs truncate min-w-0">{company.address || 'Ünvan yoxdur'}</p>
                           </div>
                         </div>
                       </div>
