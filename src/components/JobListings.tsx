@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useCallback } from 'react';
+import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
@@ -33,6 +33,8 @@ const JobListings = ({
   const [offset, setOffset] = useState(0);
   const [displayCount, setDisplayCount] = useState(15);
   const JOBS_PER_PAGE = 25;
+
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   // Turkish character normalization for better search
   const normalizeTurkish = (str: string): string => {
@@ -227,29 +229,54 @@ const JobListings = ({
     setDisplayCount(15);
   }, [searchQuery, locationFilter, selectedCategory, companyFilter, showOnlySaved]);
 
-  // Infinite scroll handler - load more from displayed list or fetch from DB
+  // Infinite scroll handler - load more from displayed list or fetch from DB (container-aware)
   useEffect(() => {
     const handleScroll = () => {
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      const scrollHeight = document.documentElement.scrollHeight;
-      const clientHeight = window.innerHeight;
-      
+      let scrollTop: number;
+      let scrollHeight: number;
+      let clientHeight: number;
+
+      if (scrollRef.current) {
+        scrollTop = scrollRef.current.scrollTop;
+        scrollHeight = scrollRef.current.scrollHeight;
+        clientHeight = scrollRef.current.clientHeight;
+      } else {
+        scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        scrollHeight = document.documentElement.scrollHeight;
+        clientHeight = window.innerHeight;
+      }
+
       if (scrollTop + clientHeight >= scrollHeight - 500) {
-        // If we're showing fewer jobs than filtered, instantly show more
         if (displayCount < filteredJobs.length) {
           setDisplayCount(prev => Math.min(prev + 15, filteredJobs.length));
-        }
-        // If we've shown all filtered jobs and there are more in DB, fetch more
-        else if (hasMore && !loadingMore && !loading) {
+        } else if (hasMore && !loadingMore && !loading) {
           fetchJobs(true);
         }
       }
     };
-    
-    // Use passive listener for better scroll performance
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    const target = scrollRef.current;
+    if (target) {
+      target.addEventListener('scroll', handleScroll, { passive: true });
+    } else {
+      window.addEventListener('scroll', handleScroll, { passive: true } as AddEventListenerOptions);
+    }
+
+    return () => {
+      if (target) {
+        target.removeEventListener('scroll', handleScroll);
+      } else {
+        window.removeEventListener('scroll', handleScroll);
+      }
+    };
   }, [hasMore, loadingMore, loading, fetchJobs, displayCount, filteredJobs.length]);
+
+  // Proactively fetch more if needed to keep list flowing
+  useEffect(() => {
+    if (filteredJobs.length < displayCount && hasMore && !loading && !loadingMore) {
+      fetchJobs(true);
+    }
+  }, [filteredJobs.length, displayCount, hasMore, loading, loadingMore, fetchJobs]);
 
   const getCategoryLabel = (category: string) => {
     const categoryMap: Record<string, string> = {
@@ -295,7 +322,7 @@ const JobListings = ({
         </div>}
 
       {/* Job List - Responsive Container */}
-      <div className="flex-1 overflow-y-auto p-2 bg-gradient-to-b from-transparent to-primary/5 w-full max-w-[100%] lg:max-w-[calc(100%+207px)] mx-auto lg:min-h-[calc(100vh-200px)] lg:px-0 py-0">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto p-2 bg-gradient-to-b from-transparent to-primary/5 w-full max-w-[100%] lg:max-w-[calc(100%+207px)] mx-auto lg:min-h-[calc(100vh-200px)] lg:px-0 py-0">
         <div className="flex flex-col gap-2 justify-center items-center w-full max-w-full px-2 py-[12px] lg:max-w-[550px]">
           {loading ? <div className="flex items-center justify-center py-16">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
