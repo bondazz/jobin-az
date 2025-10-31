@@ -808,27 +808,47 @@ export default function AdminJobs() {
           />
         </div>
 
-        {/* Jobs Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+        {/* Jobs List */}
+        <div className="flex flex-col gap-4">
           {filteredJobs.map((job) => {
             const expired = isJobExpired(job.expiration_date);
             
             return (
               <Card key={job.id} className={`hover:shadow-lg transition-shadow ${expired ? 'border-orange-200 bg-orange-50/50' : ''}`}>
-                <CardHeader>
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <CardTitle className="text-lg line-clamp-2">{job.title}</CardTitle>
-                      <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
-                        <Building2 className="h-4 w-4" />
-                        {job.companies?.name}
+                <CardHeader className="pb-3">
+                  <div className="flex justify-between items-center gap-4">
+                    <div className="flex items-center gap-6 flex-1">
+                      <div className="flex-1">
+                        <CardTitle className="text-lg line-clamp-1">{job.title}</CardTitle>
                       </div>
-                      <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
-                        <MapPin className="h-4 w-4" />
-                        {job.location}
+                      <div className="flex items-center gap-6 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-1">
+                          <Building2 className="h-4 w-4" />
+                          {job.companies?.name}
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <MapPin className="h-4 w-4" />
+                          {job.location}
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Clock className="h-4 w-4" />
+                          {job.type === 'full-time' ? 'Tam zamanlı' :
+                           job.type === 'part-time' ? 'Yarı zamanlı' :
+                           job.type === 'contract' ? 'Müqavilə' : 'Təcrübə'}
+                        </div>
+                        {job.salary && (
+                          <div className="flex items-center gap-1">
+                            <DollarSign className="h-4 w-4" />
+                            {job.salary}
+                          </div>
+                        )}
+                        <div className="flex items-center gap-1">
+                          <Eye className="h-4 w-4" />
+                          {job.views} baxış
+                        </div>
                       </div>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 flex-shrink-0">
                       {expired && (
                         <Button 
                           size="sm" 
@@ -857,55 +877,33 @@ export default function AdminJobs() {
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                      <div className="flex items-center gap-1">
-                        <Clock className="h-4 w-4" />
-                        {job.type === 'full-time' ? 'Tam zamanlı' :
-                         job.type === 'part-time' ? 'Yarı zamanlı' :
-                         job.type === 'contract' ? 'Müqavilə' : 'Təcrübə'}
-                      </div>
-                      {job.salary && (
-                        <div className="flex items-center gap-1">
-                          <DollarSign className="h-4 w-4" />
-                          {job.salary}
+                <CardContent className="pt-0">
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                      {job.expiration_date && (
+                        <div className={`flex items-center gap-1 text-sm ${expired ? 'text-orange-600' : 'text-muted-foreground'}`}>
+                          <Calendar className="h-4 w-4" />
+                          {expired ? 'Müddəti bitib' : 'Bitəcək'}: {new Date(job.expiration_date).toLocaleDateString('az-AZ')}
+                        </div>
+                      )}
+                      {job.tags.length > 0 && (
+                        <div className="flex flex-wrap gap-1">
+                          {job.tags.map((tag, index) => (
+                            <Badge key={index} variant="secondary" className="text-xs">
+                              {tag}
+                            </Badge>
+                          ))}
                         </div>
                       )}
                     </div>
-                    
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Eye className="h-4 w-4" />
-                      {job.views} baxış
-                    </div>
-
-                    {job.expiration_date && (
-                      <div className={`flex items-center gap-2 text-sm ${expired ? 'text-orange-600' : 'text-muted-foreground'}`}>
-                        <Calendar className="h-4 w-4" />
-                        {expired ? 'Müddəti bitib' : 'Bitəcək'}: {new Date(job.expiration_date).toLocaleDateString('az-AZ')}
-                      </div>
-                    )}
-
-                    {job.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-1">
-                        {job.tags.map((tag, index) => (
-                          <Badge key={index} variant="secondary" className="text-xs">
-                            {tag}
-                          </Badge>
-                        ))}
-                      </div>
-                    )}
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex gap-2">
-                        <span className={`text-xs px-2 py-1 rounded-full ${
-                          job.is_active && !expired
-                            ? 'bg-green-100 text-green-800' 
-                            : 'bg-red-100 text-red-800'
-                        }`}>
-                          {job.is_active && !expired ? 'Aktiv' : expired ? 'Müddəti Bitib' : 'Deaktiv'}
-                        </span>
-                      </div>
+                    <div className="flex items-center gap-4">
+                      <span className={`text-xs px-2 py-1 rounded-full ${
+                        job.is_active && !expired
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-red-100 text-red-800'
+                      }`}>
+                        {job.is_active && !expired ? 'Aktiv' : expired ? 'Müddəti Bitib' : 'Deaktiv'}
+                      </span>
                       <span className="text-xs text-muted-foreground">
                         {new Date(job.created_at).toLocaleDateString('az-AZ')}
                       </span>
