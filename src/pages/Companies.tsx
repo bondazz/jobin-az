@@ -140,7 +140,12 @@ const Companies = () => {
       const endIndex = startIndex + COMPANIES_PER_PAGE;
       
       const nextBatch = allCompanies.slice(startIndex, endIndex);
-      const newDisplayed = [...companies, ...nextBatch];
+      // Ensure uniqueness by company id when appending
+      const map = new Map<string, any>();
+      [...companies, ...nextBatch].forEach((c: any) => {
+        if (!map.has(c.id)) map.set(c.id, c);
+      });
+      const newDisplayed = Array.from(map.values());
       
       setCompanies(newDisplayed);
       setDisplayPage(nextPage);
@@ -407,15 +412,26 @@ const Companies = () => {
       
       console.log(`🎉 BACKGROUND TAMAMLANDI! ${allCompaniesData.length} şirkət yükləndi`);
       
+      // Deduplicate by company id before sorting
+      const uniqueMap = new Map<string, any>();
+      (allCompaniesData as any[]).forEach((c) => {
+        const id = c.id as string;
+        const existing = uniqueMap.get(id);
+        if (!existing || ((c.jobCount ?? 0) > (existing.jobCount ?? 0))) {
+          uniqueMap.set(id, c);
+        }
+      });
+      const uniqueCompanies = Array.from(uniqueMap.values());
+      
       // Sort all companies by job count descending
-      const sortedCompanies = allCompaniesData.sort((a, b) => (b as any).jobCount - (a as any).jobCount);
+      const sortedCompanies = uniqueCompanies.sort((a: any, b: any) => (b.jobCount ?? 0) - (a.jobCount ?? 0));
       
       // Background yükləmə tamamlandıqda state-i yenilə
-      setAllCompanies(sortedCompanies);
+      setAllCompanies(sortedCompanies as any);
       
       // İlk 50 şirkəti göstər (15 + 35)
       const initialDisplayed = sortedCompanies.slice(0, COMPANIES_PER_PAGE);
-      setCompanies(initialDisplayed);
+      setCompanies(initialDisplayed as any);
       setDisplayPage(0);
       setHasMore(sortedCompanies.length > COMPANIES_PER_PAGE);
       
