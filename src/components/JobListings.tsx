@@ -227,15 +227,15 @@ const JobListings = ({
     setDisplayCount(15);
   }, [searchQuery, locationFilter, selectedCategory, companyFilter, showOnlySaved]);
 
-  // Infinite scroll handler - load more from DB and increase display count
+  // Infinite scroll handler - load more from displayed list or fetch from DB
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
       const scrollHeight = document.documentElement.scrollHeight;
       const clientHeight = window.innerHeight;
       
-      if (scrollTop + clientHeight >= scrollHeight - 1000) {
-        // If we're showing fewer jobs than filtered, just show more
+      if (scrollTop + clientHeight >= scrollHeight - 500) {
+        // If we're showing fewer jobs than filtered, instantly show more
         if (displayCount < filteredJobs.length) {
           setDisplayCount(prev => Math.min(prev + 15, filteredJobs.length));
         }
@@ -245,7 +245,9 @@ const JobListings = ({
         }
       }
     };
-    window.addEventListener('scroll', handleScroll);
+    
+    // Use passive listener for better scroll performance
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, [hasMore, loadingMore, loading, fetchJobs, displayCount, filteredJobs.length]);
 
@@ -324,8 +326,8 @@ const JobListings = ({
             </div>}
         </div>
         
-        {/* Auto-loading indicator */}
-        {(displayCount < filteredJobs.length || (hasMore && !loading)) && <div className="flex justify-center py-8">
+        {/* Loading indicator - only show when actually fetching from DB */}
+        {loadingMore && <div className="flex justify-center py-8">
             <div className="flex items-center gap-2 text-muted-foreground">
               <Loader2 className="w-4 h-4 animate-spin" />
               <span className="text-sm">Yüklənir...</span>
