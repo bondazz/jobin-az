@@ -584,11 +584,17 @@ export default function AdminJobs() {
                             />
                           </div>
                           <div className="max-h-60 overflow-auto">
-                            {filteredCompanies.map((company) => (
+                            {/* Yalnız ilk 100 şirkəti və ya axtarış nəticələrini göstər */}
+                            {(companySearchTerm.trim() ? filteredCompanies : filteredCompanies.slice(0, 100)).map((company) => (
                               <SelectItem key={company.id} value={company.id}>
                                 {company.name}
                               </SelectItem>
                             ))}
+                            {!companySearchTerm.trim() && filteredCompanies.length > 100 && (
+                              <div className="p-2 text-xs text-center text-muted-foreground">
+                                Daha çox şirkət görmək üçün axtarış edin...
+                              </div>
+                            )}
                           </div>
                         </SelectContent>
                       </Select>
