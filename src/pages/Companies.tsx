@@ -87,9 +87,13 @@ const Companies = () => {
       const company = allCompanies.find(c => c.slug === companySlug);
       if (company) {
         setSelectedCompany(company);
+        // Open mobile profile when directly accessing company URL on mobile/tablet
+        if (isMobileOrTablet) {
+          setShowMobileProfile(true);
+        }
       }
     }
-  }, [companySlug, allCompanies]);
+  }, [companySlug, allCompanies, isMobileOrTablet]);
 
   // Default SEO setup for main companies page
   useEffect(() => {
