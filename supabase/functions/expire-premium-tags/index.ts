@@ -18,33 +18,19 @@ Deno.serve(async (req) => {
 
     console.log('Starting premium tag expiration check...');
 
-    // Baku timezone is UTC+4
-    const BAKU_OFFSET_MS = 4 * 60 * 60 * 1000; // 4 hours in milliseconds
+    // Calculate the timestamp for 24 hours ago
+    const twentyFourHoursAgo = new Date();
+    twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
     
-    // Get current time in Baku timezone
-    const now = new Date();
-    const nowBaku = new Date(now.getTime() + BAKU_OFFSET_MS);
-    
-    // Get start of today (midnight) in Baku timezone
-    const todayBakuMidnight = new Date(
-      nowBaku.getFullYear(),
-      nowBaku.getMonth(),
-      nowBaku.getDate(),
-      0, 0, 0, 0
-    );
-    
-    // Convert back to UTC for database comparison
-    const todayMidnightUTC = new Date(todayBakuMidnight.getTime() - BAKU_OFFSET_MS);
-    
-    console.log(`Checking for premium jobs created before: ${todayMidnightUTC.toISOString()} (${todayBakuMidnight.toLocaleString('az-AZ', { timeZone: 'Asia/Baku' })} Baku time)`);
+    console.log(`Checking for premium jobs created before: ${twentyFourHoursAgo.toISOString()}`);
 
-    // Find all active jobs with premium tag that were created before today (Baku time)
+    // Find all active jobs with premium tag that are older than 24 hours
     const { data: premiumJobs, error: fetchError } = await supabase
       .from('jobs')
       .select('id, title, tags, created_at')
       .eq('is_active', true)
       .contains('tags', ['premium'])
-      .lt('created_at', todayMidnightUTC.toISOString());
+      .lt('created_at', twentyFourHoursAgo.toISOString());
 
     if (fetchError) {
       console.error('Error fetching premium jobs:', fetchError);
