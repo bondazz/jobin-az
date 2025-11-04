@@ -18,17 +18,33 @@ Deno.serve(async (req) => {
 
     console.log('Starting premium tag expiration check...');
 
-    // Calculate the timestamp for 1 day ago
-    const oneDayAgo = new Date();
-    oneDayAgo.setDate(oneDayAgo.getDate() - 1);
+    // Baku timezone is UTC+4
+    const BAKU_OFFSET_MS = 4 * 60 * 60 * 1000; // 4 hours in milliseconds
+    
+    // Get current time in Baku timezone
+    const now = new Date();
+    const nowBaku = new Date(now.getTime() + BAKU_OFFSET_MS);
+    
+    // Get start of today (midnight) in Baku timezone
+    const todayBakuMidnight = new Date(
+      nowBaku.getFullYear(),
+      nowBaku.getMonth(),
+      nowBaku.getDate(),
+      0, 0, 0, 0
+    );
+    
+    // Convert back to UTC for database comparison
+    const todayMidnightUTC = new Date(todayBakuMidnight.getTime() - BAKU_OFFSET_MS);
+    
+    console.log(`Checking for premium jobs created before: ${todayMidnightUTC.toISOString()} (${todayBakuMidnight.toLocaleString('az-AZ', { timeZone: 'Asia/Baku' })} Baku time)`);
 
-    // Find all active jobs with premium tag that are older than 1 day
+    // Find all active jobs with premium tag that were created before today (Baku time)
     const { data: premiumJobs, error: fetchError } = await supabase
       .from('jobs')
       .select('id, title, tags, created_at')
       .eq('is_active', true)
       .contains('tags', ['premium'])
-      .lt('created_at', oneDayAgo.toISOString());
+      .lt('created_at', todayMidnightUTC.toISOString());
 
     if (fetchError) {
       console.error('Error fetching premium jobs:', fetchError);
