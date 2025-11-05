@@ -193,7 +193,7 @@ const JobDetails = ({
           
           <div className="space-y-3 mb-8 max-w-2xl mx-auto">
             <div className="text-left px-4 space-y-4">
-              <h1 className="text-2xl font-bold text-foreground">Ən son iş elanları – uyğun iş tapmaq üçün doğru ünvan</h1>
+              <h1 className="text-2xl font-bold text-foreground">Ən son iş elanları – uyğun vakansiyalar tapmaq üçün doğru ünvan</h1>
 
               <p className="text-muted-foreground text-sm leading-relaxed">
                 İş axtarışı heç vaxt bu qədər asan olmamışdı. <strong>Jooble.az</strong> üzərindən hər gün yüzlərlə yeni <strong>iş elanları</strong> paylaşılır və siz də bu imkanlardan faydalana bilərsiniz. Platformamızda müxtəlif sahələr üzrə vakansiyalar yerləşdirilir — satış, mühasibatlıq, texnologiya, təhsil və daha bir çox istiqamət. Məqsədimiz hər bir istifadəçiyə uyğun iş tapmaq imkanı yaratmaqdır.
