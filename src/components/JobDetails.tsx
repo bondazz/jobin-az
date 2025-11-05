@@ -871,10 +871,16 @@ const JobDetails = ({ jobId, isMobile = false, primaryHeading = true }: JobDetai
                 {job.companies?.is_verified && <VerifyBadge size={isMobile ? 16 : 18} />}
               </div>
 
-              {/* Job Title - Main Focus */}
-              <h2 className={`${isMobile ? "text-lg" : "text-2xl"} font-bold text-foreground leading-tight`}>
-                {job.title} vakansiyası
-              </h2>
+              {/* Job Title - Main Focus - H1 for SEO */}
+              {primaryHeading ? (
+                <h1 className={`${isMobile ? "text-lg" : "text-2xl"} font-bold text-foreground leading-tight`}>
+                  {job.title} vakansiyası - {job.companies?.name || "Şirkət"} iş elanları
+                </h1>
+              ) : (
+                <h2 className={`${isMobile ? "text-lg" : "text-2xl"} font-bold text-foreground leading-tight`}>
+                  {job.title} vakansiyası - {job.companies?.name || "Şirkət"} iş elanları
+                </h2>
+              )}
 
               {/* Job Meta Information */}
               <div className="flex flex-wrap items-center gap-3">
