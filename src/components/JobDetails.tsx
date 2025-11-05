@@ -826,9 +826,20 @@ const JobDetails = ({ jobId, isMobile = false, primaryHeading = true }: JobDetai
         id="job-details-printable"
         className={`h-full overflow-y-auto bg-background ${isMobile ? "pt-16 pb-20" : "pb-24"}`}
       >
+        {/* Job Title - H1 for SEO (must be first in DOM) */}
+        {primaryHeading ? (
+          <h1 className={`${isMobile ? "text-lg" : "text-2xl"} font-bold text-foreground leading-tight ${isMobile ? "p-5" : "p-8"} pb-0`}>
+            {job.title} vakansiyası - {job.companies?.name || "Şirkət"} iş elanları
+          </h1>
+        ) : (
+          <h2 className={`${isMobile ? "text-lg" : "text-2xl"} font-bold text-foreground leading-tight ${isMobile ? "p-5" : "p-8"} pb-0`}>
+            {job.title} vakansiyası - {job.companies?.name || "Şirkət"} iş elanları
+          </h2>
+        )}
+
         {/* Enhanced Header with Company Profile */}
         <div
-          className={`${isMobile ? "p-5" : "p-8"} border-b border-border/50 bg-gradient-to-r from-background to-muted/20`}
+          className={`${isMobile ? "p-5" : "p-8"} pt-3 border-b border-border/50 bg-gradient-to-r from-background to-muted/20`}
         >
           <div className="flex items-start gap-6">
             {/* Premium Company Logo */}
@@ -857,24 +868,19 @@ const JobDetails = ({ jobId, isMobile = false, primaryHeading = true }: JobDetai
               <div className="flex items-center gap-3">
                 {job.companies?.slug ? (
                   <Link to={`/companies/${job.companies.slug}`}>
-                    <h2
+                    <div
                       className={`${isMobile ? "text-base" : "text-lg"} font-semibold text-muted-foreground hover:text-primary transition-all duration-200 truncate`}
                     >
                       {job.companies?.name || "Şirkət"}
-                    </h2>
+                    </div>
                   </Link>
                 ) : (
-                  <h2 className={`${isMobile ? "text-base" : "text-lg"} font-semibold text-muted-foreground truncate`}>
+                  <div className={`${isMobile ? "text-base" : "text-lg"} font-semibold text-muted-foreground truncate`}>
                     {job.companies?.name || "Şirkət"}
-                  </h2>
+                  </div>
                 )}
                 {job.companies?.is_verified && <VerifyBadge size={isMobile ? 16 : 18} />}
               </div>
-
-              {/* Job Title - Main Focus */}
-              <h2 className={`${isMobile ? "text-lg" : "text-2xl"} font-bold text-foreground leading-tight`}>
-                {job.title} vakansiyası
-              </h2>
 
               {/* Job Meta Information */}
               <div className="flex flex-wrap items-center gap-3">
