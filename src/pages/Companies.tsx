@@ -81,18 +81,50 @@ const Companies = () => {
     loadCompanies();
   }, [debouncedSearchTerm]);
 
-  // Find company from URL slug
+  // Find company from URL slug or load directly from API
   useEffect(() => {
-    if (companySlug && allCompanies.length > 0) {
-      const company = allCompanies.find(c => c.slug === companySlug);
-      if (company) {
-        setSelectedCompany(company);
-        // Open mobile profile when directly accessing company URL on mobile/tablet
-        if (isMobileOrTablet) {
-          setShowMobileProfile(true);
+    const loadCompanyBySlug = async () => {
+      if (!companySlug) return;
+
+      // First try to find in loaded companies
+      if (allCompanies.length > 0) {
+        const company = allCompanies.find(c => c.slug === companySlug);
+        if (company) {
+          setSelectedCompany(company);
+          // Open mobile profile when directly accessing company URL on mobile/tablet
+          if (isMobileOrTablet) {
+            setShowMobileProfile(true);
+          }
+          return;
         }
       }
-    }
+
+      // If not found in loaded companies, fetch directly from API
+      try {
+        const { data, error } = await supabase
+          .from('companies')
+          .select(`
+            id, name, slug, logo, background_image, description, website, email, phone, address, 
+            seo_title, seo_description, seo_keywords, about_seo_title, about_seo_description, 
+            jobs_seo_title, jobs_seo_description, is_verified, is_active, created_at, updated_at
+          `)
+          .eq('slug', companySlug)
+          .eq('is_active', true)
+          .single();
+
+        if (data && !error) {
+          setSelectedCompany(data);
+          // Open mobile profile when directly accessing company URL on mobile/tablet
+          if (isMobileOrTablet) {
+            setShowMobileProfile(true);
+          }
+        }
+      } catch (error) {
+        console.error('Şirkət yüklənə bilmədi:', error);
+      }
+    };
+
+    loadCompanyBySlug();
   }, [companySlug, allCompanies, isMobileOrTablet]);
 
   // Default SEO setup for main companies page
