@@ -7,12 +7,12 @@ import Layout from "./components/Layout";
 // Lazy load all components for better performance
 import { lazy, Suspense } from "react";
 
-// Main pages - critical for SEO, load immediately
+// Main pages - critical for SEO and performance, load immediately
 import Index from "./pages/Index";
+import Companies from "./pages/Companies";
 
 // Non-critical pages - lazy load
 const Categories = lazy(() => import("./pages/Categories"));
-const Companies = lazy(() => import("./pages/Companies"));
 const About = lazy(() => import("./pages/About"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const CVBuilder = lazy(() => import("./pages/CVBuilder"));
@@ -76,26 +76,10 @@ const App = () => (
                 <Categories />
               </Suspense>
             } />
-            <Route path="/companies" element={
-              <Suspense fallback={<LoadingFallback />}>
-                <Companies />
-              </Suspense>
-            } />
-            <Route path="/companies/:company" element={
-              <Suspense fallback={<LoadingFallback />}>
-                <Companies />
-              </Suspense>
-            } />
-            <Route path="/companies/:company/vacancies" element={
-              <Suspense fallback={<LoadingFallback />}>
-                <Companies />
-              </Suspense>
-            } />
-            <Route path="/companies/:company/vacancy/:jobSlug" element={
-              <Suspense fallback={<LoadingFallback />}>
-                <Companies />
-              </Suspense>
-            } />
+            <Route path="/companies" element={<Companies />} />
+            <Route path="/companies/:company" element={<Companies />} />
+            <Route path="/companies/:company/vacancies" element={<Companies />} />
+            <Route path="/companies/:company/vacancy/:jobSlug" element={<Companies />} />
             <Route path="/favorites" element={
               <Suspense fallback={<LoadingFallback />}>
                 <SavedJobs />

@@ -26,6 +26,13 @@ export default defineConfig(({ command, mode }) => ({
     },
   },
   build: {
+    modulePreload: {
+      polyfill: true,
+      resolveDependencies: (filename, deps) => {
+        // Preload critical chunks for faster navigation
+        return deps.filter(dep => !dep.includes('admin'));
+      }
+    },
     rollupOptions: {
       output: {
         manualChunks: {
