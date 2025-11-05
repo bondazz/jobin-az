@@ -157,7 +157,7 @@ const MainSidebar = () => {
             <script dangerouslySetInnerHTML={{
             __html: `(function(d,s){d.getElementById("licnt846B").src="https://counter.yadro.ru/hit?t50.6;r"+escape(d.referrer)+((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+(s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+";h"+escape(d.title.substring(0,150))+";"+Math.random()})(document,screen)`
           }} />
-            <h3 className="text-sm font-bold text-foreground">Vakansiya Statistikası</h3>
+            <div className="text-sm font-bold text-foreground">Vakansiya Statistikası</div>
           </div>
           
           <div className="space-y-3">
