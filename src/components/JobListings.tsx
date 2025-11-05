@@ -355,7 +355,7 @@ const JobListings = ({
                 <Search className="w-12 h-12 opacity-30" />
                 <div className="absolute inset-0 bg-primary/10 rounded-full blur-xl"></div>
               </div>
-              <p className="text-lg font-bold mb-2 text-foreground">Heç bir iş tapılmadı</p>
+              <h3 className="text-lg font-bold mb-2 text-foreground">Heç bir iş tapılmadı</h3>
               <p className="text-sm text-center mb-4 max-w-sm leading-relaxed">
                 Axtarış kriteriyalarınızı dəyişdirin və ya fərqli kateqoriyaları araşdırın
               </p>

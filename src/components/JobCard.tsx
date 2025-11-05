@@ -96,9 +96,9 @@ const JobCard = memo(({
         </div>
         
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-xs text-foreground group-hover:text-primary transition-colors duration-200 truncate">
+          <h3 className="font-semibold text-xs text-foreground group-hover:text-primary transition-colors duration-200 truncate">
             {job.title}
-          </p>
+          </h3>
           <div className="flex items-center gap-2 mt-0">
             <div className="flex items-center gap-1">
               <p className="text-muted-foreground text-xs font-medium truncate">
