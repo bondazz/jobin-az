@@ -291,8 +291,18 @@ const Index = () => {
       <div className="flex-1 flex min-w-0 pb-16 xl:pb-0 pt-14 xl:pt-0 lg:pt-20">
         {/* Job Listings - Responsive Column */}
         <div className="w-full lg:w-[400px] xl:w-[450px] border-r border-border animate-fade-in">
-          {/* SEO Content Section - Hidden visually but present for SEO */}
-          {(location.pathname === '/vacancies' || location.pathname === '/') && !jobSlug && (
+          {/* SEO Content Section - Hidden visually but present for SEO - Only on homepage */}
+          {location.pathname === '/' && !jobSlug && (
+            <div className="sr-only">
+              <h1>İş elanları saytı, is elanlari və vakansiyalar platforması</h1>
+              <p>
+                Jooble.az-da minlərlə iş elanları, müxtəlif sahələr üzrə is elanları və ən son vakansiyalar sizi gözləyir. 
+                Axtardığınız vakansiya üçün şəhər, sahə və əmək haqqına görə filtrlərdən istifadə edin və karyeranıza bu gün başlayın.
+              </p>
+            </div>
+          )}
+          {/* SEO Content for Vacancies page */}
+          {location.pathname === '/vacancies' && !jobSlug && (
             <div className="sr-only">
               <h2>Vakansiyalar və İş Elanları Azərbaycan</h2>
               <p>
