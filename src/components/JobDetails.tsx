@@ -857,16 +857,16 @@ const JobDetails = ({ jobId, isMobile = false, primaryHeading = true }: JobDetai
               <div className="flex items-center gap-3">
                 {job.companies?.slug ? (
                   <Link to={`/companies/${job.companies.slug}`}>
-                    <h2
+                    <div
                       className={`${isMobile ? "text-base" : "text-lg"} font-semibold text-muted-foreground hover:text-primary transition-all duration-200 truncate`}
                     >
                       {job.companies?.name || "Şirkət"}
-                    </h2>
+                    </div>
                   </Link>
                 ) : (
-                  <h2 className={`${isMobile ? "text-base" : "text-lg"} font-semibold text-muted-foreground truncate`}>
+                  <div className={`${isMobile ? "text-base" : "text-lg"} font-semibold text-muted-foreground truncate`}>
                     {job.companies?.name || "Şirkət"}
-                  </h2>
+                  </div>
                 )}
                 {job.companies?.is_verified && <VerifyBadge size={isMobile ? 16 : 18} />}
               </div>
@@ -877,9 +877,9 @@ const JobDetails = ({ jobId, isMobile = false, primaryHeading = true }: JobDetai
                   {job.title} vakansiyası - {job.companies?.name || "Şirkət"} iş elanları
                 </h1>
               ) : (
-                <h2 className={`${isMobile ? "text-lg" : "text-2xl"} font-bold text-foreground leading-tight`}>
+                <div className={`${isMobile ? "text-lg" : "text-2xl"} font-bold text-foreground leading-tight`}>
                   {job.title} vakansiyası - {job.companies?.name || "Şirkət"} iş elanları
-                </h2>
+                </div>
               )}
 
               {/* Job Meta Information */}
@@ -1011,9 +1011,9 @@ const JobDetails = ({ jobId, isMobile = false, primaryHeading = true }: JobDetai
           {/* Contact Information */}
           {(job.companies?.email || job.companies?.phone || job.companies?.website) && (
             <div className="space-y-3">
-              <h2 className={`${isMobile ? "text-lg" : "text-xl"} font-bold text-foreground`}>
+              <h3 className={`${isMobile ? "text-lg" : "text-xl"} font-bold text-foreground`}>
                 {job.companies?.name || "Şirkət"} - Əlaqə Məlumatları
-              </h2>
+              </h3>
               <div className={`grid ${isMobile ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2"} gap-3`}>
                 {job.companies?.email && (
                   <div className={`flex items-center gap-2 ${isMobile ? "p-2" : "p-3"} rounded-lg bg-muted/30`}>
