@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 import { analyzer } from "vite-bundle-analyzer";
+import { VitePWA } from "vite-plugin-pwa";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => ({
@@ -19,6 +20,51 @@ export default defineConfig(({ command, mode }) => ({
       analyzerMode: 'server',
       openAnalyzer: false
     }),
+    VitePWA({
+      registerType: 'autoUpdate',
+      includeAssets: ['icons/*.jpg', 'favicon.ico'],
+      manifest: {
+        name: 'Jooble',
+        short_name: 'Jooble',
+        description: 'İş elanları və vakansiyalar - Jooble.az',
+        theme_color: '#1a1a1a',
+        background_color: '#ffffff',
+        display: 'standalone',
+        scope: '/',
+        start_url: '/',
+        orientation: 'portrait-primary',
+        icons: [
+          {
+            src: '/icons/icon-192x192.jpg',
+            sizes: '192x192',
+            type: 'image/jpeg',
+            purpose: 'any maskable'
+          },
+          {
+            src: '/icons/icon-512x512.jpg',
+            sizes: '512x512',
+            type: 'image/jpeg',
+            purpose: 'any maskable'
+          }
+        ]
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,jpg,png,svg,woff2}'],
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/igrtzfvphltnoiwedbtz\.supabase\.co\/.*/i,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'supabase-cache',
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 60 * 60 * 24 // 24 saat
+              }
+            }
+          }
+        ]
+      }
+    })
   ].filter(Boolean),
   resolve: {
     alias: {
