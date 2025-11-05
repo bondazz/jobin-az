@@ -21,6 +21,9 @@ export default defineConfig(({ command, mode }) => ({
       openAnalyzer: false
     }),
     VitePWA({
+      // We already have a custom service worker at /sw.js; avoid conflicts
+      injectRegister: false,
+      filename: 'pwa-sw.js',
       registerType: 'autoUpdate',
       includeAssets: ['icons/*.jpg', 'favicon.ico'],
       manifest: {
@@ -45,22 +48,6 @@ export default defineConfig(({ command, mode }) => ({
             sizes: '512x512',
             type: 'image/jpeg',
             purpose: 'any maskable'
-          }
-        ]
-      },
-      workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,jpg,png,svg,woff2}'],
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/igrtzfvphltnoiwedbtz\.supabase\.co\/.*/i,
-            handler: 'NetworkFirst',
-            options: {
-              cacheName: 'supabase-cache',
-              expiration: {
-                maxEntries: 50,
-                maxAgeSeconds: 60 * 60 * 24 // 24 saat
-              }
-            }
           }
         ]
       }
