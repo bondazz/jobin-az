@@ -6,20 +6,15 @@ import PushNotificationSubscribe from '@/components/PushNotificationSubscribe';
 import MobileHeader from '@/components/MobileHeader';
 import BottomNavigation from '@/components/BottomNavigation';
 import { useIsMobileOrTablet } from '@/hooks/use-mobile';
-
 const Subscribe = () => {
   const isMobileOrTablet = useIsMobileOrTablet();
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-background overflow-y-auto">
+  return <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-background overflow-y-auto">
       {isMobileOrTablet && <MobileHeader />}
       
       <div className={`container mx-auto px-4 max-w-4xl ${isMobileOrTablet ? 'pt-20 pb-24' : 'py-8'}`}>
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-foreground mb-3 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-            Abunə ol
-          </h1>
+          <h1 className="text-4xl font-bold text-foreground mb-3 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Kateqoriyalara Abunə ol</h1>
           <p className="text-muted-foreground text-lg">
             Tətbiqi yükləyin və yeni vakansiyalardan xəbərdar olun
           </p>
@@ -123,14 +118,7 @@ const Subscribe = () => {
         </div>
       </div>
       
-      {isMobileOrTablet && (
-        <BottomNavigation 
-          selectedCategory="" 
-          onCategorySelect={() => {}} 
-        />
-      )}
-    </div>
-  );
+      {isMobileOrTablet && <BottomNavigation selectedCategory="" onCategorySelect={() => {}} />}
+    </div>;
 };
-
 export default Subscribe;
