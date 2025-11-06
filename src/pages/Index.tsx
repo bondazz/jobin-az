@@ -10,6 +10,7 @@ import AdBanner from '@/components/AdBanner';
 import { generatePageSEO, updatePageMeta } from '@/utils/seo';
 import { useDynamicSEO } from '@/hooks/useSEO';
 import { useReferralCode } from '@/hooks/useReferralCode';
+import PushNotificationBanner from '@/components/PushNotificationBanner';
 
 // Lazy load JobDetails for better performance
 const JobDetails = lazy(() => import('@/components/JobDetails'));
@@ -397,6 +398,9 @@ const Index = () => {
 
       {/* Footer Advertisement */}
       <AdBanner position="footer" className="hidden lg:block absolute bottom-0 left-72 right-0 p-3 bg-background/90 backdrop-blur-sm border-t border-border" />
+
+      {/* Push Notification Banner */}
+      <PushNotificationBanner />
 
       {/* Bottom Navigation - Mobile Only */}
       <BottomNavigation 
