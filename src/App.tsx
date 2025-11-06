@@ -45,6 +45,7 @@ const AdminReferrals = lazy(() => import("./pages/admin/Referrals"));
 const AdminWithdrawals = lazy(() => import("./pages/admin/Withdrawals"));
 const AdminReferralJobSubmissions = lazy(() => import("./pages/admin/ReferralJobSubmissions"));
 const AdminGoogleIndexing = lazy(() => import("./pages/admin/GoogleIndexing"));
+const AdminNotifications = lazy(() => import("./pages/admin/Notifications"));
 
 const queryClient = new QueryClient();
 
@@ -214,6 +215,11 @@ const App = () => (
           <Route path="/admin/google-indexing" element={
             <Suspense fallback={<LoadingFallback />}>
               <AdminGoogleIndexing />
+            </Suspense>
+          } />
+          <Route path="/admin/notifications" element={
+            <Suspense fallback={<LoadingFallback />}>
+              <AdminNotifications />
             </Suspense>
           } />
           <Route path="*" element={

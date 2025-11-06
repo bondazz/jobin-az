@@ -299,6 +299,36 @@ export type Database = {
           },
         ]
       }
+      notification_logs: {
+        Row: {
+          body: string
+          created_at: string
+          failed_count: number
+          id: string
+          sent_by: string | null
+          sent_count: number
+          title: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          failed_count?: number
+          id?: string
+          sent_by?: string | null
+          sent_count?: number
+          title: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          failed_count?: number
+          id?: string
+          sent_by?: string | null
+          sent_count?: number
+          title?: string
+        }
+        Relationships: []
+      }
       pricing_features: {
         Row: {
           basic_plan: boolean
@@ -422,6 +452,39 @@ export type Database = {
           role?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      push_subscriptions: {
+        Row: {
+          auth: string
+          created_at: string
+          endpoint: string
+          id: string
+          p256dh: string
+          updated_at: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          auth: string
+          created_at?: string
+          endpoint: string
+          id?: string
+          p256dh: string
+          updated_at?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          auth?: string
+          created_at?: string
+          endpoint?: string
+          id?: string
+          p256dh?: string
+          updated_at?: string
+          user_agent?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -853,7 +916,7 @@ export type Database = {
     }
     Functions: {
       get_all_companies: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           about_seo_description: string
           about_seo_title: string
@@ -885,22 +948,10 @@ export type Database = {
           phone: string
         }[]
       }
-      get_job_application_email: {
-        Args: { job_uuid: string }
-        Returns: string
-      }
-      get_user_role: {
-        Args: { user_uuid: string }
-        Returns: string
-      }
-      increment_ad_clicks: {
-        Args: { ad_id: string }
-        Returns: undefined
-      }
-      increment_job_views: {
-        Args: { job_id: string }
-        Returns: undefined
-      }
+      get_job_application_email: { Args: { job_uuid: string }; Returns: string }
+      get_user_role: { Args: { user_uuid: string }; Returns: string }
+      increment_ad_clicks: { Args: { ad_id: string }; Returns: undefined }
+      increment_job_views: { Args: { job_id: string }; Returns: undefined }
       is_job_expired: {
         Args: { job_expiration_date: string }
         Returns: boolean

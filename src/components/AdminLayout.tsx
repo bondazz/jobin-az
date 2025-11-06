@@ -14,7 +14,8 @@ import {
   X,
   DollarSign,
   Megaphone,
-  Globe
+  Globe,
+  Bell
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -62,6 +63,11 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
       name: 'Reklamlar',
       path: '/admin/advertisements',
       icon: Megaphone,
+    },
+    {
+      name: 'Push Bildirişlər',
+      path: '/admin/notifications',
+      icon: Bell,
     },
     {
       name: 'Google İndeksləmə',
