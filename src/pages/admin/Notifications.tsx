@@ -227,8 +227,7 @@ const Notifications = () => {
               <div className="space-y-2 max-h-48 overflow-y-auto">
                 {categories?.map((category) => (
                   <div key={category.id} className="flex items-center justify-between p-2 rounded-lg bg-muted/50">
-                    <span className="flex items-center gap-2">
-                      {category.icon && <span>{category.icon}</span>}
+                    <span>
                       {category.name}
                     </span>
                     <span className="font-semibold">
@@ -267,10 +266,7 @@ const Notifications = () => {
                       </SelectItem>
                       {categories?.map((category) => (
                         <SelectItem key={category.id} value={category.id}>
-                          <span className="flex items-center gap-2">
-                            {category.icon && <span>{category.icon}</span>}
-                            {category.name} ({categoryStats?.[category.id] || 0})
-                          </span>
+                          {category.name} ({categoryStats?.[category.id] || 0})
                         </SelectItem>
                       ))}
                     </SelectContent>
