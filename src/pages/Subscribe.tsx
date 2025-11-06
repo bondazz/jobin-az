@@ -15,9 +15,7 @@ const Subscribe = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-foreground mb-3 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Kateqoriyalara Abunə ol</h1>
-          <p className="text-muted-foreground text-lg">
-            Tətbiqi yükləyin və yeni vakansiyalardan xəbərdar olun
-          </p>
+          <p className="text-muted-foreground text-lg">Kateqoriyalara abunə olaraq yeni vakansiyalardan anında xəbərdar olun</p>
         </div>
 
         <div className="space-y-6">
