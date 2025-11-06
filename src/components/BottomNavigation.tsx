@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Briefcase, Tag, Building, Bookmark, Bell, Menu, Home, TrendingUp, Info, DollarSign, FileText, Share2 } from 'lucide-react';
+import { Briefcase, Tag, Building, Bookmark, Bell, Menu, Home, TrendingUp, Info, DollarSign, FileText, Share2, Rss } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Link, useLocation } from 'react-router-dom';
@@ -89,6 +89,11 @@ const BottomNavigation = ({
     path: '/favorites',
     count: savedJobsCount
   }, {
+    icon: Rss,
+    label: 'Abunə ol',
+    path: '/subscribe',
+    count: null
+  }, {
     icon: Share2,
     label: 'Referral',
     path: '/referral',
@@ -174,7 +179,7 @@ const BottomNavigation = ({
                     Əsas Bölümlər
                   </h4>
                   <div className="space-y-1">
-                    {allMenuItems.filter(item => ['/services', '/about', '/referral', '/add_job'].includes(item.path) || item.path === '/').map((item, index) => (
+                    {allMenuItems.filter(item => ['/services', '/about', '/referral', '/add_job', '/subscribe'].includes(item.path) || item.path === '/').map((item, index) => (
                       <Link 
                         key={item.path} 
                         to={getUrlWithReferral(item.path)} 

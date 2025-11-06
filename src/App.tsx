@@ -21,6 +21,7 @@ const Pricing = lazy(() => import("./pages/Pricing"));
 const CVBuilder = lazy(() => import("./pages/CVBuilder"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const SavedJobs = lazy(() => import("./pages/SavedJobs"));
+const Subscribe = lazy(() => import("./pages/Subscribe"));
 const Referral = lazy(() => import("./pages/Referral"));
 const ReferralJobSubmission = lazy(() => import("./pages/ReferralJobSubmission"));
 
@@ -95,6 +96,11 @@ const App = () => (
             <Route path="/favorites/:jobId" element={
               <Suspense fallback={<LoadingFallback />}>
                 <SavedJobs />
+              </Suspense>
+            } />
+            <Route path="/subscribe" element={
+              <Suspense fallback={<LoadingFallback />}>
+                <Subscribe />
               </Suspense>
             } />
             <Route path="/aktiv-vakansiya" element={<Index />} />
