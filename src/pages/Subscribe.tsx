@@ -90,17 +90,7 @@ const Subscribe = () => {
                     </p>
                   </div>
                 </li>
-                <li className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center mt-0.5 flex-shrink-0">
-                    <span className="text-primary text-sm">✓</span>
-                  </div>
-                  <div>
-                    <p className="font-medium text-foreground">Offline işləmə</p>
-                    <p className="text-sm text-muted-foreground">
-                      İnternetə qoşulu olmasanız belə tətbiqdən istifadə edin
-                    </p>
-                  </div>
-                </li>
+                
                 <li className="flex items-start gap-3">
                   <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center mt-0.5 flex-shrink-0">
                     <span className="text-primary text-sm">✓</span>
