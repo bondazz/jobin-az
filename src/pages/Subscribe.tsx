@@ -206,7 +206,7 @@ const Subscribe = () => {
                   <Bell className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <CardTitle className="text-2xl">Push Bildirişlər</CardTitle>
+                  <CardTitle className="text-2xl">Vakansiyaları ilk</CardTitle>
                   <CardDescription>
                     Yeni vakansiyalardan dərhal xəbərdar olun
                   </CardDescription>
