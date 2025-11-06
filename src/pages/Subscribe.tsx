@@ -225,17 +225,7 @@ const Subscribe = () => {
             </CardHeader>
             <CardContent>
               <ul className="space-y-3">
-                <li className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center mt-0.5 flex-shrink-0">
-                    <span className="text-primary text-sm">✓</span>
-                  </div>
-                  <div>
-                    <p className="font-medium text-foreground">Sürətli giriş</p>
-                    <p className="text-sm text-muted-foreground">
-                      Tətbiqi yükləyərək vakansiyalara daha sürətli daxil olun
-                    </p>
-                  </div>
-                </li>
+                
                 <li className="flex items-start gap-3">
                   <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center mt-0.5 flex-shrink-0">
                     <span className="text-primary text-sm">✓</span>
