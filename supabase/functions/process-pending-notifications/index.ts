@@ -37,29 +37,64 @@ serve(async (req) => {
     let processedCount = 0;
     let failedCount = 0;
 
+    // Load VAPID keys
+    const VAPID_PUBLIC_KEY = Deno.env.get('VAPID_PUBLIC_KEY');
+    const VAPID_PRIVATE_KEY = Deno.env.get('VAPID_PRIVATE_KEY');
+    const VAPID_EMAIL = 'mailto:support@jooble.az';
+
+    if (!VAPID_PUBLIC_KEY || !VAPID_PRIVATE_KEY) {
+      throw new Error('VAPID keys not configured');
+    }
+
+    // Import web-push and configure VAPID
+    const webpush = await import('npm:web-push@3.6.7');
+    webpush.setVapidDetails(
+      VAPID_EMAIL,
+      VAPID_PUBLIC_KEY,
+      VAPID_PRIVATE_KEY
+    );
+
     for (const notification of pending) {
       try {
-        // Get subscriptions for this category
+        // Get subscriptions for this category only
         const { data: subscriptions } = await supabaseClient
           .from('push_subscriptions')
           .select('*')
           .contains('subscribed_categories', [notification.category_id]);
 
         if (subscriptions && subscriptions.length > 0) {
-          // Send notifications (you can call the send-push-notification function here)
-          const { error: sendError } = await supabaseClient.functions.invoke('send-push-notification', {
-            body: {
-              title: notification.payload.title,
-              body: notification.payload.body,
-              categoryId: notification.category_id
-            }
-          });
+          for (const subscription of subscriptions) {
+            try {
+              const pushSubscription = {
+                endpoint: subscription.endpoint,
+                keys: {
+                  p256dh: subscription.p256dh,
+                  auth: subscription.auth
+                }
+              };
 
-          if (sendError) {
-            console.error('Error sending notification:', sendError);
-            failedCount++;
-          } else {
-            processedCount++;
+              const payload = JSON.stringify({
+                title: notification.payload.title,
+                body: notification.payload.body,
+                icon: '/icons/icon-192x192.jpg',
+                badge: '/icons/icon-192x192.jpg',
+                url: '/'
+              });
+
+              await webpush.sendNotification(pushSubscription, payload);
+              processedCount++;
+            } catch (err: any) {
+              failedCount++;
+              console.error('Error sending to subscription', subscription.id, err);
+              // Remove invalid subscription
+              if (err?.statusCode === 410) {
+                await supabaseClient
+                  .from('push_subscriptions')
+                  .delete()
+                  .eq('id', subscription.id);
+                console.log(`Removed invalid subscription: ${subscription.id}`);
+              }
+            }
           }
         }
 

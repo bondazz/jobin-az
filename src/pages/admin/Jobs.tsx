@@ -318,6 +318,9 @@ export default function AdminJobs() {
 
         if (error) throw error;
 
+        // Process any queued notifications immediately
+        await supabase.functions.invoke('process-pending-notifications');
+
         toast({
           title: "Uğurlu",
           description: "Vakansiya uğurla əlavə edildi.",

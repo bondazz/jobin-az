@@ -46,7 +46,7 @@ serve(async (req) => {
     }
 
     // Parse request body
-    const { title, body, url = '/' }: NotificationPayload = await req.json();
+    const { title, body, url = '/', categoryId }: NotificationPayload = await req.json();
 
     if (!title || !body) {
       throw new Error('Title and body are required');
@@ -55,10 +55,23 @@ serve(async (req) => {
     console.log('Sending push notification:', { title, body, url });
 
     // Get all push subscriptions
-    const { data: subscriptions, error: subError } = await supabaseClient
-      .from('push_subscriptions')
-      .select('*');
+let subscriptions: any[] | null = null;
+let subError: any = null as any;
 
+if (categoryId) {
+  const { data, error } = await supabaseClient
+    .from('push_subscriptions')
+    .select('*')
+    .contains('subscribed_categories', [categoryId]);
+  subscriptions = data;
+  subError = error;
+} else {
+  const { data, error } = await supabaseClient
+    .from('push_subscriptions')
+    .select('*');
+  subscriptions = data;
+  subError = error;
+}
     if (subError) {
       throw subError;
     }
