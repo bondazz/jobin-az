@@ -22,24 +22,7 @@ const Subscribe = () => {
 
         <div className="space-y-6">
           {/* PWA Installation Card */}
-          <Card className="border-2 border-primary/20 shadow-lg">
-            <CardHeader>
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-primary rounded-lg flex items-center justify-center">
-                  <Smartphone className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <CardTitle className="text-2xl">Tətbiqi Yüklə</CardTitle>
-                  <CardDescription>
-                    Mobil tətbiqi quraşdırın və istənilən vaxt vakansiyalara baxın
-                  </CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <PWAInstallPrompt />
-            </CardContent>
-          </Card>
+          
 
           {/* Push Notifications Card */}
           <Card className="border-2 border-accent/20 shadow-lg">
@@ -90,17 +73,7 @@ const Subscribe = () => {
                     </p>
                   </div>
                 </li>
-                <li className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center mt-0.5 flex-shrink-0">
-                    <span className="text-primary text-sm">✓</span>
-                  </div>
-                  <div>
-                    <p className="font-medium text-foreground">Offline işləmə</p>
-                    <p className="text-sm text-muted-foreground">
-                      İnternetə qoşulu olmasanız belə tətbiqdən istifadə edin
-                    </p>
-                  </div>
-                </li>
+                
                 <li className="flex items-start gap-3">
                   <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center mt-0.5 flex-shrink-0">
                     <span className="text-primary text-sm">✓</span>
