@@ -3,10 +3,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Bell, Smartphone } from 'lucide-react';
 import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 import PushNotificationSubscribe from '@/components/PushNotificationSubscribe';
+import Layout from '@/components/Layout';
 
 const Subscribe = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-background">
+    <Layout>
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Header */}
         <div className="text-center mb-8">
@@ -115,7 +116,7 @@ const Subscribe = () => {
           </Card>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 

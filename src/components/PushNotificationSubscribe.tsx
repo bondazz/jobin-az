@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Bell, BellOff, Loader2 } from "lucide-react";
@@ -239,76 +238,65 @@ const PushNotificationSubscribe = () => {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Bell className="h-5 w-5" />
-          Push Bildirişlər
-        </CardTitle>
-        <CardDescription>
-          Yeni iş elanları haqqında dərhal bildiriş alın
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {!isSubscribed ? (
-          <Button
-            onClick={subscribe}
-            disabled={loading}
-            className="w-full"
-          >
-            {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Bell className="mr-2 h-4 w-4" />}
-            Bildirişləri aktiv et
-          </Button>
-        ) : (
-          <>
-            <div className="space-y-3">
-              <Label className="text-base font-semibold">Kateqoriyalar seçin:</Label>
-              {categoriesLoading ? (
-                <div className="flex items-center justify-center py-4">
-                  <Loader2 className="h-6 w-6 animate-spin" />
-                </div>
-              ) : (
-                <div className="space-y-2 max-h-64 overflow-y-auto">
-                  {categories?.map((category) => (
-                    <div key={category.id} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={category.id}
-                        checked={selectedCategories.includes(category.id)}
-                        onCheckedChange={() => toggleCategory(category.id)}
-                      />
-                      <Label
-                        htmlFor={category.id}
-                        className="text-sm font-normal cursor-pointer flex-1"
-                      >
-                        {category.name}
-                      </Label>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+    <div className="space-y-4">
+      {!isSubscribed ? (
+        <Button
+          onClick={subscribe}
+          disabled={loading}
+          className="w-full"
+        >
+          {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Bell className="mr-2 h-4 w-4" />}
+          Bildirişləri aktiv et
+        </Button>
+      ) : (
+        <>
+          <div className="space-y-3">
+            <Label className="text-base font-semibold">Kateqoriyalar seçin:</Label>
+            {categoriesLoading ? (
+              <div className="flex items-center justify-center py-4">
+                <Loader2 className="h-6 w-6 animate-spin" />
+              </div>
+            ) : (
+              <div className="space-y-2 max-h-64 overflow-y-auto">
+                {categories?.map((category) => (
+                  <div key={category.id} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={category.id}
+                      checked={selectedCategories.includes(category.id)}
+                      onCheckedChange={() => toggleCategory(category.id)}
+                    />
+                    <Label
+                      htmlFor={category.id}
+                      className="text-sm font-normal cursor-pointer flex-1"
+                    >
+                      {category.name}
+                    </Label>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
 
-            <div className="flex gap-2">
-              <Button
-                onClick={updateCategories}
-                disabled={loading || !selectedCategories.length}
-                className="flex-1"
-              >
-                {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                Yadda saxla
-              </Button>
-              <Button
-                onClick={unsubscribe}
-                disabled={loading}
-                variant="outline"
-              >
-                <BellOff className="h-4 w-4" />
-              </Button>
-            </div>
-          </>
-        )}
-      </CardContent>
-    </Card>
+          <div className="flex gap-2">
+            <Button
+              onClick={updateCategories}
+              disabled={loading || !selectedCategories.length}
+              className="flex-1"
+            >
+              {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+              Yadda saxla
+            </Button>
+            <Button
+              onClick={unsubscribe}
+              disabled={loading}
+              variant="outline"
+            >
+              <BellOff className="h-4 w-4" />
+            </Button>
+          </div>
+        </>
+      )}
+    </div>
   );
 };
 
