@@ -280,7 +280,6 @@ const PushNotificationSubscribe = () => {
                         htmlFor={category.id}
                         className="text-sm font-normal cursor-pointer flex-1"
                       >
-                        {category.icon && <span className="mr-2">{category.icon}</span>}
                         {category.name}
                       </Label>
                     </div>
