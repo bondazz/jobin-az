@@ -15,6 +15,7 @@ import BottomNavigation from "@/components/BottomNavigation";
 import MobileHeader from "@/components/MobileHeader";
 import { useReferralCode } from "@/hooks/useReferralCode";
 import ReferralProfile from "@/components/ReferralProfile";
+import PushNotificationSubscribe from "@/components/PushNotificationSubscribe";
 
 interface ReferralRequestForm {
   company_name: string;
@@ -1080,6 +1081,9 @@ const Referral = () => {
 
                 </CardContent>
               </Card>
+
+              {/* Push Notification Subscribe */}
+              <PushNotificationSubscribe />
             </div>
           </div>
           </>
