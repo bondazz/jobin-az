@@ -212,10 +212,7 @@ const PushNotificationSubscribe = () => {
     return null;
   }
   return <Card>
-      <CardHeader>
-        
-        
-      </CardHeader>
+      
       <CardContent className="space-y-4">
         {!isSubscribed ? <Button onClick={subscribe} disabled={loading} className="w-full">
             {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Bell className="mr-2 h-4 w-4" />}
