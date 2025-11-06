@@ -11,7 +11,7 @@ const Subscribe = () => {
   const isMobileOrTablet = useIsMobileOrTablet();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-background">
+    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-background overflow-y-auto">
       {isMobileOrTablet && <MobileHeader />}
       
       <div className={`container mx-auto px-4 max-w-4xl ${isMobileOrTablet ? 'pt-20 pb-24' : 'py-8'}`}>
