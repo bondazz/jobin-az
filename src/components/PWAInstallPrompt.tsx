@@ -13,6 +13,8 @@ const PWAInstallPrompt = () => {
   const [installed, setInstalled] = useState(false);
 
   const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isAndroid = /android/i.test(navigator.userAgent);
+  const isDesktop = !isIOS && !isAndroid;
   const isStandalone = useMemo(() => (
     window.matchMedia('(display-mode: standalone)').matches || (navigator as any).standalone === true
   ), []);
@@ -69,7 +71,7 @@ const PWAInstallPrompt = () => {
 
   if (!showPrompt || installed) return null;
 
-  const canInstall = !!deferredPrompt && !isIOS && !inIframe; // Chromium install dialog only
+  const canInstall = !!deferredPrompt && !inIframe; // Chromium install dialog (works on Android & Desktop Chrome/Edge)
 
   return (
     <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -110,20 +112,30 @@ const PWAInstallPrompt = () => {
               {/* Fallback təlimatlar */}
               {isIOS ? (
                 <div className="text-left text-sm text-muted-foreground space-y-2">
-                  <p>iPhone/iPad üçün:</p>
+                  <p className="font-semibold text-foreground">iPhone/iPad üçün:</p>
                   <ol className="list-decimal list-inside space-y-1">
-                    <li>Safari-də Share düyməsini basın.</li>
-                    <li>Add to Home Screen seçin.</li>
-                    <li>Ad: Jooble — sonra Add.</li>
+                    <li>Safari-də Share düyməsini basın <span className="text-lg">⬆️</span></li>
+                    <li>"Add to Home Screen" seçin</li>
+                    <li>Ad: Jooble — sonra "Add" basın</li>
                   </ol>
+                </div>
+              ) : isDesktop ? (
+                <div className="text-left text-sm text-muted-foreground space-y-2">
+                  <p className="font-semibold text-foreground">Desktop PC üçün:</p>
+                  <ol className="list-decimal list-inside space-y-1">
+                    <li><strong>Chrome/Edge:</strong> Ünvan panelindəki ➕ "Install" ikonuna klikləyin</li>
+                    <li>Və ya brauzer menyusundan (⋮) "Install Jooble..." seçin</li>
+                    <li>"Install" düyməsini basın</li>
+                  </ol>
+                  <p className="text-xs mt-2 italic">Not: Firefox hal-hazırda PWA quraşdırılmasını dəstəkləmir.</p>
                 </div>
               ) : (
                 <div className="text-left text-sm text-muted-foreground space-y-2">
-                  <p>Android və Desktop Chrome üçün:</p>
+                  <p className="font-semibold text-foreground">Android üçün:</p>
                   <ol className="list-decimal list-inside space-y-1">
-                    <li>Ünvandakı Install ikonuna və ya brauzer menyusuna klikləyin.</li>
-                    <li>Add to Home Screen / Install app seçin.</li>
-                    <li>Ad: Jooble — təsdiqləyin.</li>
+                    <li>Brauzer menyusunu (⋮) açın</li>
+                    <li>"Add to Home screen" və ya "Install app" seçin</li>
+                    <li>Ad: Jooble — təsdiqləyin</li>
                   </ol>
                 </div>
               )}
