@@ -72,14 +72,16 @@ serve(async (req) => {
       );
     }
 
-    // VAPID details (you need to generate these)
-    const VAPID_PUBLIC_KEY = 'BEl62iUYgUivxIkv69yViEuiBIa-Ib9-SkvMeAtA3LFgDzkrxZJjSgSnfckjBJuBkr3qBUYIHBQFLXYp5Nksh8U';
+    // VAPID details from environment variables
+    const VAPID_PUBLIC_KEY = Deno.env.get('VAPID_PUBLIC_KEY');
     const VAPID_PRIVATE_KEY = Deno.env.get('VAPID_PRIVATE_KEY');
     const VAPID_EMAIL = 'mailto:support@jooble.az';
 
-    if (!VAPID_PRIVATE_KEY) {
-      throw new Error('VAPID_PRIVATE_KEY not configured');
+    if (!VAPID_PRIVATE_KEY || !VAPID_PUBLIC_KEY) {
+      throw new Error('VAPID keys not configured');
     }
+
+    console.log('VAPID keys loaded successfully');
 
     // Prepare notification payload
     const notificationPayload = JSON.stringify({

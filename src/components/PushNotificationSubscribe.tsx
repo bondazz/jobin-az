@@ -63,8 +63,14 @@ const PushNotificationSubscribe = () => {
       // Get service worker registration
       const registration = await navigator.serviceWorker.ready;
 
-      // VAPID public key (you need to generate this)
-      const vapidPublicKey = 'BEl62iUYgUivxIkv69yViEuiBIa-Ib9-SkvMeAtA3LFgDzkrxZJjSgSnfckjBJuBkr3qBUYIHBQFLXYp5Nksh8U';
+      // Get VAPID public key from backend
+      const { data: keyData, error: keyError } = await supabase.functions.invoke('get-vapid-public-key');
+      
+      if (keyError || !keyData?.publicKey) {
+        throw new Error('VAPID public key alınmadı');
+      }
+
+      const vapidPublicKey = keyData.publicKey;
       
       // Subscribe to push notifications
       const subscription = await registration.pushManager.subscribe({

@@ -32,3 +32,6 @@ verify_jwt = false
 
 [functions.expire-premium-tags]
 verify_jwt = false
+
+[functions.get-vapid-public-key]
+verify_jwt = false
