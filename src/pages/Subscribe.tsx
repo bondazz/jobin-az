@@ -3,11 +3,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Bell, Smartphone } from 'lucide-react';
 import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 import PushNotificationSubscribe from '@/components/PushNotificationSubscribe';
+import MobileHeader from '@/components/MobileHeader';
+import BottomNavigation from '@/components/BottomNavigation';
+import { useIsMobileOrTablet } from '@/hooks/use-mobile';
 
 const Subscribe = () => {
+  const isMobileOrTablet = useIsMobileOrTablet();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-background">
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+      {isMobileOrTablet && <MobileHeader />}
+      
+      <div className={`container mx-auto px-4 max-w-4xl ${isMobileOrTablet ? 'pt-20 pb-24' : 'py-8'}`}>
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-foreground mb-3 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
@@ -115,6 +122,13 @@ const Subscribe = () => {
           </Card>
         </div>
       </div>
+      
+      {isMobileOrTablet && (
+        <BottomNavigation 
+          selectedCategory="" 
+          onCategorySelect={() => {}} 
+        />
+      )}
     </div>
   );
 };
