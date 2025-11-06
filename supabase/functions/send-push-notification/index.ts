@@ -10,6 +10,7 @@ interface NotificationPayload {
   title: string;
   body: string;
   url?: string;
+  categoryId?: string;
 }
 
 serve(async (req) => {

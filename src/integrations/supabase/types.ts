@@ -329,6 +329,41 @@ export type Database = {
         }
         Relationships: []
       }
+      pending_notifications: {
+        Row: {
+          category_id: string | null
+          created_at: string
+          id: string
+          payload: Json
+          processed: boolean | null
+          processed_at: string | null
+        }
+        Insert: {
+          category_id?: string | null
+          created_at?: string
+          id?: string
+          payload: Json
+          processed?: boolean | null
+          processed_at?: string | null
+        }
+        Update: {
+          category_id?: string | null
+          created_at?: string
+          id?: string
+          payload?: Json
+          processed?: boolean | null
+          processed_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pending_notifications_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pricing_features: {
         Row: {
           basic_plan: boolean
@@ -462,6 +497,7 @@ export type Database = {
           endpoint: string
           id: string
           p256dh: string
+          subscribed_categories: string[] | null
           updated_at: string
           user_agent: string | null
           user_id: string | null
@@ -472,6 +508,7 @@ export type Database = {
           endpoint: string
           id?: string
           p256dh: string
+          subscribed_categories?: string[] | null
           updated_at?: string
           user_agent?: string | null
           user_id?: string | null
@@ -482,6 +519,7 @@ export type Database = {
           endpoint?: string
           id?: string
           p256dh?: string
+          subscribed_categories?: string[] | null
           updated_at?: string
           user_agent?: string | null
           user_id?: string | null
@@ -958,6 +996,14 @@ export type Database = {
       }
       log_referral_click: {
         Args: { code: string; ua: string }
+        Returns: undefined
+      }
+      notify_category_subscribers: {
+        Args: {
+          company_name: string
+          job_category_id: string
+          job_title: string
+        }
         Returns: undefined
       }
       search_companies: {

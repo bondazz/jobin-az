@@ -6,10 +6,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Bell, Send, Loader2 } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { Bell, Send, Loader2, Users, Target, Trash2 } from "lucide-react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const Notifications = () => {
   const navigate = useNavigate();
@@ -17,6 +18,8 @@ const Notifications = () => {
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const queryClient = useQueryClient();
 
   // Check if user is admin
   useQuery({
@@ -71,6 +74,69 @@ const Notifications = () => {
     }
   });
 
+  // Get categories
+  const { data: categories } = useQuery({
+    queryKey: ['categories'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('categories')
+        .select('*')
+        .eq('is_active', true)
+        .order('name');
+      
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  // Get category statistics
+  const { data: categoryStats } = useQuery({
+    queryKey: ['category-stats'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('push_subscriptions')
+        .select('subscribed_categories');
+      
+      if (error) throw error;
+
+      // Count subscribers per category
+      const stats: Record<string, number> = {};
+      data?.forEach((sub) => {
+        sub.subscribed_categories?.forEach((catId: string) => {
+          stats[catId] = (stats[catId] || 0) + 1;
+        });
+      });
+
+      return stats;
+    },
+  });
+
+  // Delete notification log mutation
+  const deleteLogMutation = useMutation({
+    mutationFn: async (logId: string) => {
+      const { error } = await supabase
+        .from('notification_logs')
+        .delete()
+        .eq('id', logId);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notification-logs'] });
+      toast({
+        title: "Uğurlu!",
+        description: "Bildiriş silinidi",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Xəta",
+        description: "Bildiriş silinmədi",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleSendNotification = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -90,7 +156,8 @@ const Notifications = () => {
       const { data, error } = await supabase.functions.invoke('send-push-notification', {
         body: {
           title: title.trim(),
-          body: body.trim()
+          body: body.trim(),
+          categoryId: selectedCategory !== "all" ? selectedCategory : undefined
         }
       });
 
@@ -104,6 +171,7 @@ const Notifications = () => {
       // Clear form
       setTitle("");
       setBody("");
+      setSelectedCategory("all");
     } catch (error: any) {
       console.error('Error sending notification:', error);
       toast({
@@ -126,11 +194,11 @@ const Notifications = () => {
           </p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-3">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Bell className="h-5 w-5" />
+                <Users className="h-5 w-5" />
                 Abunəçilər
               </CardTitle>
               <CardDescription>
@@ -145,6 +213,33 @@ const Notifications = () => {
             </CardContent>
           </Card>
 
+          <Card className="md:col-span-2">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Target className="h-5 w-5" />
+                Kateqoriya Statistikası
+              </CardTitle>
+              <CardDescription>
+                Kateqoriya üzrə abunəçi sayları
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2 max-h-48 overflow-y-auto">
+                {categories?.map((category) => (
+                  <div key={category.id} className="flex items-center justify-between p-2 rounded-lg bg-muted/50">
+                    <span className="flex items-center gap-2">
+                      {category.icon && <span>{category.icon}</span>}
+                      {category.name}
+                    </span>
+                    <span className="font-semibold">
+                      {categoryStats?.[category.id] || 0} abunəçi
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -152,16 +247,41 @@ const Notifications = () => {
                 Yeni Bildiriş Göndər
               </CardTitle>
               <CardDescription>
-                Bütün abunəçilərə bildiriş göndərin
+                Seçilmiş kateqoriyaya və ya hamıya push bildirişi göndərin (emoji dəstəyi var 🎉)
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSendNotification} className="space-y-4">
                 <div className="space-y-2">
+                  <Label htmlFor="category">Kateqoriya</Label>
+                  <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                    <SelectTrigger id="category">
+                      <SelectValue placeholder="Kateqoriya seçin" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">
+                        <span className="flex items-center gap-2">
+                          <Users className="h-4 w-4" />
+                          Hamıya göndər ({subscriberCount || 0})
+                        </span>
+                      </SelectItem>
+                      {categories?.map((category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                          <span className="flex items-center gap-2">
+                            {category.icon && <span>{category.icon}</span>}
+                            {category.name} ({categoryStats?.[category.id] || 0})
+                          </span>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
                   <Label htmlFor="title">Başlıq</Label>
                   <Input
                     id="title"
-                    placeholder="Bildiriş başlığı..."
+                    placeholder="Bildiriş başlığı (emoji istifadə edə bilərsiniz 😊)..."
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     maxLength={100}
@@ -172,7 +292,7 @@ const Notifications = () => {
                   <Label htmlFor="body">Məzmun</Label>
                   <Textarea
                     id="body"
-                    placeholder="Bildiriş məzmunu..."
+                    placeholder="Bildiriş məzmunu (emoji dəstəyi var ✨)..."
                     value={body}
                     onChange={(e) => setBody(e.target.value)}
                     rows={4}
@@ -221,22 +341,32 @@ const Notifications = () => {
                     key={log.id}
                     className="flex items-start justify-between border-b pb-4 last:border-0 last:pb-0"
                   >
-                    <div className="space-y-1">
+                    <div className="space-y-1 flex-1">
                       <h4 className="font-semibold">{log.title}</h4>
                       <p className="text-sm text-muted-foreground">{log.body}</p>
                       <p className="text-xs text-muted-foreground">
                         {new Date(log.created_at).toLocaleString('az-AZ')}
                       </p>
                     </div>
-                    <div className="text-right text-sm">
-                      <div className="text-green-600 font-semibold">
-                        ✓ {log.sent_count}
-                      </div>
-                      {log.failed_count > 0 && (
-                        <div className="text-red-600">
-                          ✗ {log.failed_count}
+                    <div className="flex items-start gap-4">
+                      <div className="text-right text-sm">
+                        <div className="text-green-600 font-semibold">
+                          ✓ {log.sent_count}
                         </div>
-                      )}
+                        {log.failed_count > 0 && (
+                          <div className="text-red-600">
+                            ✗ {log.failed_count}
+                          </div>
+                        )}
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => deleteLogMutation.mutate(log.id)}
+                        disabled={deleteLogMutation.isPending}
+                      >
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
                     </div>
                   </div>
                 ))
