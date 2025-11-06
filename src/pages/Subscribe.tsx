@@ -90,11 +90,11 @@ const Subscribe = () => {
                 <text x="22" y="72" fontSize="12" className="muted">Mesajlar</text>
                 <g transform="translate(160,40)"><rect x="-18" y="0" width="36" height="4" rx="2" fill="#0f2a3a" opacity="0.6" /></g>
 
-            <g id="n1" filter="url(#softShadow)" transform="translate(20,-120)" opacity="0">
-              <animateTransform attributeName="transform" type="translate" begin="0s;21s" dur="0.6s" from="20,-120" to="20,48" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" repeatCount="indefinite" />
-              <animate attributeName="opacity" begin="0s;21s" dur="0.28s" from="0" to="1" fill="freeze" repeatCount="indefinite" />
-              <animateTransform attributeName="transform" type="translate" begin="4.1s;25.1s" dur="0.5s" from="20,48" to="20,-120" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" repeatCount="indefinite" />
-              <animate attributeName="opacity" begin="4.1s;25.1s" dur="0.3s" from="1" to="0" fill="freeze" repeatCount="indefinite" />
+                <g id="n1" filter="url(#softShadow)" transform="translate(20,-120)" opacity="0">
+                  <animateTransform attributeName="transform" type="translate" begin="0s" dur="0.6s" from="20,-120" to="20,48" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" />
+                  <animate attributeName="opacity" begin="0s" dur="0.28s" from="0" to="1" fill="freeze" />
+                  <animateTransform attributeName="transform" type="translate" begin="4.1s" dur="0.5s" from="20,48" to="20,-120" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" />
+                  <animate attributeName="opacity" begin="4.1s" dur="0.3s" from="1" to="0" fill="freeze" />
 
                   <ellipse cx="160" cy="86" rx="140" ry="34" fill="url(#notifGlowOrange)" opacity="0.55" />
                   <rect x="0" y="0" width="320" height="74" rx="14" ry="14" fill="#071a1c" stroke="#072f2a" strokeWidth="1.2" />
@@ -109,11 +109,11 @@ const Subscribe = () => {
                   <text x="86" y="49" fontSize="12" className="muted">Jooble.az sənin üçün elan yerləşdirdi.</text>
                 </g>
 
-            <g id="n2" filter="url(#softShadow)" transform="translate(20,-120)" opacity="0">
-              <animateTransform attributeName="transform" type="translate" begin="4.1s;25.1s" dur="0.6s" from="20,-120" to="20,48" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" repeatCount="indefinite" />
-              <animate attributeName="opacity" begin="4.1s;25.1s" dur="0.28s" from="0" to="1" fill="freeze" repeatCount="indefinite" />
-              <animateTransform attributeName="transform" type="translate" begin="8.2s;29.2s" dur="0.5s" from="20,48" to="20,-120" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" repeatCount="indefinite" />
-              <animate attributeName="opacity" begin="8.2s;29.2s" dur="0.3s" from="1" to="0" fill="freeze" repeatCount="indefinite" />
+                <g id="n2" filter="url(#softShadow)" transform="translate(20,-120)" opacity="0">
+                  <animateTransform attributeName="transform" type="translate" begin="4.1s" dur="0.6s" from="20,-120" to="20,48" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" />
+                  <animate attributeName="opacity" begin="4.1s" dur="0.28s" from="0" to="1" fill="freeze" />
+                  <animateTransform attributeName="transform" type="translate" begin="8.2s" dur="0.5s" from="20,48" to="20,-120" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" />
+                  <animate attributeName="opacity" begin="8.2s" dur="0.3s" from="1" to="0" fill="freeze" />
 
                   <ellipse cx="160" cy="86" rx="140" ry="34" fill="url(#notifGlowOrange)" opacity="0.5" />
                   <rect x="0" y="0" width="320" height="74" rx="14" ry="14" fill="#071a1c" stroke="#072f2a" strokeWidth="1.2" />
@@ -128,11 +128,11 @@ const Subscribe = () => {
                   <text x="86" y="49" fontSize="12" className="muted">Yeni vakansiya: yüksək mükafatlı.</text>
                 </g>
 
-            <g id="n3" filter="url(#softShadow)" transform="translate(20,-120)" opacity="0">
-              <animateTransform attributeName="transform" type="translate" begin="8.2s;29.2s" dur="0.6s" from="20,-120" to="20,48" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" repeatCount="indefinite" />
-              <animate attributeName="opacity" begin="8.2s;29.2s" dur="0.28s" from="0" to="1" fill="freeze" repeatCount="indefinite" />
-              <animateTransform attributeName="transform" type="translate" begin="12.3s;33.3s" dur="0.5s" from="20,48" to="20,-120" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" repeatCount="indefinite" />
-              <animate attributeName="opacity" begin="12.3s;33.3s" dur="0.3s" from="1" to="0" fill="freeze" repeatCount="indefinite" />
+                <g id="n3" filter="url(#softShadow)" transform="translate(20,-120)" opacity="0">
+                  <animateTransform attributeName="transform" type="translate" begin="8.2s" dur="0.6s" from="20,-120" to="20,48" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" />
+                  <animate attributeName="opacity" begin="8.2s" dur="0.28s" from="0" to="1" fill="freeze" />
+                  <animateTransform attributeName="transform" type="translate" begin="12.3s" dur="0.5s" from="20,48" to="20,-120" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" />
+                  <animate attributeName="opacity" begin="12.3s" dur="0.3s" from="1" to="0" fill="freeze" />
 
                   <ellipse cx="160" cy="86" rx="140" ry="34" fill="url(#notifGlowOrange)" opacity="0.5" />
                   <rect x="0" y="0" width="320" height="74" rx="14" ry="14" fill="#071a1c" stroke="#072f2a" strokeWidth="1.2" />
@@ -147,11 +147,11 @@ const Subscribe = () => {
                   <text x="86" y="49" fontSize="12" className="muted">React/TypeScript tələb olunur.</text>
                 </g>
 
-            <g id="n4" filter="url(#softShadow)" transform="translate(20,-120)" opacity="0">
-              <animateTransform attributeName="transform" type="translate" begin="12.3s;33.3s" dur="0.6s" from="20,-120" to="20,48" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" repeatCount="indefinite" />
-              <animate attributeName="opacity" begin="12.3s;33.3s" dur="0.28s" from="0" to="1" fill="freeze" repeatCount="indefinite" />
-              <animateTransform attributeName="transform" type="translate" begin="16.4s;37.4s" dur="0.5s" from="20,48" to="20,-120" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" repeatCount="indefinite" />
-              <animate attributeName="opacity" begin="16.4s;37.4s" dur="0.3s" from="1" to="0" fill="freeze" repeatCount="indefinite" />
+                <g id="n4" filter="url(#softShadow)" transform="translate(20,-120)" opacity="0">
+                  <animateTransform attributeName="transform" type="translate" begin="12.3s" dur="0.6s" from="20,-120" to="20,48" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" />
+                  <animate attributeName="opacity" begin="12.3s" dur="0.28s" from="0" to="1" fill="freeze" />
+                  <animateTransform attributeName="transform" type="translate" begin="16.4s" dur="0.5s" from="20,48" to="20,-120" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" />
+                  <animate attributeName="opacity" begin="16.4s" dur="0.3s" from="1" to="0" fill="freeze" />
 
                   <ellipse cx="160" cy="86" rx="140" ry="34" fill="url(#notifGlowOrange)" opacity="0.5" />
                   <rect x="0" y="0" width="320" height="74" rx="14" ry="14" fill="#071a1c" stroke="#072f2a" strokeWidth="1.2" />
@@ -166,11 +166,11 @@ const Subscribe = () => {
                   <text x="86" y="49" fontSize="12" className="muted">Təcrübəli PM axtarılır - rəhbərlik.</text>
                 </g>
 
-            <g id="n5" filter="url(#softShadow)" transform="translate(20,-120)" opacity="0">
-              <animateTransform attributeName="transform" type="translate" begin="16.4s;37.4s" dur="0.6s" from="20,-120" to="20,48" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" repeatCount="indefinite" />
-              <animate attributeName="opacity" begin="16.4s;37.4s" dur="0.28s" from="0" to="1" fill="freeze" repeatCount="indefinite" />
-              <animateTransform attributeName="transform" type="translate" begin="20.5s;41.5s" dur="0.5s" from="20,48" to="20,-120" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" repeatCount="indefinite" />
-              <animate attributeName="opacity" begin="20.5s;41.5s" dur="0.3s" from="1" to="0" fill="freeze" repeatCount="indefinite" />
+                <g id="n5" filter="url(#softShadow)" transform="translate(20,-120)" opacity="0">
+                  <animateTransform attributeName="transform" type="translate" begin="16.4s" dur="0.6s" from="20,-120" to="20,48" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" />
+                  <animate attributeName="opacity" begin="16.4s" dur="0.28s" from="0" to="1" fill="freeze" />
+                  <animateTransform attributeName="transform" type="translate" begin="20.5s" dur="0.5s" from="20,48" to="20,-120" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1" />
+                  <animate attributeName="opacity" begin="20.5s" dur="0.3s" from="1" to="0" fill="freeze" />
 
                   <ellipse cx="160" cy="86" rx="140" ry="34" fill="url(#notifGlowOrange)" opacity="0.5" />
                   <rect x="0" y="0" width="320" height="74" rx="14" ry="14" fill="#071a1c" stroke="#072f2a" strokeWidth="1.2" />
