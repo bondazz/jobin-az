@@ -1,6 +1,21 @@
-/* Service Worker - Cloudflare Worker Style for sitemap.xml */
+/* Service Worker - Cloudflare Worker Style for sitemap.xml + Prerender Proxy */
 
 const SITEMAP_ENDPOINT = 'https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap';
+const PRERENDER_ENDPOINT = 'https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/prerender-proxy';
+
+// Bot user agents to detect
+const BOT_USER_AGENTS = [
+  'googlebot', 'bingbot', 'slurp', 'duckduckbot', 'baiduspider', 'yandexbot',
+  'facebookexternalhit', 'twitterbot', 'rogerbot', 'linkedinbot', 'embedly',
+  'quora link preview', 'showyoubot', 'outbrain', 'pinterest', 'slackbot',
+  'whatsapp', 'telegrambot', 'vkshare', 'w3c_validator'
+];
+
+function isBot(userAgent) {
+  if (!userAgent) return false;
+  const ua = userAgent.toLowerCase();
+  return BOT_USER_AGENTS.some(bot => ua.includes(bot));
+}
 
 self.addEventListener('install', (event) => {
   // Install immediately without waiting
@@ -24,6 +39,41 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
+  const userAgent = event.request.headers.get('user-agent') || '';
+
+  // Bot detection - proxy to prerender for HTML pages
+  if (isBot(userAgent) && 
+      url.pathname !== '/sw.js' && 
+      url.pathname !== '/pwa-sw.js' &&
+      !url.pathname.includes('/functions/') &&
+      !url.pathname.endsWith('.xml') &&
+      !url.pathname.endsWith('.json') &&
+      !url.pathname.endsWith('.js') &&
+      !url.pathname.endsWith('.css') &&
+      url.origin === location.origin) {
+    
+    console.log('Bot detected, proxying to prerender:', url.href);
+    
+    const prerenderUrl = `${PRERENDER_ENDPOINT}?url=${encodeURIComponent(url.href)}`;
+    
+    event.respondWith(
+      fetch(prerenderUrl, {
+        headers: {
+          'user-agent': userAgent
+        }
+      }).then(resp => {
+        if (resp.ok && resp.headers.get('content-type')?.includes('text/html')) {
+          return resp;
+        }
+        // Fallback to normal fetch
+        return fetch(event.request);
+      }).catch(e => {
+        console.error('Prerender proxy error:', e);
+        return fetch(event.request);
+      })
+    );
+    return;
+  }
 
   // Yalnız /sitemap.xml üçün işləsin (exact match like Cloudflare Worker)
   if (url.pathname === "/sitemap.xml") {

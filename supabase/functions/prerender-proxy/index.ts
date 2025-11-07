@@ -1,0 +1,109 @@
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+
+const BOT_USER_AGENTS = [
+  'googlebot', 'bingbot', 'slurp', 'duckduckbot', 'baiduspider', 'yandexbot',
+  'facebookexternalhit', 'twitterbot', 'rogerbot', 'linkedinbot', 'embedly',
+  'quora link preview', 'showyoubot', 'outbrain', 'pinterest', 'developers.google.com/+/web/snippet',
+  'slackbot', 'vkshare', 'w3c_validator', 'whatsapp', 'telegrambot'
+];
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, user-agent',
+};
+
+function isBot(userAgent: string): boolean {
+  if (!userAgent) return false;
+  const ua = userAgent.toLowerCase();
+  return BOT_USER_AGENTS.some(bot => ua.includes(bot));
+}
+
+serve(async (req) => {
+  // Handle CORS preflight
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  try {
+    const userAgent = req.headers.get('user-agent') || '';
+    const url = new URL(req.url);
+    const targetUrl = url.searchParams.get('url');
+
+    console.log('Request received:', {
+      userAgent,
+      targetUrl,
+      isBot: isBot(userAgent)
+    });
+
+    // If not a bot or no target URL, return a simple response
+    if (!targetUrl) {
+      return new Response(
+        JSON.stringify({ error: 'Missing url parameter' }),
+        { 
+          status: 400, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
+    }
+
+    // If not a bot, return indication to proceed with normal rendering
+    if (!isBot(userAgent)) {
+      return new Response(
+        JSON.stringify({ bot: false, message: 'Not a bot user-agent' }),
+        { 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
+    }
+
+    // Bot detected - proxy to Prerender.io
+    const prerenderToken = Deno.env.get('PRERENDER_TOKEN');
+    if (!prerenderToken) {
+      console.error('PRERENDER_TOKEN not configured');
+      return new Response(
+        JSON.stringify({ error: 'Prerender service not configured' }),
+        { 
+          status: 500, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
+    }
+
+    const prerenderUrl = `https://service.prerender.io/${targetUrl}`;
+    console.log('Proxying to Prerender.io:', prerenderUrl);
+
+    const prerenderResponse = await fetch(prerenderUrl, {
+      headers: {
+        'X-Prerender-Token': prerenderToken,
+        'User-Agent': userAgent,
+      },
+    });
+
+    const prerenderHtml = await prerenderResponse.text();
+    
+    console.log('Prerender response:', {
+      status: prerenderResponse.status,
+      contentLength: prerenderHtml.length
+    });
+
+    // Return the pre-rendered HTML
+    return new Response(prerenderHtml, {
+      status: prerenderResponse.status,
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'text/html; charset=utf-8',
+        'Cache-Control': 'public, max-age=300',
+      },
+    });
+
+  } catch (error) {
+    console.error('Prerender proxy error:', error);
+    return new Response(
+      JSON.stringify({ error: error.message }),
+      { 
+        status: 500, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      }
+    );
+  }
+});
