@@ -84,14 +84,24 @@ serve(async (req) => {
     });
 
     // Return the pre-rendered HTML with proper headers
+    const baseHeaders = {
+      ...corsHeaders,
+      'Content-Type': 'text/html; charset=utf-8',
+      'Cache-Control': 'no-store',
+      'X-Prerendered': 'true',
+    };
+
+    // For HEAD requests, return headers only (no body) to support curl -I and CDN probes
+    if (req.method === 'HEAD') {
+      return new Response(null, {
+        status: prerenderResponse.status,
+        headers: baseHeaders,
+      });
+    }
+
     return new Response(prerenderHtml, {
       status: prerenderResponse.status,
-      headers: {
-        ...corsHeaders,
-        'Content-Type': 'text/html; charset=utf-8',
-        'Cache-Control': 'no-store',
-        'X-Prerendered': 'true',
-      },
+      headers: baseHeaders,
     });
 
   } catch (error) {
