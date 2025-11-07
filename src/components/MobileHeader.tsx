@@ -13,7 +13,7 @@ const MobileHeader = ({ showCloseButton = false, onClose, isJobPage = false }: M
   return (
     <div className="xl:hidden fixed top-0 left-0 right-0 bg-background/95 backdrop-blur-md border-b border-border p-3 z-30">
       <div className="flex items-center justify-between">
-        <div className="flex flex-col gap-1">
+        <div className="flex items-center gap-3">
           <button onClick={() => navigate('/')}>
             <img 
               src="/lovable-uploads/e888818f-70b8-405b-a5e8-f62f8e842525.png" 
