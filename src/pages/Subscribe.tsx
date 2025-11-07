@@ -14,7 +14,7 @@ const Subscribe = () => {
       <div className={`container mx-auto px-4 max-w-4xl ${isMobileOrTablet ? 'pt-20 pb-24' : 'py-8'}`}>
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-foreground mb-3 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Kateqoriyalara Abunə ol</h1>
+          <h1 className="text-4xl font-bold mb-3" style={{ color: '#FF5C0A' }}>Kateqoriyalara Abunə ol</h1>
           <p className="text-muted-foreground text-lg">Kateqoriyalara abunə olaraq yeni vakansiyalardan anında xəbərdar olun</p>
         </div>
 
