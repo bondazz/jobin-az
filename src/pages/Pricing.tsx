@@ -124,7 +124,7 @@ const Pricing = () => {
             <div className="p-3 bg-gradient-primary rounded-xl shadow-elegant">
               <Briefcase className="w-8 h-8 text-primary-foreground" />
             </div>
-            <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">
+            <h1 className="text-4xl sm:text-5xl font-bold" style={{ color: '#FF5C0A' }}>
               Qiymət Planları və Xidmətlər
             </h1>
             <div className="p-3 bg-gradient-primary rounded-xl shadow-elegant">
