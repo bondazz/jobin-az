@@ -4,8 +4,10 @@ const BOT_USER_AGENTS = [
   'googlebot', 'bingbot', 'slurp', 'duckduckbot', 'baiduspider', 'yandexbot',
   'facebookexternalhit', 'twitterbot', 'rogerbot', 'linkedinbot', 'embedly',
   'quora link preview', 'showyoubot', 'outbrain', 'pinterest', 'developers.google.com/+/web/snippet',
-  'slackbot', 'vkshare', 'w3c_validator', 'whatsapp', 'telegrambot'
+  'slackbot', 'vkshare', 'w3c_validator', 'whatsapp', 'telegrambot', 'validator.schema.org'
 ];
+
+const PRERENDER_TOKEN = 'WdZtNbkh09B6xRFySBJ2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -57,24 +59,19 @@ serve(async (req) => {
     }
 
     // Bot detected - proxy to Prerender.io
-    const prerenderToken = Deno.env.get('PRERENDER_TOKEN');
-    if (!prerenderToken) {
-      console.error('PRERENDER_TOKEN not configured');
-      return new Response(
-        JSON.stringify({ error: 'Prerender service not configured' }),
-        { 
-          status: 500, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
-      );
-    }
-
-    const prerenderUrl = `https://service.prerender.io/${targetUrl}`;
+    // Parse the target URL to get scheme, host, and path
+    const targetUrlObj = new URL(targetUrl);
+    const scheme = targetUrlObj.protocol.replace(':', '');
+    const host = targetUrlObj.host;
+    const requestUri = targetUrlObj.pathname + targetUrlObj.search;
+    
+    // Construct prerender URL in exact format: https://service.prerender.io/$scheme://$host$request_uri
+    const prerenderUrl = `https://service.prerender.io/${scheme}://${host}${requestUri}`;
     console.log('Proxying to Prerender.io:', prerenderUrl);
 
     const prerenderResponse = await fetch(prerenderUrl, {
       headers: {
-        'X-Prerender-Token': prerenderToken,
+        'X-Prerender-Token': PRERENDER_TOKEN,
         'User-Agent': userAgent,
       },
     });
@@ -86,13 +83,14 @@ serve(async (req) => {
       contentLength: prerenderHtml.length
     });
 
-    // Return the pre-rendered HTML
+    // Return the pre-rendered HTML with proper headers
     return new Response(prerenderHtml, {
       status: prerenderResponse.status,
       headers: {
         ...corsHeaders,
         'Content-Type': 'text/html; charset=utf-8',
-        'Cache-Control': 'public, max-age=300',
+        'Cache-Control': 'no-store',
+        'X-Prerendered': 'true',
       },
     });
 

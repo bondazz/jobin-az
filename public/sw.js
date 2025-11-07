@@ -8,7 +8,7 @@ const BOT_USER_AGENTS = [
   'googlebot', 'bingbot', 'slurp', 'duckduckbot', 'baiduspider', 'yandexbot',
   'facebookexternalhit', 'twitterbot', 'rogerbot', 'linkedinbot', 'embedly',
   'quora link preview', 'showyoubot', 'outbrain', 'pinterest', 'slackbot',
-  'whatsapp', 'telegrambot', 'vkshare', 'w3c_validator'
+  'whatsapp', 'telegrambot', 'vkshare', 'w3c_validator', 'validator.schema.org'
 ];
 
 function isBot(userAgent) {
