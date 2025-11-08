@@ -6,25 +6,78 @@ interface UseSEOProps {
   description: string;
   keywords?: string;
   url?: string;
+  type?: "website" | "article" | "product" | "profile";
+  image?: string;
+  structuredData?: any;
 }
 
-export const useSEO = ({ title, description, keywords = "", url }: UseSEOProps) => {
+export const useSEO = ({ 
+  title, 
+  description, 
+  keywords = "", 
+  url,
+  type = "website",
+  image,
+  structuredData
+}: UseSEOProps) => {
   useEffect(() => {
     const updateSEO = async () => {
       const settings = await getSiteSettings();
+      const currentUrl = url || window.location.href;
 
       const metadata: SEOMetadata = {
         title: title || settings.site_title || "Jooble Azərbaycan",
         description: description || settings.site_description || "İş elanları və vakansiyalar",
         keywords: keywords || settings.site_keywords || "iş elanları, vakansiya, Azərbaycan",
-        url: url || window.location.pathname,
+        url: currentUrl,
       };
 
       updatePageMeta(metadata);
+
+      // Update Open Graph type
+      const ogType = document.querySelector('meta[property="og:type"]');
+      if (ogType) {
+        ogType.setAttribute('content', type);
+      } else {
+        const meta = document.createElement('meta');
+        meta.setAttribute('property', 'og:type');
+        meta.setAttribute('content', type);
+        document.head.appendChild(meta);
+      }
+
+      // Update OG Image
+      if (image) {
+        const ogImage = document.querySelector('meta[property="og:image"]');
+        if (ogImage) {
+          ogImage.setAttribute('content', image);
+        } else {
+          const meta = document.createElement('meta');
+          meta.setAttribute('property', 'og:image');
+          meta.setAttribute('content', image);
+          document.head.appendChild(meta);
+        }
+      }
+
+      // Update structured data
+      if (structuredData) {
+        const existingScript = document.querySelector('script[type="application/ld+json"]');
+        if (existingScript) {
+          existingScript.textContent = JSON.stringify(structuredData);
+        } else {
+          const script = document.createElement('script');
+          script.type = 'application/ld+json';
+          script.textContent = JSON.stringify(structuredData);
+          document.head.appendChild(script);
+        }
+      }
+
+      // Notify bots via console (some crawlers check console)
+      console.log('SEO Meta Data:', metadata);
+      console.log('Structured Data:', structuredData);
     };
 
     updateSEO();
-  }, [title, description, keywords, url]);
+  }, [title, description, keywords, url, type, image, structuredData]);
 };
 
 export const useDynamicSEO = (type: "job" | "company" | "category", data: any) => {
@@ -32,6 +85,8 @@ export const useDynamicSEO = (type: "job" | "company" | "category", data: any) =
     if (!data) return;
 
     let metadata: SEOMetadata;
+    let structuredData: any;
+    let ogType = "website";
 
     switch (type) {
       case "job":
@@ -40,7 +95,38 @@ export const useDynamicSEO = (type: "job" | "company" | "category", data: any) =
           description: data.seo_description || `${data.company?.name || "Şirkət"}də ${data.title} vakansiyası`,
           keywords:
             data.seo_keywords?.join(", ") || `${data.title}, ${data.company?.name || ""}, vakansiya, iş elanları`,
-          url: `/vacancies/${data.slug}`,
+          url: `https://jooble.az/vacancies/${data.slug}`,
+        };
+        ogType = "article";
+        structuredData = {
+          "@context": "https://schema.org",
+          "@type": "JobPosting",
+          "title": data.title,
+          "description": data.description,
+          "datePosted": data.created_at,
+          "validThrough": data.expire_at,
+          "employmentType": data.employment_type,
+          "hiringOrganization": {
+            "@type": "Organization",
+            "name": data.company?.name || "Şirkət",
+            "logo": data.company?.logo_url
+          },
+          "jobLocation": {
+            "@type": "Place",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": data.location || "Bakı",
+              "addressCountry": "AZ"
+            }
+          },
+          "baseSalary": data.salary ? {
+            "@type": "MonetaryAmount",
+            "currency": "AZN",
+            "value": {
+              "@type": "QuantitativeValue",
+              "value": data.salary
+            }
+          } : undefined
         };
         break;
 
@@ -51,7 +137,20 @@ export const useDynamicSEO = (type: "job" | "company" | "category", data: any) =
             data.seo_description ||
             `${data.name} şirkəti haqqında məlumat, iş elanları və vakansiyalar. ${data.description || ""}`,
           keywords: data.seo_keywords?.join(", ") || `${data.name}, şirkət, vakansiya, iş elanları, Azərbaycan`,
-          url: `/companies/${data.slug}`,
+          url: `https://jooble.az/companies/${data.slug}`,
+        };
+        ogType = "profile";
+        structuredData = {
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": data.name,
+          "description": data.description,
+          "url": `https://jooble.az/companies/${data.slug}`,
+          "logo": data.logo_url,
+          "address": {
+            "@type": "PostalAddress",
+            "addressCountry": "AZ"
+          }
         };
         break;
 
@@ -63,7 +162,14 @@ export const useDynamicSEO = (type: "job" | "company" | "category", data: any) =
             `${data.name} sahəsində aktiv vakansiyalar və iş elanları. ${data.description || ""}`,
           keywords:
             data.seo_keywords?.join(", ") || `${data.name}, vakansiya, iş elanları, Azərbaycan, ${data.name} işləri`,
-          url: `/categories/${data.slug}`,
+          url: `https://jooble.az/categories/${data.slug}`,
+        };
+        structuredData = {
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          "name": `${data.name} Vakansiyaları`,
+          "description": metadata.description,
+          "url": `https://jooble.az/categories/${data.slug}`
         };
         break;
 
@@ -72,5 +178,27 @@ export const useDynamicSEO = (type: "job" | "company" | "category", data: any) =
     }
 
     updatePageMeta(metadata);
+
+    // Update Open Graph type
+    const ogTypeTag = document.querySelector('meta[property="og:type"]');
+    if (ogTypeTag) {
+      ogTypeTag.setAttribute('content', ogType);
+    } else {
+      const meta = document.createElement('meta');
+      meta.setAttribute('property', 'og:type');
+      meta.setAttribute('content', ogType);
+      document.head.appendChild(meta);
+    }
+
+    // Update structured data
+    const existingScript = document.querySelector('script[type="application/ld+json"]');
+    if (existingScript) {
+      existingScript.textContent = JSON.stringify(structuredData);
+    } else {
+      const script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.textContent = JSON.stringify(structuredData);
+      document.head.appendChild(script);
+    }
   }, [type, data]);
 };
