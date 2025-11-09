@@ -34,13 +34,17 @@ const corsHeaders = {
 
 function isBot(userAgent: string): boolean {
   const ua = userAgent.toLowerCase();
-  return BOT_USER_AGENTS.some(bot => ua.includes(bot));
+  const isKnownBot = BOT_USER_AGENTS.some(bot => ua.includes(bot));
+  console.log(`🤖 Bot Check: ${ua.substring(0, 60)}... => ${isKnownBot}`);
+  return isKnownBot;
 }
 
 async function fetchPageData(supabase: any, pathname: string) {
+  console.log(`📄 Fetching data for: ${pathname}`);
   const pathParts = pathname.split('/').filter(Boolean);
   
   if (pathParts.length === 0) {
+    console.log('🏠 Home page detected');
     const { data: settings } = await supabase
       .from('site_settings')
       .select('key, value');
@@ -54,13 +58,15 @@ async function fetchPageData(supabase: any, pathname: string) {
       title: settingsObj.site_title || 'Jooble Azərbaycan',
       description: settingsObj.site_description || 'İş elanları və vakansiyalar',
       keywords: settingsObj.site_keywords || 'iş elanları, vakansiya',
-      type: 'website'
+      type: 'website',
+      url: 'https://jooble.az/'
     };
   }
   
   const [section, slug] = pathParts;
   
   if (section === 'companies' && slug) {
+    console.log(`🏢 Company page: ${slug}`);
     const { data: company } = await supabase
       .from('companies')
       .select('*, jobs(count)')
@@ -69,17 +75,21 @@ async function fetchPageData(supabase: any, pathname: string) {
       .single();
     
     if (company) {
+      console.log(`✅ Company found: ${company.name}`);
       return {
         title: company.seo_title || `${company.name} | Şirkət Profili - Jooble`,
         description: company.seo_description || `${company.name} şirkəti haqqında məlumat və vakansiyalar`,
         keywords: company.seo_keywords?.join(', ') || `${company.name}, vakansiya`,
         type: 'organization',
-        data: company
+        data: company,
+        url: `https://jooble.az/companies/${slug}`
       };
     }
+    console.log('❌ Company not found');
   }
   
   if (section === 'categories' && slug) {
+    console.log(`📂 Category page: ${slug}`);
     const { data: category } = await supabase
       .from('categories')
       .select('*')
@@ -88,17 +98,21 @@ async function fetchPageData(supabase: any, pathname: string) {
       .single();
     
     if (category) {
+      console.log(`✅ Category found: ${category.name}`);
       return {
         title: category.seo_title || `${category.name} Vakansiyaları - Jooble`,
         description: category.seo_description || `${category.name} sahəsində aktiv vakansiyalar`,
         keywords: category.seo_keywords?.join(', ') || `${category.name}, vakansiya`,
         type: 'category',
-        data: category
+        data: category,
+        url: `https://jooble.az/categories/${slug}`
       };
     }
+    console.log('❌ Category not found');
   }
   
   if (section === 'vacancies' && slug) {
+    console.log(`💼 Job page: ${slug}`);
     const { data: job } = await supabase
       .from('jobs')
       .select('*, company:companies(*), category:categories(*)')
@@ -107,21 +121,26 @@ async function fetchPageData(supabase: any, pathname: string) {
       .single();
     
     if (job) {
+      console.log(`✅ Job found: ${job.title}`);
       return {
         title: job.seo_title || `${job.title} | ${job.company?.name || 'İş Elanı'}`,
         description: job.seo_description || `${job.company?.name}də ${job.title} vakansiyası`,
         keywords: job.seo_keywords?.join(', ') || `${job.title}, vakansiya`,
         type: 'job',
-        data: job
+        data: job,
+        url: `https://jooble.az/vacancies/${slug}`
       };
     }
+    console.log('❌ Job not found');
   }
   
+  console.log('❌ No page data found');
   return null;
 }
 
 function generateStructuredData(pageData: any, url: string) {
   const { type, data } = pageData;
+  const baseUrl = 'https://jooble.az';
   
   if (type === 'website') {
     return {
@@ -129,7 +148,18 @@ function generateStructuredData(pageData: any, url: string) {
       "@type": "WebSite",
       "name": pageData.title,
       "description": pageData.description,
-      "url": url
+      "url": url,
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": `${baseUrl}/?search={search_term_string}`,
+        "query-input": "required name=search_term_string"
+      },
+      "inLanguage": "az",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Jooble Azərbaycan",
+        "url": baseUrl
+      }
     };
   }
   
@@ -138,9 +168,45 @@ function generateStructuredData(pageData: any, url: string) {
       "@context": "https://schema.org",
       "@type": "Organization",
       "name": data.name,
-      "description": data.description,
-      "url": url,
-      "logo": data.logo_url
+      "description": data.description || pageData.description,
+      "url": pageData.url || url,
+      "logo": data.logo,
+      "address": data.address ? {
+        "@type": "PostalAddress",
+        "streetAddress": data.address,
+        "addressCountry": "AZ"
+      } : undefined,
+      "email": data.email,
+      "telephone": data.phone,
+      "sameAs": data.website ? [data.website] : []
+    };
+  }
+  
+  if (type === 'category' && data) {
+    return {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": `${data.name} Vakansiyaları`,
+      "description": pageData.description,
+      "url": pageData.url || url,
+      "inLanguage": "az",
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Ana Səhifə",
+            "item": baseUrl
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": data.name,
+            "item": pageData.url || url
+          }
+        ]
+      }
     };
   }
   
@@ -150,13 +216,19 @@ function generateStructuredData(pageData: any, url: string) {
       "@type": "JobPosting",
       "title": data.title,
       "description": data.description,
+      "identifier": {
+        "@type": "PropertyValue",
+        "name": "Job ID",
+        "value": data.id
+      },
       "datePosted": data.created_at,
-      "validThrough": data.expire_at,
-      "employmentType": data.employment_type,
+      "validThrough": data.expiration_date,
+      "employmentType": data.type?.toUpperCase() || "FULL_TIME",
       "hiringOrganization": {
         "@type": "Organization",
-        "name": data.company?.name,
-        "logo": data.company?.logo_url
+        "name": data.company?.name || "Jooble",
+        "logo": data.company?.logo || "",
+        "url": data.company?.website || baseUrl
       },
       "jobLocation": {
         "@type": "Place",
@@ -165,7 +237,17 @@ function generateStructuredData(pageData: any, url: string) {
           "addressLocality": data.location,
           "addressCountry": "AZ"
         }
-      }
+      },
+      "baseSalary": data.salary ? {
+        "@type": "MonetaryAmount",
+        "currency": "AZN",
+        "value": {
+          "@type": "QuantitativeValue",
+          "value": data.salary
+        }
+      } : undefined,
+      "url": pageData.url || url,
+      "industry": data.category?.name
     };
   }
   
@@ -175,33 +257,78 @@ function generateStructuredData(pageData: any, url: string) {
 function generateHTML(pageData: any, url: string) {
   const structuredData = generateStructuredData(pageData, url);
   
+  // Escape HTML to prevent XSS
+  const escapeHtml = (text: string) => text
+    ?.replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;') || '';
+
+  const safeTitle = escapeHtml(pageData.title);
+  const safeDescription = escapeHtml(pageData.description);
+  const safeKeywords = escapeHtml(pageData.keywords || '');
+  
   return `<!DOCTYPE html>
 <html lang="az">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${pageData.title}</title>
-  <meta name="description" content="${pageData.description}">
-  <meta name="keywords" content="${pageData.keywords}">
+  <title>${safeTitle}</title>
+  <meta name="description" content="${safeDescription}">
+  <meta name="keywords" content="${safeKeywords}">
   <link rel="canonical" href="${url}">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="language" content="Azerbaijani">
+  <meta name="geo.region" content="AZ">
   
   <!-- Open Graph -->
   <meta property="og:type" content="${pageData.type === 'job' ? 'article' : pageData.type === 'organization' ? 'profile' : 'website'}">
-  <meta property="og:title" content="${pageData.title}">
-  <meta property="og:description" content="${pageData.description}">
+  <meta property="og:title" content="${safeTitle}">
+  <meta property="og:description" content="${safeDescription}">
   <meta property="og:url" content="${url}">
   <meta property="og:site_name" content="Jooble Azərbaycan">
+  <meta property="og:locale" content="az_AZ">
   
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="${pageData.title}">
-  <meta name="twitter:description" content="${pageData.description}">
+  <meta name="twitter:title" content="${safeTitle}">
+  <meta name="twitter:description" content="${safeDescription}">
   
-  ${structuredData ? `<script type="application/ld+json">${JSON.stringify(structuredData)}</script>` : ''}
+  ${structuredData ? `<script type="application/ld+json">${JSON.stringify(structuredData, null, 2)}</script>` : ''}
+  
+  <style>
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+      line-height: 1.6; 
+      max-width: 1200px; 
+      margin: 0 auto; 
+      padding: 20px;
+      color: #333;
+    }
+    h1 { 
+      color: #1a1a1a; 
+      margin-bottom: 1rem;
+      font-size: 2rem;
+    }
+    p { margin-bottom: 1rem; }
+    .content { margin-top: 2rem; }
+  </style>
 </head>
 <body>
-  <h1>${pageData.title}</h1>
-  <div>${pageData.description}</div>
+  <header>
+    <h1>${safeTitle}</h1>
+  </header>
+  <main class="content">
+    <p>${safeDescription}</p>
+    ${pageData.type === 'job' && pageData.data?.location ? `<p><strong>Yer:</strong> ${escapeHtml(pageData.data.location)}</p>` : ''}
+    ${pageData.type === 'job' && pageData.data?.salary ? `<p><strong>Maaş:</strong> ${escapeHtml(pageData.data.salary)}</p>` : ''}
+    ${pageData.type === 'job' && pageData.data?.type ? `<p><strong>İş növü:</strong> ${escapeHtml(pageData.data.type)}</p>` : ''}
+    ${pageData.type === 'organization' && pageData.data?.website ? `<p><strong>Vebsayt:</strong> <a href="${escapeHtml(pageData.data.website)}">${escapeHtml(pageData.data.website)}</a></p>` : ''}
+  </main>
+  <footer style="margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #eee;">
+    <p><small>© 2025 Jooble Azərbaycan. Bütün hüquqlar qorunur.</small></p>
+  </footer>
 </body>
 </html>`;
 }
@@ -216,18 +343,25 @@ serve(async (req) => {
     const url = new URL(req.url);
     const targetUrl = url.searchParams.get('url');
     
+    console.log('===========================================');
+    console.log(`🔍 Request: ${targetUrl}`);
+    console.log(`👤 UA: ${userAgent.substring(0, 80)}...`);
+    
     if (!targetUrl) {
+      console.log('❌ Missing URL parameter');
       return new Response('Missing url parameter', { status: 400 });
     }
 
-    console.log('Prerender request:', { userAgent, targetUrl, isBot: isBot(userAgent) });
-
     if (!isBot(userAgent)) {
+      console.log('❌ Not a bot - skipping prerender');
+      console.log('===========================================');
       return new Response('Not a bot', { 
         status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'text/plain' }
       });
     }
+
+    console.log('✅ Bot detected - generating prerender');
 
     // First try Prerender.io service
     const targetUrlObj = new URL(targetUrl);
@@ -236,7 +370,7 @@ serve(async (req) => {
     const requestUri = targetUrlObj.pathname + targetUrlObj.search;
     const prerenderUrl = `https://service.prerender.io/${scheme}://${host}${requestUri}`;
     
-    console.log('Trying Prerender.io:', prerenderUrl);
+    console.log(`🚀 Trying Prerender.io: ${prerenderUrl}`);
 
     try {
       const prerenderResponse = await fetch(prerenderUrl, {
@@ -244,28 +378,33 @@ serve(async (req) => {
           'X-Prerender-Token': PRERENDER_TOKEN,
           'User-Agent': userAgent,
         },
+        signal: AbortSignal.timeout(5000)
       });
 
       if (prerenderResponse.ok) {
         const html = await prerenderResponse.text();
-        console.log('Prerender.io success');
+        console.log(`✅ Prerender.io success (${html.length} chars)`);
+        console.log('===========================================');
         
         return new Response(html, {
           headers: {
             ...corsHeaders,
             'Content-Type': 'text/html; charset=utf-8',
-            'Cache-Control': 'public, max-age=3600',
+            'Cache-Control': 'public, max-age=3600, s-maxage=7200',
             'X-Prerendered': 'true',
-            'X-Prerender-Source': 'prerender.io'
+            'X-Prerender-Source': 'prerender.io',
+            'Vary': 'User-Agent'
           }
         });
+      } else {
+        console.log(`⚠️ Prerender.io returned ${prerenderResponse.status}`);
       }
     } catch (prerenderError) {
-      console.error('Prerender.io failed:', prerenderError);
+      console.error(`❌ Prerender.io error: ${prerenderError.message}`);
     }
 
     // Fallback: Generate HTML from Supabase data
-    console.log('Falling back to Supabase data');
+    console.log('🔄 Falling back to Supabase dynamic generation');
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
@@ -275,23 +414,35 @@ serve(async (req) => {
     const pageData = await fetchPageData(supabase, pathname);
     
     if (!pageData) {
-      return new Response('Page not found', { status: 404 });
+      console.log('❌ Page not found in database');
+      console.log('===========================================');
+      return new Response('Page not found', { 
+        status: 404,
+        headers: { ...corsHeaders, 'Content-Type': 'text/plain' }
+      });
     }
 
     const html = generateHTML(pageData, targetUrl);
+    console.log(`✅ Generated HTML (${html.length} chars)`);
+    console.log(`📝 Title: ${pageData.title}`);
+    console.log(`📄 Type: ${pageData.type}`);
+    console.log('===========================================');
 
     return new Response(html, {
       headers: {
         ...corsHeaders,
         'Content-Type': 'text/html; charset=utf-8',
-        'Cache-Control': 'public, max-age=3600',
+        'Cache-Control': 'public, max-age=3600, s-maxage=7200',
         'X-Prerendered': 'true',
-        'X-Prerender-Source': 'supabase'
+        'X-Prerender-Source': 'supabase-dynamic',
+        'X-Page-Type': pageData.type,
+        'Vary': 'User-Agent'
       }
     });
 
   } catch (error) {
-    console.error('Prerender error:', error);
+    console.error(`💥 Fatal error: ${error.message}`);
+    console.log('===========================================');
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
