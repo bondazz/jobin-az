@@ -187,7 +187,10 @@ export const updatePageMeta = (metadata: SEOMetadata) => {
 
   // Get canonical URL - normalize to prevent duplicate content issues
   const canonicalUrl = normalizeUrl(metadata.url);
-  const fullCanonicalUrl = `https://jooble.az${canonicalUrl}`;
+  // Ensure we don't duplicate the domain if URL is already absolute
+  const fullCanonicalUrl = canonicalUrl.startsWith('http') 
+    ? canonicalUrl 
+    : `https://jooble.az${canonicalUrl}`;
 
   // Update canonical URL
   const canonicalLink = document.querySelector('link[rel="canonical"]');

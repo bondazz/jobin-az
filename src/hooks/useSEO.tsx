@@ -23,7 +23,11 @@ export const useSEO = ({
   useEffect(() => {
     const updateSEO = async () => {
       const settings = await getSiteSettings();
-      const currentUrl = url || window.location.href;
+      // Ensure URL is absolute and properly formatted
+      let currentUrl = url || window.location.href;
+      if (!currentUrl.startsWith('http')) {
+        currentUrl = `https://jooble.az${currentUrl.startsWith('/') ? '' : '/'}${currentUrl}`;
+      }
 
       const metadata: SEOMetadata = {
         title: title || settings.site_title || "Jooble Azərbaycan",
