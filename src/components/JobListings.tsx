@@ -337,11 +337,11 @@ const JobListings = ({
         </div>}
 
       {/* Job List - Responsive Container */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto p-2 bg-gradient-to-b from-transparent to-primary/5 w-full max-w-[100%] lg:max-w-[calc(100%+207px)] mx-auto lg:min-h-[calc(100vh-200px)] lg:px-0 py-0">
-        <div className="flex flex-col gap-2 justify-center items-center w-full max-w-full px-2 py-[12px] lg:max-w-[550px]">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto p-2 bg-gradient-to-b from-transparent to-primary/5 w-full mx-auto lg:min-h-[calc(100vh-200px)] lg:px-0 py-0">
+        <div className="flex flex-col gap-2 justify-center items-center w-full px-1.5 sm:px-2 py-[12px] lg:max-w-[550px] mx-auto">
           {loading ? <div className="flex items-center justify-center py-16">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-            </div> : displayedJobs.length > 0 ? displayedJobs.map((job, index) => <div key={`job-${job.id}`} className="w-full max-w-full min-w-0">
+            </div> : displayedJobs.length > 0 ? displayedJobs.map((job, index) => <div key={`job-${job.id}`} className="w-full">
                 {/* Advertisement Banner every 6 jobs */}
                 {index > 0 && index % 6 === 0 && <AdBanner position="job_listing" className="mb-2 animate-fade-in" />}
                 

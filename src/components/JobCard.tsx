@@ -61,9 +61,9 @@ const JobCard = memo(({
   // Filter to only show premium tags
   const premiumTags = job.tags.filter(tag => tag === 'premium');
   return <div onClick={onClick} className={`
-        group cursor-pointer p-3 rounded-lg border transition-all duration-200 ease-smooth relative z-0
+        group cursor-pointer p-2.5 sm:p-3 rounded-lg border transition-all duration-200 ease-smooth relative z-0
         hover:shadow-card-hover hover:-translate-y-0.5 hover:z-[5] animate-fade-in
-        w-full max-w-full min-w-0 h-[60px] flex flex-row items-center justify-between backdrop-blur-sm
+        w-full min-h-[60px] flex flex-row items-center justify-between backdrop-blur-sm
         ${isSelected ? 'border-primary bg-gradient-to-r from-primary/20 to-primary/5 shadow-elegant ring-1 ring-primary/50 z-[5]' : job.tags.includes('premium') ? 'bg-job-card-premium border-job-tag-premium/40 hover:border-job-tag-premium/60 hover:shadow-premium overflow-hidden' : isAlternate ? 'bg-job-card-alt border-border/50 hover:border-primary/40 hover:shadow-card-hover' : 'bg-job-card border-border/50 hover:border-primary/40 hover:shadow-card-hover'}
       `}>
       
@@ -75,36 +75,36 @@ const JobCard = memo(({
         </div>}
 
       {/* Left Section - Company & Job Info */}
-      <div className="flex items-center gap-2 flex-1 min-w-0 relative z-10">
+      <div className="flex items-center gap-1.5 sm:gap-2 flex-1 min-w-0 relative z-10">
         <div className="relative flex-shrink-0">
           {job.companyLogo ? (
             <LazyImage 
               src={job.companyLogo} 
               alt={job.company} 
-              className="w-8 h-8 rounded-md object-cover"
+              className="w-7 h-7 sm:w-8 sm:h-8 rounded-md object-cover"
               fallback={
-                <div className={`w-8 h-8 rounded-md flex items-center justify-center text-white font-bold text-xs shadow-sm ${job.tags?.includes('premium') ? 'bg-gradient-premium' : 'bg-gradient-primary'}`}>
+                <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-md flex items-center justify-center text-white font-bold text-xs shadow-sm ${job.tags?.includes('premium') ? 'bg-gradient-premium' : 'bg-gradient-primary'}`}>
                   {(job.company || job.title).charAt(0)}
                 </div>
               }
             />
           ) : (
-            <div className={`w-8 h-8 rounded-md flex items-center justify-center text-white font-bold text-xs shadow-sm ${job.tags?.includes('premium') ? 'bg-gradient-premium' : 'bg-gradient-primary'}`}>
+            <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-md flex items-center justify-center text-white font-bold text-xs shadow-sm ${job.tags?.includes('premium') ? 'bg-gradient-premium' : 'bg-gradient-primary'}`}>
               {(job.company || job.title).charAt(0)}
             </div>
           )}
         </div>
         
-        <div className="flex-1 min-w-0">
-          <h3 className="font-semibold text-xs text-foreground group-hover:text-primary transition-colors duration-200 truncate">
+        <div className="flex-1 min-w-0 overflow-hidden">
+          <h3 className="font-semibold text-[11px] sm:text-xs text-foreground group-hover:text-primary transition-colors duration-200 truncate leading-tight">
             {job.title}
           </h3>
-          <div className="flex items-center gap-2 mt-0">
-            <div className="flex items-center gap-1">
-              <p className="text-muted-foreground text-xs font-medium truncate">
+          <div className="flex items-center gap-1 sm:gap-2 mt-0.5">
+            <div className="flex items-center gap-0.5 sm:gap-1 min-w-0">
+              <p className="text-muted-foreground text-[10px] sm:text-xs font-medium truncate">
                 {job.company || 'Şirkət'}
               </p>
-              {job.isVerified && <VerifyBadge size={12} className="ml-0.5" />}
+              {job.isVerified && <VerifyBadge size={10} className="ml-0.5 flex-shrink-0" />}
             </div>
           </div>
         </div>
