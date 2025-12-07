@@ -131,13 +131,29 @@ export default function AdminCompaniesClient() {
       }
 
       const jobCountMap = jobCounts?.reduce((acc, job) => {
-        acc[job.company_id] = (acc[job.company_id] || 0) + 1;
+        if (job.company_id) {
+          acc[job.company_id] = (acc[job.company_id] || 0) + 1;
+        }
         return acc;
       }, {} as Record<string, number>) || {};
 
       // İlk şirkətləri job count ilə birlikdə göstər
       const initialCompaniesWithJobCount = (initialData || []).map(company => ({
         ...company,
+        logo: company.logo || undefined,
+        background_image: company.background_image || undefined,
+        description: company.description || undefined,
+        website: company.website || undefined,
+        address: company.address || undefined,
+        seo_title: company.seo_title || undefined,
+        seo_description: company.seo_description || undefined,
+        seo_keywords: company.seo_keywords || undefined,
+        about_seo_title: company.about_seo_title || undefined,
+        about_seo_description: company.about_seo_description || undefined,
+        jobs_seo_title: company.jobs_seo_title || undefined,
+        jobs_seo_description: company.jobs_seo_description || undefined,
+        email: undefined,
+        phone: undefined,
         job_count: jobCountMap[company.id] || 0
       }));
 
@@ -188,6 +204,20 @@ export default function AdminCompaniesClient() {
           // Job count əlavə et
           const companiesWithJobCount = data.map(company => ({
             ...company,
+            logo: company.logo || undefined,
+            background_image: company.background_image || undefined,
+            description: company.description || undefined,
+            website: company.website || undefined,
+            address: company.address || undefined,
+            seo_title: company.seo_title || undefined,
+            seo_description: company.seo_description || undefined,
+            seo_keywords: company.seo_keywords || undefined,
+            about_seo_title: company.about_seo_title || undefined,
+            about_seo_description: company.about_seo_description || undefined,
+            jobs_seo_title: company.jobs_seo_title || undefined,
+            jobs_seo_description: company.jobs_seo_description || undefined,
+            email: undefined,
+            phone: undefined,
             job_count: jobCountMap[company.id] || 0
           }));
 

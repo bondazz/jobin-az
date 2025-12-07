@@ -103,11 +103,11 @@ const CategoriesClient = () => {
                         id: data.id,
                         title: data.title,
                         company: data.companies?.name || '',
-                        company_id: data.company_id,
-                        companyLogo: data.companies?.logo,
+                        company_id: data.company_id || undefined,
+                        companyLogo: data.companies?.logo || undefined,
                         location: data.location,
                         type: data.type as 'full-time' | 'part-time' | 'contract' | 'internship',
-                        salary: data.salary,
+                        salary: data.salary || undefined,
                         description: data.description,
                         tags: (data.tags || []).filter((tag: string) =>
                             ['premium', 'new', 'urgent', 'remote'].includes(tag)
@@ -115,7 +115,7 @@ const CategoriesClient = () => {
                         views: data.views,
                         postedAt: formatDate(data.created_at),
                         category: data.categories?.name || '',
-                        applicationUrl: data.application_url
+                        applicationUrl: data.application_url || undefined
                     };
                     setSelectedJob(transformedJob);
                 }

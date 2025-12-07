@@ -11,11 +11,11 @@ import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
-import { 
-  Plus, 
-  Edit, 
-  Trash2, 
-  Search, 
+import {
+  Plus,
+  Edit,
+  Trash2,
+  Search,
   Tag,
   Briefcase
 } from 'lucide-react';
@@ -55,11 +55,6 @@ export default function AdminCategoriesClient() {
   const router = useRouter();
   const { toast } = useToast();
 
-  useEffect(() => {
-    checkAuth();
-    fetchCategories();
-  }, []);
-
   const checkAuth = async () => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
@@ -94,6 +89,11 @@ export default function AdminCategoriesClient() {
       // Process the data to include job count
       const categoriesWithJobCount = categoriesData?.map(category => ({
         ...category,
+        description: category.description || undefined,
+        icon: category.icon || undefined,
+        seo_title: category.seo_title || undefined,
+        seo_description: category.seo_description || undefined,
+        seo_keywords: category.seo_keywords || undefined,
         job_count: category.jobs?.length || 0,
         jobs: undefined // Remove the jobs array to clean up the object
       })) || [];
@@ -110,6 +110,11 @@ export default function AdminCategoriesClient() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    checkAuth();
+    fetchCategories();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -128,7 +133,7 @@ export default function AdminCategoriesClient() {
           .eq('id', editingCategory.id);
 
         if (error) throw error;
-        
+
         toast({
           title: 'Uğurlu',
           description: 'Kateqoriya uğurla yeniləndi.',
@@ -139,7 +144,7 @@ export default function AdminCategoriesClient() {
           .insert([categoryData]);
 
         if (error) throw error;
-        
+
         toast({
           title: 'Uğurlu',
           description: 'Kateqoriya uğurla əlavə edildi.',
@@ -186,12 +191,12 @@ export default function AdminCategoriesClient() {
         .eq('id', id);
 
       if (error) throw error;
-      
+
       toast({
         title: 'Uğurlu',
         description: 'Kateqoriya uğurla silindi.',
       });
-      
+
       fetchCategories();
     } catch (error) {
       console.error('Error deleting category:', error);
@@ -242,108 +247,108 @@ export default function AdminCategoriesClient() {
                 Yeni Kateqoriya
               </Button>
             </DialogTrigger>
-              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                <DialogHeader>
-                  <DialogTitle>
-                    {editingCategory ? 'Kateqoriya Redaktə Et' : 'Yeni Kateqoriya Əlavə Et'}
-                  </DialogTitle>
-                </DialogHeader>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="name">Kateqoriya Adı</Label>
-                      <Input
-                        id="name"
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="slug">URL Slug</Label>
-                      <Input
-                        id="slug"
-                        value={formData.slug}
-                        onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                        placeholder="kateqoriya-adi"
-                        required
-                      />
-                    </div>
-                  </div>
-
+            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>
+                  {editingCategory ? 'Kateqoriya Redaktə Et' : 'Yeni Kateqoriya Əlavə Et'}
+                </DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="icon">İkon (Lucide İkon Adı)</Label>
+                    <Label htmlFor="name">Kateqoriya Adı</Label>
                     <Input
-                      id="icon"
-                      value={formData.icon}
-                      onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-                      placeholder="briefcase, code, design"
+                      id="name"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      required
                     />
                   </div>
-
                   <div className="space-y-2">
-                    <Label htmlFor="description">Təsvir</Label>
-                    <Textarea
-                      id="description"
-                      value={formData.description}
-                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                      rows={4}
+                    <Label htmlFor="slug">URL Slug</Label>
+                    <Input
+                      id="slug"
+                      value={formData.slug}
+                      onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                      placeholder="kateqoriya-adi"
+                      required
                     />
                   </div>
+                </div>
 
-                  {/* SEO Section */}
-                  <div className="border-t pt-6">
-                    <h3 className="text-lg font-semibold mb-4">SEO Tənzimləmələri</h3>
-                    <div className="space-y-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="seo_title">SEO Başlıq</Label>
-                        <Input
-                          id="seo_title"
-                          value={formData.seo_title}
-                          onChange={(e) => setFormData({ ...formData, seo_title: e.target.value })}
-                          placeholder="Meta title"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="seo_description">SEO Təsvir</Label>
-                        <Textarea
-                          id="seo_description"
-                          value={formData.seo_description}
-                          onChange={(e) => setFormData({ ...formData, seo_description: e.target.value })}
-                          rows={2}
-                          placeholder="Meta description"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="seo_keywords">SEO Açar Sözlər (vergüllə ayırın)</Label>
-                        <Input
-                          id="seo_keywords"
-                          value={formData.seo_keywords}
-                          onChange={(e) => setFormData({ ...formData, seo_keywords: e.target.value })}
-                          placeholder="açar söz 1, açar söz 2, açar söz 3"
-                        />
-                      </div>
+                <div className="space-y-2">
+                  <Label htmlFor="icon">İkon (Lucide İkon Adı)</Label>
+                  <Input
+                    id="icon"
+                    value={formData.icon}
+                    onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
+                    placeholder="briefcase, code, design"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="description">Təsvir</Label>
+                  <Textarea
+                    id="description"
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    rows={4}
+                  />
+                </div>
+
+                {/* SEO Section */}
+                <div className="border-t pt-6">
+                  <h3 className="text-lg font-semibold mb-4">SEO Tənzimləmələri</h3>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="seo_title">SEO Başlıq</Label>
+                      <Input
+                        id="seo_title"
+                        value={formData.seo_title}
+                        onChange={(e) => setFormData({ ...formData, seo_title: e.target.value })}
+                        placeholder="Meta title"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="seo_description">SEO Təsvir</Label>
+                      <Textarea
+                        id="seo_description"
+                        value={formData.seo_description}
+                        onChange={(e) => setFormData({ ...formData, seo_description: e.target.value })}
+                        rows={2}
+                        placeholder="Meta description"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="seo_keywords">SEO Açar Sözlər (vergüllə ayırın)</Label>
+                      <Input
+                        id="seo_keywords"
+                        value={formData.seo_keywords}
+                        onChange={(e) => setFormData({ ...formData, seo_keywords: e.target.value })}
+                        placeholder="açar söz 1, açar söz 2, açar söz 3"
+                      />
                     </div>
                   </div>
+                </div>
 
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      id="is_active"
-                      checked={formData.is_active}
-                      onCheckedChange={(checked) => setFormData({ ...formData, is_active: checked })}
-                    />
-                    <Label htmlFor="is_active">Aktiv</Label>
-                  </div>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="is_active"
+                    checked={formData.is_active}
+                    onCheckedChange={(checked) => setFormData({ ...formData, is_active: checked })}
+                  />
+                  <Label htmlFor="is_active">Aktiv</Label>
+                </div>
 
-                  <div className="flex justify-end gap-4">
-                    <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
-                      Ləğv et
-                    </Button>
-                    <Button type="submit" disabled={loading}>
-                      {loading ? 'Saxlanılır...' : editingCategory ? 'Yenilə' : 'Əlavə et'}
-                    </Button>
-                  </div>
-                </form>
+                <div className="flex justify-end gap-4">
+                  <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
+                    Ləğv et
+                  </Button>
+                  <Button type="submit" disabled={loading}>
+                    {loading ? 'Saxlanılır...' : editingCategory ? 'Yenilə' : 'Əlavə et'}
+                  </Button>
+                </div>
+              </form>
             </DialogContent>
           </Dialog>
         </div>

@@ -102,7 +102,7 @@ const JobDetails = ({ jobId, isMobile = false, primaryHeading = true }: JobDetai
 
       // Check if job is saved
       const savedJobs = JSON.parse(localStorage.getItem("savedJobs") || "[]");
-      setIsSaved(savedJobs.includes(data.id));
+      setIsSaved(data ? savedJobs.includes(data.id) : false);
     } catch (error) {
       console.error("Error fetching job:", error);
     } finally {
@@ -151,7 +151,7 @@ const JobDetails = ({ jobId, isMobile = false, primaryHeading = true }: JobDetai
         });
       } catch (error) {
         // User cancelled sharing
-        if (error.name !== "AbortError") {
+        if ((error as any).name !== "AbortError") {
           copyToClipboard();
         }
       }

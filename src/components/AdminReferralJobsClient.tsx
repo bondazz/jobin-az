@@ -15,19 +15,19 @@ import { Eye, Edit, MessageSquare } from 'lucide-react';
 
 interface ReferralJobSubmission {
   id: string;
-  referral_code: string;
+  referral_code: string | null;
   referral_user_id: string;
   applicant_name: string;
   applicant_surname: string;
   applicant_position: string;
   applicant_phone: string;
   company_name: string;
-  voen: string;
-  website: string;
-  company_description: string;
+  voen: string | null;
+  website: string | null;
+  company_description: string | null;
   job_article: string;
   status: string;
-  admin_comment: string;
+  admin_comment: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -53,7 +53,8 @@ const ReferralJobSubmissions = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setSubmissions(data || []);
+      // Cast data to unknown first, then to ReferralJobSubmission[] to bypass strict type checking
+      setSubmissions((data as unknown as ReferralJobSubmission[]) || []);
     } catch (error) {
       console.error('Error fetching submissions:', error);
       toast({ title: "Məlumatlar yüklənmədi", variant: "destructive" });
@@ -137,11 +138,11 @@ const ReferralJobSubmissions = () => {
                 <div className="text-sm text-muted-foreground">
                   <p>Müraciətçi: {submission.applicant_name} {submission.applicant_surname}</p>
                   <p>Vəzifə: {submission.applicant_position}</p>
-                  <p>Referral: {submission.referral_code}</p>
+                  <p>Referral: {submission.referral_code || 'Yoxdur'}</p>
                   <p>Tarix: {new Date(submission.created_at).toLocaleDateString('az-AZ')}</p>
                 </div>
               </CardHeader>
-              
+
               <CardContent>
                 <div className="flex gap-2">
                   <Dialog>
@@ -167,25 +168,25 @@ const ReferralJobSubmissions = () => {
                             <h4 className="font-semibold">Şirkət Məlumatları</h4>
                             <p><strong>VÖEN:</strong> {submission.voen || 'Təyin edilməyib'}</p>
                             <p><strong>Veb sayt:</strong> {submission.website || 'Yoxdur'}</p>
-                            <p><strong>Referral:</strong> {submission.referral_code}</p>
+                            <p><strong>Referral:</strong> {submission.referral_code || 'Yoxdur'}</p>
                           </div>
                         </div>
-                        
+
                         {submission.company_description && (
                           <div>
                             <h4 className="font-semibold">Şirkət Haqqında</h4>
                             <p className="text-sm">{submission.company_description}</p>
                           </div>
                         )}
-                        
+
                         <div>
                           <h4 className="font-semibold">İş Elanı Məzmunu</h4>
-                          <div 
+                          <div
                             className="prose prose-sm max-w-none border p-3 rounded-md bg-muted/30"
                             dangerouslySetInnerHTML={{ __html: submission.job_article }}
                           />
                         </div>
-                        
+
                         {submission.admin_comment && (
                           <div>
                             <h4 className="font-semibold">Admin Qeyd</h4>
@@ -198,8 +199,8 @@ const ReferralJobSubmissions = () => {
 
                   <Dialog>
                     <DialogTrigger asChild>
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         size="sm"
                         onClick={() => {
                           setSelectedSubmission(submission);
@@ -230,7 +231,7 @@ const ReferralJobSubmissions = () => {
                             </SelectContent>
                           </Select>
                         </div>
-                        
+
                         <div>
                           <Label>Admin Qeyd</Label>
                           <Textarea
@@ -240,8 +241,8 @@ const ReferralJobSubmissions = () => {
                             rows={3}
                           />
                         </div>
-                        
-                        <Button 
+
+                        <Button
                           onClick={handleStatusUpdate}
                           disabled={isUpdating}
                           className="w-full"
