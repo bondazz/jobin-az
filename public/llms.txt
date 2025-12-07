@@ -1,0 +1,163 @@
+# Jooble.az - İş Elanları və Vakansiyalar Platforması
+
+> Azərbaycanın ən böyük iş elanları və vakansiyalar platforması
+
+## Haqqında
+
+Jooble.az Azərbaycanda iş axtaranlar və işəgötürənlər üçün ən etibarlı platformadır. Platformamızda minlərlə aktiv iş elanı, müxtəlif sahələr üzrə vakansiyalar və peşəkar CV builder xidməti mövcuddur.
+
+## Əsas Xüsusiyyətlər
+
+- **İş Elanları**: Gündəlik yenilənən minlərlə iş elanı
+- **Vakansiyalar**: Müxtəlif sahələr üzrə (IT, maliyyə, satış, təhsil və s.)
+- **Şirkət Profilleri**: Təsdiqlənmiş şirkətlərin tam məlumatları
+- **CV Builder**: Peşəkar CV hazırlama aləti
+- **Kateqoriyalar**: 50+ peşə sahəsi üzrə təsnifat
+- **Filtrləmə**: Şəhər, maaş, iş növü üzrə axtarış
+- **Referral Sistemi**: İş elanı paylaşaraq qazanc əldə edin
+- **Push Bildirişlər**: Yeni vakansiyalar haqqında dərhal məlumat
+
+## Texnologiyalar
+
+- **Frontend**: Next.js 14, React, TypeScript, Tailwind CSS
+- **Backend**: Supabase (PostgreSQL)
+- **Hosting**: Vercel
+- **SEO**: Dinamik metadata, sitemap, robots.txt
+- **PWA**: Progressive Web App dəstəyi
+
+## SEO Optimallaşdırma
+
+- Canonical URL-lər
+- Open Graph meta teqləri
+- Dinamik title və description
+- Structured data (JobPosting schema)
+- XML sitemap
+- Robots.txt
+- Image optimization
+- Mobile-first design
+
+## Əsas Səhifələr
+
+### Ana Səhifə (/)
+İş elanları siyahısı, filtrləmə, axtarış funksiyaları
+
+### Vakansiyalar (/vacancies)
+Bütün aktiv iş elanları, kateqoriya və şəhər üzrə filtrləmə
+
+### Şirkətlər (/companies)
+Təsdiqlənmiş şirkətlərin profilleri və vakansiyaları
+
+### Kateqoriyalar (/categories)
+Peşə sahələri üzrə təsnifat və statistika
+
+### CV Builder (/cv-builder)
+Peşəkar CV hazırlama aləti
+
+### Qiymətlər (/services)
+İşəgötürənlər üçün xidmət paketləri
+
+### Referral (/referral)
+Referral sistemi və qazanc imkanları
+
+## API Endpoints
+
+Platformamız RESTful API təqdim edir:
+
+- `GET /api/jobs` - İş elanları siyahısı
+- `GET /api/jobs/[id]` - Konkret iş elanı
+- `GET /api/companies` - Şirkətlər siyahısı
+- `GET /api/categories` - Kateqoriyalar
+- `POST /api/jobs` - Yeni iş elanı (auth required)
+
+## Əlaqə
+
+- **Website**: https://jooble.az
+- **Email**: info@jooble.az
+- **WhatsApp**: +994501234567
+- **Instagram**: @jooble.az
+- **LinkedIn**: /company/jooble-az
+
+## Statistika
+
+- 10,000+ aktiv iş elanı
+- 5,000+ qeydiyyatlı şirkət
+- 100,000+ aylıq istifadəçi
+- 50+ peşə kateqoriyası
+
+## Məlumat Strukturu
+
+### İş Elanı
+- Başlıq
+- Şirkət adı və logosu
+- Yer (şəhər)
+- İş növü (full-time, part-time, remote, contract)
+- Maaş aralığı
+- Tələblər və vəzifə təsviri
+- Müraciət linki
+- Etiketlər (premium, yeni, təcili, remote)
+
+### Şirkət Profili
+- Şirkət adı
+- Logo və banner
+- Haqqında məlumat
+- Əlaqə məlumatları
+- Website
+- Aktiv vakansiyalar
+- Təsdiq statusu
+
+### Kateqoriya
+- Kateqoriya adı
+- Slug
+- İkon
+- Aktiv elanlar sayı
+- Təsvir
+
+## İstifadəçi Funksiyaları
+
+- İş elanlarına baxış
+- Filtrləmə və axtarış
+- Seçilmiş elanlara əlavə etmə
+- CV hazırlama və yükləmə
+- Müraciət göndərmə
+- Bildirişlərə abunə olma
+- Referral linkləri yaratma
+
+## İşəgötürən Funksiyaları
+
+- İş elanı yerləşdirmə
+- Şirkət profili yaratma
+- Namizədləri idarə etmə
+- Statistika və analitika
+- Premium elan paketləri
+- Reklam yerləşdirmə
+
+## Mobil Optimallaşdırma
+
+- Responsive dizayn
+- Touch-friendly interfeys
+- Mobil menyu
+- Sürətli yükləmə
+- PWA dəstəyi
+- Offline funksionallıq
+
+## Təhlükəsizlik
+
+- HTTPS şifrələmə
+- Supabase authentication
+- Row Level Security (RLS)
+- XSS protection
+- CSRF protection
+- Rate limiting
+
+## Performans
+
+- Next.js Image optimization
+- Lazy loading
+- Code splitting
+- CDN caching
+- Database indexing
+- API response caching
+
+---
+
+Bu fayl LLM-lər (Large Language Models) üçün hazırlanmışdır və platformamız haqqında strukturlaşdırılmış məlumat təqdim edir.

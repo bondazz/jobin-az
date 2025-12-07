@@ -1,4 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+"use client";
+
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { X, ExternalLink } from 'lucide-react';
 
@@ -11,31 +13,46 @@ const PWAInstallPrompt = () => {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showPrompt, setShowPrompt] = useState(false);
   const [installed, setInstalled] = useState(false);
-
-  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-  const isAndroid = /android/i.test(navigator.userAgent);
-  const isDesktop = !isIOS && !isAndroid;
-  const isStandalone = useMemo(() => (
-    window.matchMedia('(display-mode: standalone)').matches || (navigator as any).standalone === true
-  ), []);
-  const inIframe = window.self !== window.top;
+  const [isIOS, setIsIOS] = useState(false);
+  const [isAndroid, setIsAndroid] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
+  const [inIframe, setInIframe] = useState(false);
+  const [currentUrl, setCurrentUrl] = useState('');
 
   useEffect(() => {
+    // All browser-specific checks safely inside useEffect
+    if (typeof window === 'undefined') return;
+
+    const userAgent = navigator.userAgent;
+    const iosCheck = /iphone|ipad|ipod/i.test(userAgent);
+    const androidCheck = /android/i.test(userAgent);
+
+    setIsIOS(iosCheck);
+    setIsAndroid(androidCheck);
+    setIsDesktop(!iosCheck && !androidCheck);
+    setInIframe(window.self !== window.top);
+    setCurrentUrl(window.location.href);
+
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
+      (navigator as any).standalone === true;
+
     if (isStandalone || localStorage.getItem('pwa-installed') === 'true') {
       setInstalled(true);
       return;
     }
+
     if (localStorage.getItem('pwa-install-dismissed')) {
       return;
     }
 
-    // Always show after 10s on page (not tied to beforeinstallprompt)
-    const t = window.setTimeout(() => setShowPrompt(true), 10000);
+    // Show prompt after 30 seconds
+    const timer = window.setTimeout(() => setShowPrompt(true), 30000);
 
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
     };
+
     const handleAppInstalled = () => {
       setInstalled(true);
       setShowPrompt(false);
@@ -46,11 +63,11 @@ const PWAInstallPrompt = () => {
     window.addEventListener('appinstalled', handleAppInstalled);
 
     return () => {
-      window.clearTimeout(t);
+      window.clearTimeout(timer);
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
       window.removeEventListener('appinstalled', handleAppInstalled);
     };
-  }, [isStandalone]);
+  }, []);
 
   const handleInstallClick = async () => {
     if (!deferredPrompt) return;
@@ -71,7 +88,7 @@ const PWAInstallPrompt = () => {
 
   if (!showPrompt || installed) return null;
 
-  const canInstall = !!deferredPrompt && !inIframe; // Chromium install dialog (works on Android & Desktop Chrome/Edge)
+  const canInstall = !!deferredPrompt && !inIframe;
 
   return (
     <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -89,6 +106,8 @@ const PWAInstallPrompt = () => {
             <img
               src="/icons/icon-192x192.jpg"
               alt="Jooble logo - PWA ikon"
+              width="64"
+              height="64"
               className="w-16 h-16 rounded-lg"
             />
           </div>
@@ -109,7 +128,7 @@ const PWAInstallPrompt = () => {
             </div>
           ) : (
             <div className="w-full space-y-4">
-              {/* Fallback təlimatlar */}
+              {/* Fallback instructions */}
               {isIOS ? (
                 <div className="text-left text-sm text-muted-foreground space-y-2">
                   <p className="font-semibold text-foreground">iPhone/iPad üçün:</p>
@@ -140,14 +159,14 @@ const PWAInstallPrompt = () => {
                 </div>
               )}
 
-              {inIframe && (
+              {inIframe && currentUrl && (
                 <a
-                  href={window.location.href}
+                  href={currentUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-2 w-full rounded-md border border-border px-4 py-2 text-sm hover:bg-accent"
                 >
-                  Yeni pəncərədə aç <ExternalLink className="h-4 w-4" />
+                  Yeni pəncərədə aç <ExternalLink className="h-4 h-4" />
                 </a>
               )}
 

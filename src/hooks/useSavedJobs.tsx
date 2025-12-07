@@ -1,44 +1,54 @@
 import { useState, useEffect, useCallback } from 'react';
 
+const STORAGE_KEY = 'savedJobs';
+
 export const useSavedJobs = () => {
   const [savedJobs, setSavedJobs] = useState<string[]>([]);
+  const [isClient, setIsClient] = useState(false);
+
+  // Set isClient to true after component mounts
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const loadSavedJobs = useCallback(() => {
+    if (!isClient) return;
+
     try {
-      const saved = localStorage.getItem('savedJobs');
+      const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
-        const parsedJobs = JSON.parse(saved);
-        if (Array.isArray(parsedJobs)) {
-          setSavedJobs(parsedJobs);
-          return;
-        }
+        setSavedJobs(JSON.parse(saved));
       }
-      // If no saved jobs or invalid data, reset to empty
-      setSavedJobs([]);
-      localStorage.setItem('savedJobs', JSON.stringify([]));
     } catch (error) {
       console.error('Error loading saved jobs:', error);
-      setSavedJobs([]);
-      localStorage.setItem('savedJobs', JSON.stringify([]));
     }
-  }, []);
+  }, [isClient]);
 
   useEffect(() => {
     loadSavedJobs();
   }, [loadSavedJobs]);
 
   const toggleSaveJob = useCallback((jobId: string) => {
-    setSavedJobs(prevSavedJobs => {
-      const newSavedJobs = prevSavedJobs.includes(jobId)
-        ? prevSavedJobs.filter(id => id !== jobId)
-        : [...prevSavedJobs, jobId];
-      
-      localStorage.setItem('savedJobs', JSON.stringify(newSavedJobs));
-      return newSavedJobs;
-    });
-  }, []);
+    if (!isClient) return;
 
-  const isJobSaved = useCallback((jobId: string) => savedJobs.includes(jobId), [savedJobs]);
+    setSavedJobs(prev => {
+      const newSaved = prev.includes(jobId)
+        ? prev.filter(id => id !== jobId)
+        : [...prev, jobId];
+
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(newSaved));
+      } catch (error) {
+        console.error('Error saving jobs:', error);
+      }
+
+      return newSaved;
+    });
+  }, [isClient]);
+
+  const isJobSaved = useCallback((jobId: string) => {
+    return savedJobs.includes(jobId);
+  }, [savedJobs]);
 
   return {
     savedJobs,

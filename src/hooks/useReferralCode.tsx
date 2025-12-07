@@ -1,19 +1,27 @@
+'use client';
+
 import { useEffect, useState } from 'react';
-import { useLocation, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'next/navigation';
 
 const REFERRAL_CODE_KEY = 'referral_code';
 const REFERRAL_EXPIRY_KEY = 'referral_expiry';
 const REFERRAL_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 
 export const useReferralCode = () => {
-  const [searchParams] = useSearchParams();
-  const location = useLocation();
+  const searchParams = useSearchParams();
   const [referralCode, setReferralCode] = useState<string | null>(null);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isClient) return;
+
     // Get referral code from URL if present
-    const urlRefCode = searchParams.get('ref');
-    
+    const urlRefCode = searchParams?.get('ref');
+
     if (urlRefCode) {
       // Store new referral code with expiry
       const expiry = Date.now() + REFERRAL_DURATION;
@@ -24,10 +32,10 @@ export const useReferralCode = () => {
       // Check for stored referral code
       const storedCode = localStorage.getItem(REFERRAL_CODE_KEY);
       const storedExpiry = localStorage.getItem(REFERRAL_EXPIRY_KEY);
-      
+
       if (storedCode && storedExpiry) {
         const expiryTime = parseInt(storedExpiry);
-        
+
         if (Date.now() < expiryTime) {
           // Code is still valid
           setReferralCode(storedCode);
@@ -39,17 +47,21 @@ export const useReferralCode = () => {
         }
       }
     }
-  }, [searchParams, location]);
+  }, [searchParams, isClient]);
 
-  const getUrlWithReferral = (path: string) => {
+  const getUrlWithReferral = (path?: string | null): string => {
+    // Always return a valid string, never undefined
+    const validPath = path || '/';
+    if (!isClient) return validPath; // Return path as-is during SSR
     if (referralCode) {
-      const separator = path.includes('?') ? '&' : '?';
-      return `${path}${separator}ref=${referralCode}`;
+      const separator = validPath.includes('?') ? '&' : '?';
+      return `${validPath}${separator}ref=${referralCode}`;
     }
-    return path;
+    return validPath;
   };
 
   const clearReferralCode = () => {
+    if (!isClient) return;
     localStorage.removeItem(REFERRAL_CODE_KEY);
     localStorage.removeItem(REFERRAL_EXPIRY_KEY);
     setReferralCode(null);

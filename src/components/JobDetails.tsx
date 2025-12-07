@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -23,7 +25,7 @@ import {
 import VerifyBadge from "@/components/ui/verify-badge";
 import AdBanner from "./AdBanner";
 import { useReferralCode } from "@/hooks/useReferralCode";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 interface JobDetailsProps {
   jobId: string | null;
   isMobile?: boolean;
@@ -209,107 +211,32 @@ const JobDetails = ({ jobId, isMobile = false, primaryHeading = true }: JobDetai
             <AdBanner position="job_details" />
           </div>
 
-          <div className="space-y-3 mb-8 max-w-2xl mx-auto">
-            <div className="text-left px-4 space-y-4">
-              <h2 className="text-2xl font-bold text-foreground">
-                Ən son iş elanları – uyğun vakansiyalar tapmaq üçün doğru ünvan
-              </h2>
+          <div className="space-y-6 mb-8 max-w-2xl mx-auto px-4 text-left">
+            <h1 className="text-2xl font-bold text-foreground">
+              İş Elanları və Vakansiyalar 2026
+            </h1>
 
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                İş axtarışı heç vaxt bu qədər asan olmamışdı. <strong>Jooble.az</strong> üzərindən hər gün yüzlərlə yeni{" "}
-                <strong>iş elanları</strong> paylaşılır və siz də bu imkanlardan faydalana bilərsiniz. Platformamızda
-                müxtəlif sahələr üzrə vakansiyalar yerləşdirilir — satış, mühasibatlıq, texnologiya, təhsil və daha bir
-                çox istiqamət. Məqsədimiz hər bir istifadəçiyə uyğun iş tapmaq imkanı yaratmaqdır.
-              </p>
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              İş elanları və vakansiyalar 2026 üzrə ən son yenilikləri burada tapa bilərsiniz. Platformamız bütün sahələr üzrə gündəlik yenilənən iş imkanlarını, real şirkət vakansiyalarını və filtirlənə bilən peşə yönümlü elanları bir araya gətirir. Əgər yeni iş axtarırsınızsa, düzgün yerdəsiniz - buradan həm yerli, həm də beynəlxalq iş elanlarına rahatlıqla baxa, CV göndərə və dərhal müraciət edə bilərsiniz.
+            </p>
 
-              <h2 className="text-xl font-semibold text-foreground mt-6">İş axtaranların tez-tez soruşduğu suallar</h2>
-
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                Əgər siz də aktiv <strong>iş axtarışı</strong> prosesindəsinizsə, aşağıdakı suallar sizin üçün faydalı
-                olacaq:
-              </p>
-
-              <ul className="list-disc list-inside text-muted-foreground text-sm leading-relaxed space-y-1 ml-4">
-                <li>
-                  Hər gün saytımıza neçə yeni <strong>iş elanları</strong> əlavə olunur?
-                </li>
-                <li>Uyğun vakansiyaları necə süzgəcdən keçirmək olar?</li>
-                <li>CV-nizi necə yerləşdirə bilərsiniz?</li>
-              </ul>
-
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                <strong>Jooble.az</strong>-da hər gün yüzlərlə yeni <strong>iş axtaranların</strong> müraciəti qəbul
-                olunur. Bununla yanaşı, <strong>işəgötürənlər</strong> də platformamız vasitəsilə ən uyğun namizədləri
-                tapır. Əgər siz də öz <strong>CV-nizi</strong> yerləşdirsəniz, uyğun vakansiyalar üçün bir neçə dəqiqə
-                ərzində <strong>müraciət edə bilərsiniz</strong>.
-              </p>
-
-              <h2 className="text-xl font-semibold text-foreground mt-6">
-                Saytımızda vakansiyalar – hər peşə üçün imkan
-              </h2>
-
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                <strong>Saytımızda vakansiyalar</strong> müxtəlif sahələrə görə qruplaşdırılıb. Bu da sizə vaxt
-                itirmədən istədiyiniz kateqoriyada <strong>uyğun iş</strong> tapmağa kömək edir. Axtardığınız
-                vakansiyanın növündən asılı olmayaraq, sistemimiz sizə ən uyğun nəticələri təqdim edəcək. Misal üçün,
-                "Satış üzrə menecer", "Kredit mütəxəssisi", "Tədris koordinatoru" kimi <strong>elanları və</strong> çox
-                daha artığını bir yerdə görə bilərsiniz.
-              </p>
-
-              <h2 className="text-xl font-semibold text-foreground mt-6">
-                Ən son iş elanları – daima yenilənən vakansiyalar
-              </h2>
-
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                Biz hər gün sistemimizi yeniləyirik ki, siz <strong>ən son iş elanları</strong> ilə tanış ola biləsiniz.
-                Rəqiblərimizdən fərqli olaraq, Jooble.az-da paylaşılan elanlar real, təsdiqlənmiş və aktiv şirkətlərə
-                məxsusdur. İstər yerli, istər beynəlxalq şirkətlərdə işləmək istəyirsinizsə, hər ehtiyacınıza uyğun iş
-                tapmaq mümkündür.
-              </p>
-
-              <h2 className="text-xl font-semibold text-foreground mt-6">Necə müraciət edə bilərsiniz?</h2>
-
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                Əgər bəyəndiyiniz bir vakansiya tapmısınızsa, sadəcə "Müraciət et" düyməsinə klikləyin. Orada{" "}
-                <strong>CV-nizi</strong> yükləyərək birbaşa işəgötürənə göndərə bilərsiniz. Əlavə olaraq, hesab
-                yaratmaqla, gələcəkdə sizin üçün uyğun ola biləcək elanlar barədə bildiriş alma imkanınız da var.{" "}
-                <strong>Saytımızdan istifadə</strong> tamamilə pulsuzdur və istənilən cihazdan (kompüter, telefon,
-                planşet) rahatlıqla daxil ola bilərsiniz.
-              </p>
-
-              <h2 className="text-xl font-semibold text-foreground mt-6">
-                İş axtarışında uğur qazanmaq üçün 5 qısa məsləhət
-              </h2>
-
-              <ol className="list-decimal list-inside text-muted-foreground text-sm leading-relaxed space-y-1 ml-4">
-                <li>CV-nizi qısa və konkret şəkildə hazırlayın.</li>
-                <li>Əlaqə məlumatlarınızı hər zaman yeniləyin.</li>
-                <li>
-                  <strong>Saytımızda vakansiyalar</strong> bölməsini hər gün yoxlayın.
-                </li>
-                <li>Hər müraciətdən əvvəl iş elanını diqqətlə oxuyun.</li>
-                <li>
-                  Uyğun olduğunuz sahələr üzrə <strong>ən son iş elanları</strong>na üstünlük verin.
-                </li>
-              </ol>
-
-              <h2 className="text-xl font-semibold text-foreground mt-6">İş axtaranların rəyləri</h2>
-
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                İstifadəçilərimizdən biri belə yazır: "Jooble.az sayəsində cəmi üç gün ərzində <strong>uyğun iş</strong>{" "}
-                tapdım. Vakansiyalar real və yenilənmiş olur." Başqa bir istifadəçi isə qeyd edir: "Hər gün baxdığım{" "}
-                <strong>iş elanları</strong> mənim təcrübəmə uyğun olurdu. Müraciət etdim və qısa müddətdə cavab aldım."
-              </p>
-
-              <h2 className="text-xl font-semibold text-foreground mt-6">Nəticə: Hər gün yeni imkanlar</h2>
-
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                <strong>Jooble.az</strong> platforması hər gün iş axtaranlara və şirkətlərə yeni fürsətlər təqdim edir.
-                İndi siz də <strong>müraciət edə bilərsiniz</strong>, <strong>CV-nizi</strong> yerləşdirərək{" "}
-                <strong>uyğun iş</strong> tapmaq şansınızı artırın. Unutmayın: hər gün yeni <strong>iş elanları</strong>{" "}
-                əlavə olunur və sizin üçün ən uyğun imkan yalnız bir klik uzaqlığındadır.
-              </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-4">
+                <h2 className="text-lg font-semibold text-foreground">Ən Son İş Elanları 2026</h2>
+                <h2 className="text-lg font-semibold text-foreground">Bu həftənin ən çox baxılan vakansiyaları</h2>
+                <h2 className="text-lg font-semibold text-foreground">Şəhərlər üzrə iş elanları</h2>
+                <h2 className="text-lg font-semibold text-foreground">Sahələr üzrə vakansiyalar</h2>
+              </div>
+              <div className="space-y-4">
+                <h2 className="text-lg font-semibold text-foreground">Tələbə və təcrübəçi iş elanları</h2>
+                <h2 className="text-lg font-semibold text-foreground">Ən çox maaş təklif edən vakansiyalar</h2>
+                <h2 className="text-lg font-semibold text-foreground">Evdən işləmək (remote) iş imkanları</h2>
+              </div>
             </div>
+
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              2026-cı il üçün hazırlanan iş elanları və vakansiyalar siyahımız real vaxtda yenilənir. Hər bir elan şirkət tərəfindən təsdiqlənir və istifadəçilərə dəqiq maaş aralığı, tələblər, vəzifə təsviri və müraciət linki təqdim olunur. İstər ofisdaxili, istər remote iş axtarasınız? Burada bütün vakansiyaları rahatlıqla tapa biləcəksiniz.
+            </p>
           </div>
 
           {/* Interactive Job Workflow Illustration */}
@@ -840,8 +767,8 @@ const JobDetails = ({ jobId, isMobile = false, primaryHeading = true }: JobDetai
                   src={job.companies.logo}
                   alt={job.companies?.name || "Company"}
                   className={`${isMobile ? "w-12 h-12" : "w-16 h-16"} rounded-xl object-cover`}
-                  width={isMobile ? "48" : "64"}
-                  height={isMobile ? "48" : "64"}
+                  width="64"
+                  height="64"
                   decoding="async"
                 />
               ) : (
@@ -856,7 +783,7 @@ const JobDetails = ({ jobId, isMobile = false, primaryHeading = true }: JobDetai
               {/* Company Name with Link */}
               <div className="flex items-center gap-3">
                 {job.companies?.slug ? (
-                  <Link to={`/companies/${job.companies.slug}`}>
+                  <Link href={`/companies/${job.companies.slug}`}>
                     <h2
                       className={`${isMobile ? "text-base" : "text-lg"} font-semibold text-muted-foreground hover:text-primary transition-all duration-200 truncate`}
                     >
@@ -938,10 +865,10 @@ const JobDetails = ({ jobId, isMobile = false, primaryHeading = true }: JobDetai
                   {expired
                     ? "Müddəti bitib"
                     : new Date(job.expiration_date).toLocaleDateString("az-AZ", {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                      })}
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                    })}
                 </Button>
               )}
               <Button

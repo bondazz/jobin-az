@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { updatePageMeta } from '@/utils/seo';
 import { Tables } from '@/integrations/supabase/types';
 
@@ -7,22 +7,14 @@ type Company = Tables<'companies'>;
 
 export const useCompanyProfile = (company: Company | null) => {
   const [activeTab, setActiveTab] = useState<'about' | 'jobs'>('about');
-  const navigate = useNavigate();
+  const router = useRouter();
 
   // Unified function to handle tab changes across all devices
   const handleTabChange = (tab: 'about' | 'jobs') => {
     if (!company) return;
-    
+
     setActiveTab(tab);
-    
-    // Update URL consistently across all devices
-    const newUrl = tab === 'about' 
-      ? `/companies/${company.slug}` 
-      : `/companies/${company.slug}/vacancies`;
-    
-    // Use navigate for proper routing
-    navigate(newUrl, { replace: true });
-    
+
     // Update SEO consistently
     updateSEO(company, tab);
   };
@@ -30,7 +22,7 @@ export const useCompanyProfile = (company: Company | null) => {
   // Unified SEO update function
   const updateSEO = (companyData: Company, tab: 'about' | 'jobs') => {
     if (!companyData) return;
-    
+
     if (tab === 'about') {
       updatePageMeta({
         title: companyData.about_seo_title || companyData.seo_title || `${companyData.name} - Haqqında | Şirkət Profili`,
@@ -51,11 +43,12 @@ export const useCompanyProfile = (company: Company | null) => {
   // Detect initial tab from URL and initialize SEO immediately
   useEffect(() => {
     if (!company) return;
-    
+    if (typeof window === 'undefined') return;
+
     const currentPath = window.location.pathname;
     const initialTab = currentPath.includes('/vacancies') ? 'jobs' as const : 'about' as const;
     setActiveTab(initialTab);
-    
+
     // Set SEO immediately when company data is available
     updateSEO(company, initialTab);
   }, [company]);

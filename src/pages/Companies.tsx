@@ -41,7 +41,7 @@ const Companies = () => {
   const isMobile = useIsMobile();
   const isMobileOrTablet = useIsMobileOrTablet();
   const { getUrlWithReferral } = useReferralCode();
-  
+
   // Use unified company profile hook for consistent behavior across all devices
   const { activeTab, handleTabChange } = useCompanyProfile(selectedCompany);
 
@@ -157,7 +157,7 @@ const Companies = () => {
           setJobData(data);
         }
       };
-      
+
       fetchJobBySlug();
     } else {
       setJobData(null);
@@ -166,15 +166,15 @@ const Companies = () => {
 
   const loadMoreDisplayedCompanies = useCallback(() => {
     if (loadingMore || !hasMore || debouncedSearchTerm.trim()) return;
-    
+
     setLoadingMore(true);
     console.log('⏳ 50 şirkət əlavə edilir...');
-    
+
     setTimeout(() => {
       const nextPage = displayPage + 1;
       const startIndex = nextPage * COMPANIES_PER_PAGE;
       const endIndex = startIndex + COMPANIES_PER_PAGE;
-      
+
       const nextBatch = allCompanies.slice(startIndex, endIndex);
       // Ensure uniqueness by company id when appending
       const map = new Map<string, any>();
@@ -182,12 +182,12 @@ const Companies = () => {
         if (!map.has(c.id)) map.set(c.id, c);
       });
       const newDisplayed = Array.from(map.values());
-      
+
       setCompanies(newDisplayed);
       setDisplayPage(nextPage);
       setHasMore(endIndex < allCompanies.length);
       setLoadingMore(false);
-      
+
       console.log(`✅ YENİ BATCH: ${nextBatch.length} şirkət əlavə edildi`);
       console.log(`📱 CƏMİ GÖSTƏRƏN: ${newDisplayed.length}/${allCompanies.length}`);
     }, 300);
@@ -200,7 +200,7 @@ const Companies = () => {
       const scrollTop = target.scrollTop;
       const scrollHeight = target.scrollHeight;
       const clientHeight = target.clientHeight;
-      
+
       // Check if near bottom (within 100px) for more sensitive detection
       if (scrollTop + clientHeight >= scrollHeight - 100) {
         if (!loadingMore && hasMore) {
@@ -220,7 +220,7 @@ const Companies = () => {
     try {
       setLoading(true);
       console.log('🚀 PERFORMANCE YAXŞILAŞDIRILMASI - İlk 15 şirkət anında');
-      
+
       if (debouncedSearchTerm.trim()) {
         console.log('🔍 Axtarış edilir:', debouncedSearchTerm);
         // Get companies with their job counts
@@ -232,7 +232,7 @@ const Companies = () => {
           `)
           .eq('is_active', true)
           .ilike('name', `%${debouncedSearchTerm.trim()}%`);
-        
+
         // Create unique companies with job counts using Map
         const companiesMap = new Map();
         data?.forEach(row => {
@@ -271,16 +271,16 @@ const Companies = () => {
             });
           }
         });
-        
+
         // Convert to array and add job count, then sort
         const companiesWithJobCount = Array.from(companiesMap.values()).map(company => ({
           ...company,
           jobCount: company.jobIds.length
         })).sort((a, b) => b.jobCount - a.jobCount);
-        
+
         if (error) throw error;
         console.log('✅ Axtarış nəticəsi:', data?.length || 0);
-        
+
         // Search zamanı bütün nəticələri göstər
         setAllCompanies(companiesWithJobCount as any);
         setCompanies(companiesWithJobCount as any);
@@ -288,7 +288,7 @@ const Companies = () => {
         setLoading(false); // Search zamanı da loading-i söndür
       } else {
         console.log('⚡ İLK 15 ŞİRKƏTİ ANINDA YÜKLƏYİRİK');
-        
+
         // İlk 15 şirkəti anında yüklə - elan sayına görə sıralı
         const { data: initialData, error: initialError } = await supabase
           .from('companies')
@@ -297,7 +297,7 @@ const Companies = () => {
             jobs!company_id(id)
           `)
           .eq('is_active', true);
-        
+
         // Create unique companies with job counts
         const companiesMap = new Map();
         initialData?.forEach(row => {
@@ -336,7 +336,7 @@ const Companies = () => {
             });
           }
         });
-        
+
         // Count jobs and sort by count descending, then take first 15
         const sortedInitial = Array.from(companiesMap.values())
           .map(company => ({
@@ -345,15 +345,15 @@ const Companies = () => {
           }))
           .sort((a, b) => b.jobCount - a.jobCount)
           .slice(0, 15);
-        
+
         if (initialError) throw initialError;
-        
+
         console.log(`✅ İlk batch: ${sortedInitial?.length || 0} şirkət anında yükləndi`);
-        
+
         // İlk şirkətləri anında göstər
         setCompanies(sortedInitial as any);
         setLoading(false); // Loading-i burada söndür
-        
+
         // Background-da qalan şirkətləri yüklə
         console.log('🔄 Background-da qalan şirkətlər yüklənir...');
         loadRemainingCompaniesInBackground(sortedInitial as any);
@@ -371,16 +371,16 @@ const Companies = () => {
   const loadRemainingCompaniesInBackground = async (initialCompanies: Company[]) => {
     try {
       console.log('📊 Background-da BÜTÜN ŞİRKƏTLƏRİ YÜKLƏYİRİK');
-      
+
       let allCompaniesData: Company[] = [...initialCompanies];
       let pageSize = 1000;
       let currentPage = 0;
       let hasMoreData = true;
       let offset = 15; // İlk 15-i artıq yüklədik
-      
+
       while (hasMoreData) {
         console.log(`📖 Background səhifə ${currentPage + 1} yüklənir...`);
-        
+
         const { data, error } = await supabase
           .from('companies')
           .select(`
@@ -388,11 +388,11 @@ const Companies = () => {
             jobs!company_id(id)
           `)
           .eq('is_active', true);
-        
+
         if (error) throw error;
-        
+
         console.log(`✅ Background səhifə ${currentPage + 1}: ${data?.length || 0} şirkət`);
-        
+
         if (data && data.length > 0) {
           // Create unique companies with job counts
           const companiesMap = new Map();
@@ -432,12 +432,12 @@ const Companies = () => {
               });
             }
           });
-          
+
           const companiesWithCounts = Array.from(companiesMap.values()).map(company => ({
             ...company,
             jobCount: company.jobIds.length
           }));
-          
+
           allCompaniesData = [...allCompaniesData, ...companiesWithCounts];
           console.log(`📈 Background cəmi: ${allCompaniesData.length} şirkət`);
           hasMoreData = false; // Load all at once since we're already fetching everything
@@ -445,9 +445,9 @@ const Companies = () => {
           hasMoreData = false;
         }
       }
-      
+
       console.log(`🎉 BACKGROUND TAMAMLANDI! ${allCompaniesData.length} şirkət yükləndi`);
-      
+
       // Deduplicate by company id before sorting
       const uniqueMap = new Map<string, any>();
       (allCompaniesData as any[]).forEach((c) => {
@@ -458,21 +458,21 @@ const Companies = () => {
         }
       });
       const uniqueCompanies = Array.from(uniqueMap.values());
-      
+
       // Sort all companies by job count descending
       const sortedCompanies = uniqueCompanies.sort((a: any, b: any) => (b.jobCount ?? 0) - (a.jobCount ?? 0));
-      
+
       // Background yükləmə tamamlandıqda state-i yenilə
       setAllCompanies(sortedCompanies as any);
-      
+
       // İlk 50 şirkəti göstər (15 + 35)
       const initialDisplayed = sortedCompanies.slice(0, COMPANIES_PER_PAGE);
       setCompanies(initialDisplayed as any);
       setDisplayPage(0);
       setHasMore(sortedCompanies.length > COMPANIES_PER_PAGE);
-      
+
       console.log(`📱 Background tamamlandı: ${initialDisplayed.length} şirkət göstərilir (${sortedCompanies.length} təklifindən)`);
-      
+
     } catch (error) {
       console.error('❌ Background yükləmə xətası:', error);
     }
@@ -481,10 +481,10 @@ const Companies = () => {
   const handleCompanyClick = (company: Company) => {
     setSelectedCompany(company);
     setSelectedJob(null);
-    
+
     // Always navigate to update URL, regardless of device type
     navigate(`/companies/${company.slug}`);
-    
+
     if (isMobileOrTablet) {
       setShowMobileProfile(true);
     }
@@ -497,7 +497,7 @@ const Companies = () => {
       .select('slug')
       .eq('id', job.id)
       .single();
-    
+
     if (data?.slug) {
       const baseUrl = `/vacancies/${data.slug}?company=${selectedCompany?.slug}`;
       const urlWithReferral = getUrlWithReferral(baseUrl);
@@ -512,7 +512,7 @@ const Companies = () => {
       </div>
     );
   }
-  
+
   return (
     <div className="h-full flex bg-gradient-to-br from-background via-primary/3 to-background overflow-hidden">
       {/* Organization Structured Data */}
@@ -524,10 +524,10 @@ const Companies = () => {
           }}
         />
       )}
-      
+
       {/* Mobile Header */}
       <MobileHeader />
-      
+
       <div className="flex-1 flex min-w-0 pb-16 xl:pb-0 pt-14 xl:pt-0">
         {/* Companies List */}
         <div className="w-full lg:w-[400px] xl:w-[450px] border-r border-border animate-fade-in">
@@ -536,9 +536,9 @@ const Companies = () => {
             {/* Header with Search */}
             <div className="relative overflow-hidden bg-gradient-to-br from-background via-primary/8 to-accent/5 border-b border-border/30">
               <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-60"></div>
-              
+
               <div className="relative space-y-3 px-[19px] py-[10px]">
-                
+
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input placeholder="Şirkətlər axtarın..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="pl-10" />
@@ -550,13 +550,13 @@ const Companies = () => {
             <div ref={scrollContainerRef} className="companies-scroll-container flex-1 overflow-y-auto p-2 bg-gradient-to-b from-transparent to-primary/5 w-full max-w-[100%] mx-auto">
               <div className="flex flex-col gap-2 justify-center items-center w-full max-w-full px-2">
                 {companies.map((company, index) => (
-                  <div 
-                    key={company.id} 
-                    onClick={() => handleCompanyClick(company)} 
+                  <div
+                    key={company.id}
+                    onClick={() => handleCompanyClick(company)}
                     className={`group cursor-pointer p-3 rounded-lg border transition-all duration-200 ease-smooth relative
                       hover:shadow-card-hover hover:-translate-y-0.5 animate-fade-in
                       w-full max-w-full min-w-0 min-h-[60px] flex flex-row items-start justify-between backdrop-blur-sm
-                      ${selectedCompany?.id === company.id ? 'border-primary bg-gradient-to-r from-primary/20 to-primary/5 shadow-elegant ring-1 ring-primary/50' : 'bg-job-card border-border/50 hover:border-primary/40 hover:shadow-card-hover'}`} 
+                      ${selectedCompany?.id === company.id ? 'border-primary bg-gradient-to-r from-primary/20 to-primary/5 shadow-elegant ring-1 ring-primary/50' : 'bg-job-card border-border/50 hover:border-primary/40 hover:shadow-card-hover'}`}
                     style={{
                       animationDelay: `${index * 50}ms`
                     }}
@@ -575,14 +575,20 @@ const Companies = () => {
                     <div className="flex items-center gap-3 flex-1 min-w-0 pr-16 overflow-hidden">
                       <div className="relative flex-shrink-0">
                         {company.logo ? (
-                          <img src={company.logo} alt={company.name} className="w-8 h-8 rounded-md object-cover" />
+                          <img
+                            src={company.logo}
+                            alt={company.name}
+                            className="w-8 h-8 rounded-md object-cover"
+                            width="32"
+                            height="32"
+                          />
                         ) : (
                           <div className="w-8 h-8 rounded-md flex items-center justify-center text-white font-bold text-xs shadow-sm bg-gradient-primary">
                             {company.name.charAt(0)}
                           </div>
                         )}
                       </div>
-                      
+
                       <div className="flex-1 min-w-0 overflow-hidden">
                         <div className="flex items-center gap-2 min-w-0">
                           <h3 className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors duration-200 truncate flex-1 min-w-0">
@@ -644,108 +650,116 @@ const Companies = () => {
         {/* Right Section - Company Details */}
         <div className="hidden lg:block flex-1 bg-gradient-to-br from-job-details to-primary/3 animate-slide-in-right">
           {selectedCompany ? <div className="h-full overflow-y-auto">
-              <div className="relative">
-                {/* Company Header with Background */}
-                <div className="relative h-48 bg-gradient-to-br from-primary/20 via-primary/10 to-accent/10 overflow-hidden">
-                  {selectedCompany.background_image && (
-                    <img 
-                      src={selectedCompany.background_image} 
-                      alt={selectedCompany.name} 
-                      className="absolute inset-0 w-full h-full object-cover"
-                    />
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/20"></div>
-                  
-                  {/* Company Logo - Floating */}
-                  <div className="absolute bottom-6 left-6 z-10">
-                    <div className="relative">
-                      {selectedCompany.logo ? (
-                        <img src={selectedCompany.logo} alt={selectedCompany.name} className="w-28 h-28 rounded-2xl object-cover shadow-2xl border-4 border-background" />
-                      ) : (
-                        <div className="w-28 h-28 bg-gradient-primary rounded-2xl flex items-center justify-center text-white font-bold text-2xl shadow-2xl border-4 border-background">
-                          {selectedCompany.name.charAt(0)}
-                        </div>
-                      )}
-                       {selectedCompany.is_verified && <VerifyBadge size={32} className="absolute -top-2 -right-2" />}
-                    </div>
-                  </div>
-                </div>
+            <div className="relative">
+              {/* Company Header with Background */}
+              <div className="relative h-48 bg-gradient-to-br from-primary/20 via-primary/10 to-accent/10 overflow-hidden">
+                {selectedCompany.background_image && (
+                  <img
+                    src={selectedCompany.background_image}
+                    alt={selectedCompany.name}
+                    className="absolute inset-0 w-full h-full object-cover"
+                    width="800"
+                    height="192"
+                  />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/20"></div>
 
-                {/* Company Info */}
-                <div className="pt-16 px-6 pb-6">
-                  <div className="mb-6">
-                    <h1 className="text-3xl font-bold text-foreground mb-2">{selectedCompany.name}</h1>
-                    <div className="flex items-center gap-4 text-muted-foreground">
-                      <div className="flex items-center gap-1">
-                        <MapPin className="w-4 h-4" />
-                        <span>{selectedCompany.address || 'Ünvan yoxdur'}</span>
+                {/* Company Logo - Floating */}
+                <div className="absolute bottom-6 left-6 z-10">
+                  <div className="relative">
+                    {selectedCompany.logo ? (
+                      <img
+                        src={selectedCompany.logo}
+                        alt={selectedCompany.name}
+                        className="w-28 h-28 rounded-2xl object-cover shadow-2xl border-4 border-background"
+                        width="112"
+                        height="112"
+                      />
+                    ) : (
+                      <div className="w-28 h-28 bg-gradient-primary rounded-2xl flex items-center justify-center text-white font-bold text-2xl shadow-2xl border-4 border-background">
+                        {selectedCompany.name.charAt(0)}
                       </div>
-                      {selectedCompany.is_verified && (
-                        <div className="flex items-center gap-1">
-                          <span className="text-green-600 font-medium">✓ Təsdiqlənmiş Şirkət</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                   {/* Navigation Tabs */}
-                   <div className="flex gap-4 mb-6 border-b border-border">
-                     <button onClick={() => handleTabChange('about')} className={`pb-3 px-1 border-b-2 font-medium text-sm transition-colors ${activeTab === 'about' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>
-                       Şirkət Haqqında
-                     </button>
-                     <button onClick={() => handleTabChange('jobs')} className={`pb-3 px-1 border-b-2 font-medium text-sm transition-colors ${activeTab === 'jobs' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>
-                       İş Elanları
-                     </button>
-                   </div>
-
-                  {/* Tab Content */}
-                  <div className="space-y-6">
-                    {activeTab === 'about' ? <>
-                        <div>
-                          <h3 className="text-lg font-semibold text-foreground mb-3">Şirkət Haqqında</h3>
-                          <div className="leading-relaxed rich-text-content" dangerouslySetInnerHTML={{
-                            __html: selectedCompany.description || `${selectedCompany.name} Azərbaycanın aparıcı şirkətlərindən biridir. 
-                            Bizim missiyamız keyfiyyətli xidmətlər təqdim etmək və müştərilərimizin tələbatlarını qarşılamaqdır. 
-                            Şirkətimiz innovativ yanaşmalar və peşəkar komanda ilə bazarda lider mövqe tutur.`
-                          }} />
-                        </div>
-
-                        {/* Contact Info */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          {selectedCompany.website && (
-                            <div className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border">
-                              <Globe className="w-5 h-5 text-primary" />
-                              <div>
-                                <p className="text-sm font-medium text-foreground">Vebsayt</p>
-                                <a href={selectedCompany.website} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline">
-                                  {selectedCompany.website}
-                                </a>
-                              </div>
-                            </div>
-                          )}
-
-
-                          {selectedCompany.address && (
-                            <div className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border">
-                              <MapPin className="w-5 h-5 text-primary" />
-                              <div>
-                                <p className="text-sm font-medium text-foreground">Ünvan</p>
-                                <p className="text-sm text-muted-foreground">{selectedCompany.address}</p>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </> : <>
-                        <JobListings 
-                          onJobSelect={handleJobSelect}
-                          selectedJob={selectedJob}
-                          companyId={selectedCompany.id}
-                        />
-                      </>}
+                    )}
+                    {selectedCompany.is_verified && <VerifyBadge size={32} className="absolute -top-2 -right-2" />}
                   </div>
                 </div>
               </div>
-            </div> : 
+
+              {/* Company Info */}
+              <div className="pt-16 px-6 pb-6">
+                <div className="mb-6">
+                  <h1 className="text-3xl font-bold text-foreground mb-2">{selectedCompany.name}</h1>
+                  <div className="flex items-center gap-4 text-muted-foreground">
+                    <div className="flex items-center gap-1">
+                      <MapPin className="w-4 h-4" />
+                      <span>{selectedCompany.address || 'Ünvan yoxdur'}</span>
+                    </div>
+                    {selectedCompany.is_verified && (
+                      <div className="flex items-center gap-1">
+                        <span className="text-green-600 font-medium">✓ Təsdiqlənmiş Şirkət</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Navigation Tabs */}
+                <div className="flex gap-4 mb-6 border-b border-border">
+                  <button onClick={() => handleTabChange('about')} className={`pb-3 px-1 border-b-2 font-medium text-sm transition-colors ${activeTab === 'about' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>
+                    Şirkət Haqqında
+                  </button>
+                  <button onClick={() => handleTabChange('jobs')} className={`pb-3 px-1 border-b-2 font-medium text-sm transition-colors ${activeTab === 'jobs' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>
+                    İş Elanları
+                  </button>
+                </div>
+
+                {/* Tab Content */}
+                <div className="space-y-6">
+                  {activeTab === 'about' ? <>
+                    <div>
+                      <h3 className="text-lg font-semibold text-foreground mb-3">Şirkət Haqqında</h3>
+                      <div className="leading-relaxed rich-text-content" dangerouslySetInnerHTML={{
+                        __html: selectedCompany.description || `${selectedCompany.name} Azərbaycanın aparıcı şirkətlərindən biridir. 
+                            Bizim missiyamız keyfiyyətli xidmətlər təqdim etmək və müştərilərimizin tələbatlarını qarşılamaqdır. 
+                            Şirkətimiz innovativ yanaşmalar və peşəkar komanda ilə bazarda lider mövqe tutur.`
+                      }} />
+                    </div>
+
+                    {/* Contact Info */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {selectedCompany.website && (
+                        <div className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border">
+                          <Globe className="w-5 h-5 text-primary" />
+                          <div>
+                            <p className="text-sm font-medium text-foreground">Vebsayt</p>
+                            <a href={selectedCompany.website} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline">
+                              {selectedCompany.website}
+                            </a>
+                          </div>
+                        </div>
+                      )}
+
+
+                      {selectedCompany.address && (
+                        <div className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border">
+                          <MapPin className="w-5 h-5 text-primary" />
+                          <div>
+                            <p className="text-sm font-medium text-foreground">Ünvan</p>
+                            <p className="text-sm text-muted-foreground">{selectedCompany.address}</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </> : <>
+                    <JobListings
+                      onJobSelect={handleJobSelect}
+                      selectedJob={selectedJob}
+                      companyId={selectedCompany.id}
+                    />
+                  </>}
+                </div>
+              </div>
+            </div>
+          </div> :
             <div className="flex items-center justify-center h-full">
               <div className="text-center max-w-2xl mx-auto px-4">
                 <Building className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
@@ -769,7 +783,7 @@ const Companies = () => {
 
       {/* Mobile Company Profile */}
       {isMobileOrTablet && selectedCompany && showMobileProfile && (
-        <CompanyProfile 
+        <CompanyProfile
           company={selectedCompany}
           onClose={() => setShowMobileProfile(false)}
           isMobile={true}
@@ -777,7 +791,7 @@ const Companies = () => {
       )}
 
       {/* Bottom Navigation */}
-      <BottomNavigation onCategorySelect={() => {}} />
+      <BottomNavigation onCategorySelect={() => { }} />
     </div>
   );
 };

@@ -50,6 +50,11 @@ export default function ReferralProfile({
   const [editLastName, setEditLastName] = useState(lastName);
   const [editAvatarUrl, setEditAvatarUrl] = useState(avatarUrl || "");
   const [editBackgroundUrl, setEditBackgroundUrl] = useState(backgroundImageUrl || "");
+  const [origin, setOrigin] = useState("");
+
+  useEffect(() => {
+    setOrigin(window.location.origin);
+  }, []);
 
   // Update edit fields when props change
   useEffect(() => {
@@ -61,9 +66,9 @@ export default function ReferralProfile({
 
   const updateProfileInfo = async () => {
     if (!user) return;
-    
+
     const updatedFullName = `${editFirstName} ${editLastName}`.trim();
-    
+
     const { error } = await supabase
       .from("profiles")
       .update({
@@ -90,7 +95,7 @@ export default function ReferralProfile({
 
   const updateAvatar = async () => {
     if (!user) return;
-    
+
     const { error } = await supabase
       .from("profiles")
       .update({
@@ -115,7 +120,7 @@ export default function ReferralProfile({
 
   const updateBackground = async () => {
     if (!user) return;
-    
+
     const { error } = await supabase
       .from("profiles")
       .update({
@@ -139,7 +144,7 @@ export default function ReferralProfile({
   };
 
   const copyReferralLink = () => {
-    const link = `${window.location.origin}/?ref=${referralCode}`;
+    const link = `${origin}/?ref=${referralCode}`;
     navigator.clipboard.writeText(link);
     toast({ title: "Kopyalandı!", description: "Referral link panoya kopyalandı" });
   };
@@ -150,9 +155,9 @@ export default function ReferralProfile({
   };
 
   const displayName = fullName || (firstName && lastName ? `${firstName} ${lastName}` : user?.email?.split('@')[0] || "İstifadəçi");
-  const initials = fullName 
+  const initials = fullName
     ? fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
-    : (firstName && lastName) 
+    : (firstName && lastName)
       ? `${firstName[0]}${lastName[0]}`.toUpperCase()
       : user?.email ? user.email[0].toUpperCase() : 'U';
 
@@ -160,7 +165,7 @@ export default function ReferralProfile({
     <Card className="overflow-hidden bg-gradient-to-br from-card via-card to-muted/20 border-0 shadow-lg">
       {/* Background Image Section */}
       <div className="relative">
-        <div 
+        <div
           className="h-24 sm:h-32 bg-gradient-to-br from-primary/20 via-primary/10 to-secondary/20 relative overflow-hidden"
           style={backgroundImageUrl ? {
             backgroundImage: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.1)), url(${backgroundImageUrl})`,
@@ -170,7 +175,7 @@ export default function ReferralProfile({
         >
           {/* Background overlay for better text readability */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-          
+
           {/* Background edit button */}
           <Button
             variant="ghost"
@@ -191,7 +196,7 @@ export default function ReferralProfile({
                 {initials}
               </AvatarFallback>
             </Avatar>
-            
+
             {/* Avatar edit overlay */}
             <button
               onClick={() => setIsEditingAvatar(!isEditingAvatar)}
@@ -229,17 +234,17 @@ export default function ReferralProfile({
               />
             </div>
             <div className="flex gap-2 pt-2">
-              <Button 
-                size="sm" 
-                onClick={updateBackground} 
+              <Button
+                size="sm"
+                onClick={updateBackground}
                 className="h-7 px-3 text-xs bg-primary hover:bg-primary-hover shadow-md transition-all duration-200 font-medium"
               >
                 Yadda Saxla
               </Button>
-              <Button 
-                size="sm" 
-                variant="outline" 
-                onClick={() => setIsEditingBackground(false)} 
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setIsEditingBackground(false)}
                 className="h-7 px-3 text-xs border-border/60 hover:bg-muted/50 transition-all duration-200"
               >
                 Ləğv Et
@@ -262,17 +267,17 @@ export default function ReferralProfile({
               />
             </div>
             <div className="flex gap-2 pt-2">
-              <Button 
-                size="sm" 
-                onClick={updateAvatar} 
+              <Button
+                size="sm"
+                onClick={updateAvatar}
                 className="h-7 px-3 text-xs bg-primary hover:bg-primary-hover shadow-md transition-all duration-200 font-medium"
               >
                 Yadda Saxla
               </Button>
-              <Button 
-                size="sm" 
-                variant="outline" 
-                onClick={() => setIsEditingAvatar(false)} 
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setIsEditingAvatar(false)}
                 className="h-7 px-3 text-xs border-border/60 hover:bg-muted/50 transition-all duration-200"
               >
                 Ləğv Et
@@ -310,7 +315,7 @@ export default function ReferralProfile({
                   </div>
                 </div>
               </div>
-              
+
               {/* Center: Balance */}
               <div className="bg-gradient-to-br from-success/8 via-success/4 to-transparent border border-success/15 rounded-xl p-2.5 shadow-sm">
                 <div className="text-center space-y-1.5">
@@ -355,20 +360,20 @@ export default function ReferralProfile({
                       </label>
                       <div className="bg-muted/30 border border-border/40 rounded-lg p-3">
                         <div className="font-mono text-sm text-foreground break-all leading-relaxed">
-                          {`${window.location.origin}/?ref=${referralCode}`}
+                          {origin ? `${origin}/?ref=${referralCode}` : `.../?ref=${referralCode}`}
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="flex gap-2">
-                      <Button 
+                      <Button
                         onClick={copyReferralLink}
                         className="flex-1 h-9 bg-gradient-to-r from-secondary to-secondary/80 hover:from-secondary/90 hover:to-secondary/70 text-secondary-foreground font-medium shadow-lg hover:shadow-xl transition-all duration-300"
                       >
                         <Clipboard className="w-4 h-4 mr-2" />
                         Linki Kopyala
                       </Button>
-                      <Button 
+                      <Button
                         onClick={copyReferralCode}
                         variant="outline"
                         className="h-9 px-3 border-secondary/30 hover:bg-secondary/5"
@@ -383,16 +388,16 @@ export default function ReferralProfile({
 
             {/* Enhanced Action Buttons */}
             <div className="flex gap-3 pt-2">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={() => setIsEditingProfile(true)}
                 className="flex-1 h-11 text-sm font-medium border-primary/30 hover:bg-primary/5 hover:border-primary/50 transition-all duration-200 rounded-xl shadow-sm"
               >
                 <Edit3 className="w-4 h-4 mr-2" />
                 Profili Redaktə Et
               </Button>
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 onClick={onSignOut}
                 className="flex-1 h-11 text-sm font-medium hover:bg-destructive/5 hover:text-destructive transition-all duration-200 rounded-xl"
               >
@@ -409,37 +414,37 @@ export default function ReferralProfile({
               </h3>
               <p className="text-sm text-muted-foreground mt-1">Məlumatlarınızı yeniləyin</p>
             </div>
-            
+
             <div className="space-y-5">
               <div className="space-y-2">
                 <Label className="text-sm font-medium text-foreground">Ad</Label>
-                <Input 
-                  value={editFirstName} 
-                  onChange={(e) => setEditFirstName(e.target.value)} 
+                <Input
+                  value={editFirstName}
+                  onChange={(e) => setEditFirstName(e.target.value)}
                   placeholder="Adınızı daxil edin"
                   className="h-11 text-sm border-border/60 focus:border-primary/60 transition-colors rounded-xl bg-card shadow-sm"
                 />
               </div>
               <div className="space-y-2">
                 <Label className="text-sm font-medium text-foreground">Soyad</Label>
-                <Input 
-                  value={editLastName} 
-                  onChange={(e) => setEditLastName(e.target.value)} 
+                <Input
+                  value={editLastName}
+                  onChange={(e) => setEditLastName(e.target.value)}
                   placeholder="Soyadınızı daxil edin"
                   className="h-11 text-sm border-border/60 focus:border-primary/60 transition-colors rounded-xl bg-card shadow-sm"
                 />
               </div>
             </div>
-            
+
             <div className="flex gap-3 pt-4">
-              <Button 
-                onClick={updateProfileInfo} 
+              <Button
+                onClick={updateProfileInfo}
                 className="flex-1 h-11 text-sm bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl font-medium"
               >
                 Yadda Saxla
               </Button>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={() => {
                   setIsEditingProfile(false);
                   setEditFirstName(firstName);

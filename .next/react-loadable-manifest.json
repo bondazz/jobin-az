@@ -1,0 +1,30 @@
+{
+  "..\\node_modules\\@supabase\\auth-js\\dist\\module\\lib\\helpers.js -> @supabase/node-fetch": {
+    "id": "..\\node_modules\\@supabase\\auth-js\\dist\\module\\lib\\helpers.js -> @supabase/node-fetch",
+    "files": []
+  },
+  "..\\node_modules\\@supabase\\functions-js\\dist\\module\\helper.js -> @supabase/node-fetch": {
+    "id": "..\\node_modules\\@supabase\\functions-js\\dist\\module\\helper.js -> @supabase/node-fetch",
+    "files": []
+  },
+  "..\\node_modules\\@supabase\\realtime-js\\dist\\module\\RealtimeClient.js -> @supabase/node-fetch": {
+    "id": "..\\node_modules\\@supabase\\realtime-js\\dist\\module\\RealtimeClient.js -> @supabase/node-fetch",
+    "files": []
+  },
+  "..\\node_modules\\@supabase\\storage-js\\dist\\module\\lib\\helpers.js -> @supabase/node-fetch": {
+    "id": "..\\node_modules\\@supabase\\storage-js\\dist\\module\\lib\\helpers.js -> @supabase/node-fetch",
+    "files": []
+  },
+  "components\\HomeClient.tsx -> @/components/JobDetails": {
+    "id": "components\\HomeClient.tsx -> @/components/JobDetails",
+    "files": [
+      "static/chunks/_app-pages-browser_src_components_JobDetails_tsx.js"
+    ]
+  },
+  "components\\ui\\rich-text-editor.tsx -> react-quill": {
+    "id": "components\\ui\\rich-text-editor.tsx -> react-quill",
+    "files": [
+      "static/chunks/_app-pages-browser_node_modules_react-quill_lib_index_js.js"
+    ]
+  }
+}

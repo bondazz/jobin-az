@@ -5,9 +5,11 @@ interface LazyImageProps {
   alt: string;
   className?: string;
   fallback?: React.ReactNode;
+  width?: number | string;
+  height?: number | string;
 }
 
-export const LazyImage = ({ src, alt, className, fallback }: LazyImageProps) => {
+export const LazyImage = ({ src, alt, className, fallback, width, height }: LazyImageProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isInView, setIsInView] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
@@ -36,9 +38,11 @@ export const LazyImage = ({ src, alt, className, fallback }: LazyImageProps) => 
         <img
           src={src}
           alt={alt}
+          width={width}
+          height={height}
           className={className}
           onLoad={() => setIsLoaded(true)}
-          style={{ 
+          style={{
             opacity: isLoaded ? 1 : 0,
             transition: 'opacity 0.3s ease'
           }}

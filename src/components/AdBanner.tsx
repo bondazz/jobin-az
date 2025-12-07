@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -54,7 +56,7 @@ const AdBanner: React.FC<AdBannerProps> = ({ position, className = "" }) => {
     try {
       // Increment click count
       await supabase.rpc('increment_ad_clicks', { ad_id: ad.id });
-      
+
       // Open link if provided
       if (ad.link_url) {
         window.open(ad.link_url, '_blank', 'noopener,noreferrer');
@@ -86,6 +88,8 @@ const AdBanner: React.FC<AdBannerProps> = ({ position, className = "" }) => {
                 fetchPriority={position === 'header' ? 'high' : 'auto'}
                 decoding="async"
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                width="600"
+                height="300"
               />
             </button>
           ) : (
@@ -98,10 +102,12 @@ const AdBanner: React.FC<AdBannerProps> = ({ position, className = "" }) => {
                 fetchPriority={position === 'header' ? 'high' : 'auto'}
                 decoding="async"
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                width="600"
+                height="300"
               />
             </div>
           )}
-          
+
           {ad.description && (
             <p className="text-sm text-muted-foreground mt-2 text-center">
               {ad.description}

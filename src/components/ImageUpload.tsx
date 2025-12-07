@@ -15,10 +15,10 @@ interface ImageUploadProps {
   imageType?: 'companies' | 'advertising'; // Add image type prop
 }
 
-export default function ImageUpload({ 
-  value, 
-  onChange, 
-  label, 
+export default function ImageUpload({
+  value,
+  onChange,
+  label,
   placeholder,
   className = "",
   imageType = 'companies'
@@ -56,7 +56,7 @@ export default function ImageUpload({
       // Upload to Supabase storage for now
       const fileExt = file.name.split('.').pop();
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-      
+
       // Use folder based on image type
       const folderPath = imageType === 'advertising' ? 'advertising' : 'companies';
       const filePath = `${folderPath}/${fileName}`;
@@ -104,13 +104,15 @@ export default function ImageUpload({
   return (
     <div className={`space-y-3 ${className}`}>
       <Label>{label}</Label>
-      
+
       {previewUrl && (
         <div className="relative inline-block">
           <img
             src={previewUrl}
             alt="Preview"
             className="w-32 h-32 object-cover rounded-lg border"
+            width="128"
+            height="128"
           />
           <Button
             type="button"
