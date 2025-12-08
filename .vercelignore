@@ -1,0 +1,9 @@
+node_modules
+.next
+.env*.local
+.vercel
+.DS_Store
+*.log
+dist
+build
+src/pages
