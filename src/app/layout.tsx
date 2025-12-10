@@ -3,6 +3,8 @@ import { Saira } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
+// Google Analytics üçün Script komponentini import edirik
+import Script from "next/script";
 
 const saira = Saira({
     subsets: ["latin"],
@@ -40,6 +42,9 @@ export const metadata: Metadata = {
     },
 };
 
+// Sizin Google Analytics G-Kodu
+const GA_MEASUREMENT_ID = "G-C0N2ELTLL8"; 
+
 export default function RootLayout({
     children,
 }: Readonly<{
@@ -47,6 +52,27 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="az" suppressHydrationWarning>
+            {/*
+                Next.js-də optimallaşdırılmış skript yüklənməsi üçün <Script> istifadə edirik.
+                Google Analytics kodu adətən <head> hissəsində yerləşdirilməlidir.
+            */}
+
+            {/* Google Analytics Global Site Tag (gtag.js) yükləyən Script */}
+            <Script
+                src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+                strategy="afterInteractive" // Səhifə ilkin yükləndikdən sonra yüklənməsi tövsiyə olunur
+            />
+            
+            {/* Google Analytics konfiqurasiya skripti */}
+            <Script id="google-analytics-init" strategy="afterInteractive">
+                {`
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){dataLayer.push(arguments);}
+                    gtag('js', new Date());
+                    gtag('config', '${GA_MEASUREMENT_ID}');
+                `}
+            </Script>
+
             <head>
                 <link rel="icon" href="/favicon.ico" sizes="32x32" />
                 <link rel="icon" href="/favicon.ico" type="image/png" sizes="any" />
