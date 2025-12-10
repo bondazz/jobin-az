@@ -2,9 +2,9 @@ import ReferralJobSubmissionClient from '@/components/ReferralJobSubmissionClien
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'İş Elanı Yerləşdir | Birləşik Elan | Jooble Azərbaycan',
-    description: 'İş elanınızı pulsuz yerləşdirin. Referral sistemi ilə birləşik elan yerləşdirin və işəgötürənlərlə birbaşa əlaqə saxlayın. Azərbaycanda ən effektiv iş elanı platforması.',
-    keywords: 'iş elanı yerləşdir, birləşik elan, referral sistem, iş elanı ver, vakansiya yerləşdir, işəgötürən, Azərbaycan iş elanları'
+    title: 'İş Elanı Yerləşdir | Namizəd Tapma Platforması – Jooble.az',
+    description: 'Vakansiyanızı ən uyğun namizədlərə çatdırın. Jooble.az işə qəbul prosesinizi sürətləndirən peşəkar vakansiya yerləşdirmə və namizəd tapma platforması təqdim edir.',
+    keywords: 'iş elanı yerləşdir, vakansiya yerləşdirmək, iş elanı vermək, namizəd tapma platforması, işəgötürən paneli, HR vakansiya sistemi, işə qəbul platforması, Azərbaycan vakansiyaları'
 };
 
 export default function AddJobPage() {
