@@ -281,7 +281,7 @@ const MainSidebar = () => {
           
           {/* Facebook */}
           <a
-            href="https://www.facebook.com/jooble.az"
+            href="https://www.facebook.com/people/joobleaz/61582558110105"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Facebook"
