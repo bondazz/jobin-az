@@ -304,7 +304,7 @@ const MainSidebar = () => {
         <div className="text-xs text-muted-foreground">
           <div className="flex items-center gap-1 mb-1">
             <div className="w-1 h-1 bg-primary rounded-full"></div>
-            <span className="font-medium">© 2024-2026 <a href="https://jooble.az" target="_blank" rel="noopener" className="text-primary hover:underline">Jooble.az</a>. İş elanları və vakansiyalar</span>
+            <span className="font-medium">© 2024-2026 <a href="https://jooble.az" target="_blank" className="text-primary hover:underline">Jooble.az</a>. İş elanları və vakansiyalar</span>
           </div>
         </div>
       </div>
