@@ -5,7 +5,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Globe, Check } from 'lucide-react';
+import { Check } from 'lucide-react';
 
 type Language = 'az' | 'ru' | 'en';
 
@@ -34,7 +34,6 @@ const LanguageToggle = () => {
   const changeLanguage = (langCode: Language) => {
     setCurrentLanguage(langCode);
     localStorage.setItem('language', langCode);
-    console.log(`Language changed to: ${langCode}`);
   };
 
   const currentLang = languages.find(lang => lang.code === currentLanguage) || languages[0];
@@ -43,33 +42,32 @@ const LanguageToggle = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
-          className="relative flex items-center gap-1.5 h-10 px-3 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 hover:border-primary/40 hover:from-primary/20 hover:to-primary/10 transition-all duration-300 group shadow-sm hover:shadow-md"
-          aria-label="Dil seçimi"
+          className="flex items-center gap-1 h-8 px-2 rounded-full bg-muted/50 border border-border/50 hover:border-primary/50 transition-all duration-300"
+          aria-label="Dil"
         >
-          <div className="absolute inset-0 rounded-xl bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          <span className="text-base relative z-10">{currentLang.flag}</span>
-          <span className="text-xs font-semibold text-primary uppercase relative z-10">{currentLang.code}</span>
+          <span className="text-sm">{currentLang.flag}</span>
+          <span className="text-[10px] font-bold text-muted-foreground uppercase">{currentLang.code}</span>
         </button>
       </DropdownMenuTrigger>
       
       <DropdownMenuContent 
         align="end" 
-        className="w-44 p-1.5 bg-card/95 backdrop-blur-xl border border-border/50 rounded-xl shadow-xl"
+        className="w-36 p-1 bg-popover border border-border rounded-lg shadow-lg z-50"
       >
         {languages.map((language) => (
           <DropdownMenuItem
             key={language.code}
             onClick={() => changeLanguage(language.code)}
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-200 ${
+            className={`flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer text-sm ${
               currentLanguage === language.code 
-                ? 'bg-primary/15 text-primary' 
-                : 'hover:bg-muted/80'
+                ? 'bg-primary/10 text-primary' 
+                : 'hover:bg-muted'
             }`}
           >
-            <span className="text-lg">{language.flag}</span>
-            <span className="font-medium flex-1">{language.name}</span>
+            <span>{language.flag}</span>
+            <span className="flex-1">{language.name}</span>
             {currentLanguage === language.code && (
-              <Check className="w-4 h-4 text-primary" />
+              <Check className="w-3 h-3" />
             )}
           </DropdownMenuItem>
         ))}

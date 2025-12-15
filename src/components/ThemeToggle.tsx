@@ -22,15 +22,15 @@ const ThemeToggle = () => {
   return (
     <button
       onClick={toggleTheme}
-      className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 hover:border-primary/40 hover:from-primary/20 hover:to-primary/10 transition-all duration-300 group shadow-sm hover:shadow-md"
-      aria-label={isDarkMode ? 'Light mode' : 'Dark mode'}
+      className="relative w-8 h-8 rounded-full bg-muted/50 border border-border/50 hover:border-primary/50 transition-all duration-300 overflow-hidden group"
+      aria-label={isDarkMode ? 'Gündüz' : 'Gecə'}
     >
-      <div className="absolute inset-0 rounded-xl bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-      {isDarkMode ? (
-        <Sun className="w-[18px] h-[18px] text-primary transition-all duration-300 group-hover:scale-110 group-hover:rotate-90" />
-      ) : (
-        <Moon className="w-[18px] h-[18px] text-primary transition-all duration-300 group-hover:scale-110 group-hover:-rotate-12" />
-      )}
+      <div className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ${isDarkMode ? 'opacity-100 rotate-0' : 'opacity-0 -rotate-90'}`}>
+        <Sun className="w-4 h-4 text-amber-500" />
+      </div>
+      <div className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ${!isDarkMode ? 'opacity-100 rotate-0' : 'opacity-0 rotate-90'}`}>
+        <Moon className="w-4 h-4 text-indigo-400" />
+      </div>
     </button>
   );
 };
