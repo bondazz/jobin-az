@@ -889,15 +889,7 @@ const JobDetails = ({ jobId, isMobile = false, primaryHeading = true }: JobDetai
                 <Share2 className={`w-3 h-3 ${isMobile ? "mr-1" : "mr-1"}`} />
                 Paylaş
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className={`${isMobile ? "flex-1" : "flex-1"} border-primary/30 text-primary hover:bg-primary hover:text-white text-xs`}
-                onClick={handlePrint}
-              >
-                <Printer className={`w-3 h-3 ${isMobile ? "mr-1" : "mr-1"}`} />
-                Çap
-              </Button>
+              {/* Çap butonu gizlədilib */}
             </div>
           </div>
 
