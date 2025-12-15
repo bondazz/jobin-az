@@ -42,11 +42,10 @@ const LanguageToggle = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
-          className="flex items-center gap-1 h-8 px-2 rounded-full bg-muted/50 border border-border/50 hover:border-primary/50 transition-all duration-300"
+          className="flex items-center justify-center w-8 h-8 rounded-full bg-muted/50 border border-border/50 hover:border-primary/50 transition-all duration-300 overflow-hidden"
           aria-label="Dil"
         >
-          <span className="text-sm">{currentLang.flag}</span>
-          <span className="text-[10px] font-bold text-muted-foreground uppercase">{currentLang.code}</span>
+          <span className="text-lg leading-none">{currentLang.flag}</span>
         </button>
       </DropdownMenuTrigger>
       
