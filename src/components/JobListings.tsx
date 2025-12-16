@@ -346,8 +346,8 @@ const JobListings = ({
       )}
 
       {/* Job List - Responsive Container */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto p-2 bg-gradient-to-b from-transparent to-primary/5 w-full mx-auto lg:min-h-[calc(100vh-200px)] lg:px-0 py-0">
-        <div className="flex flex-col gap-2 justify-center items-center w-full px-1.5 sm:px-2 py-[12px] lg:max-w-[550px] mx-auto">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto p-2 bg-gradient-to-b from-transparent to-primary/5 w-full mx-auto lg:min-h-[calc(100vh-200px)] lg:px-2 xl:px-3 py-0">
+        <div className="flex flex-col gap-2 justify-center items-center w-full px-1.5 sm:px-2 py-[12px] lg:max-w-full mx-auto">
           {loading ? (
             <div className="flex items-center justify-center py-16">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
