@@ -497,7 +497,7 @@ const CompaniesClient = () => {
 
             <div className="flex-1 flex min-w-0 pb-16 xl:pb-0 pt-14 xl:pt-0">
                 {/* Companies List */}
-                <div className="w-full lg:w-[400px] xl:w-[450px] border-r border-border animate-fade-in">
+                <div className="w-full lg:w-[500px] xl:w-[580px] 2xl:w-[650px] border-r border-border animate-fade-in">
                     <div className="flex-1 flex flex-col h-full bg-background">
 
                         {/* Header with Search */}
