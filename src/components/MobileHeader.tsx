@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 
 interface MobileHeaderProps {
   showCloseButton?: boolean;
@@ -17,7 +16,13 @@ const MobileHeader = ({ showCloseButton = false, onClose, isJobPage = false }: M
     <div className="lg:hidden fixed top-0 left-0 right-0 bg-background/95 backdrop-blur-md border-b border-border p-3 z-30">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Link href="/">
+          <a 
+            href="/"
+            onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/';
+            }}
+          >
             <img
               src="/lovable-uploads/e888818f-70b8-405b-a5e8-f62f8e842525.png"
               alt="Jooble"
@@ -26,7 +31,7 @@ const MobileHeader = ({ showCloseButton = false, onClose, isJobPage = false }: M
               className="object-contain dark:brightness-0 dark:invert"
               style={{ width: '105px', height: '27px' }}
             />
-          </Link>
+          </a>
           <div className="seoTop__content">
             {isJobPage ? (
               <p className="text-xs text-muted-foreground">İş elanları, vakansiyalar</p>
