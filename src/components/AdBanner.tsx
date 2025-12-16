@@ -73,17 +73,17 @@ const AdBanner: React.FC<AdBannerProps> = ({ position, className = "" }) => {
   return (
     <div className={`relative z-10 space-y-4 ${className}`}>
       {advertisements.map((ad) => (
-        <div key={ad.id} className="w-full">
+        <div key={ad.id} className={`w-full ${position === 'job_listing' ? 'h-[60px]' : ''}`}>
           {ad.link_url ? (
             <button
               onClick={() => handleAdClick(ad)}
-              className="w-full block hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg"
+              className={`w-full block hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg ${position === 'job_listing' ? 'h-full' : ''}`}
               aria-label={`Reklam: ${ad.title}`}
             >
               <img
                 src={ad.image_url}
                 alt={ad.title}
-                className={`w-full h-auto rounded-lg shadow-sm hover:shadow-md transition-shadow ${position === 'job_details' ? 'max-w-[400px] max-h-[400px] mx-auto object-contain' : ''}`}
+                className={`w-full rounded-lg shadow-sm hover:shadow-md transition-shadow ${position === 'job_details' ? 'max-w-[400px] max-h-[400px] mx-auto object-contain' : ''} ${position === 'job_listing' ? 'h-full object-cover' : 'h-auto'}`}
                 loading={position === 'header' || position === 'job_details' ? 'eager' : 'lazy'}
                 fetchPriority={position === 'header' ? 'high' : 'auto'}
                 decoding="async"
@@ -93,11 +93,11 @@ const AdBanner: React.FC<AdBannerProps> = ({ position, className = "" }) => {
               />
             </button>
           ) : (
-            <div className="w-full">
+            <div className={`w-full ${position === 'job_listing' ? 'h-full' : ''}`}>
               <img
                 src={ad.image_url}
                 alt={ad.title}
-                className={`w-full h-auto rounded-lg shadow-sm ${position === 'job_details' ? 'max-w-[400px] max-h-[400px] mx-auto object-contain' : ''}`}
+                className={`w-full rounded-lg shadow-sm ${position === 'job_details' ? 'max-w-[400px] max-h-[400px] mx-auto object-contain' : ''} ${position === 'job_listing' ? 'h-full object-cover' : 'h-auto'}`}
                 loading={position === 'header' || position === 'job_details' ? 'eager' : 'lazy'}
                 fetchPriority={position === 'header' ? 'high' : 'auto'}
                 decoding="async"
