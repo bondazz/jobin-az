@@ -211,6 +211,26 @@ export const useDynamicSEO = (type: "job" | "company" | "category", data: any) =
       document.head.appendChild(meta);
     }
 
+    // Twitter Card meta tags for Twitter, Telegram, and other platforms
+    const twitterTags = [
+      { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:image', content: ogImage },
+      { name: 'twitter:title', content: metadata.title },
+      { name: 'twitter:description', content: metadata.description }
+    ];
+
+    twitterTags.forEach(({ name, content }) => {
+      const existingTag = document.querySelector(`meta[name="${name}"]`);
+      if (existingTag) {
+        existingTag.setAttribute('content', content);
+      } else {
+        const meta = document.createElement('meta');
+        meta.setAttribute('name', name);
+        meta.setAttribute('content', content);
+        document.head.appendChild(meta);
+      }
+    });
+
     // Update structured data
     const existingScript = document.querySelector('script[type="application/ld+json"]');
     if (existingScript) {
