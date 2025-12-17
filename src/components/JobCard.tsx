@@ -77,24 +77,20 @@ const JobCard = memo(({
     {/* Left Section - Company & Job Info */}
     <div className="flex items-center gap-1.5 sm:gap-2 flex-1 min-w-0 relative z-10">
       <div className="relative flex-shrink-0">
-        {job.companyLogo ? (
-          <LazyImage
-            src={job.companyLogo}
-            alt={job.company}
-            width={32}
-            height={32}
-            className="w-7 h-7 sm:w-8 sm:h-8 rounded-md object-cover"
-            fallback={
-              <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-md flex items-center justify-center text-white font-bold text-xs shadow-sm ${job.tags?.includes('premium') ? 'bg-gradient-premium' : 'bg-gradient-primary'}`}>
-                {(job.company || job.title).charAt(0)}
-              </div>
-            }
-          />
-        ) : (
-          <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-md flex items-center justify-center text-white font-bold text-xs shadow-sm ${job.tags?.includes('premium') ? 'bg-gradient-premium' : 'bg-gradient-primary'}`}>
-            {(job.company || job.title).charAt(0)}
-          </div>
-        )}
+        <LazyImage
+          src={job.companyLogo || '/icons/icon-192x192.jpg'}
+          alt={job.company}
+          width={32}
+          height={32}
+          className="w-7 h-7 sm:w-8 sm:h-8 rounded-md object-cover"
+          fallback={
+            <img 
+              src="/icons/icon-192x192.jpg" 
+              alt="Default" 
+              className="w-7 h-7 sm:w-8 sm:h-8 rounded-md object-cover"
+            />
+          }
+        />
       </div>
 
       <div className="flex-1 min-w-0 overflow-hidden">
