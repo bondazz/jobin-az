@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             siteName: 'Jooble.az',
             images: [
                 {
-                    url: companyLogo || 'https://jooble.az/lovable-uploads/e888818f-70b8-405b-a5e8-f62f8e842525.png',
+                    url: companyLogo || 'https://jooble.az/icons/icon-512x512.jpg',
                     width: 800,
                     height: 600,
                     alt: data.seo_title || 'Job Image',
