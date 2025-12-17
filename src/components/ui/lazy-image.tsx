@@ -11,8 +11,9 @@ interface LazyImageProps {
 
 export const LazyImage = ({ src, alt, className, fallback, width, height }: LazyImageProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const [isInView, setIsInView] = useState(false);
-  const imgRef = useRef<HTMLImageElement>(null);
+  const imgRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -32,6 +33,16 @@ export const LazyImage = ({ src, alt, className, fallback, width, height }: Lazy
     return () => observer.disconnect();
   }, []);
 
+  // Reset error state when src changes
+  useEffect(() => {
+    setHasError(false);
+    setIsLoaded(false);
+  }, [src]);
+
+  if (hasError) {
+    return <>{fallback}</>;
+  }
+
   return (
     <div ref={imgRef} className={className}>
       {isInView ? (
@@ -42,6 +53,7 @@ export const LazyImage = ({ src, alt, className, fallback, width, height }: Lazy
           height={height}
           className={className}
           onLoad={() => setIsLoaded(true)}
+          onError={() => setHasError(true)}
           style={{
             opacity: isLoaded ? 1 : 0,
             transition: 'opacity 0.3s ease'
