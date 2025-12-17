@@ -15,6 +15,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     if (!data) return {};
 
     const companyLogo = (data.companies as any)?.logo;
+    const ogImage = companyLogo || 'https://jooble.az/icons/icon-512x512.jpg';
 
     return {
         title: data.seo_title || 'Jooble.az - İş Elanları',
@@ -28,12 +29,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             siteName: 'Jooble.az',
             images: [
                 {
-                    url: companyLogo || 'https://jooble.az/icons/icon-512x512.jpg',
+                    url: ogImage,
                     width: 800,
                     height: 600,
                     alt: data.seo_title || 'Job Image',
                 }
             ],
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: data.seo_title || 'Jooble.az - İş Elanları',
+            description: data.seo_description || 'Ən son vakansiyalar və iş elanları Jooble.az-da',
+            images: [ogImage],
         },
         alternates: {
             canonical: `https://jooble.az/vacancies/${params.jobSlug}`,
