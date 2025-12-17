@@ -84,6 +84,8 @@ export const useSEO = ({
   }, [title, description, keywords, url, type, image, structuredData]);
 };
 
+const DEFAULT_OG_IMAGE = 'https://jooble.az/icons/icon-512x512.jpg';
+
 export const useDynamicSEO = (type: "job" | "company" | "category", data: any) => {
   useEffect(() => {
     if (!data) return;
@@ -91,9 +93,12 @@ export const useDynamicSEO = (type: "job" | "company" | "category", data: any) =
     let metadata: SEOMetadata;
     let structuredData: any;
     let ogType = "website";
+    let ogImage = DEFAULT_OG_IMAGE;
 
     switch (type) {
       case "job":
+        // Use company logo or default
+        ogImage = data.company?.logo || data.company?.logo_url || DEFAULT_OG_IMAGE;
         metadata = {
           title: data.seo_title || `${data.title} | ${data.company?.name || "İş Elanı"}`,
           description: data.seo_description || `${data.company?.name || "Şirkət"}də ${data.title} vakansiyası`,
@@ -113,7 +118,7 @@ export const useDynamicSEO = (type: "job" | "company" | "category", data: any) =
           "hiringOrganization": {
             "@type": "Organization",
             "name": data.company?.name || "Şirkət",
-            "logo": data.company?.logo_url
+            "logo": data.company?.logo || data.company?.logo_url || DEFAULT_OG_IMAGE
           },
           "jobLocation": {
             "@type": "Place",
@@ -135,6 +140,7 @@ export const useDynamicSEO = (type: "job" | "company" | "category", data: any) =
         break;
 
       case "company":
+        ogImage = data.logo || data.logo_url || DEFAULT_OG_IMAGE;
         metadata = {
           title: data.seo_title || `${data.name} | Şirkət Profili - Jooble`,
           description:
@@ -150,7 +156,7 @@ export const useDynamicSEO = (type: "job" | "company" | "category", data: any) =
           "name": data.name,
           "description": data.description,
           "url": `https://jooble.az/companies/${data.slug}`,
-          "logo": data.logo_url,
+          "logo": data.logo || data.logo_url || DEFAULT_OG_IMAGE,
           "address": {
             "@type": "PostalAddress",
             "addressCountry": "AZ"
@@ -191,6 +197,17 @@ export const useDynamicSEO = (type: "job" | "company" | "category", data: any) =
       const meta = document.createElement('meta');
       meta.setAttribute('property', 'og:type');
       meta.setAttribute('content', ogType);
+      document.head.appendChild(meta);
+    }
+
+    // Update OG Image - always set with fallback to default
+    const ogImageTag = document.querySelector('meta[property="og:image"]');
+    if (ogImageTag) {
+      ogImageTag.setAttribute('content', ogImage);
+    } else {
+      const meta = document.createElement('meta');
+      meta.setAttribute('property', 'og:image');
+      meta.setAttribute('content', ogImage);
       document.head.appendChild(meta);
     }
 
