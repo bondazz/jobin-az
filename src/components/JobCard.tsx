@@ -3,8 +3,9 @@ import { Badge } from '@/components/ui/badge';
 import { Eye, Heart } from 'lucide-react';
 import VerifyBadge from '@/components/ui/verify-badge';
 import { useState, useEffect, useCallback, memo } from 'react';
-import { LazyImage } from '@/components/ui/lazy-image';
 import { useReferralCode } from '@/hooks/useReferralCode';
+
+const DEFAULT_LOGO = '/icons/icon-192x192.jpg';
 
 interface JobCardProps {
   job: Job;
@@ -77,19 +78,18 @@ const JobCard = memo(({
     {/* Left Section - Company & Job Info */}
     <div className="flex items-center gap-1.5 sm:gap-2 flex-1 min-w-0 relative z-10">
       <div className="relative flex-shrink-0">
-        <LazyImage
-          src={job.companyLogo || '/icons/icon-192x192.jpg'}
+        <img
+          src={job.companyLogo || DEFAULT_LOGO}
           alt={job.company}
           width={32}
           height={32}
           className="w-7 h-7 sm:w-8 sm:h-8 rounded-md object-cover"
-          fallback={
-            <img 
-              src="/icons/icon-192x192.jpg" 
-              alt="Default" 
-              className="w-7 h-7 sm:w-8 sm:h-8 rounded-md object-cover"
-            />
-          }
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            if (target.src !== window.location.origin + DEFAULT_LOGO) {
+              target.src = DEFAULT_LOGO;
+            }
+          }}
         />
       </div>
 
