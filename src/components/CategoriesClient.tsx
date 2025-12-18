@@ -29,7 +29,6 @@ const CategoriesClient = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState(true);
-    const [currentCategory, setCurrentCategory] = useState<Category | null>(null);
     const [jobData, setJobData] = useState<any>(null);
     const [mobileJobDetailsOpen, setMobileJobDetailsOpen] = useState(false);
     const { getUrlWithReferral } = useReferralCode();
@@ -67,24 +66,19 @@ const CategoriesClient = () => {
         }
     };
 
-    // Find selected category from URL slug
-    const selectedCategoryName = categorySlug && categories.length > 0
-        ? categories.find(cat => cat.slug === categorySlug)?.name || ''
-        : '';
+    // Find selected category from URL slug - computed directly without useState delay
+    const selectedCategory = categorySlug && categories.length > 0
+        ? categories.find(cat => cat.slug === categorySlug) || null
+        : null;
 
-    // Set current category for dynamic SEO
+    const selectedCategoryName = selectedCategory?.name || '';
+
+    // Reset selected job when category changes
     useEffect(() => {
-        if (categorySlug && categories.length > 0) {
-            const category = categories.find(cat => cat.slug === categorySlug);
-            setCurrentCategory(category || null);
-            // Reset selected job when category changes
-            if (!jobSlug) {
-                setSelectedJob(null);
-            }
-        } else {
-            setCurrentCategory(null);
+        if (!jobSlug && categorySlug) {
+            setSelectedJob(null);
         }
-    }, [categorySlug, categories, jobSlug]);
+    }, [categorySlug, jobSlug]);
 
     // Fetch job by slug for SEO
     useEffect(() => {
@@ -151,7 +145,6 @@ const CategoriesClient = () => {
 
     const handleBackToCategories = () => {
         setSelectedJob(null);
-        setCurrentCategory(null);
         router.push('/categories');
     };
 
@@ -183,15 +176,15 @@ const CategoriesClient = () => {
         <div className="h-full flex items-center justify-center p-8">
             <div className="text-center max-w-2xl mx-auto">
                 <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                    {currentCategory?.icon ? (
-                        <DynamicIcon name={currentCategory.icon} className="w-8 h-8 text-white" />
+                    {selectedCategory?.icon ? (
+                        <DynamicIcon name={selectedCategory.icon} className="w-8 h-8 text-white" />
                     ) : (
                         <Briefcase className="w-8 h-8 text-white" />
                     )}
                 </div>
-                <h2 className="text-xl font-bold text-foreground mb-4">{currentCategory?.name}</h2>
+                <h2 className="text-xl font-bold text-foreground mb-4">{selectedCategory?.name}</h2>
                 <div className="text-muted-foreground text-sm leading-relaxed space-y-3 text-left px-4">
-                    <p>{currentCategory?.description || `${currentCategory?.name} sahəsində ən son iş elanları və vakansiyalar.`}</p>
+                    <p>{selectedCategory?.description || `${selectedCategory?.name} sahəsində ən son iş elanları və vakansiyalar.`}</p>
                     <p className="text-xs pt-2">
                         Soldakı siyahıdan bir iş elanı seçin.
                     </p>
@@ -299,30 +292,37 @@ const CategoriesClient = () => {
                             <>
                                 {/* When category selected - Show Job Listings */}
                                 {/* Back button and category name header */}
-                                <div className="relative overflow-hidden bg-gradient-to-br from-background via-primary/8 to-accent/5 border-b border-border/30">
-                                    <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-60"></div>
-                                    <div className="relative px-4 py-3">
+                                <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-accent/5 border-b border-primary/20">
+                                    <div className="absolute inset-0 bg-gradient-to-r from-primary/8 via-transparent to-accent/5"></div>
+                                    <div className="relative px-4 py-4">
                                         <div className="flex items-center gap-3">
                                             <Button 
-                                                variant="ghost" 
+                                                variant="outline" 
                                                 size="sm" 
                                                 onClick={handleBackToCategories}
-                                                className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+                                                className="flex items-center gap-2 border-primary/30 hover:border-primary hover:bg-primary/10 transition-all duration-200"
                                             >
                                                 <ArrowLeft className="w-4 h-4" />
-                                                <span className="hidden sm:inline">Kateqoriyalar</span>
+                                                <span className="hidden sm:inline text-xs">Geri</span>
                                             </Button>
-                                            <div className="flex items-center gap-2 flex-1 min-w-0">
-                                                <div className="w-8 h-8 rounded-md flex items-center justify-center text-white font-bold text-xs shadow-sm bg-gradient-primary flex-shrink-0">
-                                                    {currentCategory?.icon ? (
-                                                        <DynamicIcon name={currentCategory.icon} className="w-4 h-4" />
+                                            <div className="flex items-center gap-3 flex-1 min-w-0 bg-card/60 backdrop-blur-sm rounded-lg px-3 py-2 border border-primary/20 shadow-sm">
+                                                <div className="w-9 h-9 rounded-lg flex items-center justify-center text-white font-bold text-xs shadow-md bg-gradient-primary flex-shrink-0">
+                                                    {selectedCategory?.icon ? (
+                                                        <DynamicIcon name={selectedCategory.icon} className="w-5 h-5" />
                                                     ) : (
-                                                        <Tag className="w-4 h-4" />
+                                                        <Tag className="w-5 h-5" />
                                                     )}
                                                 </div>
-                                                <h2 className="font-semibold text-foreground truncate">
-                                                    {currentCategory?.name || selectedCategoryName}
-                                                </h2>
+                                                <div className="flex-1 min-w-0">
+                                                    <h2 className="font-bold text-foreground truncate text-sm">
+                                                        {selectedCategory?.name || selectedCategoryName}
+                                                    </h2>
+                                                    {selectedCategory?.description && (
+                                                        <p className="text-xs text-muted-foreground truncate mt-0.5">
+                                                            {selectedCategory.description}
+                                                        </p>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -344,7 +344,7 @@ const CategoriesClient = () => {
                 <div className="hidden lg:block flex-1 bg-gradient-to-br from-job-details to-primary/3 animate-slide-in-right">
                     {selectedJob ? (
                         <JobDetails jobId={selectedJob.id} />
-                    ) : categorySlug && currentCategory ? (
+                    ) : categorySlug && selectedCategory ? (
                         <CategoryDescription />
                     ) : (
                         <DefaultWelcome />
