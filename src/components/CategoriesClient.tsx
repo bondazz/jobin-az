@@ -148,26 +148,18 @@ const CategoriesClient = () => {
         fetchCategories();
     }, []);
 
-    // SEO setup based on current page state
+    // SEO setup - only for main categories page (category pages use server-side generateMetadata)
     useEffect(() => {
         const updateSEO = async () => {
             if (!categorySlug && !jobSlug) {
-                // Main categories page SEO
+                // Main categories page SEO only
                 const seoData = await generatePageSEO('categories');
                 updatePageMeta(seoData);
-            } else if (categorySlug && !jobSlug && selectedCategory) {
-                // Category page SEO - when loaded directly from URL
-                const metadata: SEOMetadata = {
-                    title: selectedCategory.seo_title || `${selectedCategory.name} Vakansiyaları | İş Elanları - Jooble.az`,
-                    description: selectedCategory.seo_description || `${selectedCategory.name} sahəsində ən yeni iş elanları və vakansiyalar. Azərbaycanda ${selectedCategory.name} üzrə aktiv iş təklifləri.`,
-                    keywords: selectedCategory.seo_keywords?.join(", ") || `${selectedCategory.name}, vakansiya, iş elanları, ${selectedCategory.name} işləri`,
-                    url: `https://jooble.az/categories/${selectedCategory.slug}`,
-                };
-                updatePageMeta(metadata);
             }
+            // Category-specific SEO is handled by server-side generateMetadata in page.tsx
         };
         updateSEO();
-    }, [categorySlug, jobSlug, selectedCategory]);
+    }, [categorySlug, jobSlug]);
 
     const fetchCategories = async () => {
         try {
