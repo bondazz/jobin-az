@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { Input } from '@/components/ui/input';
@@ -15,7 +15,6 @@ import { useReferralCode } from '@/hooks/useReferralCode';
 import { supabase } from '@/integrations/supabase/client';
 import { Tables } from '@/integrations/supabase/types';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent } from '@/components/ui/sheet';
 
 type Category = Tables<'categories'>;
 
@@ -30,7 +29,6 @@ const CategoriesClient = () => {
     const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState(true);
     const [jobData, setJobData] = useState<any>(null);
-    const [mobileJobDetailsOpen, setMobileJobDetailsOpen] = useState(false);
     const { getUrlWithReferral } = useReferralCode();
 
     // Fetch categories from database
@@ -155,8 +153,6 @@ const CategoriesClient = () => {
             router.push(urlWithReferral, { scroll: false });
         }
         setSelectedJob(job);
-        // Open mobile sheet on smaller screens
-        setMobileJobDetailsOpen(true);
     };
 
     const filteredCategories = categories.filter(category =>
@@ -352,12 +348,28 @@ const CategoriesClient = () => {
                 </div>
             </div>
 
-            {/* Mobile Job Details Sheet */}
-            <Sheet open={mobileJobDetailsOpen && !!selectedJob} onOpenChange={setMobileJobDetailsOpen}>
-                <SheetContent side="bottom" className="h-[90vh] p-0 lg:hidden">
-                    {selectedJob && <JobDetails jobId={selectedJob.id} />}
-                </SheetContent>
-            </Sheet>
+            {/* Mobile Job Details - Full Screen Overlay (same as vacancies page) */}
+            {selectedJob && (
+                <div className="lg:hidden fixed inset-0 bg-background z-40 flex flex-col animate-slide-in-right">
+                    <MobileHeader
+                        showCloseButton={true}
+                        onClose={() => {
+                            setSelectedJob(null);
+                            router.push(categorySlug ? `/categories/${categorySlug}` : '/categories');
+                        }}
+                        isJobPage={true}
+                    />
+                    <div className="flex-1 overflow-y-auto pb-20">
+                        <Suspense fallback={
+                            <div className="flex items-center justify-center h-full">
+                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                            </div>
+                        }>
+                            <JobDetails jobId={selectedJob.id} isMobile={true} primaryHeading={false} />
+                        </Suspense>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
