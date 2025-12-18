@@ -329,9 +329,18 @@ const CategoriesClient = () => {
                         <Briefcase className="w-8 h-8 text-white" />
                     )}
                 </div>
-                <h2 className="text-xl font-bold text-foreground mb-4">{selectedCategory?.name}</h2>
+                <h1 className="text-xl font-bold text-foreground mb-4">
+                    {selectedCategory?.h1_title || selectedCategory?.name}
+                </h1>
                 <div className="text-muted-foreground text-sm leading-relaxed space-y-3 text-left px-4">
-                    <p>{selectedCategory?.description || `${selectedCategory?.name} sahəsində ən son iş elanları və vakansiyalar.`}</p>
+                    {selectedCategory?.description ? (
+                        <div 
+                            className="prose prose-sm max-w-none [&_a]:text-primary [&_a]:underline [&_strong]:font-semibold [&_ul]:list-disc [&_ul]:pl-4 [&_ol]:list-decimal [&_ol]:pl-4"
+                            dangerouslySetInnerHTML={{ __html: selectedCategory.description }}
+                        />
+                    ) : (
+                        <p>{selectedCategory?.name} sahəsində ən son iş elanları və vakansiyalar.</p>
+                    )}
                     <p className="text-xs pt-2">
                         Soldakı siyahıdan bir iş elanı seçin.
                     </p>
@@ -449,7 +458,7 @@ const CategoriesClient = () => {
                                         <ArrowLeft className="w-4 h-4" />
                                     </Button>
                                     <span className="text-sm font-medium text-foreground truncate">
-                                        {selectedCategory?.name || selectedCategoryName}
+                                        {selectedCategory?.h1_title || selectedCategory?.name || selectedCategoryName}
                                     </span>
                                 </div>
 

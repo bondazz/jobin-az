@@ -22,6 +22,7 @@ const modules = {
     [{ 'indent': '-1' }, { 'indent': '+1' }],
     [{ 'align': [] }],
     ['link', 'image'],
+    ['blockquote', 'code-block'],
     ['clean']
   ]
 };
@@ -31,7 +32,8 @@ const formats = [
   'bold', 'italic', 'underline', 'strike',
   'color', 'background',
   'list', 'bullet', 'indent',
-  'align', 'link', 'image'
+  'align', 'link', 'image',
+  'blockquote', 'code-block'
 ];
 
 export function RichTextEditor({ value, onChange, placeholder, className }: RichTextEditorProps) {
