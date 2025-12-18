@@ -20,12 +20,14 @@ import {
   Briefcase
 } from 'lucide-react';
 import { DynamicIcon } from '@/components/ui/dynamic-icon';
+import { RichTextEditor } from '@/components/ui/rich-text-editor';
 
 interface Category {
   id: string;
   name: string;
   slug: string;
   description?: string;
+  h1_title?: string | null;
   icon?: string;
   seo_title?: string;
   seo_description?: string;
@@ -45,6 +47,7 @@ export default function AdminCategoriesClient() {
     name: '',
     slug: '',
     description: '',
+    h1_title: '',
     icon: '',
     seo_title: '',
     seo_description: '',
@@ -172,6 +175,7 @@ export default function AdminCategoriesClient() {
       name: category.name,
       slug: category.slug,
       description: category.description || '',
+      h1_title: category.h1_title || '',
       icon: category.icon || '',
       seo_title: category.seo_title || '',
       seo_description: category.seo_description || '',
@@ -214,6 +218,7 @@ export default function AdminCategoriesClient() {
       name: '',
       slug: '',
       description: '',
+      h1_title: '',
       icon: '',
       seo_title: '',
       seo_description: '',
@@ -287,13 +292,24 @@ export default function AdminCategoriesClient() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="description">Təsvir</Label>
-                  <Textarea
-                    id="description"
-                    value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    rows={4}
+                  <Label htmlFor="h1_title">Kateqoriya Başlığı (H1)</Label>
+                  <Input
+                    id="h1_title"
+                    value={formData.h1_title}
+                    onChange={(e) => setFormData({ ...formData, h1_title: e.target.value })}
+                    placeholder="Səhifədə göstəriləcək H1 başlıq"
                   />
+                  <p className="text-xs text-muted-foreground">Bu başlıq kateqoriya səhifəsində təsvirin üstündə H1 olaraq görünəcək</p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="description">Təsvir</Label>
+                  <RichTextEditor
+                    value={formData.description}
+                    onChange={(value) => setFormData({ ...formData, description: value })}
+                    placeholder="Kateqoriya təsviri (link, bold, list əlavə edə bilərsiniz)"
+                  />
+                  <p className="text-xs text-muted-foreground">Link əlavə edərkən: mətni seçin → link düyməsinə basın → URL yazın</p>
                 </div>
 
                 {/* SEO Section */}
