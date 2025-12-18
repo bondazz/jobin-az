@@ -243,11 +243,26 @@ const CategoriesClient = () => {
 
     const handleCategoryClick = (category: Category) => {
         setSelectedJob(null);
+        
+        // Update SEO immediately for the selected category
+        const metadata: SEOMetadata = {
+            title: category.seo_title || `${category.name} Vakansiyaları | İş Elanları - Jooble.az`,
+            description: category.seo_description || `${category.name} sahəsində ən yeni iş elanları və vakansiyalar. Azərbaycanda ${category.name} üzrə aktiv iş təklifləri.`,
+            keywords: category.seo_keywords?.join(", ") || `${category.name}, vakansiya, iş elanları, ${category.name} işləri`,
+            url: `https://jooble.az/categories/${category.slug}`,
+        };
+        updatePageMeta(metadata);
+        
         router.push(`/categories/${category.slug}`);
     };
 
-    const handleBackToCategories = () => {
+    const handleBackToCategories = async () => {
         setSelectedJob(null);
+        
+        // Restore main categories page SEO
+        const seoData = await generatePageSEO('categories');
+        updatePageMeta(seoData);
+        
         router.push('/categories');
     };
 
@@ -322,7 +337,7 @@ const CategoriesClient = () => {
                 <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4">
                     <Tag className="w-8 h-8 text-white" />
                 </div>
-                <h2 className="text-xl font-bold text-foreground mb-4">İş Kateqoriyaları və Vakansiyalar</h2>
+                <h1 className="text-xl font-bold text-foreground mb-4">İş Elanları Kateqoriyaları - Vakansiyalar</h1>
                 <div className="text-muted-foreground text-sm leading-relaxed space-y-3 text-left px-4">
                     <p>
                         Platformamızda <strong>iş elanları</strong> müxtəlif kateqoriyalara ayrılmışdır. Hər bir <strong>iş kateqoriyası</strong> üzrə yüzlərlə <strong>vakansiya</strong> təqdim edirik. IT, maliyyə, satış, marketinq, mühəndislik, insan resursları, mühasibatlıq və digər sahələrdə <strong>iş axtarışı</strong> edən peşəkarlar üçün uyğun <strong>iş təklifləri</strong> tapa bilərsiniz.
@@ -413,41 +428,19 @@ const CategoriesClient = () => {
                         ) : (
                             <>
                                 {/* When category selected - Show Job Listings */}
-                                {/* Back button and category name header */}
-                                <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-accent/5 border-b border-primary/20">
-                                    <div className="absolute inset-0 bg-gradient-to-r from-primary/8 via-transparent to-accent/5"></div>
-                                    <div className="relative px-4 py-4">
-                                        <div className="flex items-center gap-3">
-                                            <Button 
-                                                variant="outline" 
-                                                size="sm" 
-                                                onClick={handleBackToCategories}
-                                                className="flex items-center gap-2 border-primary/30 hover:border-primary hover:bg-primary/10 transition-all duration-200"
-                                            >
-                                                <ArrowLeft className="w-4 h-4" />
-                                                <span className="hidden sm:inline text-xs">Geri</span>
-                                            </Button>
-                                            <div className="flex items-center gap-3 flex-1 min-w-0 bg-card/60 backdrop-blur-sm rounded-lg px-3 py-2 border border-primary/20 shadow-sm">
-                                                <div className="w-9 h-9 rounded-lg flex items-center justify-center text-white font-bold text-xs shadow-md bg-gradient-primary flex-shrink-0">
-                                                    {selectedCategory?.icon ? (
-                                                        <DynamicIcon name={selectedCategory.icon} className="w-5 h-5" />
-                                                    ) : (
-                                                        <Tag className="w-5 h-5" />
-                                                    )}
-                                                </div>
-                                                <div className="flex-1 min-w-0">
-                                                    <h2 className="font-bold text-foreground truncate text-sm">
-                                                        {selectedCategory?.name || selectedCategoryName}
-                                                    </h2>
-                                                    {selectedCategory?.description && (
-                                                        <p className="text-xs text-muted-foreground truncate mt-0.5">
-                                                            {selectedCategory.description}
-                                                        </p>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                {/* Minimal category filter header */}
+                                <div className="flex items-center gap-2 px-3 py-2 border-b border-border/50 bg-muted/30">
+                                    <Button 
+                                        variant="ghost" 
+                                        size="icon"
+                                        onClick={handleBackToCategories}
+                                        className="h-7 w-7 rounded-full hover:bg-primary/10"
+                                    >
+                                        <ArrowLeft className="w-4 h-4" />
+                                    </Button>
+                                    <span className="text-sm font-medium text-foreground truncate">
+                                        {selectedCategory?.name || selectedCategoryName}
+                                    </span>
                                 </div>
 
                                 {/* Job Listings for selected category */}
