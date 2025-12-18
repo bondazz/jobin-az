@@ -147,10 +147,12 @@ const CategoriesClient = () => {
     };
 
     const handleJobSelect = async (job: Job) => {
+        // Navigate to vacancies page URL for proper SEO
         if (job.slug) {
-            const baseUrl = `/categories/${categorySlug || 'all'}/vacancy/${job.slug}`;
+            const baseUrl = `/vacancies/${job.slug}`;
             const urlWithReferral = getUrlWithReferral(baseUrl);
-            router.push(urlWithReferral, { scroll: false });
+            // Use window.history.pushState for instant navigation without refresh
+            window.history.pushState({}, '', urlWithReferral);
         }
         setSelectedJob(job);
     };
@@ -355,7 +357,9 @@ const CategoriesClient = () => {
                         showCloseButton={true}
                         onClose={() => {
                             setSelectedJob(null);
-                            router.push(categorySlug ? `/categories/${categorySlug}` : '/categories');
+                            // Use history.pushState to avoid page refresh
+                            const backUrl = categorySlug ? `/categories/${categorySlug}` : '/categories';
+                            window.history.pushState({}, '', backUrl);
                         }}
                         isJobPage={true}
                     />
