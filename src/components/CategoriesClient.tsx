@@ -148,18 +148,7 @@ const CategoriesClient = () => {
         fetchCategories();
     }, []);
 
-    // SEO setup - only for main categories page (category pages use server-side generateMetadata)
-    useEffect(() => {
-        const updateSEO = async () => {
-            if (!categorySlug && !jobSlug) {
-                // Main categories page SEO only
-                const seoData = await generatePageSEO('categories');
-                updatePageMeta(seoData);
-            }
-            // Category-specific SEO is handled by server-side generateMetadata in page.tsx
-        };
-        updateSEO();
-    }, [categorySlug, jobSlug]);
+    // SEO is now handled server-side in page.tsx for both main categories and category detail pages
 
     const fetchCategories = async () => {
         try {
