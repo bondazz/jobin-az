@@ -136,21 +136,38 @@ const CategoriesClient = () => {
     const [jobData, setJobData] = useState<any>(null);
     const { getUrlWithReferral } = useReferralCode();
 
+    // Find selected category from URL slug - computed directly without useState delay
+    const selectedCategory = categorySlug && categories.length > 0
+        ? categories.find(cat => cat.slug === categorySlug) || null
+        : null;
+
+    const selectedCategoryName = selectedCategory?.name || '';
+
     // Fetch categories from database
     useEffect(() => {
         fetchCategories();
     }, []);
 
-    // Default SEO setup for main categories page
+    // SEO setup based on current page state
     useEffect(() => {
-        if (!categorySlug && !jobSlug) {
-            const updateSEO = async () => {
+        const updateSEO = async () => {
+            if (!categorySlug && !jobSlug) {
+                // Main categories page SEO
                 const seoData = await generatePageSEO('categories');
                 updatePageMeta(seoData);
-            };
-            updateSEO();
-        }
-    }, [categorySlug, jobSlug]);
+            } else if (categorySlug && !jobSlug && selectedCategory) {
+                // Category page SEO - when loaded directly from URL
+                const metadata: SEOMetadata = {
+                    title: selectedCategory.seo_title || `${selectedCategory.name} Vakansiyaları | İş Elanları - Jooble.az`,
+                    description: selectedCategory.seo_description || `${selectedCategory.name} sahəsində ən yeni iş elanları və vakansiyalar. Azərbaycanda ${selectedCategory.name} üzrə aktiv iş təklifləri.`,
+                    keywords: selectedCategory.seo_keywords?.join(", ") || `${selectedCategory.name}, vakansiya, iş elanları, ${selectedCategory.name} işləri`,
+                    url: `https://jooble.az/categories/${selectedCategory.slug}`,
+                };
+                updatePageMeta(metadata);
+            }
+        };
+        updateSEO();
+    }, [categorySlug, jobSlug, selectedCategory]);
 
     const fetchCategories = async () => {
         try {
@@ -168,13 +185,6 @@ const CategoriesClient = () => {
             setLoading(false);
         }
     };
-
-    // Find selected category from URL slug - computed directly without useState delay
-    const selectedCategory = categorySlug && categories.length > 0
-        ? categories.find(cat => cat.slug === categorySlug) || null
-        : null;
-
-    const selectedCategoryName = selectedCategory?.name || '';
 
     // Reset selected job when category changes
     useEffect(() => {
