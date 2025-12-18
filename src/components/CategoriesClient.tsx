@@ -9,12 +9,117 @@ import { DynamicIcon } from '@/components/ui/dynamic-icon';
 import JobListings from '@/components/JobListings';
 import JobDetails from '@/components/JobDetails';
 import { Job } from '@/types/job';
-import { generatePageSEO, updatePageMeta } from '@/utils/seo';
+import { generatePageSEO, updatePageMeta, SEOMetadata } from '@/utils/seo';
 import MobileHeader from '@/components/MobileHeader';
 import { useReferralCode } from '@/hooks/useReferralCode';
 import { supabase } from '@/integrations/supabase/client';
 import { Tables } from '@/integrations/supabase/types';
 import { Button } from '@/components/ui/button';
+
+const DEFAULT_OG_IMAGE = 'https://jooble.az/icons/icon-512x512.jpg';
+
+// Helper function to update all SEO meta tags for a job
+const updateJobSEO = (jobData: any) => {
+    if (!jobData) return;
+
+    const ogImage = jobData.companies?.logo || DEFAULT_OG_IMAGE;
+    
+    const metadata: SEOMetadata = {
+        title: jobData.seo_title || `${jobData.title} | ${jobData.companies?.name || "İş Elanı"}`,
+        description: jobData.seo_description || `${jobData.companies?.name || "Şirkət"}də ${jobData.title} vakansiyası`,
+        keywords: jobData.seo_keywords?.join(", ") || `${jobData.title}, ${jobData.companies?.name || ""}, vakansiya, iş elanları`,
+        url: `https://jooble.az/vacancies/${jobData.slug}`,
+    };
+
+    // Update basic meta tags
+    updatePageMeta(metadata);
+
+    // Update Open Graph type
+    const ogTypeTag = document.querySelector('meta[property="og:type"]');
+    if (ogTypeTag) {
+        ogTypeTag.setAttribute('content', 'article');
+    } else {
+        const meta = document.createElement('meta');
+        meta.setAttribute('property', 'og:type');
+        meta.setAttribute('content', 'article');
+        document.head.appendChild(meta);
+    }
+
+    // Update OG Image
+    const ogImageTag = document.querySelector('meta[property="og:image"]');
+    if (ogImageTag) {
+        ogImageTag.setAttribute('content', ogImage);
+    } else {
+        const meta = document.createElement('meta');
+        meta.setAttribute('property', 'og:image');
+        meta.setAttribute('content', ogImage);
+        document.head.appendChild(meta);
+    }
+
+    // Twitter Card meta tags
+    const twitterTags = [
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:image', content: ogImage },
+        { name: 'twitter:title', content: metadata.title },
+        { name: 'twitter:description', content: metadata.description }
+    ];
+
+    twitterTags.forEach(({ name, content }) => {
+        const existingTag = document.querySelector(`meta[name="${name}"]`);
+        if (existingTag) {
+            existingTag.setAttribute('content', content);
+        } else {
+            const meta = document.createElement('meta');
+            meta.setAttribute('name', name);
+            meta.setAttribute('content', content);
+            document.head.appendChild(meta);
+        }
+    });
+
+    // Update structured data (JobPosting schema)
+    const structuredData = {
+        "@context": "https://schema.org",
+        "@type": "JobPosting",
+        "title": jobData.title,
+        "description": jobData.description,
+        "datePosted": jobData.created_at,
+        "validThrough": jobData.expiration_date,
+        "employmentType": jobData.type === 'full-time' ? 'FULL_TIME' : jobData.type === 'part-time' ? 'PART_TIME' : jobData.type?.toUpperCase(),
+        "hiringOrganization": {
+            "@type": "Organization",
+            "name": jobData.companies?.name || "Şirkət",
+            "logo": jobData.companies?.logo || DEFAULT_OG_IMAGE
+        },
+        "jobLocation": {
+            "@type": "Place",
+            "address": {
+                "@type": "PostalAddress",
+                "addressLocality": jobData.location || "Bakı",
+                "addressCountry": "AZ"
+            }
+        },
+        ...(jobData.salary && {
+            "baseSalary": {
+                "@type": "MonetaryAmount",
+                "currency": "AZN",
+                "value": {
+                    "@type": "QuantitativeValue",
+                    "value": jobData.salary
+                }
+            }
+        })
+    };
+
+    const existingScript = document.querySelector('script[type="application/ld+json"]');
+    if (existingScript) {
+        existingScript.textContent = JSON.stringify(structuredData);
+    } else {
+        const script = document.createElement('script');
+        script.type = 'application/ld+json';
+        script.textContent = JSON.stringify(structuredData);
+        document.head.appendChild(script);
+    }
+};
 
 type Category = Tables<'categories'>;
 
@@ -153,6 +258,25 @@ const CategoriesClient = () => {
             const urlWithReferral = getUrlWithReferral(baseUrl);
             // Use window.history.pushState for instant navigation without refresh
             window.history.pushState({}, '', urlWithReferral);
+
+            // Fetch full job data for SEO and update meta tags
+            try {
+                const { data: jobData } = await supabase
+                    .from('jobs')
+                    .select(`
+                        id, title, description, slug, type, location, salary, created_at, expiration_date,
+                        seo_title, seo_description, seo_keywords,
+                        companies:company_id(name, logo)
+                    `)
+                    .eq('slug', job.slug)
+                    .single();
+
+                if (jobData) {
+                    updateJobSEO(jobData);
+                }
+            } catch (error) {
+                console.error('Error fetching job SEO data:', error);
+            }
         }
         setSelectedJob(job);
     };
@@ -355,11 +479,25 @@ const CategoriesClient = () => {
                 <div className="lg:hidden fixed inset-0 bg-background z-40 flex flex-col animate-slide-in-right">
                     <MobileHeader
                         showCloseButton={true}
-                        onClose={() => {
+                        onClose={async () => {
                             setSelectedJob(null);
                             // Use history.pushState to avoid page refresh
                             const backUrl = categorySlug ? `/categories/${categorySlug}` : '/categories';
                             window.history.pushState({}, '', backUrl);
+                            
+                            // Restore category SEO when going back
+                            if (selectedCategory) {
+                                const metadata: SEOMetadata = {
+                                    title: selectedCategory.seo_title || `${selectedCategory.name} Vakansiyaları | İş Elanları - Jooble`,
+                                    description: selectedCategory.seo_description || `${selectedCategory.name} sahəsində aktiv vakansiyalar və iş elanları.`,
+                                    keywords: selectedCategory.seo_keywords?.join(", ") || `${selectedCategory.name}, vakansiya, iş elanları`,
+                                    url: `https://jooble.az/categories/${selectedCategory.slug}`,
+                                };
+                                updatePageMeta(metadata);
+                            } else {
+                                const seoData = await generatePageSEO('categories');
+                                updatePageMeta(seoData);
+                            }
                         }}
                         isJobPage={true}
                     />
