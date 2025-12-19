@@ -129,19 +129,42 @@ const GoogleIndexing = () => {
     }
   };
 
-  const generateAllUrls = () => {
-    const baseUrl = "https://jooble.az";
-    const urls: string[] = [
-      baseUrl,
-      `${baseUrl}/vakansiyalar`,
-      `${baseUrl}/companies`,
-      `${baseUrl}/categories`,
-      `${baseUrl}/about`,
-      `${baseUrl}/services`,
-    ];
-    
-    setIndexingUrls(urls.join("\n"));
-    toast.success("Bütün URL-lər yaradıldı");
+  const generateAllUrls = async () => {
+    setLoading(true);
+    try {
+      const baseUrl = "https://jooble.az";
+      
+      // Static pages
+      const staticUrls: string[] = [
+        baseUrl,
+        `${baseUrl}/vacancies`,
+        `${baseUrl}/companies`,
+        `${baseUrl}/categories`,
+        `${baseUrl}/subscribe`,
+        `${baseUrl}/referral`,
+        `${baseUrl}/add_job`,
+        `${baseUrl}/about`,
+        `${baseUrl}/services`,
+      ];
+      
+      // Fetch all active categories
+      const { data: categories } = await supabase
+        .from("categories")
+        .select("slug")
+        .eq("is_active", true);
+      
+      const categoryUrls = categories 
+        ? categories.map(cat => `${baseUrl}/categories/${cat.slug}`)
+        : [];
+      
+      const allUrls = [...staticUrls, ...categoryUrls];
+      setIndexingUrls(allUrls.join("\n"));
+      toast.success(`${allUrls.length} URL yaradıldı (${staticUrls.length} statik + ${categoryUrls.length} kateqoriya)`);
+    } catch (error) {
+      toast.error("URL-lərin yaradılması zamanı xəta");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const generateJobUrls = async () => {
@@ -285,11 +308,15 @@ const GoogleIndexing = () => {
                     size="lg"
                     className="gap-2"
                   >
-                    <Globe className="h-4 w-4" />
-                    Bütün Əsas URL-ləri Yarat
+                    {loading ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Globe className="h-4 w-4" />
+                    )}
+                    Bütün Statik URL-ləri Yarat
                   </Button>
                   <p className="text-sm text-muted-foreground mt-4">
-                    Ana səhifə, vakansiyalar, şirkətlər və digər əsas səhifələr
+                    Ana səhifə, vakansiyalar, şirkətlər, bütün kateqoriyalar və digər statik səhifələr
                   </p>
                 </div>
                 {indexingUrls && (
