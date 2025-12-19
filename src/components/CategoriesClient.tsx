@@ -443,7 +443,7 @@ const CategoriesClient = () => {
                                         <ArrowLeft className="w-4 h-4" />
                                     </Button>
                                     <span className="text-sm font-medium text-foreground truncate">
-                                        {selectedCategory?.h1_title || selectedCategory?.name || selectedCategoryName}
+                                        {selectedCategory?.name || selectedCategoryName}
                                     </span>
                                 </div>
 
