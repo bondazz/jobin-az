@@ -10,6 +10,7 @@ import {
     Briefcase,
     Building2,
     Tag,
+    MapPin,
     Settings,
     LogOut,
     Menu,
@@ -54,6 +55,11 @@ const AdminLayoutClient = ({ children }: AdminLayoutProps) => {
             name: 'Kateqoriyalar',
             path: '/admin/categories',
             icon: Tag,
+        },
+        {
+            name: 'Regionlar',
+            path: '/admin/regions',
+            icon: MapPin,
         },
         {
             name: 'Qiymətlər',

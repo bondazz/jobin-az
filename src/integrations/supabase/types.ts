@@ -691,6 +691,51 @@ export type Database = {
         }
         Relationships: []
       }
+      regions: {
+        Row: {
+          created_at: string
+          description: string | null
+          h1_title: string | null
+          icon: string | null
+          id: string
+          is_active: boolean
+          name: string
+          seo_description: string | null
+          seo_keywords: string[] | null
+          seo_title: string | null
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          h1_title?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          seo_description?: string | null
+          seo_keywords?: string[] | null
+          seo_title?: string | null
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          h1_title?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          seo_description?: string | null
+          seo_keywords?: string[] | null
+          seo_title?: string | null
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       site_settings: {
         Row: {
           created_at: string

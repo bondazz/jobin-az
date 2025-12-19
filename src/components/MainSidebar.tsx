@@ -13,6 +13,7 @@ import {
   Briefcase,
   Tag,
   Building,
+  MapPin,
   Bookmark,
   Bell,
   TrendingUp,
@@ -75,6 +76,12 @@ const MainSidebar = () => {
       icon: Tag,
       label: "Kateqoriyalar",
       path: "/categories",
+      count: null,
+    },
+    {
+      icon: MapPin,
+      label: "Regionlar",
+      path: "/regions",
       count: null,
     },
     {
