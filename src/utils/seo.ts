@@ -109,6 +109,13 @@ export const generatePageSEO = async (page: string, additionalInfo?: string): Pr
       keywords: "şirkətlər, işəgötürənlər, Azərbaycan şirkətləri, işəgötürən şirkətlər",
       url: "/companies",
     },
+    regions: {
+      title: "Regionlar üzrə İş Elanları | Azərbaycan Vakansiyaları",
+      description:
+        "Azərbaycanın müxtəlif regionlarında iş elanları və vakansiyalar. Bakı, Sumqayıt, Gəncə və digər şəhərlərdə aktual iş təklifləri.",
+      keywords: "regionlar, iş elanları, vakansiyalar, Bakı, Sumqayıt, Gəncə, Azərbaycan, iş axtarışı",
+      url: "/regions",
+    },
     favorites: {
       title: "Seçilmiş İş Elanları | Saxlanılmış Vakansiyalar",
       description:
