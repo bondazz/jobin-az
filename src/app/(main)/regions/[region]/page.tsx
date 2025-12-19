@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { supabase } from '@/integrations/supabase/client';
-import RegionDetailClient from '@/components/RegionDetailClient';
+import RegionsClient from '@/components/RegionsClient';
 
 interface RegionPageProps {
     params: { region: string };
@@ -55,5 +55,5 @@ export async function generateMetadata({ params }: RegionPageProps): Promise<Met
 }
 
 export default function RegionPage({ params }: RegionPageProps) {
-    return <RegionDetailClient regionSlug={params.region} />;
+    return <RegionsClient />;
 }
