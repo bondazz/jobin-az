@@ -113,7 +113,8 @@ export const generatePageSEO = async (page: string, additionalInfo?: string): Pr
       title: "Regionlar üzrə İş Elanları | Azərbaycan Vakansiyaları",
       description:
         "Azərbaycanın müxtəlif regionlarında iş elanları və vakansiyalar. Bakı, Sumqayıt, Gəncə və digər şəhərlərdə aktual iş təklifləri.",
-      keywords: "regionlar, iş elanları, vakansiyalar, Bakı, Sumqayıt, Gəncə, Azərbaycan, iş axtarışı",
+      keywords:
+        "regionlar, iş elanları, vakansiyalar, Bakı iş elanları, Sumqayıt iş elanları, Gəncə iş elanları, Azərbaycan iş elanları, iş axtarışı, is elanlari, baki is elanlari",
       url: "/regions",
     },
     favorites: {
@@ -195,9 +196,7 @@ export const updatePageMeta = (metadata: SEOMetadata) => {
   // Get canonical URL - normalize to prevent duplicate content issues
   const canonicalUrl = normalizeUrl(metadata.url);
   // Ensure we don't duplicate the domain if URL is already absolute
-  const fullCanonicalUrl = canonicalUrl.startsWith('http') 
-    ? canonicalUrl 
-    : `https://jooble.az${canonicalUrl}`;
+  const fullCanonicalUrl = canonicalUrl.startsWith("http") ? canonicalUrl : `https://jooble.az${canonicalUrl}`;
 
   // Update canonical URL
   const canonicalLink = document.querySelector('link[rel="canonical"]');
