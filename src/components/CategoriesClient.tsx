@@ -414,7 +414,9 @@ const CategoriesClient = () => {
                                                         </h3>
                                                         <div className="flex items-center gap-2 mt-0">
                                                             <p className="text-muted-foreground text-xs truncate">
-                                                                {category.description || 'Kateqoriya təsviri'}
+                                                                {category.description 
+                                                                    ? category.description.replace(/<[^>]*>/g, '').substring(0, 100)
+                                                                    : 'Kateqoriya təsviri'}
                                                             </p>
                                                         </div>
                                                     </div>
