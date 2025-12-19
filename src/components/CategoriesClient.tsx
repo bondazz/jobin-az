@@ -317,7 +317,11 @@ const CategoriesClient = () => {
                     {selectedCategory?.description ? (
                         <div 
                             className="prose prose-sm max-w-none [&_a]:text-primary [&_a]:underline [&_strong]:font-semibold [&_ul]:list-disc [&_ul]:pl-4 [&_ol]:list-decimal [&_ol]:pl-4"
-                            dangerouslySetInnerHTML={{ __html: selectedCategory.description }}
+                            dangerouslySetInnerHTML={{ 
+                                __html: selectedCategory.description
+                                    .replace(/rel="[^"]*"/gi, '')
+                                    .replace(/target="_blank"/gi, '')
+                            }}
                         />
                     ) : (
                         <p>{selectedCategory?.name} sahəsində ən son iş elanları və vakansiyalar.</p>
