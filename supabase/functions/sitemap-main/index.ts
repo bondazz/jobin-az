@@ -11,6 +11,44 @@ const corsHeaders = {
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const SITE_URL = "https://jooble.az";
+const BATCH_SIZE = 1000; // Supabase default limit
+
+// Fetch all records with pagination to bypass 1000 limit
+async function fetchAllRecords(supabase: any, table: string, select: string, orderBy?: string): Promise<any[]> {
+  let allData: any[] = [];
+  let from = 0;
+  
+  while (true) {
+    const query = supabase
+      .from(table)
+      .select(select)
+      .eq('is_active', true)
+      .range(from, from + BATCH_SIZE - 1);
+    
+    if (orderBy) {
+      query.order(orderBy, { ascending: true });
+    }
+    
+    const { data, error } = await query;
+    
+    if (error) {
+      console.error(`Error fetching ${table} from ${from}:`, error);
+      throw error;
+    }
+    
+    if (!data || data.length === 0) break;
+    
+    allData = allData.concat(data);
+    console.log(`Fetched ${allData.length} ${table} records so far`);
+    
+    // If we got less than BATCH_SIZE, we've reached the end
+    if (data.length < BATCH_SIZE) break;
+    
+    from += BATCH_SIZE;
+  }
+  
+  return allData;
+}
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -22,38 +60,17 @@ serve(async (req) => {
     const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
     const today = new Date().toISOString().split('T')[0];
 
-    console.log('Generating sitemap-main with all URLs');
+    console.log('Generating sitemap-main with ALL URLs (pagination enabled)');
 
-    // Fetch all data in parallel
-    const [jobsResult, companiesResult, categoriesResult, regionsResult] = await Promise.all([
-      supabase
-        .from('jobs')
-        .select('slug, updated_at')
-        .eq('is_active', true)
-        .order('updated_at', { ascending: false }),
-      supabase
-        .from('companies')
-        .select('slug, updated_at')
-        .eq('is_active', true)
-        .order('name'),
-      supabase
-        .from('categories')
-        .select('slug, updated_at')
-        .eq('is_active', true)
-        .order('name'),
-      supabase
-        .from('regions')
-        .select('slug, updated_at')
-        .eq('is_active', true)
-        .order('name'),
+    // Fetch all data with pagination in parallel
+    const [jobs, companies, categories, regions] = await Promise.all([
+      fetchAllRecords(supabase, 'jobs', 'slug, updated_at', 'created_at'),
+      fetchAllRecords(supabase, 'companies', 'slug, updated_at', 'name'),
+      fetchAllRecords(supabase, 'categories', 'slug, updated_at', 'name'),
+      fetchAllRecords(supabase, 'regions', 'slug, updated_at', 'name'),
     ]);
 
-    const jobs = jobsResult.data || [];
-    const companies = companiesResult.data || [];
-    const categories = categoriesResult.data || [];
-    const regions = regionsResult.data || [];
-
-    console.log(`Found: ${jobs.length} jobs, ${companies.length} companies, ${categories.length} categories, ${regions.length} regions`);
+    console.log(`Total found: ${jobs.length} jobs, ${companies.length} companies, ${categories.length} categories, ${regions.length} regions`);
 
     let xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
