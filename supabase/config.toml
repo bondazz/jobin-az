@@ -12,6 +12,9 @@ verify_jwt = false
 [functions.serve-sitemap]
 verify_jwt = false
 
+[functions.sitemap-main]
+verify_jwt = false
+
 [functions.generate-sitemaps]
 verify_jwt = false
 
