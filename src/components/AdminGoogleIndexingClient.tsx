@@ -25,6 +25,7 @@ const GoogleIndexing = () => {
     totalJobs: 0,
     totalCompanies: 0,
     totalCategories: 0,
+    totalRegions: 0,
   });
   const [showDateDialog, setShowDateDialog] = useState(false);
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
@@ -54,16 +55,18 @@ const GoogleIndexing = () => {
   };
 
   const fetchStats = async () => {
-    const [jobsResult, companiesResult, categoriesResult] = await Promise.all([
+    const [jobsResult, companiesResult, categoriesResult, regionsResult] = await Promise.all([
       supabase.from("jobs").select("id", { count: "exact", head: true }),
       supabase.from("companies").select("id", { count: "exact", head: true }),
       supabase.from("categories").select("id", { count: "exact", head: true }),
+      supabase.from("regions").select("id", { count: "exact", head: true }),
     ]);
 
     setStats({
       totalJobs: jobsResult.count || 0,
       totalCompanies: companiesResult.count || 0,
       totalCategories: categoriesResult.count || 0,
+      totalRegions: regionsResult.count || 0,
     });
   };
 
@@ -140,6 +143,7 @@ const GoogleIndexing = () => {
         `${baseUrl}/vacancies`,
         `${baseUrl}/companies`,
         `${baseUrl}/categories`,
+        `${baseUrl}/regions`,
         `${baseUrl}/subscribe`,
         `${baseUrl}/referral`,
         `${baseUrl}/add_job`,
@@ -147,19 +151,46 @@ const GoogleIndexing = () => {
         `${baseUrl}/services`,
       ];
       
-      // Fetch all active categories
-      const { data: categories } = await supabase
-        .from("categories")
-        .select("slug")
-        .eq("is_active", true);
+      // Fetch all active categories and regions
+      const [categoriesResult, regionsResult] = await Promise.all([
+        supabase.from("categories").select("slug").eq("is_active", true),
+        supabase.from("regions").select("slug").eq("is_active", true),
+      ]);
       
-      const categoryUrls = categories 
-        ? categories.map(cat => `${baseUrl}/categories/${cat.slug}`)
+      const categoryUrls = categoriesResult.data 
+        ? categoriesResult.data.map(cat => `${baseUrl}/categories/${cat.slug}`)
+        : [];
+
+      const regionUrls = regionsResult.data 
+        ? regionsResult.data.map(reg => `${baseUrl}/regions/${reg.slug}`)
         : [];
       
-      const allUrls = [...staticUrls, ...categoryUrls];
+      const allUrls = [...staticUrls, ...categoryUrls, ...regionUrls];
       setIndexingUrls(allUrls.join("\n"));
-      toast.success(`${allUrls.length} URL yaradıldı (${staticUrls.length} statik + ${categoryUrls.length} kateqoriya)`);
+      toast.success(`${allUrls.length} URL yaradıldı (${staticUrls.length} statik + ${categoryUrls.length} kateqoriya + ${regionUrls.length} region)`);
+    } catch (error) {
+      toast.error("URL-lərin yaradılması zamanı xəta");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const generateRegionUrls = async () => {
+    setLoading(true);
+    try {
+      const { data: regions } = await supabase
+        .from("regions")
+        .select("slug")
+        .eq("is_active", true)
+        .limit(200);
+
+      if (regions && regions.length > 0) {
+        const urls = regions.map(region => `https://jooble.az/regions/${region.slug}`);
+        setIndexingUrls(urls.join("\n"));
+        toast.success(`${regions.length} region URL-i yaradıldı`);
+      } else {
+        toast.warning("Aktiv region tapılmadı");
+      }
     } catch (error) {
       toast.error("URL-lərin yaradılması zamanı xəta");
     } finally {
@@ -242,7 +273,7 @@ const GoogleIndexing = () => {
           </p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-3 mb-8 animate-fade-in" style={{ animationDelay: '100ms' }}>
+        <div className="grid gap-6 md:grid-cols-4 mb-8 animate-fade-in" style={{ animationDelay: '100ms' }}>
           <Card className="border-border/50 shadow-card hover:shadow-card-hover transition-all">
             <CardHeader className="pb-3">
               <CardTitle className="text-lg">Cəmi Vakansiyalar</CardTitle>
@@ -269,6 +300,15 @@ const GoogleIndexing = () => {
               <div className="text-3xl font-bold text-primary">{stats.totalCategories}</div>
             </CardContent>
           </Card>
+
+          <Card className="border-border/50 shadow-card hover:shadow-card-hover transition-all">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg">Cəmi Regionlar</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-primary">{stats.totalRegions}</div>
+            </CardContent>
+          </Card>
         </div>
 
         <Card className="border-border/50 shadow-card animate-fade-in" style={{ animationDelay: '200ms' }}>
@@ -283,11 +323,12 @@ const GoogleIndexing = () => {
           </CardHeader>
           <CardContent className="space-y-4">
             <Tabs defaultValue="manual" className="w-full">
-              <TabsList className="grid w-full grid-cols-4">
+              <TabsList className="grid w-full grid-cols-5">
                 <TabsTrigger value="manual">Manual</TabsTrigger>
                 <TabsTrigger value="all">Hamısı</TabsTrigger>
                 <TabsTrigger value="jobs">Vakansiyalar</TabsTrigger>
                 <TabsTrigger value="companies">Şirkətlər</TabsTrigger>
+                <TabsTrigger value="regions">Regionlar</TabsTrigger>
               </TabsList>
               
               <TabsContent value="manual" className="space-y-4">
@@ -375,6 +416,35 @@ const GoogleIndexing = () => {
                   </Button>
                   <p className="text-sm text-muted-foreground mt-4">
                     Aktiv şirkətlərin URL-lərini avtomatik yaradır (max 200)
+                  </p>
+                </div>
+                {indexingUrls && (
+                  <Textarea
+                    value={indexingUrls}
+                    onChange={(e) => setIndexingUrls(e.target.value)}
+                    rows={10}
+                    className="font-mono text-sm"
+                  />
+                )}
+              </TabsContent>
+
+              <TabsContent value="regions" className="space-y-4">
+                <div className="text-center py-8">
+                  <Button 
+                    onClick={generateRegionUrls}
+                    disabled={loading}
+                    size="lg"
+                    className="gap-2"
+                  >
+                    {loading ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <RefreshCw className="h-4 w-4" />
+                    )}
+                    Region URL-lərini Yarat
+                  </Button>
+                  <p className="text-sm text-muted-foreground mt-4">
+                    Aktiv regionların URL-lərini avtomatik yaradır (max 200)
                   </p>
                 </div>
                 {indexingUrls && (
