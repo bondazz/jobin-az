@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams, notFound } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { supabase } from '@/integrations/supabase/client';
-import Head from 'next/head';
+import Link from 'next/link';
 
 interface CustomPage {
   id: string;
@@ -24,40 +24,47 @@ interface CustomPage {
 
 export default function CustomPageRoute() {
   const params = useParams();
-  const slug = params?.slug as string;
+  const router = useRouter();
+  const slug = decodeURIComponent(params?.slug as string || '');
   const [page, setPage] = useState<CustomPage | null>(null);
   const [loading, setLoading] = useState(true);
-  const [notFoundState, setNotFoundState] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     async function fetchPage() {
       if (!slug) {
-        setNotFoundState(true);
+        setError(true);
         setLoading(false);
         return;
       }
 
-      // Try with the slug as-is first, then with leading slash
-      const slugsToTry = [slug, `/${slug}`];
-      
-      for (const trySlug of slugsToTry) {
-        const { data, error } = await supabase
-          .from('custom_pages')
-          .select('*')
-          .eq('slug', trySlug)
-          .eq('is_active', true)
-          .maybeSingle();
+      try {
+        // Try with the slug as-is first, then with leading slash
+        const slugsToTry = [slug, `/${slug}`];
+        
+        for (const trySlug of slugsToTry) {
+          const { data, error: fetchError } = await supabase
+            .from('custom_pages')
+            .select('*')
+            .eq('slug', trySlug)
+            .eq('is_active', true)
+            .maybeSingle();
 
-        if (data) {
-          setPage(data);
-          setLoading(false);
-          return;
+          if (data) {
+            setPage(data);
+            setLoading(false);
+            return;
+          }
         }
-      }
 
-      // Not found in custom_pages
-      setNotFoundState(true);
-      setLoading(false);
+        // Not found in custom_pages
+        setError(true);
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching custom page:', err);
+        setError(true);
+        setLoading(false);
+      }
     }
 
     fetchPage();
@@ -141,9 +148,18 @@ export default function CustomPageRoute() {
     );
   }
 
-  if (notFoundState || !page) {
-    // Return the Next.js not found
-    notFound();
+  if (error || !page) {
+    return (
+      <div className="min-h-[50vh] flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold mb-4">404</h1>
+          <p className="text-xl text-muted-foreground mb-4">Səhifə tapılmadı</p>
+          <Link href="/" className="text-primary hover:underline">
+            Ana səhifəyə qayıt
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   return (
