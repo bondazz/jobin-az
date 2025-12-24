@@ -215,6 +215,63 @@ export type Database = {
         }
         Relationships: []
       }
+      custom_pages: {
+        Row: {
+          canonical_url: string | null
+          content: string | null
+          created_at: string
+          id: string
+          is_active: boolean
+          og_description: string | null
+          og_image: string | null
+          og_title: string | null
+          schema_type: string | null
+          seo_description: string | null
+          seo_keywords: string[] | null
+          seo_title: string
+          slug: string
+          twitter_description: string | null
+          twitter_title: string | null
+          updated_at: string
+        }
+        Insert: {
+          canonical_url?: string | null
+          content?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          og_description?: string | null
+          og_image?: string | null
+          og_title?: string | null
+          schema_type?: string | null
+          seo_description?: string | null
+          seo_keywords?: string[] | null
+          seo_title: string
+          slug: string
+          twitter_description?: string | null
+          twitter_title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          canonical_url?: string | null
+          content?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          og_description?: string | null
+          og_image?: string | null
+          og_title?: string | null
+          schema_type?: string | null
+          seo_description?: string | null
+          seo_keywords?: string[] | null
+          seo_title?: string
+          slug?: string
+          twitter_description?: string | null
+          twitter_title?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       jobs: {
         Row: {
           application_email: string | null
