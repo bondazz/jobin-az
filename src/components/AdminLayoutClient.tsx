@@ -18,7 +18,8 @@ import {
     DollarSign,
     Megaphone,
     Globe,
-    Bell
+    Bell,
+    FileText
 } from 'lucide-react';
 
 interface AdminLayoutProps {
@@ -80,6 +81,11 @@ const AdminLayoutClient = ({ children }: AdminLayoutProps) => {
             name: 'Google İndeksləmə',
             path: '/admin/google-indexing',
             icon: Globe,
+        },
+        {
+            name: 'SEO Səhifələr',
+            path: '/admin/custom-pages',
+            icon: FileText,
         },
         {
             name: 'Tənzimləmələr',
