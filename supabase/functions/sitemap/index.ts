@@ -21,20 +21,24 @@ serve(async (req) => {
     // Use the production domain
     const baseUrl = 'https://jooble.az'
 
-    // Fetch all active data
-    const [jobsResult, categoriesResult, companiesResult] = await Promise.all([
+    // Fetch all active data including custom pages
+    const [jobsResult, categoriesResult, companiesResult, customPagesResult] = await Promise.all([
       supabaseClient.from('jobs').select('slug, updated_at, category_id').eq('is_active', true),
       supabaseClient.from('categories').select('id, slug, updated_at').eq('is_active', true),
-      supabaseClient.from('companies').select('slug, updated_at').eq('is_active', true)
+      supabaseClient.from('companies').select('slug, updated_at').eq('is_active', true),
+      supabaseClient.from('custom_pages').select('slug, updated_at').eq('is_active', true)
     ])
 
-    if (jobsResult.error || categoriesResult.error || companiesResult.error) {
+    if (jobsResult.error || categoriesResult.error || companiesResult.error || customPagesResult.error) {
       throw new Error('Database query failed')
     }
 
     const jobs = jobsResult.data || []
     const categories = categoriesResult.data || []
     const companies = companiesResult.data || []
+    const customPages = customPagesResult.data || []
+
+    console.log(`Found ${customPages.length} active custom pages for sitemap`)
 
     // Create category lookup
     const categoryLookup = new Map()
@@ -143,6 +147,20 @@ serve(async (req) => {
     <loc>${baseUrl}/favorites/${job.slug}</loc>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
+  </url>`
+    })
+
+    // Add custom SEO pages (only active ones - deleted pages won't appear)
+    customPages.forEach(page => {
+      const lastmod = new Date(page.updated_at).toISOString().split('T')[0]
+      // Clean slug - remove leading slash if present
+      const cleanSlug = page.slug.startsWith('/') ? page.slug.slice(1) : page.slug
+      sitemap += `
+  <url>
+    <loc>${baseUrl}/${cleanSlug}</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>`
     })
 
