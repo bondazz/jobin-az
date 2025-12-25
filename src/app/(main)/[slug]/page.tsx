@@ -1,9 +1,10 @@
 import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import { createClient } from '@supabase/supabase-js';
 import CustomPageContent from './CustomPageContent';
 
-const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://igrtzfvphltnoiwedbtz.supabase.co';
-const supabaseKey = process.env.VITE_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlncnR6ZnZwaGx0bm9pd2VkYnR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIyMTQzMDYsImV4cCI6MjA2Nzc5MDMwNn0.afoeynzfpIZMqMRgpD0fDQ_NdULXEML-LZ-SocnYKp0';
+const supabaseUrl = 'https://igrtzfvphltnoiwedbtz.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlncnR6ZnZwaGx0bm9pd2VkYnR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIyMTQzMDYsImV4cCI6MjA2Nzc5MDMwNn0.afoeynzfpIZMqMRgpD0fDQ_NdULXEML-LZ-SocnYKp0';
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
@@ -87,8 +88,13 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 export default async function CustomPageRoute({ params }: { params: { slug: string } }) {
   const page = await getPage(params.slug);
 
+  // If page not found or not active, show Next.js 404 page
+  if (!page) {
+    notFound();
+  }
+
   // Generate JSON-LD schema
-  const jsonLd = page ? {
+  const jsonLd = {
     '@context': 'https://schema.org',
     '@type': page.schema_type || 'WebPage',
     name: page.seo_title,
@@ -103,17 +109,15 @@ export default async function CustomPageRoute({ params }: { params: { slug: stri
         url: 'https://jooble.az/icons/icon-512x512.jpg'
       }
     }
-  } : null;
+  };
 
   return (
     <>
       {/* JSON-LD Schema - Server rendered */}
-      {jsonLd && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      )}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       
       <CustomPageContent page={page} />
     </>
