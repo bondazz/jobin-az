@@ -63,14 +63,15 @@ serve(async (req) => {
     console.log('Generating sitemap-main with ALL URLs (pagination enabled)');
 
     // Fetch all data with pagination in parallel
-    const [jobs, companies, categories, regions] = await Promise.all([
+    const [jobs, companies, categories, regions, customPages] = await Promise.all([
       fetchAllRecords(supabase, 'jobs', 'slug, updated_at', 'created_at'),
       fetchAllRecords(supabase, 'companies', 'slug, updated_at', 'name'),
       fetchAllRecords(supabase, 'categories', 'slug, updated_at', 'name'),
       fetchAllRecords(supabase, 'regions', 'slug, updated_at', 'name'),
+      fetchAllRecords(supabase, 'custom_pages', 'slug, updated_at', 'created_at'),
     ]);
 
-    console.log(`Total found: ${jobs.length} jobs, ${companies.length} companies, ${categories.length} categories, ${regions.length} regions`);
+    console.log(`Total found: ${jobs.length} jobs, ${companies.length} companies, ${categories.length} categories, ${regions.length} regions, ${customPages.length} custom pages`);
 
     let xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
@@ -147,11 +148,25 @@ serve(async (req) => {
   </url>`;
     });
 
+    // 6. Custom SEO Pages - format: /[slug] (only active pages)
+    customPages.forEach(page => {
+      const lastmod = page.updated_at ? new Date(page.updated_at).toISOString().split('T')[0] : today;
+      // Clean slug - remove leading slash if present for URL construction
+      const cleanSlug = page.slug.startsWith('/') ? page.slug.slice(1) : page.slug;
+      xml += `
+  <url>
+    <loc>${SITE_URL}/${cleanSlug}</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>`;
+    });
+
     xml += `
 </urlset>`;
 
-    const totalUrls = staticPages.length + categories.length + regions.length + companies.length + jobs.length;
-    console.log(`Generated sitemap-main with ${totalUrls} total URLs`);
+    const totalUrls = staticPages.length + categories.length + regions.length + companies.length + jobs.length + customPages.length;
+    console.log(`Generated sitemap-main with ${totalUrls} total URLs (including ${customPages.length} custom pages)`);
 
     return new Response(xml, { headers: corsHeaders });
 
