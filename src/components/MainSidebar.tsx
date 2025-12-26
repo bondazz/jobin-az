@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import ThemeToggle from "@/components/ThemeToggle";
 import LanguageToggle from "@/components/LanguageToggle";
 import AdBanner from "@/components/AdBanner";
+import { AnimatedStatsCard } from "@/components/ui/animated-stats-card";
 import {
   Briefcase,
   Tag,
@@ -252,22 +253,22 @@ const MainSidebar = () => {
 
       {/* Statistics Section */}
       <div className="p-3">
-        <div className="grid grid-cols-2 gap-2 mb-3">
-          <div className="bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/10 rounded-xl p-2 text-center hover:shadow-sm transition-all duration-300 group">
+        <div className="grid grid-cols-2 gap-3 mb-3">
+          <AnimatedStatsCard variant="primary">
             <div className="flex items-center justify-center gap-1.5 mb-1">
               <TrendingUp className="w-3.5 h-3.5 text-primary group-hover:scale-110 transition-transform" />
               <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Günlük</span>
             </div>
             <div className="text-lg font-bold text-primary leading-none">{dailyJobCount}</div>
-          </div>
+          </AnimatedStatsCard>
 
-          <div className="bg-gradient-to-br from-accent/5 to-accent/10 border border-accent/10 rounded-xl p-2 text-center hover:shadow-sm transition-all duration-300 group">
+          <AnimatedStatsCard variant="accent">
             <div className="flex items-center justify-center gap-1.5 mb-1">
               <Calendar className="w-3.5 h-3.5 text-accent group-hover:scale-110 transition-transform" />
               <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Aylıq</span>
             </div>
             <div className="text-lg font-bold text-accent leading-none">{monthlyJobCount}</div>
-          </div>
+          </AnimatedStatsCard>
         </div>
 
         {/* Sidebar Advertisements */}
