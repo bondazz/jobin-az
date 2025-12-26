@@ -75,7 +75,7 @@ const JobDetails = ({ jobId, isMobile = false, primaryHeading = true }: JobDetai
           `
           id, application_type, salary, company_id, title, is_active, updated_at, type, location, seo_keywords, seo_description, views, category_id, seo_title, created_at, slug, application_url, tags, description, expiration_date,
           companies:company_id(name, logo, website, email, phone, is_verified, slug),
-          categories:category_id(name)
+          categories:category_id(name, slug)
         `,
         )
         .eq("id", id)
@@ -89,7 +89,7 @@ const JobDetails = ({ jobId, isMobile = false, primaryHeading = true }: JobDetai
             `
             id, application_type, salary, company_id, title, is_active, updated_at, type, location, seo_keywords, seo_description, views, category_id, seo_title, created_at, slug, application_url, tags, description, expiration_date,
             companies:company_id(name, logo, website, email, phone, is_verified, slug),
-            categories:category_id(name)
+            categories:category_id(name, slug)
           `,
           )
           .eq("slug", id)
@@ -805,12 +805,23 @@ const JobDetails = ({ jobId, isMobile = false, primaryHeading = true }: JobDetai
 
               {/* Job Meta Information */}
               <div className="flex flex-wrap items-center gap-3">
-                <Badge
-                  variant="secondary"
-                  className={`${isMobile ? "text-xs" : "text-sm"} font-medium bg-primary/10 text-primary border-0`}
-                >
-                  {job.categories?.name || "Kateqoriya"}
-                </Badge>
+                {job.categories?.slug ? (
+                  <Link href={`/categories/${job.categories.slug}`}>
+                    <Badge
+                      variant="secondary"
+                      className={`${isMobile ? "text-xs" : "text-sm"} font-medium bg-primary/10 text-primary border-0 hover:bg-primary/20 transition-colors cursor-pointer`}
+                    >
+                      {job.categories?.name || "Kateqoriya"}
+                    </Badge>
+                  </Link>
+                ) : (
+                  <Badge
+                    variant="secondary"
+                    className={`${isMobile ? "text-xs" : "text-sm"} font-medium bg-primary/10 text-primary border-0`}
+                  >
+                    {job.categories?.name || "Kateqoriya"}
+                  </Badge>
+                )}
                 {job.salary && job.salary !== "Müzakirə" && (
                   <Badge
                     variant="outline"
