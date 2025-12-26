@@ -42,10 +42,31 @@ const LanguageToggle = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
-          className="flex items-center justify-center w-8 h-8 rounded-full bg-muted/50 border border-border/50 hover:border-primary/50 transition-all duration-300 overflow-hidden"
+          className="relative w-8 h-8 rounded-full overflow-hidden group"
           aria-label="Dil"
         >
-          <span className="text-lg leading-none">{currentLang.flag}</span>
+          {/* Animated border */}
+          <div className="absolute inset-0 rounded-full overflow-hidden">
+            <div
+              className="absolute animate-[border-rotate_3s_linear_infinite]"
+              style={{
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                width: "150%",
+                height: "150%",
+                background: "conic-gradient(from 0deg, transparent 0deg, transparent 60deg, hsl(var(--primary)) 120deg, hsl(var(--primary) / 0.8) 150deg, hsl(var(--primary) / 0.4) 180deg, hsl(var(--primary) / 0.1) 210deg, transparent 270deg, transparent 360deg)"
+              }}
+            />
+          </div>
+          {/* Inner background */}
+          <div className="absolute inset-[2px] rounded-full bg-card z-10">
+            <div className="absolute inset-0 rounded-full bg-gradient-to-b from-white/10 to-transparent" />
+          </div>
+          {/* Content */}
+          <div className="relative z-20 w-full h-full flex items-center justify-center">
+            <span className="text-lg leading-none group-hover:scale-110 transition-transform duration-300">{currentLang.flag}</span>
+          </div>
         </button>
       </DropdownMenuTrigger>
       
