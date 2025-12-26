@@ -210,35 +210,41 @@ const MainSidebar = () => {
               href={getUrlWithReferral(item.path)}
               prefetch={true}
               className={`
-                flex items-center justify-between px-3 py-1.5 rounded-lg transition-all duration-200 group
+                flex items-center justify-between px-3 py-1.5 rounded-lg transition-all duration-300 group relative overflow-hidden
                 ${
                   isActive
-                    ? "bg-gradient-primary text-white shadow-md"
-                    : "hover:bg-accent/60 hover:shadow-sm text-foreground/80 hover:text-foreground"
+                    ? "bg-gradient-to-r from-primary via-primary/90 to-accent text-white shadow-lg shadow-primary/25"
+                    : "hover:bg-gradient-to-r hover:from-primary/15 hover:via-accent/10 hover:to-transparent hover:shadow-sm text-foreground/80 hover:text-foreground"
                 }
               `}
             >
-              <div className="flex items-center gap-3">
+              {/* Aktiv element üçün parıltı effekti */}
+              {isActive && (
+                <div className="absolute inset-0 bg-gradient-to-r from-white/10 via-transparent to-white/5 pointer-events-none" />
+              )}
+              <div className="flex items-center gap-3 relative z-10">
                 <div
-                  className={`w-6 h-6 rounded-md flex items-center justify-center transition-colors ${
-                    isActive ? "bg-white/20" : "bg-primary/10 group-hover:bg-primary/20"
+                  className={`w-6 h-6 rounded-md flex items-center justify-center transition-all duration-300 ${
+                    isActive 
+                      ? "bg-white/25 shadow-inner" 
+                      : "bg-gradient-to-br from-primary/15 to-accent/10 group-hover:from-primary/25 group-hover:to-accent/20 group-hover:scale-105"
                   }`}
                 >
-                  <Icon className={`w-3.5 h-3.5 ${isActive ? "text-white" : "text-primary"}`} />
+                  <Icon className={`w-3.5 h-3.5 transition-transform duration-300 ${isActive ? "text-white" : "text-primary group-hover:scale-110"}`} />
                 </div>
                 <span className="text-sm font-medium">{item.label}</span>
                 {item.path === "/add_job" && (
                   <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
                   </span>
                 )}
               </div>
               {item.count !== null && item.count > 0 && (
                 <Badge
                   variant={isActive ? "secondary" : "outline"}
-                  className={`ml-auto text-xs px-1.5 py-0.5 ${
-                    isActive ? "bg-white/20 text-white border-white/30" : "bg-primary/10 text-primary border-primary/30"
+                  className={`ml-auto text-xs px-1.5 py-0.5 relative z-10 ${
+                    isActive ? "bg-white/25 text-white border-white/40" : "bg-gradient-to-r from-primary/15 to-accent/10 text-primary border-primary/25"
                   }`}
                 >
                   {item.count}
