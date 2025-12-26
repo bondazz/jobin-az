@@ -24,59 +24,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         .eq('slug', params.jobSlug)
         .maybeSingle();
 
-    // If job doesn't exist, return minimal metadata (will redirect anyway)
-    if (!job) {
-        return {
-            title: 'Vakansiya tapılmadı | Jooble.az',
-            description: 'Bu vakansiya mövcud deyil. Ən son iş elanları üçün Jooble.az-a daxil olun.',
-            robots: { index: false, follow: true },
-        };
-    }
-
-    // Check if job is expired or inactive
-    const expired = !job.is_active || isJobExpired(job.expiration_date);
-    const companyName = (job.companies as any)?.name || '';
-    const companyLogo = (job.companies as any)?.logo;
-    const ogImage = companyLogo || 'https://jooble.az/icons/icon-512x512.jpg';
-
-    // For expired jobs, create unique SEO with "archived" indication
-    if (expired) {
-        const expiredTitle = `${job.title} - ${companyName} (Arxiv) | Jooble.az`;
-        const expiredDescription = `Bu vakansiya artıq aktiv deyil. ${job.title} - ${companyName} vakansiyası arxivləşdirilib. Oxşar iş elanları üçün Jooble.az-da axtarış edin.`;
-        
-        return {
-            title: expiredTitle,
-            description: expiredDescription,
-            keywords: job.seo_keywords,
-            robots: { index: false, follow: true }, // Don't index expired jobs
-            openGraph: {
-                type: 'website',
-                url: `https://jooble.az/vacancies/${params.jobSlug}`,
-                title: expiredTitle,
-                description: expiredDescription,
-                siteName: 'Jooble.az',
-                images: [
-                    {
-                        url: ogImage,
-                        width: 800,
-                        height: 600,
-                        alt: `${job.title} - Arxivləşdirilmiş vakansiya`,
-                    }
-                ],
-            },
-            twitter: {
-                card: 'summary_large_image',
-                title: expiredTitle,
-                description: expiredDescription,
-                images: [ogImage],
-            },
-            alternates: {
-                canonical: `https://jooble.az/vacancies/${params.jobSlug}`,
-            },
-        };
+    // If job doesn't exist or is expired/inactive, redirect immediately
+    if (!job || !job.is_active || isJobExpired(job.expiration_date)) {
+        redirect('/vacancies');
     }
 
     // Active job - use full SEO data
+    const companyName = (job.companies as any)?.name || '';
+    const companyLogo = (job.companies as any)?.logo;
+    const ogImage = companyLogo || 'https://jooble.az/icons/icon-512x512.jpg';
     const title = job.seo_title || `${job.title} - ${companyName} | Jooble.az`;
     const description = job.seo_description || `${job.title} vakansiyası ${companyName} şirkətində. İndi müraciət edin!`;
 
