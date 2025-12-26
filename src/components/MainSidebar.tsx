@@ -327,7 +327,7 @@ const MainSidebar = () => {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Threads"
-            className="w-8 h-8 rounded-lg bg-black text-white hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90 flex items-center justify-center transition-all duration-300 hover:scale-110"
+            className="w-8 h-8 rounded-lg bg-black/10 text-black hover:bg-black hover:text-white dark:bg-white/10 dark:text-white dark:hover:bg-white dark:hover:text-black flex items-center justify-center transition-all duration-300 hover:scale-110"
           >
             <svg className="w-4 h-4" viewBox="0 0 512 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
               <path fillOpacity=".1" d="m98.4 59.2-2.9 3.3 3.3-2.9c1.7-1.7 3.2-3.1 3.2-3.3 0-.8-.8-.1-3.6 2.9m29.5 35.5-2.4 2.8 2.8-2.4c2.5-2.3 3.2-3.1 2.4-3.1-.2 0-1.4 1.2-2.8 2.7M394.5 96c1 1.1 2 2 2.3 2s-.3-.9-1.3-2-2-2-2.3-2 .3.9 1.3 2m-183.6 86.7c-1.3 1.6-1.2 1.7.4.4.9-.7 1.7-1.5 1.7-1.7 0-.8-.8-.3-2.1 1.3M374 232.9c0 .6.4 1.3 1 1.6s.7-.1.4-.9c-.7-1.8-1.4-2.1-1.4-.7m-161 97.5c0 .2.8 1 1.8 1.7 1.5 1.3 1.6 1.2.3-.4s-2.1-2.1-2.1-1.3m-35 29.9c0 .2 1.5 1.6 3.3 3.3l3.2 2.9-2.9-3.3c-2.8-3-3.6-3.7-3.6-2.9M130.5 420c2.1 2.2 4.1 4 4.4 4s-1.3-1.8-3.4-4-4.1-4-4.4-4 1.3 1.8 3.4 4M96 450.3c0 .2 1.5 1.6 3.3 3.3l3.2 2.9-2.9-3.3c-2.8-3-3.6-3.7-3.6-2.9"/>
