@@ -114,15 +114,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function JobPage({ params }: Props) {
     const { data: job } = await supabase
         .from('jobs')
-        .select('id, slug')
+        .select('id, slug, is_active, expiration_date')
         .eq('slug', params.jobSlug)
         .maybeSingle();
 
-    // If job doesn't exist, redirect to /vacancies
-    if (!job) {
+    // If job doesn't exist OR is expired/inactive, redirect immediately to /vacancies
+    if (!job || !job.is_active || isJobExpired(job.expiration_date)) {
         redirect('/vacancies');
     }
 
-    // Job exists - render null (JobDetails handles the UI)
+    // Active job exists - render null (JobDetails handles the UI)
     return null;
 }
