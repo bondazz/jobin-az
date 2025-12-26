@@ -754,16 +754,15 @@ const JobDetails = ({ jobId, isMobile = false, primaryHeading = true }: JobDetai
         id="job-details-printable"
         className={`h-full overflow-y-auto bg-background ${isMobile ? "pt-16 pb-20" : "pb-24"}`}
       >
-        {/* SEO Breadcrumb */}
-        <div className={`${isMobile ? "px-4 pt-3" : "px-6 pt-4"}`}>
-          <SEOBreadcrumb 
-            items={[
-              { label: "Vakansiyalar", href: "/vacancies" },
-              ...(job.categories?.slug ? [{ label: job.categories.name, href: `/categories/${job.categories.slug}` }] : []),
-              { label: job.title }
-            ]}
-          />
-        </div>
+        {/* SEO Breadcrumb - Hidden visually but visible to bots */}
+        <SEOBreadcrumb 
+          items={[
+            { label: "Vakansiyalar", href: "/vacancies" },
+            ...(job.categories?.slug ? [{ label: job.categories.name, href: `/categories/${job.categories.slug}` }] : []),
+            { label: job.title }
+          ]}
+          visuallyHidden={true}
+        />
 
         {/* Enhanced Header with Company Profile */}
         <div

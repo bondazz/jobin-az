@@ -10,6 +10,7 @@ import { generatePageSEO, updatePageMeta } from '@/utils/seo';
 import MobileHeader from '@/components/MobileHeader';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import SEOBreadcrumb from '@/components/SEOBreadcrumb';
 
 const ServicesClient = () => {
     const [plans, setPlans] = useState<any[]>([]);
@@ -110,6 +111,14 @@ const ServicesClient = () => {
 
     return (
         <div className="h-full overflow-y-auto bg-gradient-to-br from-background to-primary/5">
+            {/* SEO Breadcrumb - Hidden visually */}
+            <SEOBreadcrumb 
+                items={[
+                    { label: "Xidmətlər" }
+                ]}
+                visuallyHidden={true}
+            />
+
             {/* Service Structured Data */}
             {plans.length > 0 && (
                 <script
