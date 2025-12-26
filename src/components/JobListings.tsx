@@ -5,8 +5,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { Job } from '@/types/job';
 import JobCard from './JobCard';
 import AdBanner from './AdBanner';
-import { Search, MapPin, Loader2 } from 'lucide-react';
-
+import { Search, MapPin, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
+import Link from 'next/link';
 interface JobListingsProps {
   selectedJobId: string | null;
   onJobSelect: (job: Job) => void;
@@ -105,7 +105,7 @@ const JobListings = ({
 
       const selectFields = `
           id, title, location, type, salary, tags, views, created_at, company_id, expiration_date, slug,
-          companies(id, name, logo, is_verified),
+          companies(id, name, logo, is_verified, slug),
           categories(name)
         `;
 
@@ -116,6 +116,7 @@ const JobListings = ({
         company: job.companies?.name || '',
         company_id: job.company_id || undefined,
         companyLogo: job.companies?.logo || undefined,
+        companySlug: job.companies?.slug || undefined,
         isVerified: job.companies?.is_verified || false,
         location: job.location,
         type: job.type as 'full-time' | 'part-time' | 'contract' | 'internship',
@@ -389,6 +390,59 @@ const JobListings = ({
               <span className="text-sm">Yüklənir...</span>
             </div>
           </div>
+        )}
+
+        {/* SEO Pagination Links - Real <a href> for Google bots */}
+        {!loading && filteredJobs.length > 0 && (
+          <nav aria-label="Vakansiyalar səhifələri" className="flex justify-center items-center gap-2 py-6 border-t border-border/30 mt-4">
+            {/* Previous page link */}
+            {displayCount > 15 && (
+              <Link 
+                href={`/vacancies?page=${Math.max(1, Math.floor(displayCount / 15) - 1)}`}
+                className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-primary transition-colors rounded-md border border-border/50 hover:border-primary/30"
+              >
+                <ChevronLeft className="w-3 h-3" />
+                <span className="hidden sm:inline">Əvvəlki</span>
+              </Link>
+            )}
+
+            {/* Page number links - show up to 5 pages */}
+            {(() => {
+              const totalPages = Math.ceil(filteredJobs.length / 15);
+              const currentPage = Math.ceil(displayCount / 15);
+              const pages = [];
+              const startPage = Math.max(1, currentPage - 2);
+              const endPage = Math.min(totalPages, startPage + 4);
+
+              for (let i = startPage; i <= endPage; i++) {
+                pages.push(
+                  <Link
+                    key={i}
+                    href={`/vacancies?page=${i}`}
+                    className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                      i === currentPage
+                        ? 'bg-primary text-primary-foreground'
+                        : 'text-muted-foreground hover:text-primary border border-border/50 hover:border-primary/30'
+                    }`}
+                  >
+                    {i}
+                  </Link>
+                );
+              }
+              return pages;
+            })()}
+
+            {/* Next page link */}
+            {displayCount < filteredJobs.length && (
+              <Link
+                href={`/vacancies?page=${Math.floor(displayCount / 15) + 1}`}
+                className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-primary transition-colors rounded-md border border-border/50 hover:border-primary/30"
+              >
+                <span className="hidden sm:inline">Sonrakı</span>
+                <ChevronRight className="w-3 h-3" />
+              </Link>
+            )}
+          </nav>
         )}
       </div>
     </div>
