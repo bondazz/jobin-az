@@ -60,27 +60,6 @@ export const AnimatedStatsCard = ({
         )}
       />
 
-      {/* Corner pulse effects */}
-      {[
-        { pos: "-top-0.5 -left-0.5", delay: "0s" },
-        { pos: "-top-0.5 -right-0.5", delay: "1s" },
-        { pos: "-bottom-0.5 -right-0.5", delay: "2s" },
-        { pos: "-bottom-0.5 -left-0.5", delay: "3s" },
-      ].map((corner, i) => (
-        <div
-          key={i}
-          className={cn(
-            "absolute w-1.5 h-1.5 rounded-full z-20",
-            corner.pos,
-            isPrimary ? "bg-primary" : "bg-accent"
-          )}
-          style={{
-            animation: "corner-glow 4s ease-in-out infinite",
-            animationDelay: corner.delay,
-          }}
-        />
-      ))}
-
       {/* Content container */}
       <div className="relative z-20 p-2.5 text-center">
         {children}
@@ -93,20 +72,6 @@ export const AnimatedStatsCard = ({
           }
           100% {
             transform: translate(-50%, -50%) rotate(360deg);
-          }
-        }
-        @keyframes corner-glow {
-          0%, 100% {
-            opacity: 0.3;
-            box-shadow: 0 0 2px currentColor;
-          }
-          25% {
-            opacity: 1;
-            box-shadow: 0 0 8px currentColor, 0 0 12px currentColor;
-          }
-          50% {
-            opacity: 0.5;
-            box-shadow: 0 0 4px currentColor;
           }
         }
       `}</style>
