@@ -10,6 +10,7 @@ import MobileHeader from '@/components/MobileHeader';
 import AdBanner from '@/components/AdBanner';
 import { useReferralCode } from '@/hooks/useReferralCode';
 import PushNotificationBanner from '@/components/PushNotificationBanner';
+import SEOBreadcrumb from '@/components/SEOBreadcrumb';
 
 // Lazy load JobDetails for better performance
 const JobDetails = lazy(() => import('@/components/JobDetails'));
@@ -241,14 +242,23 @@ const HomeClient = () => {
                     )}
                     {/* SEO Content for Vacancies page */}
                     {pathname === '/vacancies' && !jobSlug && (
-                        <div className="sr-only">
-                            <h2>Vakansiyalar və İş Elanları Azərbaycan</h2>
-                            <p>
-                                Azərbaycanda son vakansiyalar və iş elanları. Hər gün yeni və aktiv vakansiya elanları əlavə olunur.
-                                İş axtaranların ən son iş imkanlarına müraciət edə bilər. Uyğun iş tapmaq üçün CV nizi yükləyin və
-                                iş elanları və vakansiyalara müraciət edin. Müxtəlif sahələrdə edə bilər imkanları ilə.
-                            </p>
-                        </div>
+                        <>
+                            <div className="px-3 pt-3 pb-1">
+                                <SEOBreadcrumb 
+                                    items={[
+                                        { label: "Vakansiyalar" }
+                                    ]} 
+                                />
+                            </div>
+                            <div className="sr-only">
+                                <h2>Vakansiyalar və İş Elanları Azərbaycan</h2>
+                                <p>
+                                    Azərbaycanda son vakansiyalar və iş elanları. Hər gün yeni və aktiv vakansiya elanları əlavə olunur.
+                                    İş axtaranların ən son iş imkanlarına müraciət edə bilər. Uyğun iş tapmaq üçün CV nizi yükləyin və
+                                    iş elanları və vakansiyalara müraciət edin. Müxtəlif sahələrdə edə bilər imkanları ilə.
+                                </p>
+                            </div>
+                        </>
                     )}
                     {/* Active Filters */}
                     {(selectedCategory || selectedCompany) && (
