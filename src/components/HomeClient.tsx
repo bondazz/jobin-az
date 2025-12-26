@@ -243,13 +243,12 @@ const HomeClient = () => {
                     {/* SEO Content for Vacancies page */}
                     {pathname === '/vacancies' && !jobSlug && (
                         <>
-                            <div className="px-3 pt-3 pb-1">
-                                <SEOBreadcrumb 
-                                    items={[
-                                        { label: "Vakansiyalar" }
-                                    ]} 
-                                />
-                            </div>
+                            <SEOBreadcrumb 
+                                items={[
+                                    { label: "Vakansiyalar" }
+                                ]} 
+                                visuallyHidden={true}
+                            />
                             <div className="sr-only">
                                 <h2>Vakansiyalar və İş Elanları Azərbaycan</h2>
                                 <p>

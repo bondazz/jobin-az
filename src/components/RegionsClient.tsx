@@ -14,6 +14,7 @@ import MobileHeader from '@/components/MobileHeader';
 import { useReferralCode } from '@/hooks/useReferralCode';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
+import SEOBreadcrumb from '@/components/SEOBreadcrumb';
 
 const DEFAULT_OG_IMAGE = 'https://jooble.az/icons/icon-512x512.jpg';
 
@@ -367,6 +368,13 @@ const RegionsClient = () => {
                                 <div className="relative overflow-hidden bg-gradient-to-br from-background via-primary/8 to-accent/5 border-b border-border/30">
                                     <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-60"></div>
                                     <div className="relative space-y-3 my-0 px-[16px] py-[4px]">
+                                        {/* SEO Breadcrumb - Hidden visually */}
+                                        <SEOBreadcrumb 
+                                            items={[
+                                                { label: "Regionlar" }
+                                            ]}
+                                            visuallyHidden={true}
+                                        />
                                         <div className="relative">
                                             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                             <Input 
@@ -440,6 +448,14 @@ const RegionsClient = () => {
                         ) : (
                             <>
                                 {/* When region selected - Show Job Listings */}
+                                {/* SEO Breadcrumb - Hidden visually */}
+                                <SEOBreadcrumb 
+                                    items={[
+                                        { label: "Regionlar", href: "/regions" },
+                                        { label: selectedRegion?.name || selectedRegionName || "Region" }
+                                    ]}
+                                    visuallyHidden={true}
+                                />
                                 <div className="flex items-center gap-2 px-3 py-2 border-b border-border/50 bg-muted/30">
                                     <Button 
                                         variant="ghost" 

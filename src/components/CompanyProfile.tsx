@@ -52,6 +52,7 @@ const CompanyProfile = ({ company, onClose, isMobile = false }: CompanyProfilePr
               { label: "Şirkətlər", href: "/companies" },
               { label: company.name }
             ]}
+            visuallyHidden={true}
           />
           
           <div className="flex items-center justify-between">

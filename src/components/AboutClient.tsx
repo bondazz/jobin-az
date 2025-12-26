@@ -8,6 +8,7 @@ import MobileHeader from '@/components/MobileHeader';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
+import SEOBreadcrumb from '@/components/SEOBreadcrumb';
 
 const AboutClient = () => {
     const [aboutData, setAboutData] = useState<any>({});
@@ -116,6 +117,14 @@ const AboutClient = () => {
 
     return (
         <div className="h-full overflow-y-auto bg-gradient-to-br from-background to-primary/5">
+            {/* SEO Breadcrumb - Hidden visually */}
+            <SEOBreadcrumb 
+                items={[
+                    { label: "Haqqımızda" }
+                ]}
+                visuallyHidden={true}
+            />
+
             {/* AboutPage Structured Data */}
             {origin && (
                 <script type="application/ld+json" dangerouslySetInnerHTML={{

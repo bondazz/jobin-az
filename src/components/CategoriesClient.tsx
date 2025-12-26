@@ -379,7 +379,7 @@ const CategoriesClient = () => {
                                             items={[
                                                 { label: "Kateqoriyalar" }
                                             ]}
-                                            className="pt-2"
+                                            visuallyHidden={true}
                                         />
                                         <div className="relative">
                                             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -449,6 +449,7 @@ const CategoriesClient = () => {
                                             { label: "Kateqoriyalar", href: "/categories" },
                                             { label: selectedCategory?.name || selectedCategoryName || "Kateqoriya" }
                                         ]}
+                                        visuallyHidden={true}
                                     />
                                     <div className="flex items-center gap-2">
                                         <Button 

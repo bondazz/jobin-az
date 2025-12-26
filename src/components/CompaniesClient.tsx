@@ -512,14 +512,14 @@ const CompaniesClient = () => {
                                             { label: "Şirkətlər", href: "/companies" },
                                             { label: selectedCompany.name }
                                         ]}
-                                        className="mb-2"
+                                        visuallyHidden={true}
                                     />
                                 ) : (
                                     <SEOBreadcrumb 
                                         items={[
                                             { label: "Şirkətlər" }
                                         ]}
-                                        className="mb-2"
+                                        visuallyHidden={true}
                                     />
                                 )}
 

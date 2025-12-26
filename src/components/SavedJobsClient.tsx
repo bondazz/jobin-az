@@ -10,6 +10,7 @@ import { generatePageSEO, updatePageMeta } from '@/utils/seo';
 
 import MobileHeader from '@/components/MobileHeader';
 import { useReferralCode } from '@/hooks/useReferralCode';
+import SEOBreadcrumb from '@/components/SEOBreadcrumb';
 
 const SavedJobsClient = () => {
     const [selectedJob, setSelectedJob] = useState<Job | null>(null);
@@ -41,6 +42,14 @@ const SavedJobsClient = () => {
 
     return (
         <div className="h-full flex bg-background overflow-hidden">
+            {/* SEO Breadcrumb - Hidden visually */}
+            <SEOBreadcrumb 
+                items={[
+                    { label: "Yadda saxlanılanlar" }
+                ]}
+                visuallyHidden={true}
+            />
+
             {/* Mobile Header */}
             <MobileHeader />
 
