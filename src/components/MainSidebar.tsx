@@ -362,6 +362,14 @@ const MainSidebar = () => {
               . İş elanları və vakansiyalar
             </span>
           </div>
+          <a
+            href="https://storage.jooble.az/sitemap.xml"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[10px] text-muted-foreground/60 hover:text-primary transition-colors"
+          >
+            Sitemap
+          </a>
         </div>
       </div>
     </aside>

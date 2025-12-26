@@ -222,7 +222,7 @@ const BottomNavigation = () => {
                     <Badge variant="outline" className="text-[10px] px-1.5 py-0.5 h-4">AZ</Badge>
                   </div>
 
-                  <div className="flex items-center justify-between p-2.5 bg-card rounded-lg border border-transparent">
+              <div className="flex items-center justify-between p-2.5 bg-card rounded-lg border border-transparent">
                     <div className="flex items-center gap-2.5">
                       <div className="w-6 h-6 rounded-md bg-muted flex items-center justify-center">
                         <span className="text-[10px]">🌙</span>
@@ -232,6 +232,18 @@ const BottomNavigation = () => {
                     <ThemeToggle />
                   </div>
                 </div>
+              </div>
+
+              {/* Sitemap Link for SEO */}
+              <div className="pt-2 border-t border-border/40">
+                <a
+                  href="https://storage.jooble.az/sitemap.xml"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[10px] text-muted-foreground/60 hover:text-primary transition-colors"
+                >
+                  Sitemap
+                </a>
               </div>
             </div>
           </DrawerContent>
