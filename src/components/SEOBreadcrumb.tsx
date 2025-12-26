@@ -12,9 +12,10 @@ interface BreadcrumbItem {
 interface SEOBreadcrumbProps {
   items: BreadcrumbItem[];
   className?: string;
+  visuallyHidden?: boolean; // Hide from visual design but visible to bots/screen readers
 }
 
-const SEOBreadcrumb = ({ items, className = "" }: SEOBreadcrumbProps) => {
+const SEOBreadcrumb = ({ items, className = "", visuallyHidden = false }: SEOBreadcrumbProps) => {
   // Generate Schema.org BreadcrumbList structured data
   const structuredData = {
     "@context": "https://schema.org",
@@ -24,29 +25,34 @@ const SEOBreadcrumb = ({ items, className = "" }: SEOBreadcrumbProps) => {
         "@type": "ListItem",
         "position": 1,
         "name": "Ana səhifə",
-        "item": "https://jooble.az"
+        "item": "https://kontakt.az"
       },
       ...items.map((item, index) => ({
         "@type": "ListItem",
         "position": index + 2,
         "name": item.label,
-        ...(item.href ? { "item": `https://jooble.az${item.href}` } : {})
+        ...(item.href ? { "item": `https://kontakt.az${item.href}` } : {})
       }))
     ]
   };
 
+  // If visually hidden, use sr-only class - visible to bots and screen readers but not visually
+  const navClassName = visuallyHidden 
+    ? "sr-only" 
+    : `flex items-center flex-wrap gap-1 text-sm ${className}`;
+
   return (
     <>
-      {/* Schema.org structured data */}
+      {/* Schema.org structured data - always invisible, always crawlable */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
       
-      {/* Visual breadcrumb navigation */}
+      {/* Breadcrumb navigation - can be visually hidden but still in DOM for SEO */}
       <nav 
         aria-label="Breadcrumb" 
-        className={`flex items-center flex-wrap gap-1 text-sm ${className}`}
+        className={navClassName}
       >
         <ol className="flex items-center flex-wrap gap-1" itemScope itemType="https://schema.org/BreadcrumbList">
           {/* Home */}
