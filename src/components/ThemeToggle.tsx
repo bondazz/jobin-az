@@ -45,6 +45,13 @@ const ThemeToggle = () => {
       <div className="absolute inset-[2px] rounded-full bg-card z-10">
         <div className="absolute inset-0 rounded-full bg-gradient-to-b from-white/10 to-transparent" />
       </div>
+      {/* Hover shine effect */}
+      <div className="absolute inset-[2px] rounded-full z-15 overflow-hidden opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <div 
+          className="absolute w-[200%] h-full bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out"
+          style={{ transform: 'skewX(-20deg)' }}
+        />
+      </div>
       {/* Content */}
       <div className="relative z-20 w-full h-full">
         <div className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ${isDarkMode ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-90 scale-75'}`}>
