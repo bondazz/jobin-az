@@ -516,10 +516,14 @@ const CompaniesClient = () => {
                         {/* Companies List */}
                         <div ref={scrollContainerRef} className="companies-scroll-container flex-1 overflow-y-auto p-2 bg-gradient-to-b from-transparent to-primary/5 w-full max-w-[100%] mx-auto">
                             <div className="flex flex-col gap-2 justify-center items-center w-full max-w-full px-2">
-                                {companies.map((company, index) => (
-                                    <div
+                            {companies.map((company, index) => (
+                                    <Link
                                         key={company.id}
-                                        onClick={() => handleCompanyClick(company)}
+                                        href={`/companies/${company.slug}`}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            handleCompanyClick(company);
+                                        }}
                                         className={`group cursor-pointer p-3 rounded-lg border transition-all duration-200 ease-smooth relative
                       hover:shadow-card-hover hover:-translate-y-0.5 animate-fade-in
                       w-full max-w-full min-w-0 min-h-[60px] flex flex-row items-start justify-between backdrop-blur-sm
@@ -571,7 +575,7 @@ const CompaniesClient = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </Link>
                                 ))}
 
                                 {/* Loading More Indicator */}

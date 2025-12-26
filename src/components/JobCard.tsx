@@ -4,11 +4,12 @@ import { Eye, Heart } from 'lucide-react';
 import VerifyBadge from '@/components/ui/verify-badge';
 import { useState, useEffect, useCallback, memo } from 'react';
 import { useReferralCode } from '@/hooks/useReferralCode';
+import Link from 'next/link';
 
 const DEFAULT_LOGO = '/icons/icon-192x192.jpg';
 
 interface JobCardProps {
-  job: Job;
+  job: Job & { companySlug?: string };
   isSelected?: boolean;
   onClick: () => void;
   isAlternate?: boolean;
@@ -16,6 +17,7 @@ interface JobCardProps {
     name: string;
     logo?: string;
     is_verified: boolean;
+    slug?: string;
   };
 }
 
@@ -94,14 +96,32 @@ const JobCard = memo(({
       </div>
 
       <div className="flex-1 min-w-0 overflow-hidden">
-        <h3 className="font-semibold text-[11px] sm:text-xs text-foreground group-hover:text-primary transition-colors duration-200 truncate leading-tight">
-          {job.title}
-        </h3>
+        {/* Job title with real <a> link for SEO */}
+        {job.slug ? (
+          <Link href={`/vacancies/${job.slug}`} onClick={(e) => e.stopPropagation()}>
+            <h3 className="font-semibold text-[11px] sm:text-xs text-foreground group-hover:text-primary transition-colors duration-200 truncate leading-tight hover:underline">
+              {job.title}
+            </h3>
+          </Link>
+        ) : (
+          <h3 className="font-semibold text-[11px] sm:text-xs text-foreground group-hover:text-primary transition-colors duration-200 truncate leading-tight">
+            {job.title}
+          </h3>
+        )}
         <div className="flex items-center gap-1 sm:gap-2 mt-0.5">
           <div className="flex items-center gap-0.5 sm:gap-1 min-w-0">
-            <p className="text-muted-foreground text-[10px] sm:text-xs font-medium truncate">
-              {job.company || 'Şirkət'}
-            </p>
+            {/* Company name with real <a> link for SEO */}
+            {job.companySlug ? (
+              <Link href={`/companies/${job.companySlug}`} onClick={(e) => e.stopPropagation()}>
+                <p className="text-muted-foreground text-[10px] sm:text-xs font-medium truncate hover:text-primary hover:underline transition-colors">
+                  {job.company || 'Şirkət'}
+                </p>
+              </Link>
+            ) : (
+              <p className="text-muted-foreground text-[10px] sm:text-xs font-medium truncate">
+                {job.company || 'Şirkət'}
+              </p>
+            )}
             {job.isVerified && <VerifyBadge size={10} className="ml-0.5 flex-shrink-0" />}
           </div>
         </div>
