@@ -220,11 +220,13 @@ const MainSidebar = () => {
             >
               <div className="flex items-center gap-3">
                 <div
-                  className={`w-6 h-6 rounded-md flex items-center justify-center transition-colors ${
-                    isActive ? "bg-white/20" : "bg-primary/10 group-hover:bg-primary/20"
+                  className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all duration-300 ${
+                    isActive 
+                      ? "bg-white/25 shadow-inner" 
+                      : "bg-gradient-to-br from-primary/15 to-primary/5 group-hover:from-primary/25 group-hover:to-primary/10 group-hover:shadow-sm"
                   }`}
                 >
-                  <Icon className={`w-3.5 h-3.5 ${isActive ? "text-white" : "text-primary"}`} />
+                  <Icon className={`w-4 h-4 transition-colors ${isActive ? "text-white" : "text-primary"}`} />
                 </div>
                 <span className="text-sm font-medium">{item.label}</span>
                 {item.path === "/add_job" && (
