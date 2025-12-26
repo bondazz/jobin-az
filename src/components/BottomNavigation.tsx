@@ -186,6 +186,12 @@ const BottomNavigation = () => {
                           <item.icon className="w-3.5 h-3.5" />
                         </div>
                         <span className="font-medium text-xs">{item.label}</span>
+                        {item.path === '/add_job' && (
+                          <span className="relative flex h-2 w-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                          </span>
+                        )}
                       </div>
                       {item.count && (
                         <Badge
