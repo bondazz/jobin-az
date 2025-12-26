@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation';
 import { useDynamicSEO } from '@/hooks/useSEO';
 import VerifyBadge from '@/components/ui/verify-badge';
 import { useCompanyProfile } from '@/hooks/useCompanyProfile';
+import SEOBreadcrumb from '@/components/SEOBreadcrumb';
 
 type Company = Tables<'companies'>;
 
@@ -44,23 +45,33 @@ const CompanyProfile = ({ company, onClose, isMobile = false }: CompanyProfilePr
     return (
       <div className={`fixed inset-x-0 bottom-0 top-1/4 bg-background z-30 overflow-y-auto pb-20 rounded-t-xl border-t border-border shadow-2xl transform transition-transform duration-300 ease-out ${isClosing ? 'animate-slide-out-bottom' : 'animate-slide-in-bottom'}`}>
         {/* Mobile Header */}
-        <div className="sticky top-0 bg-background border-b border-border p-3 flex items-center justify-between z-50 rounded-t-xl shadow-sm">
-          <div className="flex items-center gap-3">
-            {company.logo ? (
-              <img src={company.logo} alt={company.name} className="w-8 h-8 rounded-md object-cover" width="32" height="32" decoding="async" />
-            ) : (
-              <div className="w-8 h-8 rounded-md bg-gradient-primary flex items-center justify-center text-white font-bold text-sm">
-                {company.name.charAt(0)}
-              </div>
-            )}
-            <h2 className="text-lg font-bold text-foreground truncate">{company.name}</h2>
+        <div className="sticky top-0 bg-background border-b border-border p-3 flex flex-col gap-2 z-50 rounded-t-xl shadow-sm">
+          {/* Breadcrumb */}
+          <SEOBreadcrumb 
+            items={[
+              { label: "Şirkətlər", href: "/companies" },
+              { label: company.name }
+            ]}
+          />
+          
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {company.logo ? (
+                <img src={company.logo} alt={company.name} className="w-8 h-8 rounded-md object-cover" width="32" height="32" decoding="async" />
+              ) : (
+                <div className="w-8 h-8 rounded-md bg-gradient-primary flex items-center justify-center text-white font-bold text-sm">
+                  {company.name.charAt(0)}
+                </div>
+              )}
+              <h2 className="text-lg font-bold text-foreground truncate">{company.name}</h2>
+            </div>
+            <Button variant="ghost" size="sm" onClick={() => {
+              setIsClosing(true);
+              setTimeout(onClose, 300); // Wait for animation to complete
+            }} className="p-2">
+              <X className="w-5 h-5" />
+            </Button>
           </div>
-          <Button variant="ghost" size="sm" onClick={() => {
-            setIsClosing(true);
-            setTimeout(onClose, 300); // Wait for animation to complete
-          }} className="p-2">
-            <X className="w-5 h-5" />
-          </Button>
         </div>
 
         <div className="p-4 pb-20">

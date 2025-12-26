@@ -26,6 +26,7 @@ import VerifyBadge from "@/components/ui/verify-badge";
 import AdBanner from "./AdBanner";
 import { useReferralCode } from "@/hooks/useReferralCode";
 import Link from "next/link";
+import SEOBreadcrumb from "@/components/SEOBreadcrumb";
 interface JobDetailsProps {
   jobId: string | null;
   isMobile?: boolean;
@@ -753,6 +754,17 @@ const JobDetails = ({ jobId, isMobile = false, primaryHeading = true }: JobDetai
         id="job-details-printable"
         className={`h-full overflow-y-auto bg-background ${isMobile ? "pt-16 pb-20" : "pb-24"}`}
       >
+        {/* SEO Breadcrumb */}
+        <div className={`${isMobile ? "px-4 pt-3" : "px-6 pt-4"}`}>
+          <SEOBreadcrumb 
+            items={[
+              { label: "Vakansiyalar", href: "/vacancies" },
+              ...(job.categories?.slug ? [{ label: job.categories.name, href: `/categories/${job.categories.slug}` }] : []),
+              { label: job.title }
+            ]}
+          />
+        </div>
+
         {/* Enhanced Header with Company Profile */}
         <div
           className={`${isMobile ? "p-5" : "p-8"} border-b border-border/50 bg-gradient-to-r from-background to-muted/20`}

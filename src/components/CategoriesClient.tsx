@@ -15,6 +15,7 @@ import { useReferralCode } from '@/hooks/useReferralCode';
 import { supabase } from '@/integrations/supabase/client';
 import { Tables } from '@/integrations/supabase/types';
 import { Button } from '@/components/ui/button';
+import SEOBreadcrumb from '@/components/SEOBreadcrumb';
 
 const DEFAULT_OG_IMAGE = 'https://jooble.az/icons/icon-512x512.jpg';
 
@@ -373,6 +374,13 @@ const CategoriesClient = () => {
                                 <div className="relative overflow-hidden bg-gradient-to-br from-background via-primary/8 to-accent/5 border-b border-border/30">
                                     <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-60"></div>
                                     <div className="relative space-y-3 my-0 px-[16px] py-[4px]">
+                                        {/* SEO Breadcrumb */}
+                                        <SEOBreadcrumb 
+                                            items={[
+                                                { label: "Kateqoriyalar" }
+                                            ]}
+                                            className="pt-2"
+                                        />
                                         <div className="relative">
                                             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                             <Input 
@@ -434,19 +442,27 @@ const CategoriesClient = () => {
                         ) : (
                             <>
                                 {/* When category selected - Show Job Listings */}
-                                {/* Minimal category filter header */}
-                                <div className="flex items-center gap-2 px-3 py-2 border-b border-border/50 bg-muted/30">
-                                    <Button 
-                                        variant="ghost" 
-                                        size="icon"
-                                        onClick={handleBackToCategories}
-                                        className="h-7 w-7 rounded-full hover:bg-primary/10"
-                                    >
-                                        <ArrowLeft className="w-4 h-4" />
-                                    </Button>
-                                    <span className="text-sm font-medium text-foreground truncate">
-                                        {selectedCategory?.name || selectedCategoryName}
-                                    </span>
+                                {/* SEO Breadcrumb + Minimal category filter header */}
+                                <div className="px-3 py-2 border-b border-border/50 bg-muted/30 space-y-2">
+                                    <SEOBreadcrumb 
+                                        items={[
+                                            { label: "Kateqoriyalar", href: "/categories" },
+                                            { label: selectedCategory?.name || selectedCategoryName || "Kateqoriya" }
+                                        ]}
+                                    />
+                                    <div className="flex items-center gap-2">
+                                        <Button 
+                                            variant="ghost" 
+                                            size="icon"
+                                            onClick={handleBackToCategories}
+                                            className="h-7 w-7 rounded-full hover:bg-primary/10"
+                                        >
+                                            <ArrowLeft className="w-4 h-4" />
+                                        </Button>
+                                        <span className="text-sm font-medium text-foreground truncate">
+                                            {selectedCategory?.name || selectedCategoryName}
+                                        </span>
+                                    </div>
                                 </div>
 
                                 {/* Job Listings for selected category */}
