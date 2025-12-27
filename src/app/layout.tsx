@@ -45,7 +45,7 @@ export const metadata: Metadata = {
 };
 
 // Sizin Google Analytics G-Kodu
-const GA_MEASUREMENT_ID = "G-C0N2ELTLL8"; 
+const GA_MEASUREMENT_ID = "G-C0N2ELTLL8";
 
 export default function RootLayout({
     children,
@@ -64,7 +64,7 @@ export default function RootLayout({
                 src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
                 strategy="afterInteractive" // Səhifə ilkin yükləndikdən sonra yüklənməsi tövsiyə olunur
             />
-            
+
             {/* Google Analytics konfiqurasiya skripti */}
             <Script id="google-analytics-init" strategy="afterInteractive">
                 {`
@@ -88,6 +88,15 @@ export default function RootLayout({
                 <meta httpEquiv="x-dns-prefetch-control" content="on" />
             </head>
             <body className={`${saira.variable} font-sans antialiased`} suppressHydrationWarning>
+                {/* Global SEO Content for Initial Load Visibility */}
+                <div className="sr-only" aria-hidden="true" id="root-level-seo-content">
+                    <h1>İş Elanları və Vakansiyalar 2026</h1>
+                    <p>
+                        İş elanları və vakansiyalar 2026 üzrə ən son yenilikləri burada tapa bilərsiniz.
+                        Platformamız bütün sahələr üzrə gündəlik yenilənən iş imkanlarını, real şirkət vakansiyalarını
+                        və filtirlənə bilən peşə yönümlü elanları bir araya gətirir.
+                    </p>
+                </div>
                 <Providers>
                     <PWAInstallPrompt />
                     {children}
