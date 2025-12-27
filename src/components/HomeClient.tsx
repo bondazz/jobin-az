@@ -21,10 +21,15 @@ interface Category {
     slug: string;
 }
 
-const HomeClient = () => {
+interface HomeClientProps {
+    initialJobs?: Job[];
+    initialCategories?: Category[];
+}
+
+const HomeClient = ({ initialJobs = [], initialCategories = [] }: HomeClientProps) => {
     const [selectedJob, setSelectedJob] = useState<Job | null>(null);
     const [selectedCategory, setSelectedCategory] = useState<string>('');
-    const [categories, setCategories] = useState<Category[]>([]);
+    const [categories, setCategories] = useState<Category[]>(initialCategories);
     const [savedScrollPosition, setSavedScrollPosition] = useState<number>(0);
     const searchParams = useSearchParams();
     const params = useParams();
@@ -33,8 +38,10 @@ const HomeClient = () => {
     const pathname = usePathname();
     const { getUrlWithReferral } = useReferralCode();
 
-    // Fetch categories
+    // Fetch categories only if not provided
     useEffect(() => {
+        if (initialCategories.length > 0) return;
+        
         const fetchCategories = async () => {
             const { data } = await supabase
                 .from('categories')
@@ -46,7 +53,7 @@ const HomeClient = () => {
         };
 
         fetchCategories();
-    }, []);
+    }, [initialCategories.length]);
 
     // Referral click logging
     useEffect(() => {
@@ -300,6 +307,7 @@ const HomeClient = () => {
                         onJobSelect={handleJobSelect}
                         selectedCategory={selectedCategory}
                         companyFilter={selectedCompany}
+                        initialJobs={initialJobs}
                     />
                 </div>
 
