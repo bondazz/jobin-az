@@ -8,7 +8,7 @@ export default function BoardLayout({
     return (
         <>
             <HomeClient />
-            <div className="hidden">{children}</div>
+            <div className="sr-only">{children}</div>
         </>
     );
 }

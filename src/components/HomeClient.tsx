@@ -231,34 +231,7 @@ const HomeClient = () => {
                 {/* Job Listings - Responsive Column */}
                 <div className="w-full lg:w-[500px] xl:w-[580px] 2xl:w-[650px] border-r border-border animate-fade-in">
                     {/* SEO Content Section - Hidden visually but present for SEO - Only on homepage */}
-                    {pathname === '/' && !jobSlug && (
-                        <div className="sr-only">
-                            <h2>İş elanları saytı, is elanlari və vakansiyalar platforması</h2>
-                            <p>
-                                Jooble.az-da minlərlə iş elanları, müxtəlif sahələr üzrə is elanları və ən son vakansiyalar sizi gözləyir.
-                                Axtardığınız vakansiya üçün şəhər, sahə və əmək haqqına görə filtrlərdən istifadə edin və karyeranıza bu gün başlayın.
-                            </p>
-                        </div>
-                    )}
-                    {/* SEO Content for Vacancies page */}
-                    {pathname === '/vacancies' && !jobSlug && (
-                        <>
-                            <SEOBreadcrumb 
-                                items={[
-                                    { label: "Vakansiyalar" }
-                                ]} 
-                                visuallyHidden={true}
-                            />
-                            <div className="sr-only">
-                                <h2>Vakansiyalar və İş Elanları Azərbaycan</h2>
-                                <p>
-                                    Azərbaycanda son vakansiyalar və iş elanları. Hər gün yeni və aktiv vakansiya elanları əlavə olunur.
-                                    İş axtaranların ən son iş imkanlarına müraciət edə bilər. Uyğun iş tapmaq üçün CV nizi yükləyin və
-                                    iş elanları və vakansiyalara müraciət edin. Müxtəlif sahələrdə edə bilər imkanları ilə.
-                                </p>
-                            </div>
-                        </>
-                    )}
+                    {/* SEO components moved to page.tsx for better server-side rendering */}
                     {/* Active Filters */}
                     {(selectedCategory || selectedCompany) && (
                         <div className="p-3 bg-primary/5 border-b border-border">

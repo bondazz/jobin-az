@@ -12,5 +12,35 @@ export const metadata: Metadata = {
 };
 
 export default function HomePage() {
-    return null;
+    return (
+        <article className="sr-only">
+            <h1>İş Elanları və Vakansiyalar 2026</h1>
+            <p>
+                İş elanları və vakansiyalar 2026 üzrə ən son yenilikləri burada tapa bilərsiniz.
+                Platformamız bütün sahələr üzrə gündəlik yenilənən iş imkanlarını, real şirkət vakansiyalarını
+                və filtirlənə bilən peşə yönümlü elanları bir araya gətirir. Əgər yeni iş axtarırsınızsa,
+                düzgün yerdəsiniz - buradan həm yerli, həm də beynəlxalq iş elanlarına rahatlıqla baxa,
+                CV göndərə və dərhal müraciət edə bilərsiniz.
+            </p>
+
+            <section>
+                <h2>Ən Son İş Elanları 2026</h2>
+                <ul>
+                    <li>Bu həftənin ən çox baxılan vakansiyaları</li>
+                    <li>Şəhərlər üzrə iş elanları</li>
+                    <li>Sahələr üzrə vakansiyalar</li>
+                    <li>Tələbə və təcrübəçi iş elanları</li>
+                    <li>Ən çox maaş təklif edən vakansiyalar</li>
+                    <li>Evdən işləmək (remote) iş imkanları</li>
+                </ul>
+            </section>
+
+            <p>
+                2026-cı il üçün hazırlanan iş elanları və vakansiyalar siyahımız real vaxtda yenilənir.
+                Hər bir elan şirkət tərəfindən təsdiqlənir və istifadəçilərə dəqiq maaş aralığı, tələblər,
+                vəzifə təsviri və müraciət linki təqdim olunur. İstər ofisdaxili, istər remote iş axtarasınız?
+                Burada bütün vakansiyaları rahatlıqla tapa biləcəksiniz.
+            </p>
+        </article>
+    );
 }
