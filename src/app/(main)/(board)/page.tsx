@@ -13,7 +13,8 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
     return (
-        <article className="sr-only">
+        <article id="jooble-seo-main-content-2026" role="main" className="sr-only">
+            {/* SEO Content for Bots - Visible in Source Code */}
             <h1>İş Elanları və Vakansiyalar 2026</h1>
             <p>
                 İş elanları və vakansiyalar 2026 üzrə ən son yenilikləri burada tapa bilərsiniz.

@@ -7,8 +7,8 @@ export default function BoardLayout({
 }) {
     return (
         <>
+            {children}
             <HomeClient />
-            <div className="sr-only">{children}</div>
         </>
     );
 }
