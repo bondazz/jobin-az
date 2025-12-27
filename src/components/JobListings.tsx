@@ -31,31 +31,11 @@ const JobListings = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [locationFilter, setLocationFilter] = useState('');
 
-  const [jobs, setJobs] = useState<Job[]>(() => {
-    // Use initialJobs if provided (SSR)
-    if (initialJobs.length > 0) {
-      return initialJobs;
-    }
-    // Otherwise try sessionStorage (client-side navigation)
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = sessionStorage.getItem('jobListings_data');
-        return saved ? JSON.parse(saved) : [];
-      } catch (e) {
-        return [];
-      }
-    }
-    return [];
-  });
-
-  const [loading, setLoading] = useState(() => {
-    // If initialJobs provided, no loading needed
-    if (initialJobs.length > 0) return false;
-    if (typeof window !== 'undefined') {
-      return !sessionStorage.getItem('jobListings_data');
-    }
-    return true;
-  });
+  // SSR-safe state initialization - initialJobs means no loading needed
+  const [jobs, setJobs] = useState<Job[]>(initialJobs);
+  
+  // Never show loading if we have initialJobs (SSR case)
+  const [loading, setLoading] = useState(initialJobs.length === 0);
 
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -65,6 +45,22 @@ const JobListings = ({
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  // Restore from sessionStorage on client mount (for navigation)
+  useEffect(() => {
+    if (initialJobs.length === 0 && jobs.length === 0) {
+      try {
+        const saved = sessionStorage.getItem('jobListings_data');
+        if (saved) {
+          setJobs(JSON.parse(saved));
+          setLoading(false);
+        }
+      } catch (e) {
+        // ignore
+      }
+    }
+  }, []);
+
+  // Save to sessionStorage when jobs change
   useEffect(() => {
     if (jobs.length > 0) {
       sessionStorage.setItem('jobListings_data', JSON.stringify(jobs));
