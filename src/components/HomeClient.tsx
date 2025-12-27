@@ -144,14 +144,19 @@ const HomeClient = ({ initialJobs = [], initialCategories = [] }: HomeClientProp
     }, [pathname, selectedJob]);
 
     const formatDate = (dateString: string) => {
-        const date = new Date(dateString);
+        const BAKU_OFFSET = 4 * 60;
+        const jobDate = new Date(dateString);
+        const jobBakuTime = new Date(jobDate.getTime() + BAKU_OFFSET * 60 * 1000);
         const now = new Date();
-        const diffTime = Math.abs(now.getTime() - date.getTime());
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        const nowBakuTime = new Date(now.getTime() + BAKU_OFFSET * 60 * 1000);
+        const jobDay = new Date(jobBakuTime.getFullYear(), jobBakuTime.getMonth(), jobBakuTime.getDate());
+        const today = new Date(nowBakuTime.getFullYear(), nowBakuTime.getMonth(), nowBakuTime.getDate());
+        const diffTime = today.getTime() - jobDay.getTime();
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
-        if (diffDays === 1) return 'Bu gün';
-        if (diffDays === 2) return 'Dünən';
-        if (diffDays <= 7) return `${diffDays - 1} gün əvvəl`;
+        if (diffDays === 0) return 'Bu gün';
+        if (diffDays === 1) return 'Dünən';
+        if (diffDays <= 7) return `${diffDays} gün əvvəl`;
         if (diffDays <= 30) return `${Math.ceil(diffDays / 7)} həftə əvvəl`;
         return `${Math.ceil(diffDays / 30)} ay əvvəl`;
     };

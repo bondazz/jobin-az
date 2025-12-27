@@ -88,6 +88,7 @@ async function getInitialJobs() {
         ) as ('premium' | 'new' | 'urgent' | 'remote')[],
         views: job.views,
         postedAt: formatDate(job.created_at),
+        created_at: job.created_at,
         category: job.categories?.name || '',
         applicationUrl: '',
         applicationType: 'website' as const,
