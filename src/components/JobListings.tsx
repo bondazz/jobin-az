@@ -15,6 +15,7 @@ interface JobListingsProps {
   showHeader?: boolean;
   showOnlySaved?: boolean;
   companyId?: string;
+  initialJobs?: Job[];
 }
 
 const JobListings = ({
@@ -24,12 +25,18 @@ const JobListings = ({
   companyFilter,
   showHeader = true,
   showOnlySaved = false,
-  companyId
+  companyId,
+  initialJobs = []
 }: JobListingsProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [locationFilter, setLocationFilter] = useState('');
 
   const [jobs, setJobs] = useState<Job[]>(() => {
+    // Use initialJobs if provided (SSR)
+    if (initialJobs.length > 0) {
+      return initialJobs;
+    }
+    // Otherwise try sessionStorage (client-side navigation)
     if (typeof window !== 'undefined') {
       try {
         const saved = sessionStorage.getItem('jobListings_data');
@@ -42,6 +49,8 @@ const JobListings = ({
   });
 
   const [loading, setLoading] = useState(() => {
+    // If initialJobs provided, no loading needed
+    if (initialJobs.length > 0) return false;
     if (typeof window !== 'undefined') {
       return !sessionStorage.getItem('jobListings_data');
     }
