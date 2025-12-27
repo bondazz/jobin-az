@@ -115,51 +115,171 @@ async function getInitialJobs() {
     };
 }
 
+// SSR Job Card Component - rendered on server
+function SSRJobCard({ job }: { job: any }) {
+    return (
+        <article 
+            className="p-4 border-b border-border hover:bg-muted/50 transition-colors"
+            itemScope 
+            itemType="https://schema.org/JobPosting"
+        >
+            <meta itemProp="datePosted" content={job.created_at} />
+            <meta itemProp="employmentType" content={job.type} />
+            
+            <div className="flex items-start gap-3">
+                {job.companyLogo && (
+                    <img 
+                        src={job.companyLogo} 
+                        alt={`${job.company} logo`}
+                        className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+                        loading="lazy"
+                    />
+                )}
+                <div className="flex-1 min-w-0">
+                    <h3 className="font-medium text-foreground truncate" itemProp="title">
+                        <a href={`/vacancies/${job.slug}`} className="hover:text-primary">
+                            {job.title}
+                        </a>
+                    </h3>
+                    <div itemProp="hiringOrganization" itemScope itemType="https://schema.org/Organization">
+                        <p className="text-sm text-muted-foreground" itemProp="name">{job.company}</p>
+                    </div>
+                    <div itemProp="jobLocation" itemScope itemType="https://schema.org/Place">
+                        <p className="text-xs text-muted-foreground mt-1">
+                            <span itemProp="address">{job.location}</span> • {job.postedAt}
+                        </p>
+                    </div>
+                    {job.salary && (
+                        <p className="text-xs text-primary mt-1" itemProp="baseSalary">{job.salary}</p>
+                    )}
+                </div>
+            </div>
+        </article>
+    );
+}
+
 export default async function HomePage() {
     const { jobs, categories } = await getInitialJobs();
 
+    // Generate JobPosting structured data for first 10 jobs
+    const jobPostingsSchema = jobs.slice(0, 10).map(job => ({
+        "@context": "https://schema.org",
+        "@type": "JobPosting",
+        "title": job.title,
+        "description": job.title,
+        "datePosted": job.created_at,
+        "employmentType": job.type === 'full-time' ? 'FULL_TIME' : job.type === 'part-time' ? 'PART_TIME' : job.type === 'internship' ? 'INTERN' : 'CONTRACTOR',
+        "jobLocation": {
+            "@type": "Place",
+            "address": {
+                "@type": "PostalAddress",
+                "addressLocality": job.location,
+                "addressCountry": "AZ"
+            }
+        },
+        "hiringOrganization": {
+            "@type": "Organization",
+            "name": job.company
+        },
+        "url": `https://jooble.az/vacancies/${job.slug}`
+    }));
+
     return (
         <>
-            {/* SSR SEO Content - visible in View Page Source */}
-            <div className="sr-only">
-                <h1>İş Elanları və Vakansiyalar 2026 | Ən Son İş İmkanları</h1>
-                <article>
-                    <h2>İş Elanları və Vakansiyalar 2026</h2>
-                    <p>
+            {/* Structured Data for SEO */}
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "WebSite",
+                        "name": "Jooble Azərbaycan",
+                        "url": "https://jooble.az",
+                        "potentialAction": {
+                            "@type": "SearchAction",
+                            "target": "https://jooble.az/vacancies?q={search_term_string}",
+                            "query-input": "required name=search_term_string"
+                        }
+                    })
+                }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify(jobPostingsSchema)
+                }}
+            />
+
+            {/* SSR SEO Content - VISIBLE in View Page Source */}
+            <div className="container mx-auto px-4 py-6">
+                <header className="mb-6">
+                    <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
+                        İş Elanları və Vakansiyalar 2026 | Ən Son İş İmkanları
+                    </h1>
+                    <p className="text-muted-foreground leading-relaxed">
                         İş elanları və vakansiyalar 2026 üzrə ən son yenilikləri burada tapa bilərsiniz. 
                         Platformamız bütün sahələr üzrə gündəlik yenilənən iş imkanlarını, real şirkət vakansiyalarını 
                         və filtirlənə bilən peşə yönümlü elanları bir araya gətirir. Əgər yeni iş axtarırsınızsa, 
                         düzgün yerdəsiniz - buradan həm yerli, həm də beynəlxalq iş elanlarına rahatlıqla baxa, 
                         CV göndərə və dərhal müraciət edə bilərsiniz.
                     </p>
-                    
-                    <h3>Ən Son İş Elanları 2026</h3>
-                    <p>Bu həftənin ən çox baxılan vakansiyaları</p>
-                    
-                    <h3>Şəhərlər üzrə iş elanları</h3>
-                    <p>Bakı, Sumqayıt, Gəncə və digər şəhərlərdə iş elanları</p>
-                    
-                    <h3>Sahələr üzrə vakansiyalar</h3>
-                    <p>IT, maliyyə, satış, marketinq və digər sahələrdə vakansiyalar</p>
-                    
-                    <h3>Tələbə və təcrübəçi iş elanları</h3>
-                    <p>Tələbələr və yeni məzunlar üçün staj və internship imkanları</p>
-                    
-                    <h3>Ən çox maaş təklif edən vakansiyalar</h3>
-                    <p>Yüksək maaşlı iş elanları və premium vakansiyalar</p>
-                    
-                    <h3>Evdən işləmək (remote) iş imkanları</h3>
-                    <p>Uzaqdan iş elanları və remote vakansiyalar</p>
-                    
+                </header>
+
+                {/* SSR Job Listings - These will appear in View Page Source */}
+                <section className="mb-8">
+                    <h2 className="text-xl font-semibold mb-4">Ən Son İş Elanları 2026</h2>
+                    <div className="bg-card rounded-lg border border-border overflow-hidden">
+                        {jobs.slice(0, 20).map((job) => (
+                            <SSRJobCard key={job.id} job={job} />
+                        ))}
+                    </div>
+                </section>
+
+                {/* Additional SEO Sections */}
+                <section className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    <div className="bg-card p-4 rounded-lg border border-border">
+                        <h3 className="font-semibold mb-2">Şəhərlər üzrə iş elanları</h3>
+                        <p className="text-sm text-muted-foreground">Bakı, Sumqayıt, Gəncə və digər şəhərlərdə iş elanları</p>
+                    </div>
+                    <div className="bg-card p-4 rounded-lg border border-border">
+                        <h3 className="font-semibold mb-2">Sahələr üzrə vakansiyalar</h3>
+                        <p className="text-sm text-muted-foreground">IT, maliyyə, satış, marketinq və digər sahələrdə vakansiyalar</p>
+                    </div>
+                    <div className="bg-card p-4 rounded-lg border border-border">
+                        <h3 className="font-semibold mb-2">Tələbə və təcrübəçi işləri</h3>
+                        <p className="text-sm text-muted-foreground">Tələbələr və yeni məzunlar üçün staj imkanları</p>
+                    </div>
+                    <div className="bg-card p-4 rounded-lg border border-border">
+                        <h3 className="font-semibold mb-2">Yüksək maaşlı vakansiyalar</h3>
+                        <p className="text-sm text-muted-foreground">Ən çox maaş təklif edən premium vakansiyalar</p>
+                    </div>
+                    <div className="bg-card p-4 rounded-lg border border-border">
+                        <h3 className="font-semibold mb-2">Remote iş imkanları</h3>
+                        <p className="text-sm text-muted-foreground">Evdən işləmək və uzaqdan iş elanları</p>
+                    </div>
+                    <div className="bg-card p-4 rounded-lg border border-border">
+                        <h3 className="font-semibold mb-2">Kateqoriyalar</h3>
+                        <ul className="text-sm text-muted-foreground">
+                            {categories.slice(0, 5).map(cat => (
+                                <li key={cat.id}>
+                                    <a href={`/categories/${cat.slug}`} className="hover:text-primary">{cat.name}</a>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </section>
+
+                <footer className="text-muted-foreground text-sm leading-relaxed mb-8">
                     <p>
                         2026-cı il üçün hazırlanan iş elanları və vakansiyalar siyahımız real vaxtda yenilənir. 
                         Hər bir elan şirkət tərəfindən təsdiqlənir və istifadəçilərə dəqiq maaş aralığı, tələblər, 
                         vəzifə təsviri və müraciət linki təqdim olunur. İstər ofisdaxili, istər remote iş axtarasınız - 
                         burada bütün vakansiyaları rahatlıqla tapa biləcəksiniz.
                     </p>
-                </article>
+                </footer>
             </div>
             
+            {/* Interactive Client Component - hydrates on top of SSR content */}
             <HomeClient initialJobs={jobs} initialCategories={categories} />
         </>
     );
