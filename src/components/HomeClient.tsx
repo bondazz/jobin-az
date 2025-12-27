@@ -21,15 +21,10 @@ interface Category {
     slug: string;
 }
 
-interface HomeClientProps {
-    initialJobs?: Job[];
-    initialCategories?: Category[];
-}
-
-const HomeClient = ({ initialJobs = [], initialCategories = [] }: HomeClientProps) => {
+const HomeClient = () => {
     const [selectedJob, setSelectedJob] = useState<Job | null>(null);
     const [selectedCategory, setSelectedCategory] = useState<string>('');
-    const [categories, setCategories] = useState<Category[]>(initialCategories);
+    const [categories, setCategories] = useState<Category[]>([]);
     const [savedScrollPosition, setSavedScrollPosition] = useState<number>(0);
     const searchParams = useSearchParams();
     const params = useParams();
@@ -38,10 +33,8 @@ const HomeClient = ({ initialJobs = [], initialCategories = [] }: HomeClientProp
     const pathname = usePathname();
     const { getUrlWithReferral } = useReferralCode();
 
-    // Fetch categories only if not provided
+    // Fetch categories
     useEffect(() => {
-        if (initialCategories.length > 0) return;
-        
         const fetchCategories = async () => {
             const { data } = await supabase
                 .from('categories')
@@ -53,7 +46,7 @@ const HomeClient = ({ initialJobs = [], initialCategories = [] }: HomeClientProp
         };
 
         fetchCategories();
-    }, [initialCategories.length]);
+    }, []);
 
     // Referral click logging
     useEffect(() => {
@@ -144,19 +137,14 @@ const HomeClient = ({ initialJobs = [], initialCategories = [] }: HomeClientProp
     }, [pathname, selectedJob]);
 
     const formatDate = (dateString: string) => {
-        const BAKU_OFFSET = 4 * 60;
-        const jobDate = new Date(dateString);
-        const jobBakuTime = new Date(jobDate.getTime() + BAKU_OFFSET * 60 * 1000);
+        const date = new Date(dateString);
         const now = new Date();
-        const nowBakuTime = new Date(now.getTime() + BAKU_OFFSET * 60 * 1000);
-        const jobDay = new Date(jobBakuTime.getFullYear(), jobBakuTime.getMonth(), jobBakuTime.getDate());
-        const today = new Date(nowBakuTime.getFullYear(), nowBakuTime.getMonth(), nowBakuTime.getDate());
-        const diffTime = today.getTime() - jobDay.getTime();
-        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        const diffTime = Math.abs(now.getTime() - date.getTime());
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-        if (diffDays === 0) return 'Bu gün';
-        if (diffDays === 1) return 'Dünən';
-        if (diffDays <= 7) return `${diffDays} gün əvvəl`;
+        if (diffDays === 1) return 'Bu gün';
+        if (diffDays === 2) return 'Dünən';
+        if (diffDays <= 7) return `${diffDays - 1} gün əvvəl`;
         if (diffDays <= 30) return `${Math.ceil(diffDays / 7)} həftə əvvəl`;
         return `${Math.ceil(diffDays / 30)} ay əvvəl`;
     };
@@ -312,7 +300,6 @@ const HomeClient = ({ initialJobs = [], initialCategories = [] }: HomeClientProp
                         onJobSelect={handleJobSelect}
                         selectedCategory={selectedCategory}
                         companyFilter={selectedCompany}
-                        initialJobs={initialJobs}
                     />
                 </div>
 

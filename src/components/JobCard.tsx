@@ -137,7 +137,7 @@ const JobCard = memo(({
       </>}
 
       {/* Posted Date */}
-      <span className="text-[10px] sm:text-xs" suppressHydrationWarning>{job.postedAt}</span>
+      <span className="text-[10px] sm:text-xs">{job.postedAt}</span>
       <span className="text-muted-foreground hidden sm:inline">|</span>
 
       {/* Views with Eye Icon */}

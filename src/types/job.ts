@@ -13,7 +13,6 @@ export interface Job {
   tags: ('premium' | 'new' | 'urgent' | 'remote')[];
   views: number;
   postedAt: string;
-  created_at?: string;
   category: string;
   applicationUrl?: string;
   applicationType?: 'website' | 'email';
