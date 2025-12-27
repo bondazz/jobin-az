@@ -183,7 +183,7 @@ const MainSidebar = () => {
   };
 
   return (
-    <aside className="hidden lg:flex w-64 bg-gradient-to-b from-job-sidebar to-job-sidebar/80 border-r border-border/60 flex-col h-full backdrop-blur-sm">
+    <aside className="hidden lg:flex w-64 bg-gradient-to-b from-job-sidebar to-job-sidebar/80 border-r border-border/60 flex-col h-screen overflow-y-auto backdrop-blur-sm">
       {/* Logo & Branding */}
       <div className="p-4 border-b border-border/40 bg-gradient-to-r from-job-sidebar/90 to-primary/5">
         <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
