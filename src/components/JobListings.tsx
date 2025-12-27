@@ -201,6 +201,10 @@ const JobListings = ({
   }, [companyId, offset, jobs.length]);
 
   useEffect(() => {
+    // Skip initial fetch if we have SSR data
+    if (initialJobs.length > 0 && jobs.length > 0 && !companyId) {
+      return;
+    }
     fetchJobs(false);
   }, [companyId]);
 
