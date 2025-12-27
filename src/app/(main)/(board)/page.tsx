@@ -118,5 +118,49 @@ async function getInitialJobs() {
 export default async function HomePage() {
     const { jobs, categories } = await getInitialJobs();
 
-    return <HomeClient initialJobs={jobs} initialCategories={categories} />;
+    return (
+        <>
+            {/* SSR SEO Content - visible in View Page Source */}
+            <div className="sr-only">
+                <h1>İş Elanları və Vakansiyalar 2026 | Ən Son İş İmkanları</h1>
+                <article>
+                    <h2>İş Elanları və Vakansiyalar 2026</h2>
+                    <p>
+                        İş elanları və vakansiyalar 2026 üzrə ən son yenilikləri burada tapa bilərsiniz. 
+                        Platformamız bütün sahələr üzrə gündəlik yenilənən iş imkanlarını, real şirkət vakansiyalarını 
+                        və filtirlənə bilən peşə yönümlü elanları bir araya gətirir. Əgər yeni iş axtarırsınızsa, 
+                        düzgün yerdəsiniz - buradan həm yerli, həm də beynəlxalq iş elanlarına rahatlıqla baxa, 
+                        CV göndərə və dərhal müraciət edə bilərsiniz.
+                    </p>
+                    
+                    <h3>Ən Son İş Elanları 2026</h3>
+                    <p>Bu həftənin ən çox baxılan vakansiyaları</p>
+                    
+                    <h3>Şəhərlər üzrə iş elanları</h3>
+                    <p>Bakı, Sumqayıt, Gəncə və digər şəhərlərdə iş elanları</p>
+                    
+                    <h3>Sahələr üzrə vakansiyalar</h3>
+                    <p>IT, maliyyə, satış, marketinq və digər sahələrdə vakansiyalar</p>
+                    
+                    <h3>Tələbə və təcrübəçi iş elanları</h3>
+                    <p>Tələbələr və yeni məzunlar üçün staj və internship imkanları</p>
+                    
+                    <h3>Ən çox maaş təklif edən vakansiyalar</h3>
+                    <p>Yüksək maaşlı iş elanları və premium vakansiyalar</p>
+                    
+                    <h3>Evdən işləmək (remote) iş imkanları</h3>
+                    <p>Uzaqdan iş elanları və remote vakansiyalar</p>
+                    
+                    <p>
+                        2026-cı il üçün hazırlanan iş elanları və vakansiyalar siyahımız real vaxtda yenilənir. 
+                        Hər bir elan şirkət tərəfindən təsdiqlənir və istifadəçilərə dəqiq maaş aralığı, tələblər, 
+                        vəzifə təsviri və müraciət linki təqdim olunur. İstər ofisdaxili, istər remote iş axtarasınız - 
+                        burada bütün vakansiyaları rahatlıqla tapa biləcəksiniz.
+                    </p>
+                </article>
+            </div>
+            
+            <HomeClient initialJobs={jobs} initialCategories={categories} />
+        </>
+    );
 }
