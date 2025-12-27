@@ -227,9 +227,9 @@ const HomeClient = () => {
             <AdBanner position="header" className="hidden lg:block absolute top-0 left-72 right-0 p-3 z-10" />
 
             {/* Main Content Area */}
-            <div className="flex-1 flex min-w-0 pb-16 xl:pb-0 pt-14 xl:pt-0 lg:pt-20 overflow-hidden">
+            <div className="flex-1 flex min-w-0 pb-16 xl:pb-0 pt-14 xl:pt-0 lg:pt-20">
                 {/* Job Listings - Responsive Column */}
-                <div className="w-full lg:w-[500px] xl:w-[580px] 2xl:w-[650px] flex-shrink-0 border-r border-border animate-fade-in overflow-y-auto">
+                <div className="w-full lg:w-[500px] xl:w-[580px] 2xl:w-[650px] border-r border-border animate-fade-in">
                     {/* SEO Content Section - Hidden visually but present for SEO - Only on homepage */}
                     {pathname === '/' && !jobSlug && (
                         <div className="sr-only">
@@ -304,7 +304,7 @@ const HomeClient = () => {
                 </div>
 
                 {/* Job Details - Desktop Only */}
-                <div className="hidden lg:flex lg:flex-col flex-1 min-w-0 bg-gradient-to-br from-job-details to-primary/3 animate-slide-in-right overflow-y-auto">
+                <div className="hidden lg:block flex-1 bg-gradient-to-br from-job-details to-primary/3 animate-slide-in-right">
                     <Suspense fallback={
                         <div className="flex items-center justify-center h-full">
                             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
