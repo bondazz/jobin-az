@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { notFound, redirect } from 'next/navigation';
+import { redirect } from 'next/navigation';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = 'https://igrtzfvphltnoiwedbtz.supabase.co';
@@ -15,6 +15,21 @@ type Props = {
 function isJobExpired(expirationDate?: string | null): boolean {
     if (!expirationDate) return false;
     return new Date(expirationDate) <= new Date();
+}
+
+// Helper to strip HTML tags
+function stripHtml(html: string): string {
+    return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+// Helper to format date
+function formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('az-AZ', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -70,7 +85,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function JobPage({ params }: Props) {
     const { data: job } = await supabase
         .from('jobs')
-        .select('id, slug, is_active, expiration_date')
+        .select(`
+            id, title, slug, description, location, type, salary, 
+            created_at, expiration_date, is_active, views, tags,
+            seo_title, seo_description, seo_keywords,
+            application_type, application_url,
+            companies:company_id(name, slug, logo, website, is_verified, description),
+            categories:category_id(name, slug)
+        `)
         .eq('slug', params.jobSlug)
         .maybeSingle();
 
@@ -79,6 +101,223 @@ export default async function JobPage({ params }: Props) {
         redirect('/vacancies');
     }
 
-    // Active job exists - render null (JobDetails handles the UI)
-    return null;
+    const company = job.companies as any;
+    const category = job.categories as any;
+    const companyName = company?.name || 'Şirkət';
+    const categoryName = category?.name || '';
+    const plainDescription = stripHtml(job.description || '');
+
+    // JSON-LD Structured Data for JobPosting
+    const jobPostingSchema = {
+        "@context": "https://schema.org",
+        "@type": "JobPosting",
+        "title": job.title,
+        "description": plainDescription,
+        "datePosted": job.created_at,
+        "validThrough": job.expiration_date || undefined,
+        "employmentType": job.type === 'full-time' ? 'FULL_TIME' : 
+                          job.type === 'part-time' ? 'PART_TIME' : 
+                          job.type === 'contract' ? 'CONTRACTOR' : 
+                          job.type === 'internship' ? 'INTERN' : 'OTHER',
+        "hiringOrganization": {
+            "@type": "Organization",
+            "name": companyName,
+            "sameAs": company?.website || undefined,
+            "logo": company?.logo || undefined
+        },
+        "jobLocation": {
+            "@type": "Place",
+            "address": {
+                "@type": "PostalAddress",
+                "addressLocality": job.location || 'Bakı',
+                "addressCountry": "AZ"
+            }
+        },
+        ...(job.salary && {
+            "baseSalary": {
+                "@type": "MonetaryAmount",
+                "currency": "AZN",
+                "value": {
+                    "@type": "QuantitativeValue",
+                    "value": job.salary
+                }
+            }
+        }),
+        "url": `https://jooble.az/vacancies/${job.slug}`
+    };
+
+    // BreadcrumbList Schema
+    const breadcrumbSchema = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Ana Səhifə",
+                "item": "https://jooble.az"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Vakansiyalar",
+                "item": "https://jooble.az/vacancies"
+            },
+            ...(categoryName ? [{
+                "@type": "ListItem",
+                "position": 3,
+                "name": categoryName,
+                "item": `https://jooble.az/categories/${category?.slug}`
+            }] : []),
+            {
+                "@type": "ListItem",
+                "position": categoryName ? 4 : 3,
+                "name": job.title,
+                "item": `https://jooble.az/vacancies/${job.slug}`
+            }
+        ]
+    };
+
+    return (
+        <>
+            {/* Structured Data for SEO */}
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jobPostingSchema) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+            />
+
+            {/* SEO Content - Server Rendered for Google Bots */}
+            <div className="sr-only" aria-hidden="false">
+                <article itemScope itemType="https://schema.org/JobPosting">
+                    {/* Breadcrumb Navigation */}
+                    <nav aria-label="Breadcrumb">
+                        <ol>
+                            <li><a href="https://jooble.az">Ana Səhifə</a></li>
+                            <li><a href="https://jooble.az/vacancies">Vakansiyalar</a></li>
+                            {categoryName && (
+                                <li><a href={`https://jooble.az/categories/${category?.slug}`}>{categoryName}</a></li>
+                            )}
+                            <li>{job.title}</li>
+                        </ol>
+                    </nav>
+
+                    {/* Main Job Title */}
+                    <h1 itemProp="title">{job.title} - {companyName} | Vakansiya</h1>
+
+                    {/* Company Information */}
+                    <section itemProp="hiringOrganization" itemScope itemType="https://schema.org/Organization">
+                        <h2>Şirkət Haqqında</h2>
+                        <p><strong>Şirkət:</strong> <span itemProp="name">{companyName}</span></p>
+                        {company?.is_verified && <p>✓ Təsdiqlənmiş şirkət</p>}
+                        {company?.website && (
+                            <p><strong>Vebsayt:</strong> <a href={company.website} itemProp="sameAs">{company.website}</a></p>
+                        )}
+                        {company?.description && (
+                            <p itemProp="description">{stripHtml(company.description)}</p>
+                        )}
+                        <p><a href={`https://jooble.az/companies/${company?.slug}`}>{companyName} şirkətinin bütün vakansiyaları</a></p>
+                    </section>
+
+                    {/* Job Details */}
+                    <section>
+                        <h2>Vakansiya Məlumatları</h2>
+                        <ul>
+                            <li><strong>Vəzifə:</strong> <span itemProp="title">{job.title}</span></li>
+                            <li><strong>Yer:</strong> <span itemProp="jobLocation">{job.location || 'Bakı, Azərbaycan'}</span></li>
+                            <li><strong>İş növü:</strong> <span itemProp="employmentType">
+                                {job.type === 'full-time' ? 'Tam iş günü' : 
+                                 job.type === 'part-time' ? 'Yarım ştat' : 
+                                 job.type === 'contract' ? 'Müqavilə' : 
+                                 job.type === 'internship' ? 'Təcrübə' : job.type}
+                            </span></li>
+                            {job.salary && (
+                                <li><strong>Əmək haqqı:</strong> <span itemProp="baseSalary">{job.salary}</span></li>
+                            )}
+                            <li><strong>Elan tarixi:</strong> <time itemProp="datePosted" dateTime={job.created_at}>{formatDate(job.created_at)}</time></li>
+                            {job.expiration_date && (
+                                <li><strong>Son müraciət tarixi:</strong> <time itemProp="validThrough" dateTime={job.expiration_date}>{formatDate(job.expiration_date)}</time></li>
+                            )}
+                            <li><strong>Baxış sayı:</strong> {job.views}</li>
+                            {categoryName && (
+                                <li><strong>Kateqoriya:</strong> <a href={`https://jooble.az/categories/${category?.slug}`}>{categoryName}</a></li>
+                            )}
+                        </ul>
+
+                        {/* Tags */}
+                        {job.tags && job.tags.length > 0 && (
+                            <div>
+                                <strong>Etiketlər:</strong>
+                                <ul>
+                                    {job.tags.map((tag: string) => (
+                                        <li key={tag}>
+                                            {tag === 'premium' ? '⭐ Premium elan' :
+                                             tag === 'new' ? '🆕 Yeni' :
+                                             tag === 'urgent' ? '🔥 Təcili' :
+                                             tag === 'remote' ? '🏠 Uzaqdan iş' : tag}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                    </section>
+
+                    {/* Job Description */}
+                    <section>
+                        <h2>Vakansiya Təsviri</h2>
+                        <div itemProp="description">
+                            {plainDescription}
+                        </div>
+                    </section>
+
+                    {/* Application Information */}
+                    <section>
+                        <h2>Müraciət Məlumatları</h2>
+                        {job.application_type === 'url' && job.application_url && (
+                            <p><strong>Müraciət linki:</strong> <a href={job.application_url} rel="nofollow">Müraciət et</a></p>
+                        )}
+                        {job.application_type === 'email' && (
+                            <p>Bu vakansiyaya e-poçt vasitəsilə müraciət edə bilərsiniz.</p>
+                        )}
+                        <p>
+                            Bu vakansiyaya müraciət etmək üçün <a href={`https://jooble.az/vacancies/${job.slug}`}>vakansiya səhifəsinə</a> keçid edin.
+                        </p>
+                    </section>
+
+                    {/* Related Links */}
+                    <section>
+                        <h2>Əlaqəli Səhifələr</h2>
+                        <ul>
+                            <li><a href="https://jooble.az/vacancies">Bütün vakansiyalar</a></li>
+                            {categoryName && (
+                                <li><a href={`https://jooble.az/categories/${category?.slug}`}>{categoryName} vakansiyaları</a></li>
+                            )}
+                            <li><a href={`https://jooble.az/companies/${company?.slug}`}>{companyName} vakansiyaları</a></li>
+                            <li><a href="https://jooble.az/categories">Kateqoriyalar</a></li>
+                            <li><a href="https://jooble.az/companies">Şirkətlər</a></li>
+                        </ul>
+                    </section>
+
+                    {/* SEO Keywords */}
+                    {job.seo_keywords && job.seo_keywords.length > 0 && (
+                        <section>
+                            <h2>Açar sözlər</h2>
+                            <p>{job.seo_keywords.join(', ')}</p>
+                        </section>
+                    )}
+
+                    {/* Footer Info */}
+                    <footer>
+                        <p>
+                            {job.title} vakansiyası {companyName} şirkətində. Jooble.az - Azərbaycanın ən böyük iş axtarış platforması.
+                            Hər gün yüzlərlə yeni vakansiya əlavə olunur. İş elanları 2026 üçün ən yaxşı seçim.
+                        </p>
+                    </footer>
+                </article>
+            </div>
+        </>
+    );
 }
