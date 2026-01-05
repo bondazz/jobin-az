@@ -10,7 +10,6 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { toast } from "@/components/ui/use-toast";
-import { updatePageMeta } from "@/utils/seo";
 import { Trash2, ChevronDown, CreditCard, Banknote } from "lucide-react";
 
 import MobileHeader from "@/components/MobileHeader";
@@ -91,15 +90,6 @@ const ReferralClient = () => {
         message: "",
     });
 
-    // SEO
-    useEffect(() => {
-        updatePageMeta({
-            title: "Referral proqramı – Qazanc əldə edin | Jooble.az",
-            description: "Referral ilə qazanc: linkinizi paylaşın, hər təsdiqlənən elana görə 5 AZN qazanın.",
-            keywords: "referral, qazanc, əməkdaşlıq, elan, Jooble",
-            url: "/referral",
-        });
-    }, []);
 
     // Auth state
     useEffect(() => {

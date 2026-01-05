@@ -6,7 +6,6 @@ import { Bookmark } from 'lucide-react';
 import JobListings from '@/components/JobListings';
 import JobDetails from '@/components/JobDetails';
 import { Job } from '@/types/job';
-import { generatePageSEO, updatePageMeta } from '@/utils/seo';
 
 import MobileHeader from '@/components/MobileHeader';
 import { useReferralCode } from '@/hooks/useReferralCode';
@@ -18,15 +17,6 @@ const SavedJobsClient = () => {
     const jobId = params?.jobId as string | undefined;
     const router = useRouter();
     const { getUrlWithReferral } = useReferralCode();
-
-    useEffect(() => {
-        const updateSEO = async () => {
-            const seoData = await generatePageSEO('favorites');
-            updatePageMeta(seoData);
-        };
-
-        updateSEO();
-    }, []);
 
     useEffect(() => {
         if (jobId) {
