@@ -121,6 +121,8 @@ export default async function CategoryPage({ params }: Props) {
                 "item": {
                     "@type": "JobPosting",
                     "title": job.title,
+                    "description": job.title,
+                    "datePosted": job.created_at ? new Date(job.created_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
                     "url": `https://jooble.az/vacancies/${job.slug}`,
                     "hiringOrganization": {
                         "@type": "Organization",
