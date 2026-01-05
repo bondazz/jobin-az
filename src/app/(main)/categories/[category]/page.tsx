@@ -1,6 +1,9 @@
 import CategoriesClient from '@/components/CategoriesClient';
 import { Metadata } from 'next';
-import { supabase } from '@/integrations/supabase/client';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = 'https://igrtzfvphltnoiwedbtz.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlncnR6ZnZwaGx0bm9pd2VkYnR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIyMTQzMDYsImV4cCI6MjA2Nzc5MDMwNn0.afoeynzfpIZMqMRgpD0fDQ_NdULXEML-LZ-SocnYKp0';
 
 type Props = {
     params: { category: string }
@@ -12,6 +15,8 @@ function stripHtml(html: string): string {
 }
 
 async function getCategoryData(slug: string) {
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+    
     const { data: category } = await supabase
         .from('categories')
         .select('id, name, description, seo_title, seo_description, seo_keywords, slug, h1_title, icon')
