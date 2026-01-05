@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Check, Star, Zap, Crown, Briefcase, TrendingUp } from 'lucide-react';
-import { generatePageSEO, updatePageMeta } from '@/utils/seo';
 
 import MobileHeader from '@/components/MobileHeader';
 import { supabase } from '@/integrations/supabase/client';
@@ -19,43 +18,9 @@ const ServicesClient = () => {
     const { toast } = useToast();
 
     useEffect(() => {
-        const updateSEO = async () => {
-            const seoData = await generatePageSEO('services');
-            updatePageMeta(seoData);
-        };
-
-        updateSEO();
         fetchPricingData();
     }, []);
 
-    // Generate Service structured data
-    const generateServiceSchema = () => {
-        return {
-            "@context": "https://schema.org",
-            "@type": "Service",
-            "name": "Jooble İş Axtarış Xidməti",
-            "description": "Azərbaycan'da iş elanları və vakansiya axtarış platforması. Müxtəlif sahələrdə iş imkanları və karyera məsləhətləri.",
-            "provider": {
-                "@type": "Organization",
-                "name": "Jooble Azərbaycan",
-                "url": typeof window !== 'undefined' ? window.location.origin : ''
-            },
-            "serviceType": "Job Search Platform",
-            "areaServed": {
-                "@type": "Country",
-                "name": "Azerbaijan"
-            },
-            "offers": plans.map(plan => ({
-                "@type": "Offer",
-                "name": plan.name,
-                "description": plan.description,
-                "price": plan.price,
-                "priceCurrency": "AZN",
-                "priceValidUntil": new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] // 1 year from now
-            })),
-            "url": typeof window !== 'undefined' ? window.location.href : ''
-        };
-    };
 
     const fetchPricingData = async () => {
         try {
@@ -119,15 +84,6 @@ const ServicesClient = () => {
                 visuallyHidden={true}
             />
 
-            {/* Service Structured Data */}
-            {plans.length > 0 && (
-                <script
-                    type="application/ld+json"
-                    dangerouslySetInnerHTML={{
-                        __html: JSON.stringify(generateServiceSchema())
-                    }}
-                />
-            )}
 
             <MobileHeader />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-16 xl:pt-8">
