@@ -52,20 +52,28 @@ export default async function ServicesPage() {
         "mainEntity": {
             "@type": "ItemList",
             "numberOfItems": plans.length,
-            "itemListElement": plans.map((plan, index) => ({
-                "@type": "ListItem",
-                "position": index + 1,
-                "item": {
-                    "@type": "Product",
-                    "name": plan.name,
-                    "description": plan.description,
-                    "offers": {
-                        "@type": "Offer",
-                        "price": plan.price,
-                        "priceCurrency": "AZN"
+            "itemListElement": plans.map((plan, index) => {
+                // Extract numeric price from string like "50 AZN" or "50"
+                const priceString = String(plan.price || '0');
+                const numericPrice = parseFloat(priceString.replace(/[^\d.]/g, '')) || 0;
+                
+                return {
+                    "@type": "ListItem",
+                    "position": index + 1,
+                    "item": {
+                        "@type": "Product",
+                        "name": plan.name,
+                        "description": plan.description || plan.name,
+                        "image": "https://jooble.az/icons/icon-512x512.jpg",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": numericPrice,
+                            "priceCurrency": "AZN",
+                            "availability": "https://schema.org/InStock"
+                        }
                     }
-                }
-            }))
+                };
+            })
         }
     };
 
