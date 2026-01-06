@@ -162,11 +162,6 @@ const SimilarJobs = ({
           <h2 className={`${isMobile ? "text-lg" : "text-xl"} font-bold text-foreground`}>
             Oxşar Vakansiyalar
           </h2>
-          {categoryName && (
-            <Badge variant="secondary" className="ml-2 text-xs">
-              {categoryName}
-            </Badge>
-          )}
         </div>
         {categorySlug && (
           <Link
