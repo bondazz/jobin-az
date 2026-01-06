@@ -89,7 +89,7 @@ export default async function JobPage({ params }: Props) {
             id, title, slug, description, location, type, salary, 
             created_at, expiration_date, is_active, views, tags,
             seo_title, seo_description, seo_keywords,
-            application_type, application_url,
+            application_type, application_url, category_id,
             companies:company_id(name, slug, logo, website, is_verified, description),
             categories:category_id(name, slug)
         `)
@@ -99,6 +99,25 @@ export default async function JobPage({ params }: Props) {
     // If job doesn't exist OR is expired/inactive, redirect immediately to /vacancies
     if (!job || !job.is_active || isJobExpired(job.expiration_date)) {
         redirect('/vacancies');
+    }
+
+    // Fetch similar jobs from the same category
+    let similarJobs: any[] = [];
+    if (job.category_id) {
+        const { data: similar } = await supabase
+            .from('jobs')
+            .select(`
+                id, title, slug, location, salary, views, created_at, tags,
+                companies:company_id(name, logo, is_verified, slug)
+            `)
+            .eq('category_id', job.category_id)
+            .eq('is_active', true)
+            .neq('id', job.id)
+            .or('expiration_date.is.null,expiration_date.gt.now()')
+            .order('created_at', { ascending: false })
+            .limit(6);
+        
+        similarJobs = similar || [];
     }
 
     const company = job.companies as any;
@@ -178,6 +197,51 @@ export default async function JobPage({ params }: Props) {
         ]
     };
 
+    // Similar Jobs Schema for SEO
+    const similarJobsSchema = similarJobs.length > 0 ? {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "name": categoryName ? `${categoryName} - Oxşar Vakansiyalar` : "Oxşar Vakansiyalar",
+        "description": categoryName 
+            ? `${categoryName} kateqoriyasında ən son iş elanları və vakansiyalar` 
+            : "Oxşar iş elanları və vakansiyalar",
+        "numberOfItems": similarJobs.length,
+        "itemListElement": similarJobs.map((sJob: any, index: number) => ({
+            "@type": "ListItem",
+            "position": index + 1,
+            "item": {
+                "@type": "JobPosting",
+                "title": sJob.title,
+                "description": sJob.title,
+                "datePosted": new Date(sJob.created_at).toISOString().split('T')[0],
+                "url": `https://jooble.az/vacancies/${sJob.slug}`,
+                "hiringOrganization": {
+                    "@type": "Organization",
+                    "name": sJob.companies?.name || "Şirkət",
+                    ...(sJob.companies?.logo && { "logo": sJob.companies.logo })
+                },
+                "jobLocation": {
+                    "@type": "Place",
+                    "address": {
+                        "@type": "PostalAddress",
+                        "addressLocality": sJob.location,
+                        "addressCountry": "AZ"
+                    }
+                },
+                ...(sJob.salary && {
+                    "baseSalary": {
+                        "@type": "MonetaryAmount",
+                        "currency": "AZN",
+                        "value": {
+                            "@type": "QuantitativeValue",
+                            "value": sJob.salary
+                        }
+                    }
+                })
+            }
+        }))
+    } : null;
+
     return (
         <>
             {/* Structured Data for SEO */}
@@ -189,6 +253,12 @@ export default async function JobPage({ params }: Props) {
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
             />
+            {similarJobsSchema && (
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(similarJobsSchema) }}
+                />
+            )}
 
             {/* SEO Content - Server Rendered for Google Bots */}
             <div className="sr-only" aria-hidden="false">
@@ -306,6 +376,36 @@ export default async function JobPage({ params }: Props) {
                         <section>
                             <h2>Açar sözlər</h2>
                             <p>{job.seo_keywords.join(', ')}</p>
+                        </section>
+                    )}
+
+                    {/* Similar Jobs - Server Rendered for SEO */}
+                    {similarJobs.length > 0 && (
+                        <section>
+                            <h2>Oxşar Vakansiyalar - {categoryName || 'Bu kateqoriyada'}</h2>
+                            <p>{categoryName ? `${categoryName} kateqoriyasında ən son iş elanları və vakansiyalar` : 'Oxşar iş elanları və vakansiyalar'}</p>
+                            <ul>
+                                {similarJobs.map((sJob: any) => (
+                                    <li key={sJob.id}>
+                                        <a href={`https://jooble.az/vacancies/${sJob.slug}`}>
+                                            <strong>{sJob.title}</strong> - {sJob.companies?.name || 'Şirkət'}
+                                        </a>
+                                        <ul>
+                                            <li>Yer: {sJob.location}</li>
+                                            {sJob.salary && <li>Maaş: {sJob.salary}</li>}
+                                            <li>Baxış: {sJob.views}</li>
+                                            <li>Tarix: {formatDate(sJob.created_at)}</li>
+                                        </ul>
+                                    </li>
+                                ))}
+                            </ul>
+                            {categoryName && category?.slug && (
+                                <p>
+                                    <a href={`https://jooble.az/categories/${category.slug}`}>
+                                        {categoryName} kateqoriyasında daha çox vakansiya
+                                    </a>
+                                </p>
+                            )}
                         </section>
                     )}
 
