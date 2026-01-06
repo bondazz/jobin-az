@@ -19,7 +19,8 @@ import {
     Megaphone,
     Globe,
     Bell,
-    FileText
+    FileText,
+    BookOpen
 } from 'lucide-react';
 
 interface AdminLayoutProps {
@@ -86,6 +87,11 @@ const AdminLayoutClient = ({ children }: AdminLayoutProps) => {
             name: 'SEO Səhifələr',
             path: '/admin/custom-pages',
             icon: FileText,
+        },
+        {
+            name: 'Bloqlar',
+            path: '/admin/blogs',
+            icon: BookOpen,
         },
         {
             name: 'Tənzimləmələr',

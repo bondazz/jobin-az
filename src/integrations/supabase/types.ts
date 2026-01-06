@@ -98,6 +98,253 @@ export type Database = {
         }
         Relationships: []
       }
+      blog_authors: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          id: string
+          is_active: boolean | null
+          linkedin: string | null
+          name: string
+          slug: string
+          twitter: string | null
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          linkedin?: string | null
+          name: string
+          slug: string
+          twitter?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          linkedin?: string | null
+          name?: string
+          slug?: string
+          twitter?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
+      blog_categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          seo_description: string | null
+          seo_title: string | null
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          seo_description?: string | null
+          seo_title?: string | null
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          seo_description?: string | null
+          seo_title?: string | null
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      blog_links: {
+        Row: {
+          anchor_text: string | null
+          blog_id: string
+          created_at: string
+          id: string
+          is_dofollow: boolean | null
+          link_type: string
+          rel_attributes: string[] | null
+          url: string
+        }
+        Insert: {
+          anchor_text?: string | null
+          blog_id: string
+          created_at?: string
+          id?: string
+          is_dofollow?: boolean | null
+          link_type: string
+          rel_attributes?: string[] | null
+          url: string
+        }
+        Update: {
+          anchor_text?: string | null
+          blog_id?: string
+          created_at?: string
+          id?: string
+          is_dofollow?: boolean | null
+          link_type?: string
+          rel_attributes?: string[] | null
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blog_links_blog_id_fkey"
+            columns: ["blog_id"]
+            isOneToOne: false
+            referencedRelation: "blogs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      blog_to_categories: {
+        Row: {
+          blog_id: string
+          category_id: string
+          id: string
+        }
+        Insert: {
+          blog_id: string
+          category_id: string
+          id?: string
+        }
+        Update: {
+          blog_id?: string
+          category_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blog_to_categories_blog_id_fkey"
+            columns: ["blog_id"]
+            isOneToOne: false
+            referencedRelation: "blogs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "blog_to_categories_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "blog_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      blogs: {
+        Row: {
+          allow_comments: boolean | null
+          author_id: string | null
+          canonical_url: string | null
+          content: string
+          created_at: string
+          excerpt: string | null
+          featured_image: string | null
+          h1_title: string | null
+          id: string
+          is_active: boolean | null
+          is_published: boolean | null
+          og_description: string | null
+          og_image: string | null
+          og_title: string | null
+          published_at: string | null
+          reading_time_minutes: number | null
+          schema_type: string | null
+          seo_description: string | null
+          seo_keywords: string[] | null
+          seo_title: string | null
+          slug: string
+          title: string
+          twitter_description: string | null
+          twitter_title: string | null
+          updated_at: string
+          views: number | null
+        }
+        Insert: {
+          allow_comments?: boolean | null
+          author_id?: string | null
+          canonical_url?: string | null
+          content: string
+          created_at?: string
+          excerpt?: string | null
+          featured_image?: string | null
+          h1_title?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_published?: boolean | null
+          og_description?: string | null
+          og_image?: string | null
+          og_title?: string | null
+          published_at?: string | null
+          reading_time_minutes?: number | null
+          schema_type?: string | null
+          seo_description?: string | null
+          seo_keywords?: string[] | null
+          seo_title?: string | null
+          slug: string
+          title: string
+          twitter_description?: string | null
+          twitter_title?: string | null
+          updated_at?: string
+          views?: number | null
+        }
+        Update: {
+          allow_comments?: boolean | null
+          author_id?: string | null
+          canonical_url?: string | null
+          content?: string
+          created_at?: string
+          excerpt?: string | null
+          featured_image?: string | null
+          h1_title?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_published?: boolean | null
+          og_description?: string | null
+          og_image?: string | null
+          og_title?: string | null
+          published_at?: string | null
+          reading_time_minutes?: number | null
+          schema_type?: string | null
+          seo_description?: string | null
+          seo_keywords?: string[] | null
+          seo_title?: string | null
+          slug?: string
+          title?: string
+          twitter_description?: string | null
+          twitter_title?: string | null
+          updated_at?: string
+          views?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blogs_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "blog_authors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       categories: {
         Row: {
           created_at: string
@@ -1058,6 +1305,7 @@ export type Database = {
       }
     }
     Functions: {
+      calculate_reading_time: { Args: { content: string }; Returns: number }
       get_all_companies: {
         Args: never
         Returns: {
@@ -1094,6 +1342,7 @@ export type Database = {
       get_job_application_email: { Args: { job_uuid: string }; Returns: string }
       get_user_role: { Args: { user_uuid: string }; Returns: string }
       increment_ad_clicks: { Args: { ad_id: string }; Returns: undefined }
+      increment_blog_views: { Args: { blog_id: string }; Returns: undefined }
       increment_job_views: { Args: { job_id: string }; Returns: undefined }
       is_job_expired: {
         Args: { job_expiration_date: string }
