@@ -386,10 +386,10 @@ export default function BlogDetails({ blogId, isMobile = false }: BlogDetailsPro
             </span>
           </div>
 
-          {/* H2 Title (changed from h1 to fix too many h1 issue) */}
-          <h2 className="text-xl md:text-2xl font-bold text-foreground mb-3">
+          {/* H1 Title - Admin paneldəki h1_title */}
+          <h1 className="text-xl md:text-2xl font-bold text-foreground mb-3">
             {blog.h1_title || blog.title}
-          </h2>
+          </h1>
 
           {/* Author with Share Buttons */}
           <div className="flex items-center justify-between gap-2 mb-4">

@@ -171,8 +171,6 @@ export default function BlogListings({ selectedBlogId, onBlogSelect }: BlogListi
     <div className="flex flex-col h-full">
       {/* Header */}
       <div className="p-4 border-b border-border bg-background/80 backdrop-blur-sm sticky top-0 z-10">
-        <h1 className="text-xl font-bold text-foreground mb-3">Bloq</h1>
-        
         {/* Search */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
