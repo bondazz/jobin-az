@@ -27,6 +27,7 @@ import AdBanner from "./AdBanner";
 import { useReferralCode } from "@/hooks/useReferralCode";
 import Link from "next/link";
 import SEOBreadcrumb from "@/components/SEOBreadcrumb";
+import SimilarJobs from "@/components/SimilarJobs";
 interface JobDetailsProps {
   jobId: string | null;
   isMobile?: boolean;
@@ -997,6 +998,16 @@ const JobDetails = ({ jobId, isMobile = false, primaryHeading = true }: JobDetai
               </div>
             </div>
           )}
+
+          {/* Similar Jobs Section for SEO Internal Linking */}
+          <Separator className="my-6" />
+          <SimilarJobs
+            categoryId={job.category_id}
+            currentJobId={job.id}
+            categoryName={job.categories?.name}
+            categorySlug={job.categories?.slug}
+            isMobile={isMobile}
+          />
         </div>
       </div>
 
