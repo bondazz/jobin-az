@@ -289,30 +289,70 @@ export default function BlogPostClient({ blog, relatedBlogs }: BlogPostClientPro
                     {blog.h1_title || blog.title}
                   </h1>
 
-                  {/* Author */}
-                  {blog.blog_authors && (
-                    <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-                      {blog.blog_authors.avatar_url ? (
-                        <img
-                          src={blog.blog_authors.avatar_url}
-                          alt={blog.blog_authors.name}
-                          className="w-10 h-10 rounded-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                          <User className="w-5 h-5 text-primary" />
-                        </div>
-                      )}
-                      <div>
-                        <p className="font-medium">{blog.blog_authors.name}</p>
-                        {blog.blog_authors.bio && (
-                          <p className="text-sm text-muted-foreground line-clamp-1">
-                            {blog.blog_authors.bio}
-                          </p>
+                  {/* Author with Share Buttons */}
+                  <div className="flex items-center justify-between gap-3 p-3 rounded-lg bg-muted/50">
+                    {blog.blog_authors ? (
+                      <div className="flex items-center gap-3">
+                        {blog.blog_authors.avatar_url ? (
+                          <img
+                            src={blog.blog_authors.avatar_url}
+                            alt={blog.blog_authors.name}
+                            className="w-10 h-10 rounded-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                            <User className="w-5 h-5 text-primary" />
+                          </div>
                         )}
+                        <div>
+                          <p className="font-medium">{blog.blog_authors.name}</p>
+                          {blog.blog_authors.bio && (
+                            <p className="text-sm text-muted-foreground line-clamp-1">
+                              {blog.blog_authors.bio}
+                            </p>
+                          )}
+                        </div>
                       </div>
+                    ) : (
+                      <div />
+                    )}
+                    
+                    {/* Share Buttons - next to author */}
+                    <div className="flex items-center gap-1.5">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleShare("twitter")}
+                        className="rounded-full h-8 w-8 hover:bg-primary/10 hover:text-primary"
+                      >
+                        <Twitter className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleShare("facebook")}
+                        className="rounded-full h-8 w-8 hover:bg-primary/10 hover:text-primary"
+                      >
+                        <Facebook className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleShare("linkedin")}
+                        className="rounded-full h-8 w-8 hover:bg-primary/10 hover:text-primary"
+                      >
+                        <Linkedin className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleShare("copy")}
+                        className="rounded-full h-8 w-8 hover:bg-primary/10 hover:text-primary"
+                      >
+                        <LinkIcon className="w-4 h-4" />
+                      </Button>
                     </div>
-                  )}
+                  </div>
                 </header>
 
                 <Separator className="mb-6" />
@@ -338,48 +378,6 @@ export default function BlogPostClient({ blog, relatedBlogs }: BlogPostClientPro
                 />
 
                 <Separator className="my-8" />
-
-                {/* Share Buttons */}
-                <div className="flex items-center justify-between flex-wrap gap-4">
-                  <span className="text-sm font-medium flex items-center gap-2">
-                    <Share2 className="w-4 h-4" />
-                    Paylaş:
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => handleShare("twitter")}
-                      className="rounded-full"
-                    >
-                      <Twitter className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => handleShare("facebook")}
-                      className="rounded-full"
-                    >
-                      <Facebook className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => handleShare("linkedin")}
-                      className="rounded-full"
-                    >
-                      <Linkedin className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => handleShare("copy")}
-                      className="rounded-full"
-                    >
-                      <LinkIcon className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </div>
 
                 {/* Related Posts */}
                 {relatedBlogs.length > 0 && (
