@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
-import { Building, MapPin, Eye, ArrowRight, Briefcase } from "lucide-react";
+import { Building, MapPin, Eye, Send } from "lucide-react";
 import VerifyBadge from "@/components/ui/verify-badge";
 import Link from "next/link";
 
@@ -163,15 +163,6 @@ const SimilarJobs = ({
             Oxşar Vakansiyalar
           </h2>
         </div>
-        {categorySlug && (
-          <Link
-            href={`/categories/${categorySlug}`}
-            className="flex items-center gap-1 text-sm text-primary hover:text-primary/80 transition-colors group"
-          >
-            <span className="hidden sm:inline">Hamısına bax</span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
-        )}
       </div>
 
       {/* Jobs Grid */}
@@ -279,19 +270,24 @@ const SimilarJobs = ({
         })}
       </div>
 
-      {/* SEO-friendly category link */}
-      {categorySlug && (
-        <div className="mt-4 text-center">
-          <Link
-            href={`/categories/${categorySlug}`}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-sm font-medium"
-          >
-            <Briefcase className="w-4 h-4" />
-            {categoryName ? `${categoryName} kateqoriyasında daha çox vakansiya` : "Daha çox vakansiya"}
-            <ArrowRight className="w-4 h-4" />
-          </Link>
+      {/* Telegram Channel Promotion - External Link for SEO */}
+      <div className="mt-5 p-4 rounded-xl bg-gradient-to-r from-[#0088cc]/10 to-[#0088cc]/5 dark:from-[#0088cc]/20 dark:to-[#0088cc]/10 border border-[#0088cc]/20">
+        <div className="flex items-center justify-center gap-3 flex-wrap text-center">
+          <Send className="w-5 h-5 text-[#0088cc]" />
+          <p className="text-sm text-foreground">
+            Vakansiyalar barədə məlumatı ən tez bizim{" "}
+            <a
+              href="https://t.me/joobleaz"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 font-semibold text-[#0088cc] hover:text-[#006699] hover:underline transition-colors"
+            >
+              Telegram kanalında
+            </a>
+            {" "}izləyə bilərsiniz.
+          </p>
         </div>
-      )}
+      </div>
     </section>
   );
 };
