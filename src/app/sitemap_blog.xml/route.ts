@@ -31,12 +31,19 @@ export async function GET() {
             .eq('is_published', true)
             .order('published_at', { ascending: false });
 
-        const baseUrl = 'https://kontakt.az';
-        const siteName = 'Kontakt.az';
+        const baseUrl = 'https://jooble.az';
+        const siteName = 'Jooble.az';
+        const now = new Date().toISOString();
 
         // XML with image and news sitemap namespaces (order matching the reference)
         let xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">`;
+<urlset xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+<url>
+  <loc>${baseUrl}/blog</loc>
+  <lastmod>${formatDateWithTimezone(now)}</lastmod>
+  <changefreq>daily</changefreq>
+  <priority>0.8</priority>
+</url>`;
 
         blogs?.forEach((blog) => {
             const publishDate = blog.published_at || blog.updated_at || new Date().toISOString();
