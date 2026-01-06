@@ -93,6 +93,53 @@ const SimilarJobs = ({
     return `${Math.floor(diffDays / 30)} ay əvvəl`;
   };
 
+  // Generate JSON-LD structured data for SEO
+  const generateJsonLd = () => {
+    return {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": categoryName ? `${categoryName} - Oxşar Vakansiyalar` : "Oxşar Vakansiyalar",
+      "description": categoryName 
+        ? `${categoryName} kateqoriyasında ən son iş elanları və vakansiyalar` 
+        : "Oxşar iş elanları və vakansiyalar",
+      "numberOfItems": similarJobs.length,
+      "itemListElement": similarJobs.map((job, index) => ({
+        "@type": "ListItem",
+        "position": index + 1,
+        "item": {
+          "@type": "JobPosting",
+          "title": job.title,
+          "description": job.title,
+          "datePosted": new Date(job.created_at).toISOString().split('T')[0],
+          "url": `https://jooble.az/vacancies/${job.slug}`,
+          "hiringOrganization": {
+            "@type": "Organization",
+            "name": job.companies?.name || "Şirkət",
+            ...(job.companies?.logo && { "logo": job.companies.logo })
+          },
+          "jobLocation": {
+            "@type": "Place",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": job.location,
+              "addressCountry": "AZ"
+            }
+          },
+          ...(job.salary && {
+            "baseSalary": {
+              "@type": "MonetaryAmount",
+              "currency": "AZN",
+              "value": {
+                "@type": "QuantitativeValue",
+                "value": job.salary
+              }
+            }
+          })
+        }
+      }))
+    };
+  };
+
   if (!categoryId || loading) {
     return null;
   }
@@ -103,6 +150,11 @@ const SimilarJobs = ({
 
   return (
     <section className="mt-8 mb-6">
+      {/* JSON-LD Structured Data for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(generateJsonLd()) }}
+      />
       {/* Section Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
