@@ -25,6 +25,7 @@ import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import SEOBreadcrumb from "@/components/SEOBreadcrumb";
+import SimilarBlogs from "@/components/SimilarBlogs";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -484,83 +485,26 @@ export default function BlogDetails({ blogId, isMobile = false }: BlogDetailsPro
           <div
             className="prose prose-sm md:prose-base dark:prose-invert max-w-none
               prose-headings:scroll-mt-20 prose-headings:text-foreground
-              prose-h2:text-lg prose-h2:font-semibold prose-h2:mt-6 prose-h2:mb-3 prose-h2:border-b prose-h2:border-border/50 prose-h2:pb-2
+              prose-h2:text-lg prose-h2:font-semibold prose-h2:mt-6 prose-h2:mb-3 prose-h2:border-b prose-h2:border-primary/30 prose-h2:pb-2
               prose-h3:text-base prose-h3:font-medium prose-h3:mt-4 prose-h3:mb-2
               prose-h4:text-sm prose-h4:font-medium prose-h4:mt-3 prose-h4:mb-2
-              prose-p:text-foreground/85 prose-p:leading-7 prose-p:my-3
+              prose-p:text-foreground/90 prose-p:leading-7 prose-p:my-3
               prose-a:text-primary prose-a:font-medium prose-a:no-underline hover:prose-a:underline prose-a:transition-colors
               prose-strong:text-primary prose-strong:font-semibold
-              prose-ul:my-3 prose-ol:my-3 prose-ul:pl-4 prose-ol:pl-4
-              prose-li:my-1 prose-li:text-foreground/85
+              prose-ul:my-4 prose-ol:my-4 prose-ul:pl-0 prose-ol:pl-6
+              prose-li:my-2 prose-li:text-foreground/90 prose-li:leading-relaxed
               prose-img:rounded-lg prose-img:my-4
               prose-blockquote:border-l-primary prose-blockquote:bg-muted/20 prose-blockquote:rounded-r-lg prose-blockquote:py-2 prose-blockquote:px-4 prose-blockquote:not-italic prose-blockquote:text-foreground/80
-              [&_ul]:list-disc [&_ol]:list-decimal
+              [&_ol]:list-decimal
+              [&_ul]:list-none [&_ul]:space-y-2
+              [&_ul>li]:relative [&_ul>li]:pl-6
+              [&_ul>li]:before:content-['•'] [&_ul>li]:before:absolute [&_ul>li]:before:left-0 [&_ul>li]:before:text-primary [&_ul>li]:before:font-bold [&_ul>li]:before:text-lg
             "
             dangerouslySetInnerHTML={{ __html: processedContent }}
           />
 
-          <Separator className="my-8" />
-
-          {/* Share Buttons - Closer together */}
-          <div className="flex items-center gap-3 flex-wrap">
-            <span className="text-sm font-medium flex items-center gap-2">
-              <Share2 className="w-4 h-4" />
-              Paylaş:
-            </span>
-            <div className="flex items-center gap-1.5">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => handleShare("twitter")}
-                className="rounded-full h-8 w-8"
-              >
-                <Twitter className="w-3.5 h-3.5" />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => handleShare("facebook")}
-                className="rounded-full h-8 w-8"
-              >
-                <Facebook className="w-3.5 h-3.5" />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => handleShare("linkedin")}
-                className="rounded-full h-8 w-8"
-              >
-                <Linkedin className="w-3.5 h-3.5" />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => handleShare("copy")}
-                className="rounded-full h-8 w-8"
-              >
-                <LinkIcon className="w-3.5 h-3.5" />
-              </Button>
-            </div>
-          </div>
-
-          {/* Telegram CTA */}
-          <div className="mt-8 p-4 rounded-xl bg-gradient-to-r from-[#0088cc]/10 to-[#0088cc]/5 border border-[#0088cc]/20">
-            <div className="flex items-center justify-center gap-3 flex-wrap text-center">
-              <Send className="w-5 h-5 text-[#0088cc]" />
-              <p className="text-sm text-foreground">
-                Daha çox məqalə üçün{" "}
-                <Link
-                  href="https://t.me/joobleaz"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 font-semibold text-[#0088cc] hover:text-[#006699] hover:underline transition-colors"
-                >
-                  Telegram kanalımıza
-                </Link>
-                {" "}qoşulun.
-              </p>
-            </div>
-          </div>
+          {/* Similar Blogs Section */}
+          <SimilarBlogs currentBlogId={blog.id} isMobile={isMobile} />
         </article>
       </ScrollArea>
 
