@@ -16,6 +16,10 @@ export async function GET() {
     <loc>${baseUrl}/sitemap_jooble.xml</loc>
     <lastmod>${now}</lastmod>
   </sitemap>
+  <sitemap>
+    <loc>${baseUrl}/sitemap_blog.xml</loc>
+    <lastmod>${now}</lastmod>
+  </sitemap>
 </sitemapindex>`;
 
     return new NextResponse(xml, {
