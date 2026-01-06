@@ -1,9 +1,17 @@
 import { Metadata } from "next";
-import { supabase } from "@/integrations/supabase/client";
+import { notFound } from "next/navigation";
+import { createClient } from "@supabase/supabase-js";
+import BlogPostServerContent from "./BlogPostServerContent";
 
 interface BlogPostPageProps {
   params: { slug: string };
 }
+
+// Create a server-side Supabase client
+const supabase = createClient(
+  process.env.VITE_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || "https://igrtzfvphltnoiwedbtz.supabase.co",
+  process.env.VITE_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlncnR6ZnZwaGx0bm9pd2VkYnR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIyMTQzMDYsImV4cCI6MjA2Nzc5MDMwNn0.afoeynzfpIZMqMRgpD0fDQ_NdULXEML-LZ-SocnYKp0"
+);
 
 async function getBlogPost(slug: string) {
   const { data: blog, error } = await supabase
@@ -33,6 +41,40 @@ async function getBlogPost(slug: string) {
   return blog;
 }
 
+async function getRelatedBlogs(blogId: string, limit: number = 3) {
+  const { data: relatedBlogs } = await supabase
+    .from("blogs")
+    .select(`
+      id,
+      title,
+      slug,
+      excerpt,
+      featured_image,
+      published_at,
+      reading_time_minutes,
+      blog_authors!inner (
+        name,
+        avatar_url
+      )
+    `)
+    .eq("is_published", true)
+    .eq("is_active", true)
+    .neq("id", blogId)
+    .order("published_at", { ascending: false })
+    .limit(limit);
+
+  // Transform the data to match the expected type
+  const transformed = (relatedBlogs || []).map((blog: any) => ({
+    ...blog,
+    blog_authors: blog.blog_authors ? {
+      name: blog.blog_authors.name,
+      avatar_url: blog.blog_authors.avatar_url
+    } : null
+  }));
+
+  return transformed;
+}
+
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
   const blog = await getBlogPost(params.slug);
 
@@ -44,7 +86,6 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 
   const title = blog.seo_title || blog.title;
   const description = blog.seo_description || blog.excerpt || "";
-
   const imageUrl = blog.og_image || blog.featured_image;
 
   return {
@@ -73,8 +114,154 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
   };
 }
 
-export default function BlogPostPage({ params }: BlogPostPageProps) {
-  // This page just provides metadata, the layout handles rendering BlogClient
-  // The slug is handled by the BlogClient component
-  return null;
+export default async function BlogPostPage({ params }: BlogPostPageProps) {
+  const blog = await getBlogPost(params.slug);
+
+  if (!blog) {
+    notFound();
+  }
+
+  const relatedBlogs = await getRelatedBlogs(blog.id);
+
+  // Process content to add IDs to headings
+  let processedContent = blog.content;
+  let headingIndex = 0;
+  
+  processedContent = processedContent.replace(/<(h[2-6])([^>]*)>(.*?)<\/h[2-6]>/gi, (match: string, tag: string, attrs: string, text: string) => {
+    const id = `heading-${headingIndex}`;
+    headingIndex++;
+    return `<${tag}${attrs} id="${id}">${text}</${tag}>`;
+  });
+
+  // Process links for SEO (add rel attributes)
+  processedContent = processedContent.replace(/<a([^>]*href="https?:\/\/[^"]*"[^>]*)>/gi, (match: string, attrs: string) => {
+    if (!attrs.includes('rel=')) {
+      return `<a${attrs} rel="noopener noreferrer" target="_blank">`;
+    }
+    return match;
+  });
+
+  // Extract headings for TOC
+  const tocItems: { id: string; text: string; level: number }[] = [];
+  const headingRegex = /<h([2-6])[^>]*id="(heading-\d+)"[^>]*>(.*?)<\/h[2-6]>/gi;
+  let tocMatch;
+  while ((tocMatch = headingRegex.exec(processedContent)) !== null) {
+    tocItems.push({
+      level: parseInt(tocMatch[1]),
+      id: tocMatch[2],
+      text: tocMatch[3].replace(/<[^>]*>/g, ''), // Strip HTML tags
+    });
+  }
+
+  // Generate Article Schema
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": blog.h1_title || blog.title,
+    "description": blog.excerpt,
+    "image": blog.featured_image,
+    "url": `https://jooble.az/blog/${blog.slug}`,
+    "datePublished": blog.published_at,
+    "dateModified": blog.updated_at,
+    "author": blog.blog_authors ? {
+      "@type": "Person",
+      "name": blog.blog_authors.name,
+      "url": blog.blog_authors.website || `https://jooble.az/blog/author/${blog.blog_authors.slug}`,
+      "image": blog.blog_authors.avatar_url
+    } : {
+      "@type": "Organization",
+      "name": "Jooble.az"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Jooble.az",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://jooble.az/icons/icon-512x512.jpg"
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `https://jooble.az/blog/${blog.slug}`
+    },
+    "wordCount": blog.content ? blog.content.replace(/<[^>]*>/g, '').split(/\s+/).length : 0,
+    "timeRequired": `PT${blog.reading_time_minutes || 1}M`
+  };
+
+  // Generate Breadcrumb Schema
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Ana səhifə",
+        "item": "https://jooble.az"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Bloq",
+        "item": "https://jooble.az/blog"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": blog.title,
+        "item": `https://jooble.az/blog/${blog.slug}`
+      }
+    ]
+  };
+
+  return (
+    <>
+      {/* Schema Markup - Server rendered for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+
+      {/* SEO Content - Server rendered, visible in page source */}
+      <article className="sr-only" aria-hidden="true">
+        <header>
+          <h1>{blog.h1_title || blog.title}</h1>
+          {blog.excerpt && <p>{blog.excerpt}</p>}
+          {blog.blog_authors && (
+            <p>Müəllif: {blog.blog_authors.name}</p>
+          )}
+          {blog.published_at && (
+            <time dateTime={blog.published_at}>
+              {new Date(blog.published_at).toLocaleDateString('az-AZ')}
+            </time>
+          )}
+        </header>
+        <div dangerouslySetInnerHTML={{ __html: blog.content }} />
+      </article>
+
+      {/* Client-side interactive content */}
+      <BlogPostServerContent
+        blog={{
+          id: blog.id,
+          title: blog.title,
+          slug: blog.slug,
+          excerpt: blog.excerpt,
+          content: processedContent,
+          featured_image: blog.featured_image,
+          h1_title: blog.h1_title,
+          published_at: blog.published_at,
+          updated_at: blog.updated_at,
+          reading_time_minutes: blog.reading_time_minutes,
+          views: blog.views,
+          blog_authors: blog.blog_authors,
+        }}
+        relatedBlogs={relatedBlogs}
+        tableOfContents={tocItems}
+      />
+    </>
+  );
 }
