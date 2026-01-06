@@ -30,6 +30,7 @@ import {
   Linkedin,
   MessageCircle,
   Send,
+  BookOpen,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useReferralCode } from "@/hooks/useReferralCode";
@@ -101,6 +102,12 @@ const MainSidebar = () => {
       icon: Rss,
       label: "Abunə ol",
       path: "/subscribe",
+      count: null,
+    },
+    {
+      icon: BookOpen,
+      label: "Bloq",
+      path: "/blog",
       count: null,
     },
     {

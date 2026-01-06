@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Briefcase, Tag, Building, Bookmark, Bell, Menu, Home, TrendingUp, Info, DollarSign, FileText, Share2, Rss } from 'lucide-react';
+import { Briefcase, Tag, Building, Bookmark, Bell, Menu, Home, TrendingUp, Info, DollarSign, FileText, Share2, Rss, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
@@ -91,6 +91,11 @@ const BottomNavigation = () => {
     icon: Rss,
     label: 'Abunə ol',
     path: '/subscribe',
+    count: null
+  }, {
+    icon: BookOpen,
+    label: 'Bloq',
+    path: '/blog',
     count: null
   }, {
     icon: Share2,
