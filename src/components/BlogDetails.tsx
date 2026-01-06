@@ -1,0 +1,545 @@
+"use client";
+
+import React, { useEffect, useState, useMemo } from "react";
+import Link from "next/link";
+import { format } from "date-fns";
+import { az } from "date-fns/locale";
+import {
+  Clock,
+  Eye,
+  Calendar,
+  User,
+  Share2,
+  BookOpen,
+  List,
+  Linkedin,
+  Twitter,
+  Facebook,
+  Link as LinkIcon,
+  ArrowUp,
+  Send,
+} from "lucide-react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Skeleton } from "@/components/ui/skeleton";
+import SEOBreadcrumb from "@/components/SEOBreadcrumb";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+
+interface BlogAuthor {
+  id: string;
+  name: string;
+  slug: string;
+  bio: string | null;
+  avatar_url: string | null;
+  website: string | null;
+  twitter: string | null;
+  linkedin: string | null;
+}
+
+interface Blog {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  content: string;
+  featured_image: string | null;
+  h1_title: string | null;
+  published_at: string | null;
+  updated_at: string;
+  reading_time_minutes: number | null;
+  views: number | null;
+  blog_authors: BlogAuthor | null;
+}
+
+interface TOCItem {
+  id: string;
+  text: string;
+  level: number;
+}
+
+interface BlogDetailsProps {
+  blogId: string | null;
+  isMobile?: boolean;
+}
+
+export default function BlogDetails({ blogId, isMobile = false }: BlogDetailsProps) {
+  const [blog, setBlog] = useState<Blog | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [tableOfContents, setTableOfContents] = useState<TOCItem[]>([]);
+  const [activeSection, setActiveSection] = useState<string>("");
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  // Fetch blog details
+  useEffect(() => {
+    if (!blogId) {
+      setBlog(null);
+      return;
+    }
+
+    const fetchBlog = async () => {
+      setLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from("blogs")
+          .select(`
+            *,
+            blog_authors (
+              id,
+              name,
+              slug,
+              bio,
+              avatar_url,
+              website,
+              twitter,
+              linkedin
+            )
+          `)
+          .eq("id", blogId)
+          .single();
+
+        if (!error && data) {
+          setBlog(data);
+          // Increment view count
+          await supabase.rpc("increment_blog_views", { blog_id: blogId });
+        }
+      } catch (error) {
+        console.error("Error fetching blog:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBlog();
+  }, [blogId]);
+
+  // Extract headings for Table of Contents
+  useEffect(() => {
+    if (!blog?.content) {
+      setTableOfContents([]);
+      return;
+    }
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(blog.content, "text/html");
+    const headings = doc.querySelectorAll("h2, h3, h4, h5, h6");
+    
+    const toc: TOCItem[] = [];
+    headings.forEach((heading, index) => {
+      const id = `heading-${index}`;
+      const text = heading.textContent || "";
+      const level = parseInt(heading.tagName.charAt(1));
+      toc.push({ id, text, level });
+    });
+    
+    setTableOfContents(toc);
+  }, [blog?.content]);
+
+  // Handle scroll for back to top button
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 500);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Process content to add IDs to headings
+  const processedContent = useMemo(() => {
+    if (!blog?.content) return "";
+    
+    let content = blog.content;
+    let headingIndex = 0;
+    
+    content = content.replace(/<(h[2-6])([^>]*)>(.*?)<\/h[2-6]>/gi, (match, tag, attrs, text) => {
+      const id = `heading-${headingIndex}`;
+      headingIndex++;
+      return `<${tag}${attrs} id="${id}">${text}</${tag}>`;
+    });
+
+    // Process links for SEO (add rel attributes)
+    content = content.replace(/<a([^>]*href="https?:\/\/[^"]*"[^>]*)>/gi, (match, attrs) => {
+      if (!attrs.includes('rel=')) {
+        return `<a${attrs} rel="noopener noreferrer" target="_blank">`;
+      }
+      return match;
+    });
+
+    return content;
+  }, [blog?.content]);
+
+  // Generate Article Schema
+  const generateArticleSchema = () => {
+    if (!blog) return null;
+    return {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": blog.h1_title || blog.title,
+      "description": blog.excerpt,
+      "image": blog.featured_image,
+      "url": `https://jooble.az/blog/${blog.slug}`,
+      "datePublished": blog.published_at,
+      "dateModified": blog.updated_at,
+      "author": blog.blog_authors ? {
+        "@type": "Person",
+        "name": blog.blog_authors.name,
+        "url": blog.blog_authors.website || `https://jooble.az/blog/author/${blog.blog_authors.slug}`,
+        "image": blog.blog_authors.avatar_url
+      } : {
+        "@type": "Organization",
+        "name": "Jooble.az"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Jooble.az",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://jooble.az/icons/icon-512x512.jpg"
+        }
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": `https://jooble.az/blog/${blog.slug}`
+      },
+      "wordCount": blog.content ? blog.content.replace(/<[^>]*>/g, '').split(/\s+/).length : 0,
+      "timeRequired": `PT${blog.reading_time_minutes || 1}M`
+    };
+  };
+
+  // Generate Breadcrumb Schema
+  const generateBreadcrumbSchema = () => {
+    if (!blog) return null;
+    return {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Ana səhifə",
+          "item": "https://jooble.az"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Bloq",
+          "item": "https://jooble.az/blog"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": blog.title,
+          "item": `https://jooble.az/blog/${blog.slug}`
+        }
+      ]
+    };
+  };
+
+  const handleShare = async (platform: string) => {
+    if (!blog) return;
+    const url = `https://jooble.az/blog/${blog.slug}`;
+    const title = blog.title;
+
+    switch (platform) {
+      case "twitter":
+        window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`, "_blank");
+        break;
+      case "facebook":
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, "_blank");
+        break;
+      case "linkedin":
+        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, "_blank");
+        break;
+      case "copy":
+        await navigator.clipboard.writeText(url);
+        toast.success("Link kopyalandı!");
+        break;
+    }
+  };
+
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+      setActiveSection(id);
+    }
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // Empty state
+  if (!blogId) {
+    return (
+      <div className="h-full flex flex-col items-center justify-center p-8 text-center">
+        <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mb-6">
+          <BookOpen className="w-12 h-12 text-primary" />
+        </div>
+        <h2 className="text-xl font-semibold mb-2">Bloq Məqalələri</h2>
+        <p className="text-muted-foreground max-w-md">
+          Karyera inkişafı, iş axtarışı və əmək bazarı haqqında faydalı məqalələr. 
+          Sol tərəfdəki siyahıdan oxumaq istədiyiniz məqaləni seçin.
+        </p>
+
+        {/* Telegram CTA */}
+        <div className="mt-8 p-4 rounded-xl bg-gradient-to-r from-[#0088cc]/10 to-[#0088cc]/5 border border-[#0088cc]/20 max-w-sm">
+          <div className="flex items-center justify-center gap-3 flex-wrap text-center">
+            <Send className="w-5 h-5 text-[#0088cc]" />
+            <p className="text-sm text-foreground">
+              Ən son məqalələr haqqında xəbərdar olmaq üçün{" "}
+              <Link
+                href="https://t.me/joobleaz"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 font-semibold text-[#0088cc] hover:text-[#006699] hover:underline transition-colors"
+              >
+                Telegram kanalımıza
+              </Link>
+              {" "}qoşulun.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Loading state
+  if (loading) {
+    return (
+      <ScrollArea className="h-full">
+        <div className="p-6">
+          <Skeleton className="h-8 w-3/4 mb-4" />
+          <Skeleton className="h-4 w-1/2 mb-6" />
+          <Skeleton className="aspect-video w-full mb-6" />
+          <div className="space-y-3">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-3/4" />
+          </div>
+        </div>
+      </ScrollArea>
+    );
+  }
+
+  if (!blog) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <p className="text-muted-foreground">Məqalə tapılmadı</p>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      {/* Schema Markup */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(generateArticleSchema()) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(generateBreadcrumbSchema()) }}
+      />
+
+      <ScrollArea className="h-full">
+        <article className={`${isMobile ? 'p-4' : 'p-6'}`}>
+          {/* Breadcrumb */}
+          <SEOBreadcrumb
+            items={[
+              { label: "Bloq", href: "/blog" },
+              { label: blog.title },
+            ]}
+            className="mb-4"
+          />
+
+          {/* Featured Image */}
+          {blog.featured_image && (
+            <div className="aspect-video rounded-xl overflow-hidden mb-6">
+              <img
+                src={blog.featured_image}
+                alt={blog.title}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          )}
+
+          {/* Meta info */}
+          <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mb-4">
+            {blog.published_at && (
+              <time dateTime={blog.published_at} className="flex items-center gap-1">
+                <Calendar className="w-4 h-4" />
+                {format(new Date(blog.published_at), "d MMM yyyy", { locale: az })}
+              </time>
+            )}
+            <span className="flex items-center gap-1">
+              <Clock className="w-4 h-4" />
+              {blog.reading_time_minutes || 1} dəq oxuma
+            </span>
+            <span className="flex items-center gap-1">
+              <Eye className="w-4 h-4" />
+              {blog.views || 0} baxış
+            </span>
+          </div>
+
+          {/* H1 Title */}
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
+            {blog.h1_title || blog.title}
+          </h1>
+
+          {/* Author */}
+          {blog.blog_authors && (
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 mb-6">
+              {blog.blog_authors.avatar_url ? (
+                <img
+                  src={blog.blog_authors.avatar_url}
+                  alt={blog.blog_authors.name}
+                  className="w-10 h-10 rounded-full object-cover"
+                />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <User className="w-5 h-5 text-primary" />
+                </div>
+              )}
+              <div>
+                <p className="font-medium">{blog.blog_authors.name}</p>
+                {blog.blog_authors.bio && (
+                  <p className="text-sm text-muted-foreground line-clamp-1">
+                    {blog.blog_authors.bio}
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Table of Contents - Mobile only */}
+          {isMobile && tableOfContents.length > 0 && (
+            <Card className="mb-6">
+              <CardHeader className="pb-2">
+                <h2 className="text-sm font-semibold flex items-center gap-2">
+                  <List className="w-4 h-4 text-primary" />
+                  Mündəricat
+                </h2>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <nav className="space-y-1">
+                  {tableOfContents.slice(0, 5).map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => scrollToSection(item.id)}
+                      className="w-full text-left px-2 py-1.5 rounded text-sm transition-colors hover:bg-muted line-clamp-1 text-muted-foreground"
+                    >
+                      {item.text}
+                    </button>
+                  ))}
+                  {tableOfContents.length > 5 && (
+                    <p className="text-xs text-muted-foreground px-2">
+                      +{tableOfContents.length - 5} daha çox başlıq
+                    </p>
+                  )}
+                </nav>
+              </CardContent>
+            </Card>
+          )}
+
+          <Separator className="mb-6" />
+
+          {/* Article Content */}
+          <div
+            className="prose prose-lg dark:prose-invert max-w-none
+              prose-headings:scroll-mt-20
+              prose-h2:text-xl prose-h2:font-bold prose-h2:mt-8 prose-h2:mb-4
+              prose-h3:text-lg prose-h3:font-semibold prose-h3:mt-6 prose-h3:mb-3
+              prose-h4:text-base prose-h4:font-semibold prose-h4:mt-4 prose-h4:mb-2
+              prose-p:text-foreground/90 prose-p:leading-relaxed
+              prose-a:text-primary prose-a:no-underline hover:prose-a:underline
+              prose-strong:text-foreground
+              prose-ul:my-4 prose-ol:my-4
+              prose-li:my-1
+              prose-img:rounded-lg
+              prose-blockquote:border-l-primary prose-blockquote:bg-muted/30 prose-blockquote:rounded-r-lg prose-blockquote:py-1
+            "
+            dangerouslySetInnerHTML={{ __html: processedContent }}
+          />
+
+          <Separator className="my-8" />
+
+          {/* Share Buttons */}
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <span className="text-sm font-medium flex items-center gap-2">
+              <Share2 className="w-4 h-4" />
+              Paylaş:
+            </span>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => handleShare("twitter")}
+                className="rounded-full"
+              >
+                <Twitter className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => handleShare("facebook")}
+                className="rounded-full"
+              >
+                <Facebook className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => handleShare("linkedin")}
+                className="rounded-full"
+              >
+                <Linkedin className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => handleShare("copy")}
+                className="rounded-full"
+              >
+                <LinkIcon className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+
+          {/* Telegram CTA */}
+          <div className="mt-8 p-4 rounded-xl bg-gradient-to-r from-[#0088cc]/10 to-[#0088cc]/5 border border-[#0088cc]/20">
+            <div className="flex items-center justify-center gap-3 flex-wrap text-center">
+              <Send className="w-5 h-5 text-[#0088cc]" />
+              <p className="text-sm text-foreground">
+                Daha çox məqalə üçün{" "}
+                <Link
+                  href="https://t.me/joobleaz"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 font-semibold text-[#0088cc] hover:text-[#006699] hover:underline transition-colors"
+                >
+                  Telegram kanalımıza
+                </Link>
+                {" "}qoşulun.
+              </p>
+            </div>
+          </div>
+        </article>
+      </ScrollArea>
+
+      {/* Scroll to top button */}
+      {showScrollTop && (
+        <Button
+          variant="default"
+          size="icon"
+          onClick={scrollToTop}
+          className="fixed bottom-20 right-4 lg:bottom-6 lg:right-6 rounded-full shadow-lg z-50"
+        >
+          <ArrowUp className="w-4 h-4" />
+        </Button>
+      )}
+    </>
+  );
+}
