@@ -24,6 +24,14 @@ export async function GET() {
             .select('slug, updated_at')
             .eq('is_active', true);
 
+        // Fetch all published blogs
+        const { data: blogs } = await supabase
+            .from('blogs')
+            .select('slug, updated_at, published_at')
+            .eq('is_active', true)
+            .eq('is_published', true)
+            .order('published_at', { ascending: false });
+
         const baseUrl = 'https://jooble.az';
         const now = new Date().toISOString();
 
@@ -51,6 +59,12 @@ export async function GET() {
     <loc>${baseUrl}/categories</loc>
     <lastmod>${now}</lastmod>
     <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/blog</loc>
+    <lastmod>${now}</lastmod>
+    <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>`;
 
@@ -84,6 +98,17 @@ export async function GET() {
     <lastmod>${category.updated_at || now}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>`;
+        });
+
+        // Add blog pages
+        blogs?.forEach((blog) => {
+            xml += `
+  <url>
+    <loc>${baseUrl}/blog/${blog.slug}</loc>
+    <lastmod>${blog.updated_at || blog.published_at || now}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>`;
         });
 
