@@ -61,6 +61,7 @@ import {
   Calendar,
 } from "lucide-react";
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
+import ImageUpload from "@/components/ImageUpload";
 
 interface Blog {
   id: string;
@@ -694,16 +695,13 @@ export default function AdminBlogsClient() {
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label>Əsas Şəkil URL</Label>
-                <Input
-                  value={blogForm.featured_image}
-                  onChange={(e) =>
-                    setBlogForm({ ...blogForm, featured_image: e.target.value })
-                  }
-                  placeholder="https://..."
-                />
-              </div>
+              <ImageUpload
+                value={blogForm.featured_image}
+                onChange={(url) => setBlogForm({ ...blogForm, featured_image: url })}
+                label="Əsas Şəkil"
+                placeholder="https://example.com/image.jpg"
+                imageType="companies"
+              />
 
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
@@ -916,16 +914,13 @@ export default function AdminBlogsClient() {
               />
             </div>
 
-            <div className="space-y-2">
-              <Label>Avatar URL</Label>
-              <Input
-                value={authorForm.avatar_url}
-                onChange={(e) =>
-                  setAuthorForm({ ...authorForm, avatar_url: e.target.value })
-                }
-                placeholder="https://..."
-              />
-            </div>
+            <ImageUpload
+              value={authorForm.avatar_url}
+              onChange={(url) => setAuthorForm({ ...authorForm, avatar_url: url })}
+              label="Avatar"
+              placeholder="https://example.com/avatar.jpg"
+              imageType="companies"
+            />
 
             <div className="grid grid-cols-3 gap-4">
               <div className="space-y-2">

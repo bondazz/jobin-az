@@ -356,9 +356,9 @@ export default function BlogDetails({ blogId, isMobile = false }: BlogDetailsPro
             />
           </div>
 
-          {/* Featured Image - Smaller on desktop */}
+          {/* Featured Image - Fixed positioning for mobile/tablet */}
           {blog.featured_image && (
-            <div className={`rounded-xl overflow-hidden mb-4 ${isMobile ? 'aspect-video' : 'h-48 md:h-56'}`}>
+            <div className={`rounded-xl overflow-hidden mb-4 ${isMobile ? 'aspect-video mt-0' : 'h-48 md:h-56'}`}>
               <img
                 src={blog.featured_image}
                 alt={blog.title}
@@ -390,23 +390,63 @@ export default function BlogDetails({ blogId, isMobile = false }: BlogDetailsPro
             {blog.h1_title || blog.title}
           </h2>
 
-          {/* Author - Compact */}
-          {blog.blog_authors && (
-            <div className="flex items-center gap-2 mb-4">
-              {blog.blog_authors.avatar_url ? (
-                <img
-                  src={blog.blog_authors.avatar_url}
-                  alt={blog.blog_authors.name}
-                  className="w-6 h-6 rounded-full object-cover"
-                />
-              ) : (
-                <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
-                  <User className="w-3 h-3 text-primary" />
-                </div>
-              )}
-              <span className="text-sm text-muted-foreground">{blog.blog_authors.name}</span>
+          {/* Author with Share Buttons */}
+          <div className="flex items-center justify-between gap-2 mb-4">
+            {blog.blog_authors ? (
+              <div className="flex items-center gap-2">
+                {blog.blog_authors.avatar_url ? (
+                  <img
+                    src={blog.blog_authors.avatar_url}
+                    alt={blog.blog_authors.name}
+                    className="w-6 h-6 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                    <User className="w-3 h-3 text-primary" />
+                  </div>
+                )}
+                <span className="text-sm text-muted-foreground">{blog.blog_authors.name}</span>
+              </div>
+            ) : (
+              <div />
+            )}
+            
+            {/* Share Buttons */}
+            <div className="flex items-center gap-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => handleShare("twitter")}
+                className="rounded-full h-7 w-7 hover:bg-primary/10 hover:text-primary"
+              >
+                <Twitter className="w-3.5 h-3.5" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => handleShare("facebook")}
+                className="rounded-full h-7 w-7 hover:bg-primary/10 hover:text-primary"
+              >
+                <Facebook className="w-3.5 h-3.5" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => handleShare("linkedin")}
+                className="rounded-full h-7 w-7 hover:bg-primary/10 hover:text-primary"
+              >
+                <Linkedin className="w-3.5 h-3.5" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => handleShare("copy")}
+                className="rounded-full h-7 w-7 hover:bg-primary/10 hover:text-primary"
+              >
+                <LinkIcon className="w-3.5 h-3.5" />
+              </Button>
             </div>
-          )}
+          </div>
 
           {/* Table of Contents - Mobile only */}
           {isMobile && tableOfContents.length > 0 && (
