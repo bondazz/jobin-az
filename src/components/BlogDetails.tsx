@@ -346,18 +346,19 @@ export default function BlogDetails({ blogId, isMobile = false }: BlogDetailsPro
 
       <ScrollArea className="h-full">
         <article className={`${isMobile ? 'p-4' : 'p-6'}`}>
-          {/* Breadcrumb */}
-          <SEOBreadcrumb
-            items={[
-              { label: "Bloq", href: "/blog" },
-              { label: blog.title },
-            ]}
-            className="mb-4"
-          />
+          {/* Breadcrumb - Hidden visually but visible for SEO/bots */}
+          <div className="sr-only" aria-hidden="false">
+            <SEOBreadcrumb
+              items={[
+                { label: "Bloq", href: "/blog" },
+                { label: blog.title },
+              ]}
+            />
+          </div>
 
-          {/* Featured Image */}
+          {/* Featured Image - Smaller on desktop */}
           {blog.featured_image && (
-            <div className="aspect-video rounded-xl overflow-hidden mb-6">
+            <div className={`rounded-xl overflow-hidden mb-4 ${isMobile ? 'aspect-video' : 'h-48 md:h-56'}`}>
               <img
                 src={blog.featured_image}
                 alt={blog.title}
@@ -384,33 +385,26 @@ export default function BlogDetails({ blogId, isMobile = false }: BlogDetailsPro
             </span>
           </div>
 
-          {/* H1 Title */}
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
+          {/* H2 Title (changed from h1 to fix too many h1 issue) */}
+          <h2 className="text-xl md:text-2xl font-bold text-foreground mb-3">
             {blog.h1_title || blog.title}
-          </h1>
+          </h2>
 
-          {/* Author */}
+          {/* Author - Compact */}
           {blog.blog_authors && (
-            <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 mb-6">
+            <div className="flex items-center gap-2 mb-4">
               {blog.blog_authors.avatar_url ? (
                 <img
                   src={blog.blog_authors.avatar_url}
                   alt={blog.blog_authors.name}
-                  className="w-10 h-10 rounded-full object-cover"
+                  className="w-6 h-6 rounded-full object-cover"
                 />
               ) : (
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                  <User className="w-5 h-5 text-primary" />
+                <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                  <User className="w-3 h-3 text-primary" />
                 </div>
               )}
-              <div>
-                <p className="font-medium">{blog.blog_authors.name}</p>
-                {blog.blog_authors.bio && (
-                  <p className="text-sm text-muted-foreground line-clamp-1">
-                    {blog.blog_authors.bio}
-                  </p>
-                )}
-              </div>
+              <span className="text-sm text-muted-foreground">{blog.blog_authors.name}</span>
             </div>
           )}
 
@@ -418,10 +412,10 @@ export default function BlogDetails({ blogId, isMobile = false }: BlogDetailsPro
           {isMobile && tableOfContents.length > 0 && (
             <Card className="mb-6">
               <CardHeader className="pb-2">
-                <h2 className="text-sm font-semibold flex items-center gap-2">
+                <h3 className="text-sm font-semibold flex items-center gap-2">
                   <List className="w-4 h-4 text-primary" />
                   Mündəricat
-                </h2>
+                </h3>
               </CardHeader>
               <CardContent className="pt-0">
                 <nav className="space-y-1">
@@ -446,64 +440,65 @@ export default function BlogDetails({ blogId, isMobile = false }: BlogDetailsPro
 
           <Separator className="mb-6" />
 
-          {/* Article Content */}
+          {/* Article Content - Cleaner, less tiring styling */}
           <div
-            className="prose prose-lg dark:prose-invert max-w-none
-              prose-headings:scroll-mt-20
-              prose-h2:text-xl prose-h2:font-bold prose-h2:mt-8 prose-h2:mb-4
-              prose-h3:text-lg prose-h3:font-semibold prose-h3:mt-6 prose-h3:mb-3
-              prose-h4:text-base prose-h4:font-semibold prose-h4:mt-4 prose-h4:mb-2
-              prose-p:text-foreground/90 prose-p:leading-relaxed
-              prose-a:text-primary prose-a:no-underline hover:prose-a:underline
-              prose-strong:text-foreground
-              prose-ul:my-4 prose-ol:my-4
-              prose-li:my-1
-              prose-img:rounded-lg
-              prose-blockquote:border-l-primary prose-blockquote:bg-muted/30 prose-blockquote:rounded-r-lg prose-blockquote:py-1
+            className="prose prose-sm md:prose-base dark:prose-invert max-w-none
+              prose-headings:scroll-mt-20 prose-headings:text-foreground
+              prose-h2:text-lg prose-h2:font-semibold prose-h2:mt-6 prose-h2:mb-3 prose-h2:border-b prose-h2:border-border/50 prose-h2:pb-2
+              prose-h3:text-base prose-h3:font-medium prose-h3:mt-4 prose-h3:mb-2
+              prose-h4:text-sm prose-h4:font-medium prose-h4:mt-3 prose-h4:mb-2
+              prose-p:text-foreground/85 prose-p:leading-7 prose-p:my-3
+              prose-a:text-primary prose-a:font-medium prose-a:no-underline hover:prose-a:underline prose-a:transition-colors
+              prose-strong:text-primary prose-strong:font-semibold
+              prose-ul:my-3 prose-ol:my-3 prose-ul:pl-4 prose-ol:pl-4
+              prose-li:my-1 prose-li:text-foreground/85
+              prose-img:rounded-lg prose-img:my-4
+              prose-blockquote:border-l-primary prose-blockquote:bg-muted/20 prose-blockquote:rounded-r-lg prose-blockquote:py-2 prose-blockquote:px-4 prose-blockquote:not-italic prose-blockquote:text-foreground/80
+              [&_ul]:list-disc [&_ol]:list-decimal
             "
             dangerouslySetInnerHTML={{ __html: processedContent }}
           />
 
           <Separator className="my-8" />
 
-          {/* Share Buttons */}
-          <div className="flex items-center justify-between flex-wrap gap-4">
+          {/* Share Buttons - Closer together */}
+          <div className="flex items-center gap-3 flex-wrap">
             <span className="text-sm font-medium flex items-center gap-2">
               <Share2 className="w-4 h-4" />
               Paylaş:
             </span>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <Button
                 variant="outline"
                 size="icon"
                 onClick={() => handleShare("twitter")}
-                className="rounded-full"
+                className="rounded-full h-8 w-8"
               >
-                <Twitter className="w-4 h-4" />
+                <Twitter className="w-3.5 h-3.5" />
               </Button>
               <Button
                 variant="outline"
                 size="icon"
                 onClick={() => handleShare("facebook")}
-                className="rounded-full"
+                className="rounded-full h-8 w-8"
               >
-                <Facebook className="w-4 h-4" />
+                <Facebook className="w-3.5 h-3.5" />
               </Button>
               <Button
                 variant="outline"
                 size="icon"
                 onClick={() => handleShare("linkedin")}
-                className="rounded-full"
+                className="rounded-full h-8 w-8"
               >
-                <Linkedin className="w-4 h-4" />
+                <Linkedin className="w-3.5 h-3.5" />
               </Button>
               <Button
                 variant="outline"
                 size="icon"
                 onClick={() => handleShare("copy")}
-                className="rounded-full"
+                className="rounded-full h-8 w-8"
               >
-                <LinkIcon className="w-4 h-4" />
+                <LinkIcon className="w-3.5 h-3.5" />
               </Button>
             </div>
           </div>
