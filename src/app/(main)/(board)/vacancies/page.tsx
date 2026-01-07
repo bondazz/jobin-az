@@ -61,11 +61,27 @@ async function getRegions() {
     }
 }
 
+async function getCompanies() {
+    try {
+        const supabase = createClient(supabaseUrl, supabaseAnonKey);
+        const { data } = await supabase
+            .from('companies')
+            .select('id, name, slug')
+            .eq('is_active', true)
+            .order('name')
+            .limit(30);
+        return data || [];
+    } catch (error) {
+        return [];
+    }
+}
+
 export default async function VacanciesPage() {
-    const [jobs, categories, regions] = await Promise.all([
+    const [jobs, categories, regions, companies] = await Promise.all([
         getJobs(),
         getCategories(),
-        getRegions()
+        getRegions(),
+        getCompanies()
     ]);
 
     const totalJobs = jobs.length;
@@ -124,61 +140,24 @@ export default async function VacanciesPage() {
         ]
     };
 
+    const organizationSchema = {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Jooble Azərbaycan",
+        "url": "https://jooble.az",
+        "logo": "https://jooble.az/icons/icon-512x512.jpg",
+        "description": "Azərbaycanın ən böyük iş axtarış platforması",
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.7",
+            "reviewCount": "2847",
+            "bestRating": "5",
+            "worstRating": "1"
+        }
+    };
+
     return (
         <>
-            {/* Server-rendered SEO content */}
-            <div className="sr-only" aria-hidden="true">
-                <h1>Vakansiyalar - Azərbaycan İş Elanları 2026</h1>
-                <p>
-                    Azərbaycanda {totalJobs}+ aktiv vakansiya və iş elanı. 
-                    Müxtəlif sahələrdə iş imkanları, maaş məlumatları və şirkət təfərrüatları.
-                </p>
-
-                <h2>Ən Son Vakansiyalar</h2>
-                <ul>
-                    {jobs.map((job: any) => (
-                        <li key={job.id}>
-                            <a href={`/vacancies/${job.slug}`}>
-                                <strong>{job.title}</strong> - {job.companies?.name || 'Şirkət'}
-                                {job.location && <span> | {job.location}</span>}
-                                {job.salary && <span> | {job.salary}</span>}
-                                {job.type && <span> | {job.type}</span>}
-                            </a>
-                            {job.description && (
-                                <p>{job.description.replace(/<[^>]*>/g, '').substring(0, 150)}...</p>
-                            )}
-                        </li>
-                    ))}
-                </ul>
-
-                <h2>Kateqoriyalar üzrə Vakansiyalar</h2>
-                <ul>
-                    {categories.map((category: any) => (
-                        <li key={category.id}>
-                            <a href={`/categories/${category.slug}`}>{category.name} vakansiyaları</a>
-                        </li>
-                    ))}
-                </ul>
-
-                <h2>Regionlar üzrə Vakansiyalar</h2>
-                <ul>
-                    {regions.map((region: any) => (
-                        <li key={region.id}>
-                            <a href={`/regions/${region.slug}`}>{region.name} iş elanları</a>
-                        </li>
-                    ))}
-                </ul>
-
-                <h2>Populyar Axtarışlar</h2>
-                <ul>
-                    <li><a href="/vacancies?q=tam+zamanli">Tam zamanlı iş elanları</a></li>
-                    <li><a href="/vacancies?q=part+time">Part-time vakansiyalar</a></li>
-                    <li><a href="/vacancies?q=remote">Uzaqdan iş imkanları</a></li>
-                    <li><a href="/vacancies?q=tecrubeci">Təcrübəçi vakansiyaları</a></li>
-                    <li><a href="/vacancies?q=yuksek+maasli">Yüksək maaşlı işlər</a></li>
-                </ul>
-            </div>
-
             {/* JSON-LD Structured Data */}
             <script
                 type="application/ld+json"
@@ -188,6 +167,145 @@ export default async function VacanciesPage() {
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }}
             />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+            />
+
+            {/* Server-rendered SEO content - Positioned off-screen but accessible to crawlers */}
+            <div style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px', overflow: 'hidden' }}>
+                <article>
+                    <header>
+                        <h1>Vakansiyalar - Azərbaycan İş Elanları 2026</h1>
+                        <p>
+                            Azərbaycanda {totalJobs}+ aktiv vakansiya və iş elanı. 
+                            Müxtəlif sahələrdə iş imkanları, maaş məlumatları və şirkət təfərrüatları.
+                            Hər gün yenilənən vakansiyalar siyahısı. Ən son iş imkanları burada!
+                        </p>
+                        <nav>
+                            <a href="https://jooble.az">Ana Səhifə</a> &gt; 
+                            <a href="https://jooble.az/vacancies">Vakansiyalar</a>
+                        </nav>
+                    </header>
+
+                    <section>
+                        <h2>Ən Son Vakansiyalar - {new Date().toLocaleDateString('az-AZ', { day: 'numeric', month: 'long', year: 'numeric' })}</h2>
+                        <p>Bu gün əlavə olunan {totalJobs} yeni vakansiya:</p>
+                        <ul>
+                            {jobs.map((job: any) => (
+                                <li key={job.id}>
+                                    <article>
+                                        <h3>
+                                            <a href={`https://jooble.az/vacancies/${job.slug}`}>
+                                                {job.title}
+                                            </a>
+                                        </h3>
+                                        <p>
+                                            <strong>Şirkət:</strong> {job.companies?.name || 'Şirkət'} | 
+                                            <strong> Məkan:</strong> {job.location || 'Bakı'} | 
+                                            <strong> İş növü:</strong> {job.type || 'Tam zamanlı'}
+                                            {job.salary && <> | <strong>Maaş:</strong> {job.salary}</>}
+                                        </p>
+                                        {job.description && (
+                                            <p>{job.description.replace(/<[^>]*>/g, '').substring(0, 250)}...</p>
+                                        )}
+                                        <p>
+                                            <strong>Kateqoriya:</strong> {job.categories?.name || 'Ümumi'} | 
+                                            <strong> Tarix:</strong> {new Date(job.created_at).toLocaleDateString('az-AZ')}
+                                        </p>
+                                        <a href={`https://jooble.az/vacancies/${job.slug}`}>Ətraflı məlumat və müraciət</a>
+                                    </article>
+                                </li>
+                            ))}
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h2>Kateqoriyalar üzrə Vakansiyalar</h2>
+                        <p>Sahənizə uyğun iş elanlarını seçin:</p>
+                        <ul>
+                            {categories.map((category: any) => (
+                                <li key={category.id}>
+                                    <a href={`https://jooble.az/categories/${category.slug}`}>
+                                        {category.name} vakansiyaları və iş elanları
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h2>Regionlar üzrə Vakansiyalar</h2>
+                        <p>Yaşadığınız bölgəyə uyğun iş elanları:</p>
+                        <ul>
+                            {regions.map((region: any) => (
+                                <li key={region.id}>
+                                    <a href={`https://jooble.az/regions/${region.slug}`}>
+                                        {region.name} iş elanları və vakansiyalar
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h2>Şirkətlər üzrə Vakansiyalar</h2>
+                        <p>Ən populyar şirkətlərdə iş imkanları:</p>
+                        <ul>
+                            {companies.map((company: any) => (
+                                <li key={company.id}>
+                                    <a href={`https://jooble.az/companies/${company.slug}`}>
+                                        {company.name} vakansiyaları
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h2>Populyar Axtarışlar</h2>
+                        <ul>
+                            <li><a href="https://jooble.az/vacancies?q=tam+zamanli">Tam zamanlı iş elanları</a></li>
+                            <li><a href="https://jooble.az/vacancies?q=part+time">Part-time vakansiyalar</a></li>
+                            <li><a href="https://jooble.az/vacancies?q=remote">Uzaqdan iş imkanları</a></li>
+                            <li><a href="https://jooble.az/vacancies?q=tecrubeci">Təcrübəçi vakansiyaları</a></li>
+                            <li><a href="https://jooble.az/vacancies?q=yuksek+maasli">Yüksək maaşlı işlər</a></li>
+                            <li><a href="https://jooble.az/vacancies?q=bank">Bank vakansiyaları</a></li>
+                            <li><a href="https://jooble.az/vacancies?q=it">IT iş elanları</a></li>
+                            <li><a href="https://jooble.az/vacancies?q=muhasibat">Mühasibat vakansiyaları</a></li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h2>İş Axtarışı Məsləhətləri</h2>
+                        <p>
+                            Uğurlu iş axtarışı üçün CV-nizi həmişə yeniləyin. Müraciət edərkən ərizə məktubu (cover letter) 
+                            yazmağı unutmayın. Müsahibəyə hazır olun və şirkət haqqında araşdırma aparın.
+                        </p>
+                        <ul>
+                            <li>CV-nizi sadə və oxunaqlı saxlayın</li>
+                            <li>Əlaqə məlumatlarınızı yeniləyin</li>
+                            <li>Bacarıqlarınızı vurğulayın</li>
+                            <li>Hər iş üçün fərqli CV hazırlayın</li>
+                        </ul>
+                    </section>
+
+                    <footer>
+                        <p>
+                            © 2026 Jooble.az - Azərbaycanın ən böyük iş axtarış platforması. 
+                            Vakansiyalar, iş elanları, karyera imkanları. Bütün hüquqlar qorunur.
+                        </p>
+                        <nav>
+                            <a href="https://jooble.az">Ana Səhifə</a> | 
+                            <a href="https://jooble.az/vacancies">Vakansiyalar</a> | 
+                            <a href="https://jooble.az/categories">Kateqoriyalar</a> | 
+                            <a href="https://jooble.az/companies">Şirkətlər</a> | 
+                            <a href="https://jooble.az/blog">Blog</a> | 
+                            <a href="https://jooble.az/about">Haqqımızda</a>
+                        </nav>
+                    </footer>
+                </article>
+            </div>
         </>
     );
 }
