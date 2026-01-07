@@ -170,18 +170,41 @@ export default async function HomePage() {
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
             />
 
-            {/* SEO Content - Server Rendered for Search Engines */}
-            <div style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px', overflow: 'hidden' }}>
-                <article>
+            {/* SEO Content - Server Rendered for Search Engines - VISIBLE in source */}
+            <div id="seo-content" className="hidden lg:block fixed right-0 top-0 w-[400px] xl:w-[480px] 2xl:w-[550px] h-screen overflow-y-auto p-6 bg-gradient-to-br from-background to-primary/5 pointer-events-none" style={{ zIndex: 1 }}>
+                <article className="space-y-6 text-left max-w-lg mx-auto">
                     <header>
-                        <h1>İş Elanları və Vakansiyalar 2026 - Jooble Azərbaycan</h1>
-                        <p>
-                            Jooble.az - Azərbaycanın ən böyük iş axtarış platforması. {totalJobs}+ aktiv iş elanı və vakansiya.
-                            Hər gün yüzlərlə yeni iş imkanı əlavə olunur. İstər tam zamanlı, istər part-time, istərsə də 
-                            uzaqdan iş axtarırsınızsa - bütün imkanları burada tapa bilərsiniz.
+                        <h1 className="text-2xl font-bold text-foreground mb-4">İş Elanları və Vakansiyalar 2026</h1>
+                        <p className="text-muted-foreground text-sm leading-relaxed">
+                            İş elanları və vakansiyalar 2026 üzrə ən son yenilikləri burada tapa bilərsiniz. Platformamız bütün sahələr üzrə gündəlik yenilənən iş imkanlarını, real şirkət vakansiyalarını və filtirlənə bilən peşə yönümlü elanları bir araya gətirir. Əgər yeni iş axtarırsınızsa, düzgün yerdəsiniz - buradan həm yerli, həm də beynəlxalq iş elanlarına rahatlıqla baxa, CV göndərə və dərhal müraciət edə bilərsiniz.
                         </p>
                     </header>
 
+                    <section className="grid grid-cols-2 gap-4">
+                        <div className="space-y-3">
+                            <h2 className="text-lg font-semibold text-foreground">Ən Son İş Elanları 2026</h2>
+                            <h2 className="text-lg font-semibold text-foreground">Bu həftənin ən çox baxılan vakansiyaları</h2>
+                            <h2 className="text-lg font-semibold text-foreground">Şəhərlər üzrə iş elanları</h2>
+                            <h2 className="text-lg font-semibold text-foreground">Sahələr üzrə vakansiyalar</h2>
+                        </div>
+                        <div className="space-y-3">
+                            <h2 className="text-lg font-semibold text-foreground">Tələbə və təcrübəçi iş elanları</h2>
+                            <h2 className="text-lg font-semibold text-foreground">Ən çox maaş təklif edən vakansiyalar</h2>
+                            <h2 className="text-lg font-semibold text-foreground">Evdən işləmək (remote) iş imkanları</h2>
+                        </div>
+                    </section>
+
+                    <section>
+                        <p className="text-muted-foreground text-sm leading-relaxed">
+                            2026-cı il üçün hazırlanan iş elanları və vakansiyalar siyahımız real vaxtda yenilənir. Hər bir elan şirkət tərəfindən təsdiqlənir və istifadəçilərə dəqiq maaş aralığı, tələblər, vəzifə təsviri və müraciət linki təqdim olunur. İstər ofisdaxili, istər remote iş axtarasınız? Burada bütün vakansiyaları rahatlıqla tapa biləcəksiniz.
+                        </p>
+                    </section>
+                </article>
+            </div>
+
+            {/* Hidden SEO Content for complete data */}
+            <div style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px', overflow: 'hidden' }}>
+                <article>
                     <section>
                         <h2>Ən Son İş Elanları - {new Date().toLocaleDateString('az-AZ', { day: 'numeric', month: 'long', year: 'numeric' })}</h2>
                         <p>Bu gün əlavə olunan yeni vakansiyalar və iş imkanları:</p>
@@ -215,7 +238,6 @@ export default async function HomePage() {
 
                     <section>
                         <h2>Kateqoriyalar üzrə İş Elanları</h2>
-                        <p>Sahənizə uyğun iş elanlarını kateqoriya üzrə axtarın:</p>
                         <ul>
                             {categories.map((category: any) => (
                                 <li key={category.id}>
@@ -229,7 +251,6 @@ export default async function HomePage() {
 
                     <section>
                         <h2>Regionlar üzrə İş Elanları</h2>
-                        <p>Yaşadığınız bölgəyə uyğun iş elanlarını tapın:</p>
                         <ul>
                             {regions.map((region: any) => (
                                 <li key={region.id}>
@@ -243,7 +264,6 @@ export default async function HomePage() {
 
                     <section>
                         <h2>Şirkətlər üzrə Vakansiyalar</h2>
-                        <p>Ən populyar şirkətlərdə iş imkanları:</p>
                         <ul>
                             {companies.map((company: any) => (
                                 <li key={company.id}>
@@ -255,38 +275,8 @@ export default async function HomePage() {
                         </ul>
                     </section>
 
-                    <section>
-                        <h2>Niyə Jooble.az?</h2>
-                        <p>
-                            Jooble Azərbaycanın ən böyük iş axtarış platformasıdır. Hər gün yüzlərlə yeni vakansiya əlavə olunur.
-                            İstər tam zamanlı, istər part-time, istərsə də uzaqdan iş axtarırsınızsa - bütün imkanları burada tapa bilərsiniz.
-                        </p>
-                        <ul>
-                            <li>Gündəlik yenilənən iş elanları</li>
-                            <li>Sahə və şəhər üzrə filtrləmə</li>
-                            <li>Birbaşa şirkətlərə müraciət</li>
-                            <li>CV yükləmə və paylaşma</li>
-                            <li>Push bildirişlər ilə yeni vakansiyalardan xəbərdar olun</li>
-                            <li>Pulsuz iş elanı yerləşdirmə</li>
-                        </ul>
-                    </section>
-
-                    <section>
-                        <h2>Populyar Axtarışlar</h2>
-                        <ul>
-                            <li><a href="https://jooble.az/vacancies">Bütün vakansiyalar 2026</a></li>
-                            <li><a href="https://jooble.az/categories">Kateqoriyalar üzrə iş elanları</a></li>
-                            <li><a href="https://jooble.az/regions">Regionlar üzrə vakansiyalar</a></li>
-                            <li><a href="https://jooble.az/companies">Şirkətlər və vakansiyalar</a></li>
-                            <li><a href="https://jooble.az/blog">Karyera məsləhətləri</a></li>
-                        </ul>
-                    </section>
-
                     <footer>
-                        <p>
-                            © 2026 Jooble.az - Azərbaycanın ən böyük iş axtarış platforması. 
-                            Bütün hüquqlar qorunur. İş elanları, vakansiyalar, karyera imkanları.
-                        </p>
+                        <p>© 2026 Jooble.az - Azərbaycanın ən böyük iş axtarış platforması.</p>
                     </footer>
                 </article>
             </div>
