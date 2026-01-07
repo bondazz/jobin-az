@@ -4,7 +4,7 @@ export async function GET() {
   const robotsTxt = `User-agent: *
 Allow: /
 
-Sitemap: http://jooble.az/sitemap_blog.xml
+Sitemap: https://jooble.az/sitemap_blog.xml
 Sitemap: https://storage.jooble.az/sitemap.xml
 `;
 
