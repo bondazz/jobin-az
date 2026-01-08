@@ -402,7 +402,7 @@ const ReferralJobSubmissionClient = () => {
                   {/* Applicant Information */}
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2 text-center">
-                      Müraciətçi məlumatları
+                      Müraciətçi barədə məlumatlar
                     </h3>
 
                     <div className="space-y-4">
