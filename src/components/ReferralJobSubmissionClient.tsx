@@ -196,11 +196,19 @@ const ReferralJobSubmissionClient = () => {
                     <div className="container mx-auto px-4 py-8">
                         <div className="max-w-4xl mx-auto">
                             <Card className="shadow-xl border-0 bg-card/95 backdrop-blur-sm">
-                                <CardHeader className="bg-gradient-to-r from-primary/10 via-accent/5 to-primary/10">
+                                <CardHeader className="bg-gradient-to-r from-primary/10 via-accent/5 to-primary/10 pb-6">
                                     <CardTitle className="text-2xl font-bold text-center text-foreground">İş Elanı Yerləşdir</CardTitle>
                                     <p className="text-muted-foreground text-center mt-2">
-                                        Aşağıdakı formu dolduraraq iş elanınızı yerləşdirə bilərsiniz
+                                        Şirkətiniz və ya şəxsi biznesiniz üçün vakansiya yerləşdirin və uyğun namizədləri tapın.
                                     </p>
+                                    <div className="mt-4 p-4 bg-primary/5 rounded-lg border border-primary/10">
+                                        <p className="text-sm font-medium text-foreground text-center mb-2">İlk vakansiyanız üçün endirimli qiymətlər:</p>
+                                        <div className="flex flex-col items-center gap-1 text-sm text-muted-foreground">
+                                            <span>• 1 elan – <span className="font-semibold text-primary">15 AZN</span></span>
+                                            <span>• 5+ elan – <span className="font-semibold text-primary">10 AZN</span> / 1 elan</span>
+                                        </div>
+                                        <p className="text-xs text-muted-foreground text-center mt-2">(Elanlar 1 ay aktiv qalır)</p>
+                                    </div>
                                 </CardHeader>
 
                                 <CardContent className="p-8">
@@ -286,11 +294,19 @@ const ReferralJobSubmissionClient = () => {
                 <div className="xl:hidden pt-16 pb-20 px-4 h-screen overflow-auto">
                     <div className="max-w-2xl mx-auto">
                         <Card className="shadow-xl border-0 bg-card/95 backdrop-blur-sm">
-                            <CardHeader className="bg-gradient-to-r from-primary/10 via-accent/5 to-primary/10 p-4">
+                            <CardHeader className="bg-gradient-to-r from-primary/10 via-accent/5 to-primary/10 p-4 pb-5">
                                 <h1 className="font-bold text-center text-foreground text-xl">İş Elanı Yerləşdir</h1>
                                 <p className="text-muted-foreground text-center mt-2 text-sm">
-                                    Aşağıdakı formu dolduraraq iş elanınızı yerləşdirə bilərsiniz
+                                    Şirkətiniz və ya şəxsi biznesiniz üçün vakansiya yerləşdirin və uyğun namizədləri tapın.
                                 </p>
+                                <div className="mt-3 p-3 bg-primary/5 rounded-lg border border-primary/10">
+                                    <p className="text-sm font-medium text-foreground text-center mb-2">İlk vakansiyanız üçün endirimli qiymətlər:</p>
+                                    <div className="flex flex-col items-center gap-1 text-sm text-muted-foreground">
+                                        <span>• 1 elan – <span className="font-semibold text-primary">15 AZN</span></span>
+                                        <span>• 5+ elan – <span className="font-semibold text-primary">10 AZN</span> / 1 elan</span>
+                                    </div>
+                                    <p className="text-xs text-muted-foreground text-center mt-2">(Elanlar 1 ay aktiv qalır)</p>
+                                </div>
                             </CardHeader>
 
                             <CardContent className="p-4">
