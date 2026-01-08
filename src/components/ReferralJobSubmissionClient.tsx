@@ -247,6 +247,7 @@ const ReferralJobSubmissionClient = () => {
                             id="applicant_name"
                             value={formData.applicant_name}
                             onChange={(e) => handleInputChange("applicant_name", e.target.value)}
+                            placeholder="Adınızı daxil edin.."
                             required
                             className="focus:ring-2 focus:ring-primary/20"
                           />
@@ -258,6 +259,7 @@ const ReferralJobSubmissionClient = () => {
                             id="applicant_surname"
                             value={formData.applicant_surname}
                             onChange={(e) => handleInputChange("applicant_surname", e.target.value)}
+                            placeholder="Soyadınızı daxil edin.."
                             required
                             className="focus:ring-2 focus:ring-primary/20"
                           />
@@ -271,19 +273,22 @@ const ReferralJobSubmissionClient = () => {
                             id="applicant_position"
                             value={formData.applicant_position}
                             onChange={(e) => handleInputChange("applicant_position", e.target.value)}
+                            placeholder="Vəzifənizi daxil edin.."
                             required
                             className="focus:ring-2 focus:ring-primary/20"
                           />
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="applicant_phone">Telefon *</Label>
+                          <Label htmlFor="applicant_phone">
+                            Telefon * (Sizinlə bu nömrə vasitəsilə əlaqə saxlanılacaq)
+                          </Label>
                           <Input
                             id="applicant_phone"
                             type="tel"
                             value={formData.applicant_phone}
                             onChange={(e) => handleInputChange("applicant_phone", e.target.value)}
-                            placeholder="(050) 993 77 66"
+                            placeholder="(XXX) XXX XX XX"
                             required
                             className="focus:ring-2 focus:ring-primary/20"
                           />
@@ -315,7 +320,7 @@ const ReferralJobSubmissionClient = () => {
                             id="voen"
                             value={formData.voen}
                             onChange={(e) => handleInputChange("voen", e.target.value)}
-                            placeholder="Maksimum 10 rəqəm"
+                            placeholder="Yoxdursa boş saxlayın.."
                             className="focus:ring-2 focus:ring-primary/20"
                           />
                         </div>
@@ -328,7 +333,7 @@ const ReferralJobSubmissionClient = () => {
                           type="url"
                           value={formData.website}
                           onChange={(e) => handleInputChange("website", e.target.value)}
-                          placeholder="Əgər yoxdursa boş saxlayın"
+                          placeholder="Yoxdursa boş saxlayın.."
                           className="focus:ring-2 focus:ring-primary/20"
                         />
                       </div>
