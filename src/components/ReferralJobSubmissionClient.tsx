@@ -44,7 +44,7 @@ const ReferralJobSubmissionClient = () => {
     // Limit to 10 digits
     const limitedDigits = digits.slice(0, 10);
 
-    // Format as (055) 341 10 11
+    // Format as (050) 993 77 66
     if (limitedDigits.length >= 6) {
       return `(${limitedDigits.slice(0, 3)}) ${limitedDigits.slice(3, 6)} ${limitedDigits.slice(6, 8)} ${limitedDigits.slice(8, 10)}`;
     } else if (limitedDigits.length >= 3) {
@@ -225,10 +225,23 @@ const ReferralJobSubmissionClient = () => {
                         • 1 elan – <span className="font-semibold text-primary">15 AZN</span>
                       </span>
                       <span>
-                        • 5+ elan – <span className="font-semibold text-primary">10 AZN</span> / 1 elan
+                        • 5 və daha çox elan – <span className="font-semibold text-primary">10 AZN</span> / 1 elan
                       </span>
                     </div>
                     <p className="text-xs text-muted-foreground text-center mt-2">(Elanlar 1 ay aktiv qalır)</p>
+                  </div>
+                  <div className="mt-4 p-4 bg-muted/50 rounded-lg border border-border">
+                    <p className="text-sm text-muted-foreground text-center">
+                      Elan yerləşdirməkdə çətinlik çəkirsinizsə, vakant vəzifə ilə bağlı məlumatları Word formatında{" "}
+                      <span className="inline-flex items-center gap-1">
+                        📧 <a href="mailto:info@jooble.az" className="text-primary hover:underline font-medium">info@jooble.az</a>
+                      </span>{" "}
+                      e-poçt ünvanına və ya{" "}
+                      <span className="inline-flex items-center gap-1">
+                        📱 <a href="https://wa.me/994553411011" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-medium">055 341 10 11</a>
+                      </span>{" "}
+                      WhatsApp nömrəsinə göndərə bilərsiniz.
+                    </p>
                   </div>
                 </CardHeader>
 
@@ -395,10 +408,23 @@ const ReferralJobSubmissionClient = () => {
                       • 1 elan – <span className="font-semibold text-primary">15 AZN</span>
                     </span>
                     <span>
-                      • 5+ elan – <span className="font-semibold text-primary">10 AZN</span> / 1 elan
+                      • 5 və daha çox elan – <span className="font-semibold text-primary">10 AZN</span> / 1 elan
                     </span>
                   </div>
                   <p className="text-xs text-muted-foreground text-center mt-2">(Elanlar 1 ay aktiv qalır)</p>
+                </div>
+                <div className="mt-3 p-3 bg-muted/50 rounded-lg border border-border">
+                  <p className="text-xs text-muted-foreground text-center leading-relaxed">
+                    Elan yerləşdirməkdə çətinlik çəkirsinizsə, vakant vəzifə ilə bağlı məlumatları Word formatında{" "}
+                    <span className="inline-flex items-center gap-1">
+                      📧 <a href="mailto:info@jooble.az" className="text-primary hover:underline font-medium">info@jooble.az</a>
+                    </span>{" "}
+                    e-poçt ünvanına və ya{" "}
+                    <span className="inline-flex items-center gap-1">
+                      📱 <a href="https://wa.me/994553411011" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-medium">055 341 10 11</a>
+                    </span>{" "}
+                    WhatsApp nömrəsinə göndərə bilərsiniz.
+                  </p>
                 </div>
               </CardHeader>
 
@@ -451,7 +477,7 @@ const ReferralJobSubmissionClient = () => {
                           type="tel"
                           value={formData.applicant_phone}
                           onChange={(e) => handleInputChange("applicant_phone", e.target.value)}
-                          placeholder="(XXX) XXX XX XX"
+                          placeholder="(050) 993 77 66"
                           required
                           className="focus:ring-2 focus:ring-primary/20"
                         />
