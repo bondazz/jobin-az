@@ -44,7 +44,7 @@ const ReferralJobSubmissionClient = () => {
     // Limit to 10 digits
     const limitedDigits = digits.slice(0, 10);
 
-    // Format as (050) 993 77 66
+    // Format as (055) 341 10 11
     if (limitedDigits.length >= 6) {
       return `(${limitedDigits.slice(0, 3)}) ${limitedDigits.slice(3, 6)} ${limitedDigits.slice(6, 8)} ${limitedDigits.slice(8, 10)}`;
     } else if (limitedDigits.length >= 3) {
@@ -417,7 +417,6 @@ const ReferralJobSubmissionClient = () => {
                           id="mobile_applicant_name"
                           value={formData.applicant_name}
                           onChange={(e) => handleInputChange("applicant_name", e.target.value)}
-                          placeholder="Adınızı daxil edin.."
                           required
                           className="focus:ring-2 focus:ring-primary/20"
                         />
@@ -429,7 +428,6 @@ const ReferralJobSubmissionClient = () => {
                           id="mobile_applicant_surname"
                           value={formData.applicant_surname}
                           onChange={(e) => handleInputChange("applicant_surname", e.target.value)}
-                          placeholder="Soyadınızı daxil edin.."
                           required
                           className="focus:ring-2 focus:ring-primary/20"
                         />
@@ -441,16 +439,13 @@ const ReferralJobSubmissionClient = () => {
                           id="mobile_applicant_position"
                           value={formData.applicant_position}
                           onChange={(e) => handleInputChange("applicant_position", e.target.value)}
-                          placeholder="Vəzifənizi daxil edin.."
                           required
                           className="focus:ring-2 focus:ring-primary/20"
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="mobile_applicant_phone">
-                          Telefon * (Sizinlə bu nömrə vasitəsilə əlaqə saxlanılacaq)
-                        </Label>
+                        <Label htmlFor="mobile_applicant_phone">Telefon *</Label>
                         <Input
                           id="mobile_applicant_phone"
                           type="tel"
@@ -488,7 +483,6 @@ const ReferralJobSubmissionClient = () => {
                           id="mobile_voen"
                           value={formData.voen}
                           onChange={(e) => handleInputChange("voen", e.target.value)}
-                          placeholder="Yoxdursa boş saxlayın.."
                           placeholder="Maksimum 10 rəqəm"
                           className="focus:ring-2 focus:ring-primary/20"
                         />
