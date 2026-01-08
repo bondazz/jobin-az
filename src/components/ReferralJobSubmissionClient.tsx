@@ -225,23 +225,10 @@ const ReferralJobSubmissionClient = () => {
                         • 1 elan – <span className="font-semibold text-primary">15 AZN</span>
                       </span>
                       <span>
-                        • 5 və daha çox elan – <span className="font-semibold text-primary">10 AZN</span> / 1 elan
+                        • 5+ elan – <span className="font-semibold text-primary">10 AZN</span> / 1 elan
                       </span>
                     </div>
                     <p className="text-xs text-muted-foreground text-center mt-2">(Elanlar 1 ay aktiv qalır)</p>
-                  </div>
-                  <div className="mt-4 p-4 bg-muted/50 rounded-lg border border-border">
-                    <p className="text-sm text-muted-foreground text-center">
-                      Elan yerləşdirməkdə çətinlik çəkirsinizsə, vakant vəzifə ilə bağlı məlumatları Word formatında{" "}
-                      <span className="inline-flex items-center gap-1">
-                        📧 <a href="mailto:info@jooble.az" className="text-primary hover:underline font-medium">info@jooble.az</a>
-                      </span>{" "}
-                      e-poçt ünvanına və ya{" "}
-                      <span className="inline-flex items-center gap-1">
-                        📱 <a href="https://wa.me/994553411011" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-medium">055 341 10 11</a>
-                      </span>{" "}
-                      WhatsApp nömrəsinə göndərə bilərsiniz.
-                    </p>
                   </div>
                 </CardHeader>
 
@@ -408,23 +395,10 @@ const ReferralJobSubmissionClient = () => {
                       • 1 elan – <span className="font-semibold text-primary">15 AZN</span>
                     </span>
                     <span>
-                      • 5 və daha çox elan – <span className="font-semibold text-primary">10 AZN</span> / 1 elan
+                      • 5+ elan – <span className="font-semibold text-primary">10 AZN</span> / 1 elan
                     </span>
                   </div>
                   <p className="text-xs text-muted-foreground text-center mt-2">(Elanlar 1 ay aktiv qalır)</p>
-                </div>
-                <div className="mt-3 p-3 bg-muted/50 rounded-lg border border-border">
-                  <p className="text-xs text-muted-foreground text-center leading-relaxed">
-                    Elan yerləşdirməkdə çətinlik çəkirsinizsə, vakant vəzifə ilə bağlı məlumatları Word formatında{" "}
-                    <span className="inline-flex items-center gap-1">
-                      📧 <a href="mailto:info@jooble.az" className="text-primary hover:underline font-medium">info@jooble.az</a>
-                    </span>{" "}
-                    e-poçt ünvanına və ya{" "}
-                    <span className="inline-flex items-center gap-1">
-                      📱 <a href="https://wa.me/994553411011" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-medium">055 341 10 11</a>
-                    </span>{" "}
-                    WhatsApp nömrəsinə göndərə bilərsiniz.
-                  </p>
                 </div>
               </CardHeader>
 
@@ -443,6 +417,7 @@ const ReferralJobSubmissionClient = () => {
                           id="mobile_applicant_name"
                           value={formData.applicant_name}
                           onChange={(e) => handleInputChange("applicant_name", e.target.value)}
+                          placeholder="Adınızı daxil edin.."
                           required
                           className="focus:ring-2 focus:ring-primary/20"
                         />
@@ -454,6 +429,7 @@ const ReferralJobSubmissionClient = () => {
                           id="mobile_applicant_surname"
                           value={formData.applicant_surname}
                           onChange={(e) => handleInputChange("applicant_surname", e.target.value)}
+                          placeholder="Soyadınızı daxil edin.."
                           required
                           className="focus:ring-2 focus:ring-primary/20"
                         />
@@ -465,19 +441,22 @@ const ReferralJobSubmissionClient = () => {
                           id="mobile_applicant_position"
                           value={formData.applicant_position}
                           onChange={(e) => handleInputChange("applicant_position", e.target.value)}
+                          placeholder="Vəzifənizi daxil edin.."
                           required
                           className="focus:ring-2 focus:ring-primary/20"
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="mobile_applicant_phone">Telefon *</Label>
+                        <Label htmlFor="mobile_applicant_phone">
+                          Telefon * (Sizinlə bu nömrə vasitəsilə əlaqə saxlanılacaq)
+                        </Label>
                         <Input
                           id="mobile_applicant_phone"
                           type="tel"
                           value={formData.applicant_phone}
                           onChange={(e) => handleInputChange("applicant_phone", e.target.value)}
-                          placeholder="(050) 993 77 66"
+                          placeholder="(XXX) XXX XX XX"
                           required
                           className="focus:ring-2 focus:ring-primary/20"
                         />
@@ -509,6 +488,7 @@ const ReferralJobSubmissionClient = () => {
                           id="mobile_voen"
                           value={formData.voen}
                           onChange={(e) => handleInputChange("voen", e.target.value)}
+                          placeholder="Yoxdursa boş saxlayın.."
                           placeholder="Maksimum 10 rəqəm"
                           className="focus:ring-2 focus:ring-primary/20"
                         />
