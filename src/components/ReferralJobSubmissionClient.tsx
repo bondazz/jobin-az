@@ -44,7 +44,7 @@ const ReferralJobSubmissionClient = () => {
     // Limit to 10 digits
     const limitedDigits = digits.slice(0, 10);
 
-    // Format as (055) 341 10 11
+    // Format as (050) 993 77 66
     if (limitedDigits.length >= 6) {
       return `(${limitedDigits.slice(0, 3)}) ${limitedDigits.slice(3, 6)} ${limitedDigits.slice(6, 8)} ${limitedDigits.slice(8, 10)}`;
     } else if (limitedDigits.length >= 3) {
@@ -451,7 +451,7 @@ const ReferralJobSubmissionClient = () => {
                           type="tel"
                           value={formData.applicant_phone}
                           onChange={(e) => handleInputChange("applicant_phone", e.target.value)}
-                          placeholder="(XXX) XXX XX XX"
+                          placeholder="(050) 993 77 66"
                           required
                           className="focus:ring-2 focus:ring-primary/20"
                         />
@@ -483,7 +483,7 @@ const ReferralJobSubmissionClient = () => {
                           id="mobile_voen"
                           value={formData.voen}
                           onChange={(e) => handleInputChange("voen", e.target.value)}
-                          placeholder="Maksimum 10 rəqəm"
+                          placeholder="Yoxdursa boş saxlayın.."
                           className="focus:ring-2 focus:ring-primary/20"
                         />
                       </div>
