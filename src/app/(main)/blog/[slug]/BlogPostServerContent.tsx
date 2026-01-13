@@ -107,7 +107,7 @@ export default function BlogPostServerContent({
   }, []);
 
   const handleShare = async (platform: string) => {
-    const url = `https://jooble.az/blog/${blog.slug}`;
+    const url = `https://jobin.az/blog/${blog.slug}`;
     const title = blog.title;
 
     switch (platform) {

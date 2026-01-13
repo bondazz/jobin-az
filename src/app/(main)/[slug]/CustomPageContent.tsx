@@ -56,7 +56,7 @@ export default function CustomPageContent({ page }: CustomPageContentProps) {
             }
           }
           // External links open in new tab
-          if (href.startsWith('http') && !href.includes('jooble.az')) {
+          if (href.startsWith('http') && !href.includes('jobin.az')) {
             link.setAttribute('target', '_blank');
             link.setAttribute('rel', 'noopener');
           }

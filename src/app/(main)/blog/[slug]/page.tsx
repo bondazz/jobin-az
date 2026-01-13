@@ -97,7 +97,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 
   if (!blog) {
     return {
-      title: "Məqalə tapılmadı | Jooble.az",
+      title: "Məqalə tapılmadı | Jobin.az",
     };
   }
 
@@ -106,14 +106,14 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
   const imageUrl = blog.og_image || blog.featured_image;
 
   return {
-    title: `${title} | Jooble.az Bloq`,
+    title: `${title} | Jobin.az Bloq`,
     description,
     keywords: blog.seo_keywords || [],
     openGraph: {
       title: blog.og_title || title,
       description: blog.og_description || description,
       type: "article",
-      url: `https://jooble.az/blog/${blog.slug}`,
+      url: `https://jobin.az/blog/${blog.slug}`,
       images: imageUrl ? [imageUrl] : undefined,
       publishedTime: blog.published_at || undefined,
       modifiedTime: blog.updated_at,
@@ -126,7 +126,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
       images: imageUrl ? [imageUrl] : undefined,
     },
     alternates: {
-      canonical: blog.canonical_url || `https://jooble.az/blog/${blog.slug}`,
+      canonical: blog.canonical_url || `https://jobin.az/blog/${blog.slug}`,
     },
   };
 }
@@ -179,29 +179,29 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     "headline": blog.h1_title || blog.title,
     "description": blog.excerpt,
     "image": blog.featured_image,
-    "url": `https://jooble.az/blog/${blog.slug}`,
+    "url": `https://jobin.az/blog/${blog.slug}`,
     "datePublished": blog.published_at,
     "dateModified": blog.updated_at,
     "author": blog.blog_authors ? {
       "@type": "Person",
       "name": blog.blog_authors.name,
-      "url": blog.blog_authors.website || `https://jooble.az/blog/author/${blog.blog_authors.slug}`,
+      "url": blog.blog_authors.website || `https://jobin.az/blog/author/${blog.blog_authors.slug}`,
       "image": blog.blog_authors.avatar_url
     } : {
       "@type": "Organization",
-      "name": "Jooble.az"
+      "name": "Jobin.az"
     },
     "publisher": {
       "@type": "Organization",
-      "name": "Jooble.az",
+      "name": "Jobin.az",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://jooble.az/icons/icon-512x512.jpg"
+        "url": "https://jobin.az/icons/icon-512x512.jpg"
       }
     },
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": `https://jooble.az/blog/${blog.slug}`
+      "@id": `https://jobin.az/blog/${blog.slug}`
     },
     "about": {
       "@type": "Thing",
@@ -215,10 +215,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const datasetSchema = {
     "@context": "https://schema.org",
     "@type": "Dataset",
-    "@id": `https://jooble.az/blog/${blog.slug}#dataset`,
+    "@id": `https://jobin.az/blog/${blog.slug}#dataset`,
     "name": `${blog.title} - Data Analiz`,
     "description": "Bu bloq yazısı üzrə semantik və statistik məlumatlar toplusu.",
-    "publisher": { "@type": "Organization", "name": "Jooble.az" }
+    "publisher": { "@type": "Organization", "name": "Jobin.az" }
   };
 
   // Generate Breadcrumb Schema
@@ -230,19 +230,19 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         "@type": "ListItem",
         "position": 1,
         "name": "Ana səhifə",
-        "item": "https://jooble.az"
+        "item": "https://jobin.az"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Bloq",
-        "item": "https://jooble.az/blog"
+        "item": "https://jobin.az/blog"
       },
       {
         "@type": "ListItem",
         "position": 3,
         "name": blog.title,
-        "item": `https://jooble.az/blog/${blog.slug}`
+        "item": `https://jobin.az/blog/${blog.slug}`
       }
     ]
   };

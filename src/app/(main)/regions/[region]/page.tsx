@@ -66,11 +66,11 @@ export async function generateMetadata({ params }: RegionPageProps): Promise<Met
 
     if (!region) {
         return {
-            title: 'Region tapılmadı - Jooble.az',
+            title: 'Region tapılmadı - Jobin.az',
         };
     }
 
-    const title = region.seo_title || `${region.name} İş Elanları | Vakansiyalar - Jooble.az`;
+    const title = region.seo_title || `${region.name} İş Elanları | Vakansiyalar - Jobin.az`;
     const description = region.seo_description || `${region.name} regionunda aktual iş elanları və vakansiyalar. Ən yaxşı iş imkanlarını kəşf edin.`;
 
     return {
@@ -78,17 +78,17 @@ export async function generateMetadata({ params }: RegionPageProps): Promise<Met
         description,
         keywords: region.seo_keywords?.join(', ') || `${region.name}, iş elanları, vakansiyalar, Azərbaycan`,
         alternates: {
-            canonical: `https://jooble.az/regions/${region.slug}`,
+            canonical: `https://jobin.az/regions/${region.slug}`,
         },
         openGraph: {
             title,
             description,
-            url: `https://jooble.az/regions/${region.slug}`,
-            siteName: 'Jooble.az',
+            url: `https://jobin.az/regions/${region.slug}`,
+            siteName: 'Jobin.az',
             type: 'website',
             images: [
                 {
-                    url: 'https://jooble.az/icons/icon-512x512.jpg',
+                    url: 'https://jobin.az/icons/icon-512x512.jpg',
                     width: 512,
                     height: 512,
                     alt: region.name,
@@ -99,7 +99,7 @@ export async function generateMetadata({ params }: RegionPageProps): Promise<Met
             card: 'summary_large_image',
             title,
             description,
-            images: ['https://jooble.az/icons/icon-512x512.jpg'],
+            images: ['https://jobin.az/icons/icon-512x512.jpg'],
         },
     };
 }
@@ -120,7 +120,7 @@ export default async function RegionPage({ params }: RegionPageProps) {
         "@type": "CollectionPage",
         "name": `${region.name} İş Elanları`,
         "description": region.seo_description || `${region.name} regionunda aktual iş elanları`,
-        "url": `https://jooble.az/regions/${region.slug}`,
+        "url": `https://jobin.az/regions/${region.slug}`,
         "mainEntity": {
             "@type": "ItemList",
             "numberOfItems": jobCount,
@@ -130,7 +130,7 @@ export default async function RegionPage({ params }: RegionPageProps) {
                 "item": {
                     "@type": "JobPosting",
                     "title": job.title,
-                    "url": `https://jooble.az/vacancies/${job.slug}`,
+                    "url": `https://jobin.az/vacancies/${job.slug}`,
                     "hiringOrganization": {
                         "@type": "Organization",
                         "name": job.companies?.name || "Şirkət"
@@ -151,10 +151,10 @@ export default async function RegionPage({ params }: RegionPageProps) {
     const datasetSchema = {
         "@context": "https://schema.org",
         "@type": "Dataset",
-        "@id": `https://jooble.az/regions/${region.slug}#dataset`,
+        "@id": `https://jobin.az/regions/${region.slug}#dataset`,
         "name": `${region.name} Regional İş Datası 2026`,
         "description": `${region.name} regionu üzrə vakansiya və məşğulluq statistikası.`,
-        "publisher": { "@id": "https://jooble.az#org" }
+        "publisher": { "@id": "https://jobin.az#org" }
     };
 
     const breadcrumbData = {
@@ -165,19 +165,19 @@ export default async function RegionPage({ params }: RegionPageProps) {
                 "@type": "ListItem",
                 "position": 1,
                 "name": "Ana Səhifə",
-                "item": "https://jooble.az"
+                "item": "https://jobin.az"
             },
             {
                 "@type": "ListItem",
                 "position": 2,
                 "name": "Regionlar",
-                "item": "https://jooble.az/regions"
+                "item": "https://jobin.az/regions"
             },
             {
                 "@type": "ListItem",
                 "position": 3,
                 "name": region.name,
-                "item": `https://jooble.az/regions/${region.slug}`
+                "item": `https://jobin.az/regions/${region.slug}`
             }
         ]
     };

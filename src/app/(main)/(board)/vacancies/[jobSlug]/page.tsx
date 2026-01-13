@@ -70,8 +70,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     // Active job - use full SEO data
     const companyName = (job.companies as any)?.name || '';
     const companyLogo = (job.companies as any)?.logo;
-    const ogImage = companyLogo || 'https://jooble.az/icons/icon-512x512.jpg';
-    const title = job.seo_title || `${job.title} - ${companyName} | Jooble.az`;
+    const ogImage = companyLogo || 'https://jobin.az/icons/icon-512x512.jpg';
+    const title = job.seo_title || `${job.title} - ${companyName} | Jobin.az`;
     const description = job.seo_description || `${job.title} vakansiyası ${companyName} şirkətində. İndi müraciət edin!`;
 
     return {
@@ -80,10 +80,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         keywords: job.seo_keywords,
         openGraph: {
             type: 'website',
-            url: `https://jooble.az/vacancies/${params.jobSlug}`,
+            url: `https://jobin.az/vacancies/${params.jobSlug}`,
             title,
             description,
-            siteName: 'Jooble.az',
+            siteName: 'Jobin.az',
             images: [
                 {
                     url: ogImage,
@@ -100,7 +100,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             images: [ogImage],
         },
         alternates: {
-            canonical: `https://jooble.az/vacancies/${params.jobSlug}`,
+            canonical: `https://jobin.az/vacancies/${params.jobSlug}`,
         },
     };
 }
@@ -188,14 +188,14 @@ export default async function JobPage({ params }: Props) {
                 }
             }
         }),
-        "url": `https://jooble.az/vacancies/${job.slug}`
+        "url": `https://jobin.az/vacancies/${job.slug}`
     };
 
     // JSON-LD Triple-Threat: Occupation & Dataset
     const occupationSchema = {
         "@context": "https://schema.org",
         "@type": "Occupation",
-        "@id": `https://jooble.az/vacancies/${job.slug}#occupation`,
+        "@id": `https://jobin.az/vacancies/${job.slug}#occupation`,
         "name": job.title,
         "mainEntityOfPage": `https://az.wikipedia.org/wiki/${encodeURIComponent(job.title)}`,
         "occupationalCategory": categoryName,
@@ -213,10 +213,10 @@ export default async function JobPage({ params }: Props) {
     const datasetSchema = {
         "@context": "https://schema.org",
         "@type": "Dataset",
-        "@id": `https://jooble.az/vacancies/${job.slug}#stats`,
+        "@id": `https://jobin.az/vacancies/${job.slug}#stats`,
         "name": `${job.title} Vakansiya Statistikası 2026`,
         "description": `Azərbaycanda ${job.title} sahəsi üzrə aktiv elanların analitikası və məlumat bazası.`,
-        "publisher": { "@id": "https://jooble.az#org" },
+        "publisher": { "@id": "https://jobin.az#org" },
         "variableMeasured": "Vakansiya sayı, Orta maaş"
     };
 
@@ -229,25 +229,25 @@ export default async function JobPage({ params }: Props) {
                 "@type": "ListItem",
                 "position": 1,
                 "name": "Ana Səhifə",
-                "item": "https://jooble.az"
+                "item": "https://jobin.az"
             },
             {
                 "@type": "ListItem",
                 "position": 2,
                 "name": "Vakansiyalar",
-                "item": "https://jooble.az/vacancies"
+                "item": "https://jobin.az/vacancies"
             },
             ...(categoryName ? [{
                 "@type": "ListItem",
                 "position": 3,
                 "name": categoryName,
-                "item": `https://jooble.az/categories/${category?.slug}`
+                "item": `https://jobin.az/categories/${category?.slug}`
             }] : []),
             {
                 "@type": "ListItem",
                 "position": categoryName ? 4 : 3,
                 "name": job.title,
-                "item": `https://jooble.az/vacancies/${job.slug}`
+                "item": `https://jobin.az/vacancies/${job.slug}`
             }
         ]
     };
@@ -269,7 +269,7 @@ export default async function JobPage({ params }: Props) {
                 "title": sJob.title,
                 "description": sJob.title,
                 "datePosted": new Date(sJob.created_at).toISOString().split('T')[0],
-                "url": `https://jooble.az/vacancies/${sJob.slug}`,
+                "url": `https://jobin.az/vacancies/${sJob.slug}`,
                 "hiringOrganization": {
                     "@type": "Organization",
                     "name": sJob.companies?.name || "Şirkət",
@@ -332,7 +332,7 @@ export default async function JobPage({ params }: Props) {
                             <li><a href="https://jooble.az">Ana Səhifə</a></li>
                             <li><a href="https://jooble.az/vacancies">Vakansiyalar</a></li>
                             {categoryName && (
-                                <li><a href={`https://jooble.az/categories/${category?.slug}`}>{categoryName}</a></li>
+                                <li><a href={`https://jobin.az/categories/${category?.slug}`}>{categoryName}</a></li>
                             )}
                             <li>{job.title}</li>
                         </ol>
@@ -352,7 +352,7 @@ export default async function JobPage({ params }: Props) {
                         {company?.description && (
                             <p itemProp="description">{stripHtml(company.description)}</p>
                         )}
-                        <p><a href={`https://jooble.az/companies/${company?.slug}`}>{companyName} şirkətinin bütün vakansiyaları</a></p>
+                        <p><a href={`https://jobin.az/companies/${company?.slug}`}>{companyName} şirkətinin bütün vakansiyaları</a></p>
                     </section>
 
                     {/* Job Details */}
@@ -376,7 +376,7 @@ export default async function JobPage({ params }: Props) {
                             )}
                             <li><strong>Baxış sayı:</strong> {job.views}</li>
                             {categoryName && (
-                                <li><strong>Kateqoriya:</strong> <a href={`https://jooble.az/categories/${category?.slug}`}>{categoryName}</a></li>
+                                <li><strong>Kateqoriya:</strong> <a href={`https://jobin.az/categories/${category?.slug}`}>{categoryName}</a></li>
                             )}
                         </ul>
 
@@ -416,7 +416,7 @@ export default async function JobPage({ params }: Props) {
                             <p>Bu vakansiyaya e-poçt vasitəsilə müraciət edə bilərsiniz.</p>
                         )}
                         <p>
-                            Bu vakansiyaya müraciət etmək üçün <a href={`https://jooble.az/vacancies/${job.slug}`}>vakansiya səhifəsinə</a> keçid edin.
+                            Bu vakansiyaya müraciət etmək üçün <a href={`https://jooble.az/vacancies/${job.slug}`} rel="dofollow">vakansiya səhifəsinə</a> keçid edin.
                         </p>
                     </section>
 
@@ -426,9 +426,9 @@ export default async function JobPage({ params }: Props) {
                         <ul>
                             <li><a href="https://jooble.az/vacancies">Bütün vakansiyalar</a></li>
                             {categoryName && (
-                                <li><a href={`https://jooble.az/categories/${category?.slug}`}>{categoryName} vakansiyaları</a></li>
+                                <li><a href={`https://jobin.az/categories/${category?.slug}`}>{categoryName} vakansiyaları</a></li>
                             )}
-                            <li><a href={`https://jooble.az/companies/${company?.slug}`}>{companyName} vakansiyaları</a></li>
+                            <li><a href={`https://jobin.az/companies/${company?.slug}`}>{companyName} vakansiyaları</a></li>
                             <li><a href="https://jooble.az/categories">Kateqoriyalar</a></li>
                             <li><a href="https://jooble.az/companies">Şirkətlər</a></li>
                         </ul>
@@ -450,7 +450,7 @@ export default async function JobPage({ params }: Props) {
                             <ul>
                                 {similarJobs.map((sJob: any) => (
                                     <li key={sJob.id}>
-                                        <a href={`https://jooble.az/vacancies/${sJob.slug}`}>
+                                        <a href={`https://jobin.az/vacancies/${sJob.slug}`}>
                                             <strong>{sJob.title}</strong> - {sJob.companies?.name || 'Şirkət'}
                                         </a>
                                         <ul>
@@ -464,7 +464,7 @@ export default async function JobPage({ params }: Props) {
                             </ul>
                             {categoryName && category?.slug && (
                                 <p>
-                                    <a href={`https://jooble.az/categories/${category.slug}`}>
+                                    <a href={`https://jobin.az/categories/${category.slug}`}>
                                         {categoryName} kateqoriyasında daha çox vakansiya
                                     </a>
                                 </p>
@@ -475,7 +475,7 @@ export default async function JobPage({ params }: Props) {
                     {/* Footer Info */}
                     <footer>
                         <p>
-                            {job.title} vakansiyası {companyName} şirkətində. Jooble.az - Azərbaycanın ən böyük iş axtarış platforması.
+                            {job.title} vakansiyası {companyName} şirkətində. Jobin.az - Azərbaycanın ən böyük iş axtarış platforması.
                             Hər gün yüzlərlə yeni vakansiya əlavə olunur. İş elanları 2026 üçün ən yaxşı seçim.
                         </p>
                     </footer>

@@ -1067,7 +1067,7 @@ const JobDetails = ({ jobId, isMobile = false, primaryHeading = true }: JobDetai
           </Button>
         ) : (
           <a
-            href={`https://Jobin.az/vacancies/${job.slug}`}
+            href={`https://jooble.az/vacancies/${job.slug}`}
             target="_blank"
             rel="dofollow"
             className="inline-block"

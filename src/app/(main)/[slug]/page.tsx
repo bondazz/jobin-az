@@ -51,12 +51,12 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   
   if (!page) {
     return {
-      title: 'Səhifə tapılmadı | Jooble.az',
+      title: 'Səhifə tapılmadı | Jobin.az',
       description: 'Axtardığınız səhifə tapılmadı.',
     };
   }
 
-  const canonicalUrl = page.canonical_url || `https://jooble.az${page.slug.startsWith('/') ? page.slug : '/' + page.slug}`;
+  const canonicalUrl = page.canonical_url || `https://jobin.az${page.slug.startsWith('/') ? page.slug : '/' + page.slug}`;
 
   return {
     title: page.seo_title,
@@ -69,7 +69,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       title: page.og_title || page.seo_title,
       description: page.og_description || page.seo_description || undefined,
       url: canonicalUrl,
-      siteName: 'Jooble.az',
+      siteName: 'Jobin.az',
       type: 'website',
       images: page.og_image ? [{ url: page.og_image }] : undefined,
     },
@@ -99,14 +99,14 @@ export default async function CustomPageRoute({ params }: { params: { slug: stri
     '@type': page.schema_type || 'WebPage',
     name: page.seo_title,
     description: page.seo_description,
-    url: page.canonical_url || `https://jooble.az${page.slug.startsWith('/') ? page.slug : '/' + page.slug}`,
+    url: page.canonical_url || `https://jobin.az${page.slug.startsWith('/') ? page.slug : '/' + page.slug}`,
     image: page.og_image,
     publisher: {
       '@type': 'Organization',
-      name: 'Jooble.az',
+      name: 'Jobin.az',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://jooble.az/icons/icon-512x512.jpg'
+        url: 'https://jobin.az/icons/icon-512x512.jpg'
       }
     }
   };

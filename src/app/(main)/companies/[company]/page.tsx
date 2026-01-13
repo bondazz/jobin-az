@@ -76,18 +76,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const description = company.seo_description || stripHtml(company.description || '') || `${company.name} şirkəti haqqında məlumat və vakansiyalar.`;
 
     return {
-        title: company.seo_title || `${company.name} | Jooble`,
+        title: company.seo_title || `${company.name} | Jobin`,
         description: description.slice(0, 160),
         keywords: company.seo_keywords?.join(', ') || `${company.name}, vakansiya, iş elanları`,
         openGraph: {
-            title: company.seo_title || `${company.name} | Jooble`,
+            title: company.seo_title || `${company.name} | Jobin`,
             description: description.slice(0, 160),
             images: company.logo ? [company.logo] : [],
-            url: `https://jooble.az/companies/${params.company}`,
+            url: `https://jobin.az/companies/${params.company}`,
             type: 'website',
         },
         alternates: {
-            canonical: `https://jooble.az/companies/${params.company}`,
+            canonical: `https://jobin.az/companies/${params.company}`,
         },
     };
 }
@@ -110,7 +110,7 @@ export default async function CompanyPage({ params }: Props) {
         '@type': 'Organization',
         name: company.name,
         description: plainDescription || `${company.name} şirkəti`,
-        url: `https://jooble.az/companies/${company.slug}`,
+        url: `https://jobin.az/companies/${company.slug}`,
         logo: company.logo || undefined,
         address: company.address ? {
             '@type': 'PostalAddress',
@@ -132,10 +132,10 @@ export default async function CompanyPage({ params }: Props) {
     const datasetJsonLd = {
         '@context': 'https://schema.org',
         '@type': 'Dataset',
-        '@id': `https://jooble.az/companies/${company.slug}#dataset`,
+        '@id': `https://jobin.az/companies/${company.slug}#dataset`,
         "name": `${company.name} Korporativ Data 2026`,
         "description": `${company.name} şirkətinin işçi sayı və vakansiya statistikası.`,
-        "publisher": { "@type": "Organization", "name": "Jooble.az" }
+        "publisher": { "@type": "Organization", "name": "Jobin.az" }
     };
 
     // Breadcrumb JSON-LD
@@ -147,19 +147,19 @@ export default async function CompanyPage({ params }: Props) {
                 '@type': 'ListItem',
                 position: 1,
                 name: 'Ana Səhifə',
-                item: 'https://jooble.az'
+                item: 'https://jobin.az'
             },
             {
                 '@type': 'ListItem',
                 position: 2,
                 name: 'Şirkətlər',
-                item: 'https://jooble.az/companies'
+                item: 'https://jobin.az/companies'
             },
             {
                 '@type': 'ListItem',
                 position: 3,
                 name: company.name,
-                item: `https://jooble.az/companies/${company.slug}`
+                item: `https://jobin.az/companies/${company.slug}`
             }
         ]
     };
@@ -232,7 +232,7 @@ export default async function CompanyPage({ params }: Props) {
                             <ul>
                                 {jobs.map((job) => (
                                     <li key={job.slug}>
-                                        <a href={`https://jooble.az/vacancies/${job.slug}`}>
+                                        <a href={`https://jobin.az/vacancies/${job.slug}`}>
                                             <strong>{job.title}</strong>
                                             {job.salary && <span> - Maaş: {job.salary}</span>}
                                             {job.location && <span> - Yer: {job.location}</span>}
@@ -247,7 +247,7 @@ export default async function CompanyPage({ params }: Props) {
                     </section>
 
                     <footer>
-                        <p>{company.name} haqqında ətraflı məlumat və iş elanları üçün Jooble.az platformasına daxil olun.</p>
+                        <p>{company.name} haqqında ətraflı məlumat və iş elanları üçün Jobin.az platformasına daxil olun.</p>
                     </footer>
                 </article>
             </div>

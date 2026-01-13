@@ -76,10 +76,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     if (!data) return {};
 
     const { category } = data;
-    const title = category.seo_title || `${category.name} Vakansiyaları | İş Elanları - Jooble.az`;
+    const title = category.seo_title || `${category.name} Vakansiyaları | İş Elanları - Jobin.az`;
     const description = category.seo_description || `${category.name} sahəsində ən yeni iş elanları və vakansiyalar. Azərbaycanda ${category.name} üzrə aktual iş təklifləri.`;
     const keywords = category.seo_keywords?.join(', ') || `${category.name}, vakansiya, iş elanları, ${category.name} işləri`;
-    const canonicalUrl = `https://jooble.az/categories/${category.slug}`;
+    const canonicalUrl = `https://jobin.az/categories/${category.slug}`;
 
     return {
         title,
@@ -92,11 +92,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             title,
             description,
             url: canonicalUrl,
-            siteName: 'Jooble.az',
+            siteName: 'Jobin.az',
             type: 'website',
             images: [
                 {
-                    url: 'https://jooble.az/icons/icon-512x512.jpg',
+                    url: 'https://jobin.az/icons/icon-512x512.jpg',
                     width: 512,
                     height: 512,
                     alt: `${category.name} - İş Elanları`,
@@ -107,7 +107,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             card: 'summary_large_image',
             title,
             description,
-            images: ['https://jooble.az/icons/icon-512x512.jpg'],
+            images: ['https://jobin.az/icons/icon-512x512.jpg'],
         },
     };
 }
@@ -130,7 +130,7 @@ export default async function CategoryPage({ params }: Props) {
         "@type": "CollectionPage",
         "name": category.h1_title || category.name,
         "description": category.seo_description || `${category.name} sahəsində iş elanları`,
-        "url": `https://jooble.az/categories/${category.slug}`,
+        "url": `https://jobin.az/categories/${category.slug}`,
         "mainEntity": {
             "@type": "ItemList",
             "name": `${category.name} Vakansiyaları`,
@@ -143,7 +143,7 @@ export default async function CategoryPage({ params }: Props) {
                     "title": job.title,
                     "description": job.title,
                     "datePosted": job.created_at ? new Date(job.created_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-                    "url": `https://jooble.az/vacancies/${job.slug}`,
+                    "url": `https://jobin.az/vacancies/${job.slug}`,
                     "hiringOrganization": {
                         "@type": "Organization",
                         "name": job.companies?.name || "Şirkət"
@@ -164,10 +164,10 @@ export default async function CategoryPage({ params }: Props) {
     const datasetSchema = {
         "@context": "https://schema.org",
         "@type": "Dataset",
-        "@id": `https://jooble.az/categories/${category.slug}#dataset`,
+        "@id": `https://jobin.az/categories/${category.slug}#dataset`,
         "name": `${category.name} Vakansiya Data Portalı 2026`,
         "description": `Azərbaycanda ${category.name} üzrə iş elanları statistikası.`,
-        "publisher": { "@id": "https://jooble.az#org" }
+        "publisher": { "@id": "https://jobin.az#org" }
     };
 
     const breadcrumbData = {
@@ -178,19 +178,19 @@ export default async function CategoryPage({ params }: Props) {
                 "@type": "ListItem",
                 "position": 1,
                 "name": "Ana Səhifə",
-                "item": "https://jooble.az"
+                "item": "https://jobin.az"
             },
             {
                 "@type": "ListItem",
                 "position": 2,
                 "name": "Kateqoriyalar",
-                "item": "https://jooble.az/categories"
+                "item": "https://jobin.az/categories"
             },
             {
                 "@type": "ListItem",
                 "position": 3,
                 "name": category.name,
-                "item": `https://jooble.az/categories/${category.slug}`
+                "item": `https://jobin.az/categories/${category.slug}`
             }
         ]
     };
@@ -236,7 +236,7 @@ export default async function CategoryPage({ params }: Props) {
                             <ul>
                                 {recentJobs.map((job: any) => (
                                     <li key={job.id}>
-                                        <a href={`https://jooble.az/vacancies/${job.slug}`}>
+                                        <a href={`https://jobin.az/vacancies/${job.slug}`}>
                                             <strong>{job.title}</strong>
                                             {job.companies?.name && ` - ${job.companies.name}`}
                                             {job.location && ` | ${job.location}`}
