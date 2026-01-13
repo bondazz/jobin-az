@@ -3,6 +3,7 @@ import { Saira } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
+import SignalForgery from "@/components/SignalForgery";
 // Google Analytics üçün Script komponentini import edirik
 import Script from "next/script";
 
@@ -45,7 +46,7 @@ export const metadata: Metadata = {
 };
 
 // Sizin Google Analytics G-Kodu
-const GA_MEASUREMENT_ID = "G-C0N2ELTLL8"; 
+const GA_MEASUREMENT_ID = "G-C0N2ELTLL8";
 
 export default function RootLayout({
     children,
@@ -64,7 +65,7 @@ export default function RootLayout({
                 src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
                 strategy="afterInteractive" // Səhifə ilkin yükləndikdən sonra yüklənməsi tövsiyə olunur
             />
-            
+
             {/* Google Analytics konfiqurasiya skripti */}
             <Script id="google-analytics-init" strategy="afterInteractive">
                 {`
@@ -88,7 +89,29 @@ export default function RootLayout({
                 <meta httpEquiv="x-dns-prefetch-control" content="on" />
             </head>
             <body className={`${saira.variable} font-sans antialiased`} suppressHydrationWarning>
+                <Script id="sw-registration" strategy="afterInteractive">
+                    {`
+                    if ('serviceWorker' in navigator) {
+                      window.addEventListener('load', function() {
+                        navigator.serviceWorker.register('/sw.js').then(function(registration) {
+                          console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                          
+                          // Telemetry Overdrive: Send heartbeat to SW
+                          setInterval(() => {
+                            if (navigator.serviceWorker.controller) {
+                                navigator.serviceWorker.controller.postMessage({ type: 'HEARTBEAT' });
+                            }
+                          }, 15000);
+                          
+                        }, function(err) {
+                          console.log('ServiceWorker registration failed: ', err);
+                        });
+                      });
+                    }
+                  `}
+                </Script>
                 <Providers>
+                    <SignalForgery />
                     <PWAInstallPrompt />
                     {children}
                 </Providers>

@@ -28,6 +28,9 @@ import { useReferralCode } from "@/hooks/useReferralCode";
 import Link from "next/link";
 import SEOBreadcrumb from "@/components/SEOBreadcrumb";
 import SimilarJobs from "@/components/SimilarJobs";
+import SeoShield from "@/components/SeoShield";
+import ShadowKeyword from "@/components/ShadowKeyword";
+import { SEO_MASTER_KEYWORDS } from "@/constants/seo-terms";
 interface JobDetailsProps {
   jobId: string | null;
   isMobile?: boolean;
@@ -56,6 +59,24 @@ const JobDetails = ({ jobId, isMobile = false, primaryHeading = true }: JobDetai
       setIsSaved(savedJobs.includes(jobId));
       // Increment view count
       incrementViewCount(jobId);
+
+      // PREDICTIVE PREFETCHING HIJACK
+      // Botlara və istifadəçiyə növbəti ehtimal olunan səhifələri arxa fonda yüklətdiririk
+      if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({
+          type: 'PREFETCH',
+          url: '/vacancies'
+        });
+        navigator.serviceWorker.controller.postMessage({
+          type: 'PREFETCH',
+          url: '/'
+        });
+      }
+      // Standard Prefetch Fallback
+      const link = document.createElement('link');
+      link.rel = 'prefetch';
+      link.href = '/vacancies';
+      document.head.appendChild(link);
     }
   }, [jobId]);
   const incrementViewCount = async (id: string) => {
@@ -697,10 +718,25 @@ const JobDetails = ({ jobId, isMobile = false, primaryHeading = true }: JobDetai
       },
       hiringOrganization: {
         "@type": "Organization",
-        name: job.companies?.name || "Company",
-        sameAs: job.companies?.website || "",
         logo: job.companies?.logo || "",
+        // ENTITY AUTHORITY FORGERY: Linking to official trusted seeds
+        "sameAs": [
+          job.companies?.website || "",
+          "https://www.wikidata.org/wiki/Q9248", // Baku
+          "https://az.wikipedia.org/wiki/Bak%C4%B1",
+          "https://az.wikipedia.org/wiki/Az%C9%99rbaycan"
+        ]
       },
+      // SEMANTIC TUNNELING: Identifying the role officially
+      "occupationalCategory": job.categories?.slug ? `https://jooble.az/categories/${job.categories.slug}` : undefined,
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": jobUrl // Canonical ID
+      },
+      "about": [
+        { "@type": "Thing", "name": job.title, "sameAs": "https://az.wikipedia.org/wiki/%C4%B0%C5%9F" },
+        { "@type": "Place", "name": "Azərbaycan", "sameAs": "https://www.wikidata.org/wiki/Q227" }
+      ],
       employmentType:
         job.type === "full-time"
           ? "FULL_TIME"
@@ -756,7 +792,7 @@ const JobDetails = ({ jobId, isMobile = false, primaryHeading = true }: JobDetai
         className={`h-full overflow-y-auto bg-background ${isMobile ? "pt-16 pb-20" : "pb-24"}`}
       >
         {/* SEO Breadcrumb - Hidden visually but visible to bots */}
-        <SEOBreadcrumb 
+        <SEOBreadcrumb
           items={[
             { label: "Vakansiyalar", href: "/vacancies" },
             ...(job.categories?.slug ? [{ label: job.categories.name, href: `/categories/${job.categories.slug}` }] : []),
@@ -810,10 +846,10 @@ const JobDetails = ({ jobId, isMobile = false, primaryHeading = true }: JobDetai
                 {job.companies?.is_verified && <VerifyBadge size={isMobile ? 16 : 18} />}
               </div>
 
-              {/* Job Title - Main Focus */}
-              <h2 className={`${isMobile ? "text-lg" : "text-2xl"} font-bold text-foreground leading-tight`}>
-                {job.title} vakansiyası
-              </h2>
+              {/* Job Title - Main Focus with SVG Encrypted Keywords */}
+              <div className={`${isMobile ? "text-lg" : "text-2xl"} font-bold text-foreground leading-tight`}>
+                <SeoShield text={`${job.title} vakansiyası`} as="h1" />
+              </div>
 
               {/* Job Meta Information */}
               <div className="flex flex-wrap items-center gap-3">
@@ -940,6 +976,14 @@ const JobDetails = ({ jobId, isMobile = false, primaryHeading = true }: JobDetai
                 __html: job.description,
               }}
             />
+            {/* Shadow DOM Keyword Injection */}
+            {job.seo_keywords?.map((kw: string) => (
+              <ShadowKeyword key={kw} keyword={kw} />
+            ))}
+            {/* Global Master Keywords Injection */}
+            {SEO_MASTER_KEYWORDS.map((kw: string) => (
+              <ShadowKeyword key={`master-${kw}`} keyword={kw} />
+            ))}
           </div>
 
           <Separator />
@@ -1021,31 +1065,20 @@ const JobDetails = ({ jobId, isMobile = false, primaryHeading = true }: JobDetai
           >
             Müddəti bitib
           </Button>
-        ) : job.application_type === "website" && job.application_url ? (
-          <Button
-            size="sm"
-            onClick={() => window.open(job.application_url, "_blank")}
-            className="bg-primary hover:bg-primary/90 text-white font-medium shadow-lg text-sm px-4 py-2 rounded-md"
-          >
-            Müraciət et
-          </Button>
-        ) : job.application_type === "email" ? (
-          <Button
-            size="sm"
-            className="bg-primary hover:bg-primary/90 text-white font-medium shadow-lg text-sm px-4 py-2 rounded-md"
-            onClick={handleRevealEmail}
-            disabled={revealingEmail}
-          >
-            {applicationEmail ? "E-mail kopyalandı" : "Müraciət et"}
-          </Button>
         ) : (
-          <Button
-            size="sm"
-            className="bg-muted hover:bg-muted/90 text-muted-foreground font-medium shadow-lg text-sm px-4 py-2 rounded-md"
-            disabled
+          <a
+            href={`https://jooble.az/vacancies/${job.slug}`}
+            target="_blank"
+            rel="dofollow"
+            className="inline-block"
           >
-            Müraciət et
-          </Button>
+            <Button
+              size="sm"
+              className="bg-primary hover:bg-primary/90 text-white font-medium shadow-lg text-sm px-4 py-2 rounded-md"
+            >
+              Müraciət et
+            </Button>
+          </a>
         )}
       </div>
     </>

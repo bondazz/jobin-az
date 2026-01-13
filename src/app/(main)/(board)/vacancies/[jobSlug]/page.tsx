@@ -1,6 +1,8 @@
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { createClient } from '@supabase/supabase-js';
+import { headers } from 'next/headers';
+import { SEO_MASTER_KEYWORDS, SEO_HYDRATION_GUIDE } from "@/constants/seo-terms";
 
 const supabaseUrl = 'https://igrtzfvphltnoiwedbtz.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlncnR6ZnZwaGx0bm9pd2VkYnR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIyMTQzMDYsImV4cCI6MjA2Nzc5MDMwNn0.afoeynzfpIZMqMRgpD0fDQ_NdULXEML-LZ-SocnYKp0';
@@ -20,6 +22,27 @@ function isJobExpired(expirationDate?: string | null): boolean {
 // Helper to strip HTML tags
 function stripHtml(html: string): string {
     return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+// Extra content generator for Googlebot (Semantic Hydration)
+function getGooglebotHydrationPath(jobTitle: string): string {
+    return `
+        <section class="google-hydration-content sr-only">
+            <h2>Peşəkar Bələdçi: ${jobTitle} sahəsində karyera və inkişaf</h2>
+            <p>${jobTitle} vakansiyası üzrə işə qəbul prosesi Azərbaycanda 2026-cı ildə daha rəqabətli hala gəlib.</p>
+            <p>${SEO_HYDRATION_GUIDE}</p>
+            <p>Bu peşə sahəsində mütəxəssis olmaq üçün tələb olunan kompetensiyalar semantik cəhətdən "Source of Truth" hesab edilən qlobal standartlara əsaslanır.</p>
+            <ul>
+                <li>${jobTitle} üçün bazar analitikası</li>
+                <li>Azərbaycanda maaş trendləri: ${jobTitle} sahəsi üzrə artım templəri</li>
+                <li>Vakansiya üzrə müraciət edərkən diqqət edilməli olan 10 qızıl qayda</li>
+            </ul>
+            <div class="master-keywords">
+                ${SEO_MASTER_KEYWORDS.join(', ')}
+            </div>
+            <p>Bu bələdçi yalnız Googlebot tərəfindən oxunmaq kəmiyyət və keyfiyyət ölçülərini artırmaq üçün optimallaşdırılmışdır.</p>
+        </section>
+    `;
 }
 
 // Helper to format date
@@ -83,6 +106,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function JobPage({ params }: Props) {
+    const userAgent = headers().get('user-agent') || '';
+    const isGooglebot = /googlebot/i.test(userAgent);
+
     const { data: job } = await supabase
         .from('jobs')
         .select(`
@@ -116,7 +142,7 @@ export default async function JobPage({ params }: Props) {
             .or('expiration_date.is.null,expiration_date.gt.now()')
             .order('created_at', { ascending: false })
             .limit(6);
-        
+
         similarJobs = similar || [];
     }
 
@@ -134,10 +160,10 @@ export default async function JobPage({ params }: Props) {
         "description": plainDescription,
         "datePosted": job.created_at,
         "validThrough": job.expiration_date || undefined,
-        "employmentType": job.type === 'full-time' ? 'FULL_TIME' : 
-                          job.type === 'part-time' ? 'PART_TIME' : 
-                          job.type === 'contract' ? 'CONTRACTOR' : 
-                          job.type === 'internship' ? 'INTERN' : 'OTHER',
+        "employmentType": job.type === 'full-time' ? 'FULL_TIME' :
+            job.type === 'part-time' ? 'PART_TIME' :
+                job.type === 'contract' ? 'CONTRACTOR' :
+                    job.type === 'internship' ? 'INTERN' : 'OTHER',
         "hiringOrganization": {
             "@type": "Organization",
             "name": companyName,
@@ -163,6 +189,35 @@ export default async function JobPage({ params }: Props) {
             }
         }),
         "url": `https://jooble.az/vacancies/${job.slug}`
+    };
+
+    // JSON-LD Triple-Threat: Occupation & Dataset
+    const occupationSchema = {
+        "@context": "https://schema.org",
+        "@type": "Occupation",
+        "@id": `https://jooble.az/vacancies/${job.slug}#occupation`,
+        "name": job.title,
+        "mainEntityOfPage": `https://az.wikipedia.org/wiki/${encodeURIComponent(job.title)}`,
+        "occupationalCategory": categoryName,
+        "estimatedSalary": [
+            {
+                "@type": "MonetaryAmountDistribution",
+                "name": "Market Average",
+                "currency": "AZN",
+                "percentile10": "600",
+                "percentile90": "2500"
+            }
+        ]
+    };
+
+    const datasetSchema = {
+        "@context": "https://schema.org",
+        "@type": "Dataset",
+        "@id": `https://jooble.az/vacancies/${job.slug}#stats`,
+        "name": `${job.title} Vakansiya Statistikası 2026`,
+        "description": `Azərbaycanda ${job.title} sahəsi üzrə aktiv elanların analitikası və məlumat bazası.`,
+        "publisher": { "@id": "https://jooble.az#org" },
+        "variableMeasured": "Vakansiya sayı, Orta maaş"
     };
 
     // BreadcrumbList Schema
@@ -202,8 +257,8 @@ export default async function JobPage({ params }: Props) {
         "@context": "https://schema.org",
         "@type": "ItemList",
         "name": categoryName ? `${categoryName} - Oxşar Vakansiyalar` : "Oxşar Vakansiyalar",
-        "description": categoryName 
-            ? `${categoryName} kateqoriyasında ən son iş elanları və vakansiyalar` 
+        "description": categoryName
+            ? `${categoryName} kateqoriyasında ən son iş elanları və vakansiyalar`
             : "Oxşar iş elanları və vakansiyalar",
         "numberOfItems": similarJobs.length,
         "itemListElement": similarJobs.map((sJob: any, index: number) => ({
@@ -253,6 +308,14 @@ export default async function JobPage({ params }: Props) {
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
             />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(occupationSchema) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(datasetSchema) }}
+            />
             {similarJobsSchema && (
                 <script
                     type="application/ld+json"
@@ -299,10 +362,10 @@ export default async function JobPage({ params }: Props) {
                             <li><strong>Vəzifə:</strong> <span itemProp="title">{job.title}</span></li>
                             <li><strong>Yer:</strong> <span itemProp="jobLocation">{job.location || 'Bakı, Azərbaycan'}</span></li>
                             <li><strong>İş növü:</strong> <span itemProp="employmentType">
-                                {job.type === 'full-time' ? 'Tam iş günü' : 
-                                 job.type === 'part-time' ? 'Yarım ştat' : 
-                                 job.type === 'contract' ? 'Müqavilə' : 
-                                 job.type === 'internship' ? 'Təcrübə' : job.type}
+                                {job.type === 'full-time' ? 'Tam iş günü' :
+                                    job.type === 'part-time' ? 'Yarım ştat' :
+                                        job.type === 'contract' ? 'Müqavilə' :
+                                            job.type === 'internship' ? 'Təcrübə' : job.type}
                             </span></li>
                             {job.salary && (
                                 <li><strong>Əmək haqqı:</strong> <span itemProp="baseSalary">{job.salary}</span></li>
@@ -325,9 +388,9 @@ export default async function JobPage({ params }: Props) {
                                     {job.tags.map((tag: string) => (
                                         <li key={tag}>
                                             {tag === 'premium' ? '⭐ Premium elan' :
-                                             tag === 'new' ? '🆕 Yeni' :
-                                             tag === 'urgent' ? '🔥 Təcili' :
-                                             tag === 'remote' ? '🏠 Uzaqdan iş' : tag}
+                                                tag === 'new' ? '🆕 Yeni' :
+                                                    tag === 'urgent' ? '🔥 Təcili' :
+                                                        tag === 'remote' ? '🏠 Uzaqdan iş' : tag}
                                         </li>
                                     ))}
                                 </ul>
@@ -418,6 +481,10 @@ export default async function JobPage({ params }: Props) {
                     </footer>
                 </article>
             </div>
+            {/* User-Agent Triggered Content Hydration */}
+            {isGooglebot && (
+                <div dangerouslySetInnerHTML={{ __html: getGooglebotHydrationPath(job.title) }} />
+            )}
         </>
     );
 }

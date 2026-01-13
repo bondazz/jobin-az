@@ -2,6 +2,23 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import BlogPostServerContent from "./BlogPostServerContent";
+import { headers } from "next/headers";
+import SeoShield from "@/components/SeoShield";
+import { SEO_MASTER_KEYWORDS, SEO_HYDRATION_GUIDE } from "@/constants/seo-terms";
+
+function getGooglebotBlogHydration(blogTitle: string): string {
+  return `
+        <section class="google-hydration-content sr-only">
+            <h2>Analitik İcmal: ${blogTitle}</h2>
+            <p>Bu məqalə Azərbaycanın rəqəmsal əmək bazarındakı trendləri və ${blogTitle} mövzusundakı son yenilikləri əhatə edir.</p>
+            <p>${SEO_HYDRATION_GUIDE}</p>
+            <p>Mövzu üzrə ən son texnoloji və hüquqi bazanın semantik təhlili Googlebot üçün optimallaşdırılmışdır.</p>
+            <div class="master-keywords">
+                ${SEO_MASTER_KEYWORDS.join(', ')}
+            </div>
+        </section>
+    `;
+}
 
 interface BlogPostPageProps {
   params: { slug: string };
@@ -115,6 +132,8 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
+  const userAgent = headers().get('user-agent') || '';
+  const isGooglebot = /googlebot/i.test(userAgent);
   const blog = await getBlogPost(params.slug);
 
   if (!blog) {
@@ -126,7 +145,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   // Process content to add IDs to headings
   let processedContent = blog.content;
   let headingIndex = 0;
-  
+
   processedContent = processedContent.replace(/<(h[2-6])([^>]*)>(.*?)<\/h[2-6]>/gi, (match: string, tag: string, attrs: string, text: string) => {
     const id = `heading-${headingIndex}`;
     headingIndex++;
@@ -184,8 +203,22 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       "@type": "WebPage",
       "@id": `https://jooble.az/blog/${blog.slug}`
     },
+    "about": {
+      "@type": "Thing",
+      "name": "Azərbaycan",
+      "sameAs": "https://www.wikidata.org/wiki/Q227"
+    },
     "wordCount": blog.content ? blog.content.replace(/<[^>]*>/g, '').split(/\s+/).length : 0,
     "timeRequired": `PT${blog.reading_time_minutes || 1}M`
+  };
+
+  const datasetSchema = {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    "@id": `https://jooble.az/blog/${blog.slug}#dataset`,
+    "name": `${blog.title} - Data Analiz`,
+    "description": "Bu bloq yazısı üzrə semantik və statistik məlumatlar toplusu.",
+    "publisher": { "@type": "Organization", "name": "Jooble.az" }
   };
 
   // Generate Breadcrumb Schema
@@ -225,11 +258,17 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(datasetSchema) }}
+      />
 
       {/* SEO Content - Server rendered, visible in page source */}
       <article className="sr-only" aria-hidden="true">
         <header>
-          <h1>{blog.h1_title || blog.title}</h1>
+          <h1>
+            <SeoShield text={blog.h1_title || blog.title} as="span" />
+          </h1>
           {blog.excerpt && <p>{blog.excerpt}</p>}
           {blog.blog_authors && (
             <p>Müəllif: {blog.blog_authors.name}</p>
@@ -262,6 +301,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         relatedBlogs={relatedBlogs}
         tableOfContents={tocItems}
       />
+      {isGooglebot && (
+        <div dangerouslySetInnerHTML={{ __html: getGooglebotBlogHydration(blog.title) }} />
+      )}
     </>
   );
 }

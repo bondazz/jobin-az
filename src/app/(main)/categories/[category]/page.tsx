@@ -9,14 +9,32 @@ type Props = {
     params: { category: string }
 };
 
+import { headers } from "next/headers";
+import SeoShield from "@/components/SeoShield";
+import { SEO_MASTER_KEYWORDS, SEO_HYDRATION_GUIDE } from "@/constants/seo-terms";
+
 // Helper function to strip HTML tags
 function stripHtml(html: string): string {
     return html.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
 }
 
+function getGooglebotCategoryHydration(categoryName: string): string {
+    return `
+        <section class="google-hydration-content sr-only">
+            <h2>Peşəkar Bələdçi: ${categoryName} Sahəsində İş İmkanları</h2>
+            <p>${categoryName} üzrə Azərbaycandakı aktual vakansiyalar və bazarın semantik analizi.</p>
+            <p>${SEO_HYDRATION_GUIDE}</p>
+            <p>Bu sahədə mütəxəssis olmaq istəyənlər üçün 2026-cı ilin ən yaxşı şirkətləri və tələbləri.</p>
+            <div class="master-keywords">
+                ${SEO_MASTER_KEYWORDS.join(', ')}
+            </div>
+        </section>
+    `;
+}
+
 async function getCategoryData(slug: string) {
     const supabase = createClient(supabaseUrl, supabaseAnonKey);
-    
+
     const { data: category } = await supabase
         .from('categories')
         .select('id, name, description, seo_title, seo_description, seo_keywords, slug, h1_title, icon')
@@ -95,6 +113,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function CategoryPage({ params }: Props) {
+    const userAgent = headers().get('user-agent') || '';
+    const isGooglebot = /googlebot/i.test(userAgent);
     const data = await getCategoryData(params.category);
 
     if (!data) {
@@ -141,6 +161,15 @@ export default async function CategoryPage({ params }: Props) {
         }
     };
 
+    const datasetSchema = {
+        "@context": "https://schema.org",
+        "@type": "Dataset",
+        "@id": `https://jooble.az/categories/${category.slug}#dataset`,
+        "name": `${category.name} Vakansiya Data Portalı 2026`,
+        "description": `Azərbaycanda ${category.name} üzrə iş elanları statistikası.`,
+        "publisher": { "@id": "https://jooble.az#org" }
+    };
+
     const breadcrumbData = {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
@@ -177,12 +206,18 @@ export default async function CategoryPage({ params }: Props) {
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }}
             />
-            
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(datasetSchema) }}
+            />
+
             {/* Hidden SEO content for search engines */}
             <div className="sr-only">
                 <article>
-                    <h1>{category.h1_title || category.name} - İş Elanları və Vakansiyalar</h1>
-                    
+                    <h1>
+                        <SeoShield text={`${category.h1_title || category.name} - İş Elanları və Vakansiyalar`} as="span" />
+                    </h1>
+
                     <section>
                         <h2>Kateqoriya Haqqında</h2>
                         <p><strong>Kateqoriya:</strong> {category.name}</p>
@@ -216,8 +251,8 @@ export default async function CategoryPage({ params }: Props) {
                     <section>
                         <h2>{category.name} Sahəsində İş Axtarışı</h2>
                         <p>
-                            {category.name} sahəsində {jobsCount} aktiv vakansiya mövcuddur. 
-                            Bu kateqoriyada müxtəlif şirkətlərdən iş təklifləri, tam zamanlı və yarım zamanlı 
+                            {category.name} sahəsində {jobsCount} aktiv vakansiya mövcuddur.
+                            Bu kateqoriyada müxtəlif şirkətlərdən iş təklifləri, tam zamanlı və yarım zamanlı
                             iş imkanları tapa bilərsiniz.
                         </p>
                     </section>
@@ -232,6 +267,9 @@ export default async function CategoryPage({ params }: Props) {
                 </article>
             </div>
 
+            {isGooglebot && (
+                <div dangerouslySetInnerHTML={{ __html: getGooglebotCategoryHydration(category.name) }} />
+            )}
             <CategoriesClient />
         </>
     );

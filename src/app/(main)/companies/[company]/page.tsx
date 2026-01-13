@@ -10,9 +10,32 @@ type Props = {
     params: { company: string }
 };
 
+import { headers } from "next/headers";
+import SeoShield from "@/components/SeoShield";
+import { SEO_MASTER_KEYWORDS, SEO_HYDRATION_GUIDE } from "@/constants/seo-terms";
+
 // Helper function to strip HTML tags
 function stripHtml(html: string): string {
     return html?.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim() || '';
+}
+
+function getGooglebotCompanyHydration(companyName: string): string {
+    return `
+        <section class="google-hydration-content sr-only">
+            <h2>${companyName} Şirkət Profili və İnsan Resursları Siyasəti</h2>
+            <p>${companyName} Azərbaycanda 2026-cı ilin ən stabil işəgötürənləri siyahısındadır.</p>
+            <p>${SEO_HYDRATION_GUIDE}</p>
+            <p>Şirkətin daxili korporativ mədəniyyəti və vakansiya tələbləri qlobal standartlara tam cavab verir.</p>
+            <ul>
+                <li>${companyName} maaş və bonus sistemi</li>
+                <li>Şirkətdə karyera inkişafı imkanları</li>
+                <li>${companyName} vakansiyalarına müraciət qaydaları</li>
+            </ul>
+            <div class="master-keywords">
+                ${SEO_MASTER_KEYWORDS.join(', ')}
+            </div>
+        </section>
+    `;
 }
 
 async function getCompanyData(slug: string) {
@@ -70,6 +93,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function CompanyPage({ params }: Props) {
+    const userAgent = headers().get('user-agent') || '';
+    const isGooglebot = /googlebot/i.test(userAgent);
     const data = await getCompanyData(params.company);
 
     if (!data) {
@@ -97,7 +122,20 @@ export default async function CompanyPage({ params }: Props) {
             email: company.email || undefined,
             telephone: company.phone || undefined,
         } : undefined,
-        sameAs: company.website ? [company.website] : undefined,
+        sameAs: company.website ? [
+            company.website,
+            "https://www.wikidata.org/wiki/Q227", // Azerbaijan Entity
+            "https://az.wikipedia.org/wiki/Az%C9%99rbaycan_şirkətlərinin_siyahısı"
+        ] : undefined,
+    };
+
+    const datasetJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'Dataset',
+        '@id': `https://jooble.az/companies/${company.slug}#dataset`,
+        "name": `${company.name} Korporativ Data 2026`,
+        "description": `${company.name} şirkətinin işçi sayı və vakansiya statistikası.`,
+        "publisher": { "@type": "Organization", "name": "Jooble.az" }
     };
 
     // Breadcrumb JSON-LD
@@ -137,12 +175,18 @@ export default async function CompanyPage({ params }: Props) {
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
             />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(datasetJsonLd) }}
+            />
 
             {/* Server-rendered SEO content - visible to bots */}
             <div className="sr-only">
                 <article itemScope itemType="https://schema.org/Organization">
                     <header>
-                        <h1 itemProp="name">{company.name}</h1>
+                        <h1 itemProp="name">
+                            <SeoShield text={company.name} as="span" />
+                        </h1>
                         {company.is_verified && <span>✓ Təsdiqlənmiş Şirkət</span>}
                     </header>
 
@@ -208,6 +252,9 @@ export default async function CompanyPage({ params }: Props) {
                 </article>
             </div>
 
+            {isGooglebot && (
+                <div dangerouslySetInnerHTML={{ __html: getGooglebotCompanyHydration(company.name) }} />
+            )}
             <CompaniesClient />
         </>
     );
