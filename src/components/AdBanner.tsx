@@ -35,6 +35,26 @@ const AdBanner: React.FC<AdBannerProps> = ({ position, className = "" }) => {
   }, [position]);
 
   const fetchAdvertisements = async () => {
+    // Override for "İş Elanları Arası" (job_listing) - Static Whatsapp Ad
+    if (position === 'job_listing') {
+      const staticAd: Advertisement = {
+        id: 'whatsapp-static-ad',
+        title: 'Vakansiyalar Birbaşa WhatsApp-da!',
+        description: null,
+        image_url: '/ads/whatsapp-ad.png',
+        link_url: 'https://whatsapp.com/channel/0029VaeF3TiEFeXnngZS222D',
+        position: 'job_listing',
+        is_active: true,
+        display_order: 1,
+        start_date: null,
+        end_date: null,
+        click_count: 0
+      };
+      setAdvertisements([staticAd]);
+      setLoading(false);
+      return;
+    }
+
     try {
       const { data, error } = await supabase
         .from('advertisements')
@@ -54,8 +74,10 @@ const AdBanner: React.FC<AdBannerProps> = ({ position, className = "" }) => {
 
   const handleAdClick = async (ad: Advertisement) => {
     try {
-      // Increment click count
-      await supabase.rpc('increment_ad_clicks', { ad_id: ad.id });
+      // Increment click count - skip for static ads to avoid Supabase errors if disconnected
+      if (ad.id !== 'whatsapp-static-ad') {
+        await supabase.rpc('increment_ad_clicks', { ad_id: ad.id });
+      }
 
       // Open link if provided
       if (ad.link_url) {
