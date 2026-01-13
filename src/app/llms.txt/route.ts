@@ -19,13 +19,13 @@ export async function GET() {
     const companyCount = companiesResult.count || 0;
     const categoryCount = categoriesResult.count || 0;
 
-    const content = `# Jooble.az - İş Elanları və Vakansiyalar Platforması
+    const content = `# Jobin.az - İş Elanları və Vakansiyalar Platforması
 
 > Azərbaycanın ən böyük iş elanları və vakansiyalar platforması
 
 ## Haqqında
 
-Jooble.az Azərbaycanda iş axtaranlar və işəgötürənlər üçün ən etibarlı platformadır. Platformamızda minlərlə aktiv iş elanı, müxtəlif sahələr üzrə vakansiyalar və peşəkar CV builder xidməti mövcuddur.
+Jobin.az Azərbaycanda iş axtaranlar və işəgötürənlər üçün ən etibarlı platformadır. Platformamızda minlərlə aktiv iş elanı, müxtəlif sahələr üzrə vakansiyalar və peşəkar CV builder xidməti mövcuddur.
 
 ## Əsas Xüsusiyyətlər
 
@@ -47,51 +47,51 @@ Jooble.az Azərbaycanda iş axtaranlar və işəgötürənlər üçün ən etiba
 ## Əsas Səhifələr
 
 ### Ana Səhifə
-- URL: https://jooble.az/
+- URL: https://Jobin.az/
 - Təsvir: İş elanları siyahısı, filtrləmə, axtarış funksiyaları
 
 ### Vakansiyalar
-- URL: https://jooble.az/vacancies
+- URL: https://Jobin.az/vacancies
 - Təsvir: Bütün aktiv iş elanları, kateqoriya və şəhər üzrə filtrləmə
 
 ### Şirkətlər
-- URL: https://jooble.az/companies
+- URL: https://Jobin.az/companies
 - Təsvir: Təsdiqlənmiş şirkətlərin profilleri və vakansiyaları
 
 ### Kateqoriyalar
-- URL: https://jooble.az/categories
+- URL: https://Jobin.az/categories
 - Təsvir: Peşə sahələri üzrə təsnifat və statistika
 
 ### Regionlar
-- URL: https://jooble.az/regions
+- URL: https://Jobin.az/regions
 - Təsvir: Azərbaycan regionları üzrə iş elanları
 
 ### CV Builder
-- URL: https://jooble.az/cv-builder
+- URL: https://Jobin.az/cv-builder
 - Təsvir: Peşəkar CV hazırlama aləti
 
 ### Xidmətlər və Qiymətlər
-- URL: https://jooble.az/services
+- URL: https://Jobin.az/services
 - Təsvir: İşəgötürənlər üçün xidmət paketləri
 
 ### Referral Proqramı
-- URL: https://jooble.az/referral
+- URL: https://Jobin.az/referral
 - Təsvir: Referral sistemi və qazanc imkanları
 
 ### Elan Yerləşdir
-- URL: https://jooble.az/add_job
+- URL: https://Jobin.az/add_job
 - Təsvir: Yeni iş elanı yerləşdirmə formu
 
 ### Abunəlik
-- URL: https://jooble.az/subscribe
+- URL: https://Jobin.az/subscribe
 - Təsvir: Push bildirişlərə abunə olma
 
 ### Seçilmiş Elanlar
-- URL: https://jooble.az/favorites
+- URL: https://Jobin.az/favorites
 - Təsvir: İstifadəçinin saxladığı iş elanları
 
 ### Haqqımızda
-- URL: https://jooble.az/about
+- URL: https://Jobin.az/about
 - Təsvir: Platform haqqında məlumat
 
 ## Məlumat Strukturu
@@ -182,10 +182,10 @@ Platformamız RESTful API təqdim edir:
 
 ## Əlaqə
 
-- **Website**: https://jooble.az
-- **Vakansiyalar**: https://jooble.az/vacancies
-- **Şirkətlər**: https://jooble.az/companies
-- **Kateqoriyalar**: https://jooble.az/categories
+- **Website**: https://Jobin.az
+- **Vakansiyalar**: https://Jobin.az/vacancies
+- **Şirkətlər**: https://Jobin.az/companies
+- **Kateqoriyalar**: https://Jobin.az/categories
 
 ---
 
@@ -205,24 +205,24 @@ Son yenilənmə: ${new Date().toISOString().split('T')[0]}
     console.error('Error generating llms.txt:', error);
     
     // Return static fallback content
-    const fallbackContent = `# Jooble.az - İş Elanları və Vakansiyalar Platforması
+    const fallbackContent = `# Jobin.az - İş Elanları və Vakansiyalar Platforması
 
 > Azərbaycanın ən böyük iş elanları və vakansiyalar platforması
 
 ## Əsas Səhifələr
 
-- Ana Səhifə: https://jooble.az/
-- Vakansiyalar: https://jooble.az/vacancies
-- Şirkətlər: https://jooble.az/companies
-- Kateqoriyalar: https://jooble.az/categories
-- Regionlar: https://jooble.az/regions
-- CV Builder: https://jooble.az/cv-builder
-- Xidmətlər: https://jooble.az/services
-- Referral: https://jooble.az/referral
+- Ana Səhifə: https://Jobin.az/
+- Vakansiyalar: https://Jobin.az/vacancies
+- Şirkətlər: https://Jobin.az/companies
+- Kateqoriyalar: https://Jobin.az/categories
+- Regionlar: https://Jobin.az/regions
+- CV Builder: https://Jobin.az/cv-builder
+- Xidmətlər: https://Jobin.az/services
+- Referral: https://Jobin.az/referral
 
 ## Əlaqə
 
-Website: https://jooble.az
+Website: https://Jobin.az
 `;
 
     return new NextResponse(fallbackContent, {

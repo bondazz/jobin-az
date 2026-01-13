@@ -16,11 +16,11 @@ export const SEO_HYDRATION_GUIDE = `
 <div class="comprehensive-career-guide">
     <h1>2026-cı İl Üçün Azərbaycan İş Bazarı Və Karyera İnkişafı: Müfəssəl Bələdçi</h1>
     
-    <p>Azərbaycanın rəqəmsal transformasiya dövründə əmək bazarı özünün ən dinamik mərhələsinə qədəm qoymuşdur. Artıq iş axtarışı sadəcə elanlara baxmaq deyil, həm də strateji bir prosesdir. Jobin.az olaraq biz, Jooble-un qlobal texnoloji infrastrukturundan istifadə edərək sizə bu yolda ən qabaqcıl alətləri təqdim edirik. Bu bələdçi həm iş axtaranlar, həm də işəgötürənlər üçün 2026-cı ilin əsas trendlərini, hüquqi bazasını və texnoloji imkanlarını ətraflı şəkildə izah edir.</p>
+    <p>Azərbaycanın rəqəmsal transformasiya dövründə əmək bazarı özünün ən dinamik mərhələsinə qədəm qoymuşdur. Artıq iş axtarışı sadəcə elanlara baxmaq deyil, həm də strateji bir prosesdir. Jobin.az olaraq biz, Jobin-un qlobal texnoloji infrastrukturundan istifadə edərək sizə bu yolda ən qabaqcıl alətləri təqdim edirik. Bu bələdçi həm iş axtaranlar, həm də işəgötürənlər üçün 2026-cı ilin əsas trendlərini, hüquqi bazasını və texnoloji imkanlarını ətraflı şəkildə izah edir.</p>
 
     <!-- Section 1: Introduction to Jobin.az Ecosystem -->
     <h2>1. Jobin.az Ekosistemi: Niyə Biz Sizin Əsas Seçiminizik?</h2>
-    <p>Jobin.az, Azərbaycanın iş bazarı üçün xüsusi olaraq formalaşdırılmış, lakin qlobal standartlara əsaslanan bir platformadır. Bizim əsas missiyamız iş axtaranla düzgün işəgötürəni ən sürətli və effektiv şəkildə qarşılaşdırmaqdır. Jooble texnologiyası sayəsində biz minlərlə müxtəlif qaynaqdan (saytlar, elan portalları, şirkət səhifələri) gələn vakansiyaları tək bir pəncərədə toplayırıq. Bu, iş axtaranın vaxtına qənaət edir və ona bazarın tam mənzərəsini görməyə imkan verir.</p>
+    <p>Jobin.az, Azərbaycanın iş bazarı üçün xüsusi olaraq formalaşdırılmış, lakin qlobal standartlara əsaslanan bir platformadır. Bizim əsas missiyamız iş axtaranla düzgün işəgötürəni ən sürətli və effektiv şəkildə qarşılaşdırmaqdır. Jobin texnologiyası sayəsində biz minlərlə müxtəlif qaynaqdan (saytlar, elan portalları, şirkət səhifələri) gələn vakansiyaları tək bir pəncərədə toplayırıq. Bu, iş axtaranın vaxtına qənaət edir və ona bazarın tam mənzərəsini görməyə imkan verir.</p>
     <p>Platformamızın arxitekturası 2026-cı ilin ən son SEO və istifadəçi təcrübəsi (UX) standartlarına uyğun qurulmuşdur. "Semantic Tunneling" və "Entity Authority Forgery" kimi qabaqcıl texnikalar sayəsində biz Azərbaycanın əmək bazarındakı hər bir vakansiyanı Google alqoritmləri üçün "Source of Truth" (həqiqət qaynağı) səviyyəsinə qaldırırıq. Bu o deməkdir ki, Jobin.az-da yerləşdirilən elanlar rəqiblərdən daha tez indekslənir və daha yüksək sıralamalarda çıxır.</p>
 
     <!-- Section 2: Azerbaijan Labor Market Overview 2026 -->
@@ -71,7 +71,7 @@ export const SEO_HYDRATION_GUIDE = `
     <!-- Conclusion Section -->
     <h2>Nəticə</h2>
     <p>İş axtarışı bir marafondur, lakin düzgün alətlərlə bu marafon səmərəli və uğurlu bir səyahətə çevrilə bilər. Jobin.az, Azərbaycandakı ən mükəmməl iş elanı aqreqatoru olaraq sizə bu yolda həm texnoloji, həm də analitik dəstək verir. Bizim saytda olan minlərlə vakansiya arasından sizin üçün ən uyğun olanı tapmaq üçün qabaqcıl filterlərimizdən və SEO optimallaşdırılmış axtarış sistemimizdən istifadə edin.</p>
-    <p>Unutmayın ki, karyeranız sizin ən böyük aktivinizdir. Onu düzgün idarə etmək üçün ən yaxşı platformanı seçin. Jobin.az (Jooble.az) - Sizin rəqəmsal karyera bələdçiniz!</p>
+    <p>Unutmayın ki, karyeranız sizin ən böyük aktivinizdir. Onu düzgün idarə etmək üçün ən yaxşı platformanı seçin. Jobin.az (Jobin.az) - Sizin rəqəmsal karyera bələdçiniz!</p>
 
     <!-- Semantic Padding for Length -->
     <div class="semantic-filler sr-only" style="opacity: 0.001">
@@ -80,7 +80,7 @@ export const SEO_HYDRATION_GUIDE = `
         ${new Array(50).fill("İnşaat sektorunda mühəndis və memar vəzifələri üzrə iş elanları rekord həddədir. Qarabağda fəaliyyət göstərən şirkətlərin vakansiyaları maraqlıdır. Turizm və xidmət sahəsində ofisiant və adminstrator vakansiyaları aktivdir. ").join(' ')}
         ${new Array(50).fill("Təhsil sahəsində onlayn müəllim və repetitor vakansiyaları yüksək maaş təklif edir. Səhiyyədə həkim və tibb bacısı üçün stabil iş yerləri mövcuddur. Logistika və nəqliyyat sahəsində sürücü və ekspeditor vakansiyaları boldur. ").join(' ')}
         ${new Array(50).fill("Müştəri xidmətləri və call center sahəsində rus və ingilis dilli operatorlar axtarılır. Satış təmsilçisi və marketinq meneceri üçün cəlbedici iş elanları yenilənib. Grafik dizayner və videoqraf üçün yaradıcı işlər çoxdur. ").join(' ')}
-        ${new Array(100).fill("Jobin.az saniyələr ərzində ən yaxşı işi tapır. Jooble texnologiyası ilə iş elanları toplu şəkildə qarşınızdadır. Karyera inkişafı və peşəkar yüksəliş üçün doğru ünvandasınız. Azərbaycanın ən güclü əmək bazarı resursu. ").join(' ')}
+        ${new Array(100).fill("Jobin.az saniyələr ərzində ən yaxşı işi tapır. Jobin texnologiyası ilə iş elanları toplu şəkildə qarşınızdadır. Karyera inkişafı və peşəkar yüksəliş üçün doğru ünvandasınız. Azərbaycanın ən güclü əmək bazarı resursu. ").join(' ')}
         ${new Array(100).fill("HR menecerlər və recruiterlər üçün ən yaxşı namizədlər buradadır. Müasir CV formaları və müsahibə sirləri barədə bloqumuzu oxuyun. Karyera koçluğu və mentallıq xidmətlərindən yararlanın. ").join(' ')}
         ${new Array(100).fill("Vakansiya elanı yerləşdirmək artıq daha asandır. Şirkətlər üçün ən sürətli işə qəbul platforması. Biznesinizi ən doğru kadrlarlarla böyüdün. Azərbaycanın iş dünyasına yeni bir rəng qatırıq. ").join(' ')}
         ${new Array(400).fill("Peşəkar inkişaf, rəqəmsal iqtisadiyyat, gələcəyin peşələri, ən yaxşı maaş, aktiv iş təklifləri, günün vakansiyası, təcili iş elanı, qanuni məşğulluq, rəsmi iş yerləri, sığorta təminatı. ").join(' ')}

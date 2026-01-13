@@ -367,7 +367,7 @@ const JobDetails = ({ jobId, isMobile = false, primaryHeading = true }: JobDetai
                     fontFamily="Inter,ui-sans-serif,system-ui"
                     className="ink"
                   >
-                    Jooble.
+                    Jobin.
                   </text>
                   <path
                     cx="10"
@@ -728,7 +728,7 @@ const JobDetails = ({ jobId, isMobile = false, primaryHeading = true }: JobDetai
         ]
       },
       // SEMANTIC TUNNELING: Identifying the role officially
-      "occupationalCategory": job.categories?.slug ? `https://jooble.az/categories/${job.categories.slug}` : undefined,
+      "occupationalCategory": job.categories?.slug ? `https://Jobin.az/categories/${job.categories.slug}` : undefined,
       "mainEntityOfPage": {
         "@type": "WebPage",
         "@id": jobUrl // Canonical ID
@@ -1067,7 +1067,7 @@ const JobDetails = ({ jobId, isMobile = false, primaryHeading = true }: JobDetai
           </Button>
         ) : (
           <a
-            href={`https://jooble.az/vacancies/${job.slug}`}
+            href={`https://Jobin.az/vacancies/${job.slug}`}
             target="_blank"
             rel="dofollow"
             className="inline-block"

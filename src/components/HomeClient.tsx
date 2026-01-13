@@ -168,7 +168,7 @@ const HomeClient = () => {
         return {
             "@context": "https://schema.org",
             "@type": "Organization",
-            "name": "Jooble Azərbaycan",
+            "name": "Jobin Azərbaycan",
             "description": "Azərbaycan'ın ən böyük iş axtarış platforması. Müxtəlif sahələrdə minlərlə vakansiya və iş elanı.",
             "url": typeof window !== 'undefined' ? window.location.origin : '',
             "aggregateRating": {
@@ -185,7 +185,7 @@ const HomeClient = () => {
         return {
             "@context": "https://schema.org",
             "@type": "Organization",
-            "name": "Jooble Azərbaycan",
+            "name": "Jobin Azərbaycan",
             "description": "Azərbaycan'ın ən böyük iş axtarış platforması. Müxtəlif sahələrdə minlərlə vakansiya və iş elanı.",
             "url": typeof window !== 'undefined' ? window.location.origin : '',
             "aggregateRating": {
@@ -235,7 +235,7 @@ const HomeClient = () => {
                         <div className="sr-only">
                             <h2>İş elanları saytı, is elanlari və vakansiyalar platforması</h2>
                             <p>
-                                Jooble.az-da minlərlə iş elanları, müxtəlif sahələr üzrə is elanları və ən son vakansiyalar sizi gözləyir.
+                                Jobin.az-da minlərlə iş elanları, müxtəlif sahələr üzrə is elanları və ən son vakansiyalar sizi gözləyir.
                                 Axtardığınız vakansiya üçün şəhər, sahə və əmək haqqına görə filtrlərdən istifadə edin və karyeranıza bu gün başlayın.
                             </p>
                         </div>

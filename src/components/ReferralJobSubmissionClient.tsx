@@ -167,7 +167,7 @@ const ReferralJobSubmissionClient = () => {
         url: `${origin}/add_job`,
         isPartOf: {
           "@type": "WebSite",
-          name: "Jooble Azərbaycan",
+          name: "Jobin Azərbaycan",
           url: origin,
         },
         breadcrumb: {
@@ -234,7 +234,7 @@ const ReferralJobSubmissionClient = () => {
                     <p className="text-sm text-muted-foreground text-center">
                       Elan yerləşdirməkdə çətinlik çəkirsinizsə, vakant vəzifə ilə bağlı məlumatları Word formatında{" "}
                       <span className="inline-flex items-center gap-1">
-                        📧 <a href="mailto:info@jooble.az" className="text-primary hover:underline font-medium">info@jooble.az</a>
+                        📧 <a href="mailto:info@Jobin.az" className="text-primary hover:underline font-medium">info@Jobin.az</a>
                       </span>{" "}
                       e-poçt ünvanına və ya{" "}
                       <span className="inline-flex items-center gap-1">
@@ -417,7 +417,7 @@ const ReferralJobSubmissionClient = () => {
                   <p className="text-xs text-muted-foreground text-center leading-relaxed">
                     Elan yerləşdirməkdə çətinlik çəkirsinizsə, vakant vəzifə ilə bağlı məlumatları Word formatında{" "}
                     <span className="inline-flex items-center gap-1">
-                      📧 <a href="mailto:info@jooble.az" className="text-primary hover:underline font-medium">info@jooble.az</a>
+                      📧 <a href="mailto:info@Jobin.az" className="text-primary hover:underline font-medium">info@Jobin.az</a>
                     </span>{" "}
                     e-poçt ünvanına və ya{" "}
                     <span className="inline-flex items-center gap-1">

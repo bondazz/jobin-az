@@ -64,12 +64,12 @@ const AboutClient = () => {
         return {
             "@context": "https://schema.org",
             "@type": "AboutPage",
-            "name": headerData?.title || "Jooble Haqqında",
+            "name": headerData?.title || "Jobin Haqqında",
             "description": headerData?.description || "Azərbaycan'ın ən böyük iş axtarış platforması. Minlərlə iş elanı və yüzlərlə şirkət bir yerdə.",
             "url": `${origin}/about`,
             "mainEntity": {
                 "@type": "Organization",
-                "name": "Jooble Azərbaycan",
+                "name": "Jobin Azərbaycan",
                 "description": headerData?.description || "Azərbaycan'ın ən böyük iş axtarış platforması",
                 "url": origin,
                 "contactPoint": contactData.length > 0 ? contactData.map((contact: any) => ({
@@ -141,7 +141,7 @@ const AboutClient = () => {
                     <div className="flex items-center justify-center gap-3 mb-4">
 
                         <h1 className="text-4xl font-bold bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
-                            {headerData?.title || 'Jooble Haqqında'}
+                            {headerData?.title || 'Jobin Haqqında'}
                         </h1>
                     </div>
                     <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">

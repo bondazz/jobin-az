@@ -32,7 +32,7 @@ export async function GET() {
             .eq('is_published', true)
             .order('published_at', { ascending: false });
 
-        const baseUrl = 'https://jooble.az';
+        const baseUrl = 'https://Jobin.az';
         const now = new Date().toISOString();
 
         let xml = `<?xml version="1.0" encoding="UTF-8"?>

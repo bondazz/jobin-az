@@ -6,19 +6,19 @@ const supabaseUrl = 'https://igrtzfvphltnoiwedbtz.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlncnR6ZnZwaGx0bm9pd2VkYnR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIyMTQzMDYsImV4cCI6MjA2Nzc5MDMwNn0.afoeynzfpIZMqMRgpD0fDQ_NdULXEML-LZ-SocnYKp0';
 
 export const metadata: Metadata = {
-    title: 'İş Elanı Yerləşdir | Namizəd Tapma Platforması - Jooble.az',
-    description: 'Vakansiyanızı ən uyğun namizədlərə çatdırın. Jooble.az işə qəbul prosesinizi sürətləndirən peşəkar vakansiya yerləşdirmə və namizəd tapma platforması təqdim edir.',
+    title: 'İş Elanı Yerləşdir | Namizəd Tapma Platforması - Jobin.az',
+    description: 'Vakansiyanızı ən uyğun namizədlərə çatdırın. Jobin.az işə qəbul prosesinizi sürətləndirən peşəkar vakansiya yerləşdirmə və namizəd tapma platforması təqdim edir.',
     keywords: 'iş elanı yerləşdir, vakansiya yerləşdirmək, iş elanı vermək, namizəd tapma platforması, işəgötürən paneli, HR vakansiya sistemi, işə qəbul platforması, Azərbaycan vakansiyaları',
     alternates: {
-        canonical: "https://jooble.az/add_job",
+        canonical: "https://Jobin.az/add_job",
     },
     openGraph: {
-        title: 'İş Elanı Yerləşdir | Namizəd Tapma Platforması - Jooble.az',
+        title: 'İş Elanı Yerləşdir | Namizəd Tapma Platforması - Jobin.az',
         description: 'Vakansiyanızı ən uyğun namizədlərə çatdırın. Peşəkar vakansiya yerləşdirmə platforması.',
-        url: "https://jooble.az/add_job",
-        siteName: "Jooble.az",
+        url: "https://Jobin.az/add_job",
+        siteName: "Jobin.az",
         type: "website",
-        images: [{ url: "https://jooble.az/icons/icon-512x512.jpg", width: 512, height: 512 }],
+        images: [{ url: "https://Jobin.az/icons/icon-512x512.jpg", width: 512, height: 512 }],
     },
 };
 
@@ -40,15 +40,15 @@ export default async function AddJobPage() {
         "@type": "WebPage",
         "name": "İş Elanı Yerləşdir",
         "description": "Vakansiyanızı ən uyğun namizədlərə çatdırın",
-        "url": "https://jooble.az/add_job"
+        "url": "https://Jobin.az/add_job"
     };
 
     const breadcrumbData = {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
         "itemListElement": [
-            { "@type": "ListItem", "position": 1, "name": "Ana Səhifə", "item": "https://jooble.az" },
-            { "@type": "ListItem", "position": 2, "name": "İş Elanı Yerləşdir", "item": "https://jooble.az/add_job" }
+            { "@type": "ListItem", "position": 1, "name": "Ana Səhifə", "item": "https://Jobin.az" },
+            { "@type": "ListItem", "position": 2, "name": "İş Elanı Yerləşdir", "item": "https://Jobin.az/add_job" }
         ]
     };
 
@@ -58,7 +58,7 @@ export default async function AddJobPage() {
                 <h1>İş Elanı Yerləşdir - Namizəd Tapma Platforması</h1>
                 <p>Vakansiyanızı ən uyğun namizədlərə çatdırın. İşə qəbul prosesinizi sürətləndirin.</p>
                 
-                <h2>Niyə Jooble.az?</h2>
+                <h2>Niyə Jobin.az?</h2>
                 <ul>
                     <li>Geniş iş axtaran bazası</li>
                     <li>Effektiv namizəd tapma</li>

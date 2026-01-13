@@ -786,7 +786,7 @@ export default function AdminBlogsClient() {
                   onChange={(e) =>
                     setBlogForm({ ...blogForm, canonical_url: e.target.value })
                   }
-                  placeholder="https://jooble.az/blog/..."
+                  placeholder="https://Jobin.az/blog/..."
                 />
               </div>
             </TabsContent>

@@ -26,11 +26,11 @@ export const useSEO = ({
       // Ensure URL is absolute and properly formatted
       let currentUrl = url || window.location.href;
       if (!currentUrl.startsWith('http')) {
-        currentUrl = `https://jooble.az${currentUrl.startsWith('/') ? '' : '/'}${currentUrl}`;
+        currentUrl = `https://Jobin.az${currentUrl.startsWith('/') ? '' : '/'}${currentUrl}`;
       }
 
       const metadata: SEOMetadata = {
-        title: title || settings.site_title || "Jooble Azərbaycan",
+        title: title || settings.site_title || "Jobin Azərbaycan",
         description: description || settings.site_description || "İş elanları və vakansiyalar",
         keywords: keywords || settings.site_keywords || "iş elanları, vakansiya, Azərbaycan",
         url: currentUrl,
@@ -84,7 +84,7 @@ export const useSEO = ({
   }, [title, description, keywords, url, type, image, structuredData]);
 };
 
-const DEFAULT_OG_IMAGE = 'https://jooble.az/icons/icon-512x512.jpg';
+const DEFAULT_OG_IMAGE = 'https://Jobin.az/icons/icon-512x512.jpg';
 
 export const useDynamicSEO = (type: "job" | "company" | "category", data: any) => {
   useEffect(() => {
@@ -104,7 +104,7 @@ export const useDynamicSEO = (type: "job" | "company" | "category", data: any) =
           description: data.seo_description || `${data.company?.name || "Şirkət"}də ${data.title} vakansiyası`,
           keywords:
             data.seo_keywords?.join(", ") || `${data.title}, ${data.company?.name || ""}, vakansiya, iş elanları`,
-          url: `https://jooble.az/vacancies/${data.slug}`,
+          url: `https://Jobin.az/vacancies/${data.slug}`,
         };
         ogType = "article";
         structuredData = {
@@ -142,12 +142,12 @@ export const useDynamicSEO = (type: "job" | "company" | "category", data: any) =
       case "company":
         ogImage = data.logo || data.logo_url || DEFAULT_OG_IMAGE;
         metadata = {
-          title: data.seo_title || `${data.name} | Şirkət Profili - Jooble`,
+          title: data.seo_title || `${data.name} | Şirkət Profili - Jobin`,
           description:
             data.seo_description ||
             `${data.name} şirkəti haqqında məlumat, iş elanları və vakansiyalar. ${data.description || ""}`,
           keywords: data.seo_keywords?.join(", ") || `${data.name}, şirkət, vakansiya, iş elanları, Azərbaycan`,
-          url: `https://jooble.az/companies/${data.slug}`,
+          url: `https://Jobin.az/companies/${data.slug}`,
         };
         ogType = "profile";
         structuredData = {
@@ -155,7 +155,7 @@ export const useDynamicSEO = (type: "job" | "company" | "category", data: any) =
           "@type": "Organization",
           "name": data.name,
           "description": data.description,
-          "url": `https://jooble.az/companies/${data.slug}`,
+          "url": `https://Jobin.az/companies/${data.slug}`,
           "logo": data.logo || data.logo_url || DEFAULT_OG_IMAGE,
           "address": {
             "@type": "PostalAddress",
@@ -166,20 +166,20 @@ export const useDynamicSEO = (type: "job" | "company" | "category", data: any) =
 
       case "category":
         metadata = {
-          title: data.seo_title || `${data.name} Vakansiyaları | İş Elanları - Jooble`,
+          title: data.seo_title || `${data.name} Vakansiyaları | İş Elanları - Jobin`,
           description:
             data.seo_description ||
             `${data.name} sahəsində aktiv vakansiyalar və iş elanları. ${data.description || ""}`,
           keywords:
             data.seo_keywords?.join(", ") || `${data.name}, vakansiya, iş elanları, Azərbaycan, ${data.name} işləri`,
-          url: `https://jooble.az/categories/${data.slug}`,
+          url: `https://Jobin.az/categories/${data.slug}`,
         };
         structuredData = {
           "@context": "https://schema.org",
           "@type": "CollectionPage",
           "name": `${data.name} Vakansiyaları`,
           "description": metadata.description,
-          "url": `https://jooble.az/categories/${data.slug}`
+          "url": `https://Jobin.az/categories/${data.slug}`
         };
         break;
 

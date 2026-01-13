@@ -111,7 +111,7 @@ const SimilarJobs = ({
           "title": job.title,
           "description": job.title,
           "datePosted": new Date(job.created_at).toISOString().split('T')[0],
-          "url": `https://jooble.az/vacancies/${job.slug}`,
+          "url": `https://Jobin.az/vacancies/${job.slug}`,
           "hiringOrganization": {
             "@type": "Organization",
             "name": job.companies?.name || "Şirkət",
@@ -277,7 +277,7 @@ const SimilarJobs = ({
           <p className="text-sm text-foreground">
             Vakansiyalar barədə məlumatı ən tez bizim{" "}
             <a
-              href="https://t.me/joobleaz"
+              href="https://t.me/Jobinaz"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 font-semibold text-[#0088cc] hover:text-[#006699] hover:underline transition-colors"

@@ -6,19 +6,19 @@ const supabaseUrl = 'https://igrtzfvphltnoiwedbtz.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlncnR6ZnZwaGx0bm9pd2VkYnR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIyMTQzMDYsImV4cCI6MjA2Nzc5MDMwNn0.afoeynzfpIZMqMRgpD0fDQ_NdULXEML-LZ-SocnYKp0';
 
 export const metadata: Metadata = {
-    title: "Abunə ol | Yeni Vakansiyalardan Xəbərdar Olun - Jooble.az",
+    title: "Abunə ol | Yeni Vakansiyalardan Xəbərdar Olun - Jobin.az",
     description: "Yeni iş elanları və vakansiyalardan xəbərdar olmaq üçün abunə olun. Seçdiyiniz kateqoriyalar üzrə bildirişlər alın.",
     keywords: "abunə ol, vakansiya bildirişləri, iş elanları xəbərdarlığı, email abunəlik, push bildirişlər",
     alternates: {
-        canonical: "https://jooble.az/subscribe",
+        canonical: "https://Jobin.az/subscribe",
     },
     openGraph: {
-        title: "Abunə ol | Yeni Vakansiyalardan Xəbərdar Olun - Jooble.az",
+        title: "Abunə ol | Yeni Vakansiyalardan Xəbərdar Olun - Jobin.az",
         description: "Yeni iş elanları və vakansiyalardan xəbərdar olmaq üçün abunə olun.",
-        url: "https://jooble.az/subscribe",
-        siteName: "Jooble.az",
+        url: "https://Jobin.az/subscribe",
+        siteName: "Jobin.az",
         type: "website",
-        images: [{ url: "https://jooble.az/icons/icon-512x512.jpg", width: 512, height: 512 }],
+        images: [{ url: "https://Jobin.az/icons/icon-512x512.jpg", width: 512, height: 512 }],
     },
 };
 
@@ -40,15 +40,15 @@ export default async function SubscribePage() {
         "@type": "WebPage",
         "name": "Abunə ol - Vakansiya Bildirişləri",
         "description": "Yeni iş elanları və vakansiyalardan xəbərdar olmaq üçün abunə olun",
-        "url": "https://jooble.az/subscribe"
+        "url": "https://Jobin.az/subscribe"
     };
 
     const breadcrumbData = {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
         "itemListElement": [
-            { "@type": "ListItem", "position": 1, "name": "Ana Səhifə", "item": "https://jooble.az" },
-            { "@type": "ListItem", "position": 2, "name": "Abunə ol", "item": "https://jooble.az/subscribe" }
+            { "@type": "ListItem", "position": 1, "name": "Ana Səhifə", "item": "https://Jobin.az" },
+            { "@type": "ListItem", "position": 2, "name": "Abunə ol", "item": "https://Jobin.az/subscribe" }
         ]
     };
 

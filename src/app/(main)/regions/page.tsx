@@ -6,21 +6,21 @@ const supabaseUrl = 'https://igrtzfvphltnoiwedbtz.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlncnR6ZnZwaGx0bm9pd2VkYnR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIyMTQzMDYsImV4cCI6MjA2Nzc5MDMwNn0.afoeynzfpIZMqMRgpD0fDQ_NdULXEML-LZ-SocnYKp0';
 
 export const metadata: Metadata = {
-    title: "Regionlar üzrə İş Elanları | Azərbaycan Vakansiyaları - Jooble.az",
+    title: "Regionlar üzrə İş Elanları | Azərbaycan Vakansiyaları - Jobin.az",
     description: "Azərbaycanın müxtəlif regionlarında iş elanları və vakansiyalar. Bakı, Sumqayıt, Gəncə və digər şəhərlərdə aktual iş təklifləri.",
     keywords: "regionlar, iş elanları, vakansiyalar, Bakı, Sumqayıt, Gəncə, Azərbaycan, iş axtarışı",
     alternates: {
-        canonical: "https://jooble.az/regions",
+        canonical: "https://Jobin.az/regions",
     },
     openGraph: {
-        title: "Regionlar üzrə İş Elanları | Azərbaycan Vakansiyaları - Jooble.az",
+        title: "Regionlar üzrə İş Elanları | Azərbaycan Vakansiyaları - Jobin.az",
         description: "Azərbaycanın müxtəlif regionlarında iş elanları və vakansiyalar. Bakı, Sumqayıt, Gəncə və digər şəhərlərdə aktual iş təklifləri.",
-        url: "https://jooble.az/regions",
-        siteName: "Jooble.az",
+        url: "https://Jobin.az/regions",
+        siteName: "Jobin.az",
         type: "website",
         images: [
             {
-                url: "https://jooble.az/icons/icon-512x512.jpg",
+                url: "https://Jobin.az/icons/icon-512x512.jpg",
                 width: 512,
                 height: 512,
                 alt: "Regionlar üzrə İş Elanları",
@@ -29,9 +29,9 @@ export const metadata: Metadata = {
     },
     twitter: {
         card: "summary_large_image",
-        title: "Regionlar üzrə İş Elanları | Azərbaycan Vakansiyaları - Jooble.az",
+        title: "Regionlar üzrə İş Elanları | Azərbaycan Vakansiyaları - Jobin.az",
         description: "Azərbaycanın müxtəlif regionlarında iş elanları və vakansiyalar. Bakı, Sumqayıt, Gəncə və digər şəhərlərdə aktual iş təklifləri.",
-        images: ["https://jooble.az/icons/icon-512x512.jpg"],
+        images: ["https://Jobin.az/icons/icon-512x512.jpg"],
     },
 };
 
@@ -70,7 +70,7 @@ export default async function RegionsPage() {
         "@type": "CollectionPage",
         "name": "Regionlar üzrə İş Elanları",
         "description": "Azərbaycanın müxtəlif regionlarında iş elanları və vakansiyalar",
-        "url": "https://jooble.az/regions",
+        "url": "https://Jobin.az/regions",
         "mainEntity": {
             "@type": "ItemList",
             "numberOfItems": regions.length,
@@ -80,7 +80,7 @@ export default async function RegionsPage() {
                 "item": {
                     "@type": "Place",
                     "name": region.name,
-                    "url": `https://jooble.az/regions/${region.slug}`
+                    "url": `https://Jobin.az/regions/${region.slug}`
                 }
             }))
         }
@@ -94,13 +94,13 @@ export default async function RegionsPage() {
                 "@type": "ListItem",
                 "position": 1,
                 "name": "Ana Səhifə",
-                "item": "https://jooble.az"
+                "item": "https://Jobin.az"
             },
             {
                 "@type": "ListItem",
                 "position": 2,
                 "name": "Regionlar",
-                "item": "https://jooble.az/regions"
+                "item": "https://Jobin.az/regions"
             }
         ]
     };

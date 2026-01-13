@@ -95,7 +95,7 @@ export default function AdminJobsClient() {
 
   const generateSeoFields = (title: string, companyName: string) => {
     const year = new Date().getFullYear();
-    const seoTitle = `${title} vakansiyası – ${companyName}. ${year} iş elanları və vakansiyalar | Jooble.az`;
+    const seoTitle = `${title} vakansiyası – ${companyName}. ${year} iş elanları və vakansiyalar | Jobin.az`;
     const seoDescription = `${companyName} şirkəti ${title} vakansiyası üzrə işçi axtarır! Ən yeni iş elanları, vakansiyalar, yüksək maaşlı is elanlari və vakansiyalar.`;
     return { seoTitle, seoDescription };
   };
@@ -413,7 +413,7 @@ export default function AdminJobsClient() {
   const handleGoogleIndex = async (job: Job) => {
     try {
       setLoading(true);
-      const jobUrl = `https://jooble.az/vacancies/${job.slug}`;
+      const jobUrl = `https://Jobin.az/vacancies/${job.slug}`;
 
       const { data, error } = await supabase.functions.invoke("google-indexing", {
         body: {

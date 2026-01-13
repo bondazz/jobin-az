@@ -135,7 +135,7 @@ const GoogleIndexing = () => {
   const generateAllUrls = async () => {
     setLoading(true);
     try {
-      const baseUrl = "https://jooble.az";
+      const baseUrl = "https://Jobin.az";
       
       // Static pages
       const staticUrls: string[] = [
@@ -185,7 +185,7 @@ const GoogleIndexing = () => {
         .limit(200);
 
       if (regions && regions.length > 0) {
-        const urls = regions.map(region => `https://jooble.az/regions/${region.slug}`);
+        const urls = regions.map(region => `https://Jobin.az/regions/${region.slug}`);
         setIndexingUrls(urls.join("\n"));
         toast.success(`${regions.length} region URL-i yaradıldı`);
       } else {
@@ -224,7 +224,7 @@ const GoogleIndexing = () => {
       const { data: jobs } = await query;
 
       if (jobs && jobs.length > 0) {
-        const urls = jobs.map(job => `https://jooble.az/vacancies/${job.slug}`);
+        const urls = jobs.map(job => `https://Jobin.az/vacancies/${job.slug}`);
         setIndexingUrls(urls.join("\n"));
         toast.success(`${jobs.length} vakansiya URL-i yaradıldı (${format(startDate, "dd.MM.yyyy")} - ${format(endDate, "dd.MM.yyyy")})`);
       } else {
@@ -247,7 +247,7 @@ const GoogleIndexing = () => {
         .limit(200);
 
       if (companies) {
-        const urls = companies.map(company => `https://jooble.az/companies/${company.slug}`);
+        const urls = companies.map(company => `https://Jobin.az/companies/${company.slug}`);
         setIndexingUrls(urls.join("\n"));
         toast.success(`${companies.length} şirkət URL-i yaradıldı`);
       }
@@ -333,7 +333,7 @@ const GoogleIndexing = () => {
               
               <TabsContent value="manual" className="space-y-4">
                 <Textarea
-                  placeholder="https://jooble.az/vakansiyalar/example-job&#10;https://jooble.az/companies/example-company"
+                  placeholder="https://Jobin.az/vakansiyalar/example-job&#10;https://Jobin.az/companies/example-company"
                   value={indexingUrls}
                   onChange={(e) => setIndexingUrls(e.target.value)}
                   rows={10}

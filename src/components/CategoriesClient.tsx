@@ -17,7 +17,7 @@ import { Tables } from '@/integrations/supabase/types';
 import { Button } from '@/components/ui/button';
 import SEOBreadcrumb from '@/components/SEOBreadcrumb';
 
-const DEFAULT_OG_IMAGE = 'https://jooble.az/icons/icon-512x512.jpg';
+const DEFAULT_OG_IMAGE = 'https://Jobin.az/icons/icon-512x512.jpg';
 
 // Helper function to update all SEO meta tags for a job
 const updateJobSEO = (jobData: any) => {
@@ -29,7 +29,7 @@ const updateJobSEO = (jobData: any) => {
         title: jobData.seo_title || `${jobData.title} | ${jobData.companies?.name || "İş Elanı"}`,
         description: jobData.seo_description || `${jobData.companies?.name || "Şirkət"}də ${jobData.title} vakansiyası`,
         keywords: jobData.seo_keywords?.join(", ") || `${jobData.title}, ${jobData.companies?.name || ""}, vakansiya, iş elanları`,
-        url: `https://jooble.az/vacancies/${jobData.slug}`,
+        url: `https://Jobin.az/vacancies/${jobData.slug}`,
     };
 
     // Update basic meta tags
@@ -238,10 +238,10 @@ const CategoriesClient = () => {
         
         // Update SEO immediately for the selected category
         const metadata: SEOMetadata = {
-            title: category.seo_title || `${category.name} Vakansiyaları | İş Elanları - Jooble.az`,
+            title: category.seo_title || `${category.name} Vakansiyaları | İş Elanları - Jobin.az`,
             description: category.seo_description || `${category.name} sahəsində ən yeni iş elanları və vakansiyalar. Azərbaycanda ${category.name} üzrə aktiv iş təklifləri.`,
             keywords: category.seo_keywords?.join(", ") || `${category.name}, vakansiya, iş elanları, ${category.name} işləri`,
-            url: `https://jooble.az/categories/${category.slug}`,
+            url: `https://Jobin.az/categories/${category.slug}`,
         };
         updatePageMeta(metadata);
         
@@ -504,10 +504,10 @@ const CategoriesClient = () => {
                             // Restore category SEO when going back
                             if (selectedCategory) {
                                 const metadata: SEOMetadata = {
-                                    title: selectedCategory.seo_title || `${selectedCategory.name} Vakansiyaları | İş Elanları - Jooble`,
+                                    title: selectedCategory.seo_title || `${selectedCategory.name} Vakansiyaları | İş Elanları - Jobin`,
                                     description: selectedCategory.seo_description || `${selectedCategory.name} sahəsində aktiv vakansiyalar və iş elanları.`,
                                     keywords: selectedCategory.seo_keywords?.join(", ") || `${selectedCategory.name}, vakansiya, iş elanları`,
-                                    url: `https://jooble.az/categories/${selectedCategory.slug}`,
+                                    url: `https://Jobin.az/categories/${selectedCategory.slug}`,
                                 };
                                 updatePageMeta(metadata);
                             } else {

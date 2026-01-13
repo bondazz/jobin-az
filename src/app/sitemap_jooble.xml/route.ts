@@ -23,13 +23,13 @@ export async function GET() {
             .order('updated_at', { ascending: false })
             .limit(1000);
 
-        const baseUrl = 'https://jooble.az';
+        const baseUrl = 'https://Jobin.az';
 
-        // Jooble-specific XML format
+        // Jobin-specific XML format
         let xml = `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:jooble="http://www.jooble.org">
+<rss version="2.0" xmlns:Jobin="http://www.Jobin.org">
   <channel>
-    <title>Jooble.az - İş Elanları</title>
+    <title>Jobin.az - İş Elanları</title>
     <link>${baseUrl}</link>
     <description>Azərbaycanda ən yeni iş elanları və vakansiyalar</description>`;
 
@@ -42,11 +42,11 @@ export async function GET() {
       <title><![CDATA[${job.title}]]></title>
       <link>${baseUrl}/vacancies/${job.slug}</link>
       <description><![CDATA[${job.title} - ${company?.name}]]></description>
-      <jooble:company><![CDATA[${company?.name || ''}]]></jooble:company>
-      <jooble:location><![CDATA[${job.location}]]></jooble:location>
-      <jooble:category><![CDATA[${category?.name || ''}]]></jooble:category>
-      <jooble:type><![CDATA[${job.type}]]></jooble:type>
-      ${job.salary ? `<jooble:salary><![CDATA[${job.salary}]]></jooble:salary>` : ''}
+      <Jobin:company><![CDATA[${company?.name || ''}]]></Jobin:company>
+      <Jobin:location><![CDATA[${job.location}]]></Jobin:location>
+      <Jobin:category><![CDATA[${category?.name || ''}]]></Jobin:category>
+      <Jobin:type><![CDATA[${job.type}]]></Jobin:type>
+      ${job.salary ? `<Jobin:salary><![CDATA[${job.salary}]]></Jobin:salary>` : ''}
       <pubDate>${new Date(job.created_at).toUTCString()}</pubDate>
       <guid>${baseUrl}/vacancies/${job.slug}</guid>
     </item>`;
@@ -63,7 +63,7 @@ export async function GET() {
             },
         });
     } catch (error) {
-        console.error('Jooble sitemap generation error:', error);
+        console.error('Jobin sitemap generation error:', error);
         return new NextResponse('Error generating sitemap', { status: 500 });
     }
 }

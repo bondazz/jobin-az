@@ -73,7 +73,7 @@ const SimilarBlogs = ({ currentBlogId, isMobile = false }: SimilarBlogsProps) =>
           "@type": "Article",
           "headline": blog.title,
           "description": blog.excerpt,
-          "url": `https://jooble.az/blog/${blog.slug}`,
+          "url": `https://Jobin.az/blog/${blog.slug}`,
           ...(blog.featured_image && { "image": blog.featured_image }),
           ...(blog.published_at && {
             "datePublished": new Date(blog.published_at).toISOString().split('T')[0]
@@ -185,7 +185,7 @@ const SimilarBlogs = ({ currentBlogId, isMobile = false }: SimilarBlogsProps) =>
           <p className="text-sm text-foreground">
             Daha çox məqalə üçün{" "}
             <a
-              href="https://t.me/joobleaz"
+              href="https://t.me/Jobinaz"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 font-semibold text-[#0088cc] hover:text-[#006699] hover:underline transition-colors"

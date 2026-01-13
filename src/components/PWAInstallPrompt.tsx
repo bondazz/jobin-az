@@ -105,16 +105,16 @@ const PWAInstallPrompt = () => {
           <div className="mb-4 rounded-full bg-primary/10 p-4">
             <img
               src="/icons/icon-192x192.jpg"
-              alt="Jooble logo - PWA ikon"
+              alt="Jobin logo - PWA ikon"
               width="64"
               height="64"
               className="w-16 h-16 rounded-lg"
             />
           </div>
 
-          <h2 className="text-2xl font-bold mb-2">Jooble-u Yüklə</h2>
+          <h2 className="text-2xl font-bold mb-2">Jobin-u Yüklə</h2>
           <p className="text-muted-foreground mb-6">
-            Jooble-u cihazınıza quraşdırın və app kimi tam ekran açın. Offline də işləyir.
+            Jobin-u cihazınıza quraşdırın və app kimi tam ekran açın. Offline də işləyir.
           </p>
 
           {canInstall ? (
@@ -135,7 +135,7 @@ const PWAInstallPrompt = () => {
                   <ol className="list-decimal list-inside space-y-1">
                     <li>Safari-də Share düyməsini basın <span className="text-lg">⬆️</span></li>
                     <li>"Add to Home Screen" seçin</li>
-                    <li>Ad: Jooble — sonra "Add" basın</li>
+                    <li>Ad: Jobin — sonra "Add" basın</li>
                   </ol>
                 </div>
               ) : isDesktop ? (
@@ -143,7 +143,7 @@ const PWAInstallPrompt = () => {
                   <p className="font-semibold text-foreground">Desktop PC üçün:</p>
                   <ol className="list-decimal list-inside space-y-1">
                     <li><strong>Chrome/Edge:</strong> Ünvan panelindəki ➕ "Install" ikonuna klikləyin</li>
-                    <li>Və ya brauzer menyusundan (⋮) "Install Jooble..." seçin</li>
+                    <li>Və ya brauzer menyusundan (⋮) "Install Jobin..." seçin</li>
                     <li>"Install" düyməsini basın</li>
                   </ol>
                   <p className="text-xs mt-2 italic">Not: Firefox hal-hazırda PWA quraşdırılmasını dəstəkləmir.</p>
@@ -154,7 +154,7 @@ const PWAInstallPrompt = () => {
                   <ol className="list-decimal list-inside space-y-1">
                     <li>Brauzer menyusunu (⋮) açın</li>
                     <li>"Add to Home screen" və ya "Install app" seçin</li>
-                    <li>Ad: Jooble — təsdiqləyin</li>
+                    <li>Ad: Jobin — təsdiqləyin</li>
                   </ol>
                 </div>
               )}

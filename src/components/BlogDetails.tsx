@@ -180,29 +180,29 @@ export default function BlogDetails({ blogId, isMobile = false }: BlogDetailsPro
       "headline": blog.h1_title || blog.title,
       "description": blog.excerpt,
       "image": blog.featured_image,
-      "url": `https://jooble.az/blog/${blog.slug}`,
+      "url": `https://Jobin.az/blog/${blog.slug}`,
       "datePublished": blog.published_at,
       "dateModified": blog.updated_at,
       "author": blog.blog_authors ? {
         "@type": "Person",
         "name": blog.blog_authors.name,
-        "url": blog.blog_authors.website || `https://jooble.az/blog/author/${blog.blog_authors.slug}`,
+        "url": blog.blog_authors.website || `https://Jobin.az/blog/author/${blog.blog_authors.slug}`,
         "image": blog.blog_authors.avatar_url
       } : {
         "@type": "Organization",
-        "name": "Jooble.az"
+        "name": "Jobin.az"
       },
       "publisher": {
         "@type": "Organization",
-        "name": "Jooble.az",
+        "name": "Jobin.az",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://jooble.az/icons/icon-512x512.jpg"
+          "url": "https://Jobin.az/icons/icon-512x512.jpg"
         }
       },
       "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": `https://jooble.az/blog/${blog.slug}`
+        "@id": `https://Jobin.az/blog/${blog.slug}`
       },
       "wordCount": blog.content ? blog.content.replace(/<[^>]*>/g, '').split(/\s+/).length : 0,
       "timeRequired": `PT${blog.reading_time_minutes || 1}M`
@@ -220,19 +220,19 @@ export default function BlogDetails({ blogId, isMobile = false }: BlogDetailsPro
           "@type": "ListItem",
           "position": 1,
           "name": "Ana səhifə",
-          "item": "https://jooble.az"
+          "item": "https://Jobin.az"
         },
         {
           "@type": "ListItem",
           "position": 2,
           "name": "Bloq",
-          "item": "https://jooble.az/blog"
+          "item": "https://Jobin.az/blog"
         },
         {
           "@type": "ListItem",
           "position": 3,
           "name": blog.title,
-          "item": `https://jooble.az/blog/${blog.slug}`
+          "item": `https://Jobin.az/blog/${blog.slug}`
         }
       ]
     };
@@ -240,7 +240,7 @@ export default function BlogDetails({ blogId, isMobile = false }: BlogDetailsPro
 
   const handleShare = async (platform: string) => {
     if (!blog) return;
-    const url = `https://jooble.az/blog/${blog.slug}`;
+    const url = `https://Jobin.az/blog/${blog.slug}`;
     const title = blog.title;
 
     switch (platform) {
@@ -292,7 +292,7 @@ export default function BlogDetails({ blogId, isMobile = false }: BlogDetailsPro
             <p className="text-sm text-foreground">
               Ən son məqalələr haqqında xəbərdar olmaq üçün{" "}
               <Link
-                href="https://t.me/joobleaz"
+                href="https://t.me/Jobinaz"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 font-semibold text-[#0088cc] hover:text-[#006699] hover:underline transition-colors"

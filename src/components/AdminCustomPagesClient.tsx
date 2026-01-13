@@ -44,7 +44,7 @@ const defaultPage: Partial<CustomPage> = {
   content: '',
   og_title: '',
   og_description: '',
-  og_image: 'https://jooble.az/icons/icon-512x512.jpg',
+  og_image: 'https://Jobin.az/icons/icon-512x512.jpg',
   twitter_title: '',
   twitter_description: '',
   schema_type: 'WebPage',
@@ -115,11 +115,11 @@ export default function AdminCustomPagesClient() {
         seo_title: editingPage.seo_title,
         seo_description: editingPage.seo_description || null,
         seo_keywords: keywords,
-        canonical_url: editingPage.canonical_url || `https://jooble.az/${editingPage.slug?.startsWith('/') ? editingPage.slug.slice(1) : editingPage.slug}`,
+        canonical_url: editingPage.canonical_url || `https://Jobin.az/${editingPage.slug?.startsWith('/') ? editingPage.slug.slice(1) : editingPage.slug}`,
         content: editingPage.content || null,
         og_title: editingPage.og_title || editingPage.seo_title,
         og_description: editingPage.og_description || editingPage.seo_description,
-        og_image: editingPage.og_image || 'https://jooble.az/icons/icon-512x512.jpg',
+        og_image: editingPage.og_image || 'https://Jobin.az/icons/icon-512x512.jpg',
         twitter_title: editingPage.twitter_title || editingPage.og_title || editingPage.seo_title,
         twitter_description: editingPage.twitter_description || editingPage.og_description || editingPage.seo_description,
         schema_type: editingPage.schema_type || 'WebPage',
@@ -245,7 +245,7 @@ export default function AdminCustomPagesClient() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => window.open(`https://jooble.az/${page.slug}`, '_blank')}
+                            onClick={() => window.open(`https://Jobin.az/${page.slug}`, '_blank')}
                           >
                             <Eye className="h-4 w-4" />
                           </Button>
@@ -312,7 +312,7 @@ export default function AdminCustomPagesClient() {
                     id="canonical_url"
                     value={editingPage.canonical_url || ''}
                     onChange={(e) => setEditingPage({ ...editingPage, canonical_url: e.target.value })}
-                    placeholder="https://jooble.az/vacancies"
+                    placeholder="https://Jobin.az/vacancies"
                   />
                 </div>
               </div>
@@ -326,7 +326,7 @@ export default function AdminCustomPagesClient() {
                     id="seo_title"
                     value={editingPage.seo_title || ''}
                     onChange={(e) => setEditingPage({ ...editingPage, seo_title: e.target.value })}
-                    placeholder="Vakansiyalar - Jooble Azerbaijan"
+                    placeholder="Vakansiyalar - Jobin Azerbaijan"
                     maxLength={70}
                   />
                   <p className="text-xs text-muted-foreground">{(editingPage.seo_title || '').length}/60</p>
@@ -373,7 +373,7 @@ export default function AdminCustomPagesClient() {
                       id="og_image"
                       value={editingPage.og_image || ''}
                       onChange={(e) => setEditingPage({ ...editingPage, og_image: e.target.value })}
-                      placeholder="https://jooble.az/icons/icon-512x512.jpg"
+                      placeholder="https://Jobin.az/icons/icon-512x512.jpg"
                     />
                   </div>
                 </div>

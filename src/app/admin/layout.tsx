@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Admin Panel | Jooble Azərbaycan',
-    description: 'Jooble Azərbaycan Admin Paneli',
+    title: 'Admin Panel | Jobin Azərbaycan',
+    description: 'Jobin Azərbaycan Admin Paneli',
     robots: {
         index: false,
         follow: false,

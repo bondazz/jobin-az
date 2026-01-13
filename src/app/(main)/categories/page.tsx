@@ -3,21 +3,21 @@ import { Metadata } from 'next';
 import { supabase } from '@/integrations/supabase/client';
 
 export const metadata: Metadata = {
-    title: "İş Elanları Kateqoriyaları | Sahələr üzrə Vakansiyalar - Jooble.az",
+    title: "İş Elanları Kateqoriyaları | Sahələr üzrə Vakansiyalar - Jobin.az",
     description: "Azərbaycanda müxtəlif sahələr üzrə iş elanları və vakansiyalar. IT, maliyyə, marketinq, satış, tibb və digər kateqoriyalarda aktual iş təklifləri.",
     keywords: "iş elanları, vakansiyalar, kateqoriyalar, iş sahələri, Azərbaycan, iş axtarışı, karyera",
     alternates: {
-        canonical: "https://jooble.az/categories",
+        canonical: "https://Jobin.az/categories",
     },
     openGraph: {
-        title: "İş Elanları Kateqoriyaları | Sahələr üzrə Vakansiyalar - Jooble.az",
+        title: "İş Elanları Kateqoriyaları | Sahələr üzrə Vakansiyalar - Jobin.az",
         description: "Azərbaycanda müxtəlif sahələr üzrə iş elanları və vakansiyalar. IT, maliyyə, marketinq, satış, tibb və digər kateqoriyalarda aktual iş təklifləri.",
-        url: "https://jooble.az/categories",
-        siteName: "Jooble.az",
+        url: "https://Jobin.az/categories",
+        siteName: "Jobin.az",
         type: "website",
         images: [
             {
-                url: "https://jooble.az/icons/icon-512x512.jpg",
+                url: "https://Jobin.az/icons/icon-512x512.jpg",
                 width: 512,
                 height: 512,
                 alt: "İş Elanları Kateqoriyaları",
@@ -26,9 +26,9 @@ export const metadata: Metadata = {
     },
     twitter: {
         card: "summary_large_image",
-        title: "İş Elanları Kateqoriyaları | Sahələr üzrə Vakansiyalar - Jooble.az",
+        title: "İş Elanları Kateqoriyaları | Sahələr üzrə Vakansiyalar - Jobin.az",
         description: "Azərbaycanda müxtəlif sahələr üzrə iş elanları və vakansiyalar. IT, maliyyə, marketinq, satış, tibb və digər kateqoriyalarda aktual iş təklifləri.",
-        images: ["https://jooble.az/icons/icon-512x512.jpg"],
+        images: ["https://Jobin.az/icons/icon-512x512.jpg"],
     },
 };
 
@@ -75,7 +75,7 @@ export default async function CategoriesPage() {
         "@type": "CollectionPage",
         "name": "İş Elanları Kateqoriyaları",
         "description": "Azərbaycanda müxtəlif sahələr üzrə iş elanları və vakansiyalar",
-        "url": "https://jooble.az/categories",
+        "url": "https://Jobin.az/categories",
         "mainEntity": {
             "@type": "ItemList",
             "name": "İş Kateqoriyaları",
@@ -86,7 +86,7 @@ export default async function CategoriesPage() {
                 "item": {
                     "@type": "Thing",
                     "name": category.name,
-                    "url": `https://jooble.az/categories/${category.slug}`,
+                    "url": `https://Jobin.az/categories/${category.slug}`,
                     "description": category.seo_description || `${category.name} sahəsində iş elanları`
                 }
             }))
@@ -101,13 +101,13 @@ export default async function CategoriesPage() {
                 "@type": "ListItem",
                 "position": 1,
                 "name": "Ana Səhifə",
-                "item": "https://jooble.az"
+                "item": "https://Jobin.az"
             },
             {
                 "@type": "ListItem",
                 "position": 2,
                 "name": "Kateqoriyalar",
-                "item": "https://jooble.az/categories"
+                "item": "https://Jobin.az/categories"
             }
         ]
     };
@@ -144,7 +144,7 @@ export default async function CategoriesPage() {
                         <ul>
                             {categories.map((category) => (
                                 <li key={category.id}>
-                                    <a href={`https://jooble.az/categories/${category.slug}`}>
+                                    <a href={`https://Jobin.az/categories/${category.slug}`}>
                                         <strong>{category.name}</strong>
                                         {` - ${category.jobsCount} aktiv vakansiya`}
                                         {category.description && (
@@ -164,7 +164,7 @@ export default async function CategoriesPage() {
                                 .slice(0, 10)
                                 .map((category) => (
                                     <li key={category.id}>
-                                        <a href={`https://jooble.az/categories/${category.slug}`}>
+                                        <a href={`https://Jobin.az/categories/${category.slug}`}>
                                             {category.name} - {category.jobsCount} vakansiya
                                         </a>
                                     </li>

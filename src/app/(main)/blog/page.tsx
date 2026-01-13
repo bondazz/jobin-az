@@ -1,14 +1,14 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Bloq | Jooble.az - Karyera Məqalələri və İş Axtarışı Məsləhətləri",
-  description: "Karyera inkişafı, iş axtarışı, CV yazma, müsahibə hazırlığı və əmək bazarı haqqında ən son məqalələr. Jooble.az bloqu ilə karyeranızı inkişaf etdirin.",
+  title: "Bloq | Jobin.az - Karyera Məqalələri və İş Axtarışı Məsləhətləri",
+  description: "Karyera inkişafı, iş axtarışı, CV yazma, müsahibə hazırlığı və əmək bazarı haqqında ən son məqalələr. Jobin.az bloqu ilə karyeranızı inkişaf etdirin.",
   keywords: ["karyera", "iş axtarışı", "CV", "müsahibə", "əmək bazarı", "bloq", "məqalə"],
   openGraph: {
-    title: "Bloq | Jooble.az - Karyera Məqalələri",
+    title: "Bloq | Jobin.az - Karyera Məqalələri",
     description: "Karyera inkişafı və iş axtarışı haqqında məqalələr",
     type: "website",
-    url: "https://jooble.az/blog",
+    url: "https://Jobin.az/blog",
   },
 };
 

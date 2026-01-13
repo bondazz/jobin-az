@@ -333,7 +333,7 @@ export default function BlogListClient({ blogs, categories }: BlogListClientProp
                       Ən son məqalələr və vakansiyalardan xəbərdar olun
                     </p>
                     <a
-                      href="https://t.me/joobleaz"
+                      href="https://t.me/Jobinaz"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0088cc] text-white hover:bg-[#0088cc]/90 transition-colors text-sm font-medium"

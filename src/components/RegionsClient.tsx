@@ -16,7 +16,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import SEOBreadcrumb from '@/components/SEOBreadcrumb';
 
-const DEFAULT_OG_IMAGE = 'https://jooble.az/icons/icon-512x512.jpg';
+const DEFAULT_OG_IMAGE = 'https://Jobin.az/icons/icon-512x512.jpg';
 
 // Helper function to update all SEO meta tags for a job
 const updateJobSEO = (jobData: any) => {
@@ -28,7 +28,7 @@ const updateJobSEO = (jobData: any) => {
         title: jobData.seo_title || `${jobData.title} | ${jobData.companies?.name || "İş Elanı"}`,
         description: jobData.seo_description || `${jobData.companies?.name || "Şirkət"}də ${jobData.title} vakansiyası`,
         keywords: jobData.seo_keywords?.join(", ") || `${jobData.title}, ${jobData.companies?.name || ""}, vakansiya, iş elanları`,
-        url: `https://jooble.az/vacancies/${jobData.slug}`,
+        url: `https://Jobin.az/vacancies/${jobData.slug}`,
     };
 
     updatePageMeta(metadata);
@@ -236,10 +236,10 @@ const RegionsClient = () => {
         setSelectedJob(null);
         
         const metadata: SEOMetadata = {
-            title: region.seo_title || `${region.name} Vakansiyaları | İş Elanları - Jooble.az`,
+            title: region.seo_title || `${region.name} Vakansiyaları | İş Elanları - Jobin.az`,
             description: region.seo_description || `${region.name} regionunda ən yeni iş elanları və vakansiyalar. ${region.name} üzrə aktual iş təklifləri.`,
             keywords: region.seo_keywords?.join(", ") || `${region.name}, vakansiya, iş elanları, ${region.name} işləri`,
-            url: `https://jooble.az/regions/${region.slug}`,
+            url: `https://Jobin.az/regions/${region.slug}`,
         };
         updatePageMeta(metadata);
         
@@ -505,10 +505,10 @@ const RegionsClient = () => {
                             
                             if (selectedRegion) {
                                 const metadata: SEOMetadata = {
-                                    title: selectedRegion.seo_title || `${selectedRegion.name} Vakansiyaları | İş Elanları - Jooble`,
+                                    title: selectedRegion.seo_title || `${selectedRegion.name} Vakansiyaları | İş Elanları - Jobin`,
                                     description: selectedRegion.seo_description || `${selectedRegion.name} regionunda aktiv vakansiyalar və iş elanları.`,
                                     keywords: selectedRegion.seo_keywords?.join(", ") || `${selectedRegion.name}, vakansiya, iş elanları`,
-                                    url: `https://jooble.az/regions/${selectedRegion.slug}`,
+                                    url: `https://Jobin.az/regions/${selectedRegion.slug}`,
                                 };
                                 updatePageMeta(metadata);
                             } else {

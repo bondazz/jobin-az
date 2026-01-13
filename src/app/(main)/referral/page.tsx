@@ -2,19 +2,19 @@ import ReferralClient from '@/components/ReferralClient';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: "Referral Proqramı – Qazanc Əldə Edin | Jooble.az",
+    title: "Referral Proqramı – Qazanc Əldə Edin | Jobin.az",
     description: "Referral ilə qazanc: linkinizi paylaşın, hər təsdiqlənən elana görə 5 AZN qazanın. Dostlarınızı dəvət edin və pul qazanın.",
     keywords: "referral proqramı, qazanc, pul qazanmaq, dostları dəvət, 5 AZN, partner proqramı, affiliate",
     alternates: {
-        canonical: "https://jooble.az/referral",
+        canonical: "https://Jobin.az/referral",
     },
     openGraph: {
-        title: "Referral Proqramı – Qazanc Əldə Edin | Jooble.az",
+        title: "Referral Proqramı – Qazanc Əldə Edin | Jobin.az",
         description: "Referral ilə qazanc: linkinizi paylaşın, hər təsdiqlənən elana görə 5 AZN qazanın.",
-        url: "https://jooble.az/referral",
-        siteName: "Jooble.az",
+        url: "https://Jobin.az/referral",
+        siteName: "Jobin.az",
         type: "website",
-        images: [{ url: "https://jooble.az/icons/icon-512x512.jpg", width: 512, height: 512 }],
+        images: [{ url: "https://Jobin.az/icons/icon-512x512.jpg", width: 512, height: 512 }],
     },
 };
 
@@ -24,7 +24,7 @@ export default function ReferralPage() {
         "@type": "WebPage",
         "name": "Referral Proqramı",
         "description": "Linkinizi paylaşın və hər təsdiqlənən elana görə 5 AZN qazanın",
-        "url": "https://jooble.az/referral"
+        "url": "https://Jobin.az/referral"
     };
 
     const faqData = {
@@ -62,8 +62,8 @@ export default function ReferralPage() {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
         "itemListElement": [
-            { "@type": "ListItem", "position": 1, "name": "Ana Səhifə", "item": "https://jooble.az" },
-            { "@type": "ListItem", "position": 2, "name": "Referral Proqramı", "item": "https://jooble.az/referral" }
+            { "@type": "ListItem", "position": 1, "name": "Ana Səhifə", "item": "https://Jobin.az" },
+            { "@type": "ListItem", "position": 2, "name": "Referral Proqramı", "item": "https://Jobin.az/referral" }
         ]
     };
 

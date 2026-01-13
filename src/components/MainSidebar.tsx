@@ -300,7 +300,7 @@ const MainSidebar = () => {
 
           {/* Instagram */}
           <a
-            href="https://instagram.com/jooble.az"
+            href="https://instagram.com/Jobin.az"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Instagram"
@@ -311,7 +311,7 @@ const MainSidebar = () => {
 
           {/* Telegram */}
           <a
-            href="https://t.me/joobleaz"
+            href="https://t.me/Jobinaz"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Telegram"
@@ -322,7 +322,7 @@ const MainSidebar = () => {
 
           {/* Threads */}
           <a
-            href="https://threads.net/@jooble.az"
+            href="https://threads.net/@Jobin.az"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Threads"
@@ -344,7 +344,7 @@ const MainSidebar = () => {
 
           {/* Facebook */}
           <a
-            href="https://www.facebook.com/people/joobleaz/61582558110105"
+            href="https://www.facebook.com/people/Jobinaz/61582558110105"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Facebook"
@@ -370,13 +370,13 @@ const MainSidebar = () => {
             <span className="font-medium">
               © 2024-2026{" "}
               <a href="https://jooble.az" target="_blank" className="text-primary hover:underline">
-                Jooble.az
+                Jobin.az
               </a>
               . İş elanları və vakansiyalar
             </span>
           </div>
           <a
-            href="https://storage.jooble.az/sitemap.xml"
+            href="https://storage.Jobin.az/sitemap.xml"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-primary/10 text-primary text-[10px] font-medium hover:bg-primary/20 transition-all duration-200 border border-primary/20"

@@ -215,7 +215,7 @@ const AdminSitemap = () => {
               placeholder="XML məzmunu buraya əlavə edin...
 &lt;urlset xmlns=&quot;http://www.sitemaps.org/schemas/sitemap/0.9&quot;&gt;
   &lt;url&gt;
-    &lt;loc&gt;https://jooble.az&lt;/loc&gt;
+    &lt;loc&gt;https://Jobin.az&lt;/loc&gt;
     &lt;lastmod&gt;2025-09-17&lt;/lastmod&gt;
     &lt;changefreq&gt;daily&lt;/changefreq&gt;
     &lt;priority&gt;1.0&lt;/priority&gt;
@@ -512,9 +512,9 @@ const AdminSitemap = () => {
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="space-y-2 text-sm">
-              <p><strong>Ana sitemap:</strong> https://jooble.az/sitemap.xml</p>
-              <p><strong>İndeks sitemap:</strong> https://jooble.az/sitemap_index.xml</p>
-              <p><strong>Robots.txt referansı:</strong> https://jooble.az/sitemap.xml</p>
+              <p><strong>Ana sitemap:</strong> https://Jobin.az/sitemap.xml</p>
+              <p><strong>İndeks sitemap:</strong> https://Jobin.az/sitemap_index.xml</p>
+              <p><strong>Robots.txt referansı:</strong> https://Jobin.az/sitemap.xml</p>
               <p><strong>Format:</strong> XML (Google Sitemap Standartı)</p>
               <p><strong>URL formatı:</strong> Bütün iş elanları /vacancies/ ilə başlayır</p>
               <p><strong>Yeniləmə:</strong> Verilənlər bazasından avtomatik əks olunur</p>

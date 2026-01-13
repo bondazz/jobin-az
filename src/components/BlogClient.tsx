@@ -96,15 +96,15 @@ const BlogClient = () => {
     return {
       "@context": "https://schema.org",
       "@type": "Blog",
-      "name": "Jooble.az Bloq",
+      "name": "Jobin.az Bloq",
       "description": "Karyera inkişafı, iş axtarışı və əmək bazarı haqqında məqalələr",
-      "url": "https://jooble.az/blog",
+      "url": "https://Jobin.az/blog",
       "publisher": {
         "@type": "Organization",
-        "name": "Jooble.az",
+        "name": "Jobin.az",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://jooble.az/icons/icon-512x512.jpg"
+          "url": "https://Jobin.az/icons/icon-512x512.jpg"
         }
       }
     };
@@ -141,7 +141,7 @@ const BlogClient = () => {
               <div className="sr-only">
                 <h2>Bloq Məqalələri - Karyera və İş Axtarışı</h2>
                 <p>
-                  Jooble.az bloqu ilə karyera inkişafı, iş axtarışı məsləhətləri, CV hazırlama qaydaları 
+                  Jobin.az bloqu ilə karyera inkişafı, iş axtarışı məsləhətləri, CV hazırlama qaydaları 
                   və müsahibə hazırlığı haqqında ən son məqalələri oxuyun.
                 </p>
               </div>

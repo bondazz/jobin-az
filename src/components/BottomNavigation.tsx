@@ -242,7 +242,7 @@ const BottomNavigation = () => {
               {/* Sitemap Link for SEO */}
               <div className="pt-2 border-t border-border/40">
                 <a
-                  href="https://storage.jooble.az/sitemap.xml"
+                  href="https://storage.Jobin.az/sitemap.xml"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-primary/10 text-primary text-[10px] font-medium hover:bg-primary/20 transition-all duration-200 border border-primary/20"

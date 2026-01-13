@@ -6,19 +6,19 @@ const supabaseUrl = 'https://igrtzfvphltnoiwedbtz.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlncnR6ZnZwaGx0bm9pd2VkYnR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIyMTQzMDYsImV4cCI6MjA2Nzc5MDMwNn0.afoeynzfpIZMqMRgpD0fDQ_NdULXEML-LZ-SocnYKp0';
 
 export const metadata: Metadata = {
-    title: "Xidmətlər və Qiymətlər | İş Elanı Yerləşdirmə - Jooble.az",
+    title: "Xidmətlər və Qiymətlər | İş Elanı Yerləşdirmə - Jobin.az",
     description: "İş elanları yerləşdirmək və reklam xidmətləri haqqında məlumat. Müxtəlif qiymət paketləri və premium xüsusiyyətlər.",
     keywords: "xidmətlər, qiymətlər, iş elanı yerləşdirmə, vakansiya reklam, premium paket, işəgötürən xidmətləri",
     alternates: {
-        canonical: "https://jooble.az/services",
+        canonical: "https://Jobin.az/services",
     },
     openGraph: {
-        title: "Xidmətlər və Qiymətlər | İş Elanı Yerləşdirmə - Jooble.az",
+        title: "Xidmətlər və Qiymətlər | İş Elanı Yerləşdirmə - Jobin.az",
         description: "İş elanları yerləşdirmək və reklam xidmətləri haqqında məlumat.",
-        url: "https://jooble.az/services",
-        siteName: "Jooble.az",
+        url: "https://Jobin.az/services",
+        siteName: "Jobin.az",
         type: "website",
-        images: [{ url: "https://jooble.az/icons/icon-512x512.jpg", width: 512, height: 512 }],
+        images: [{ url: "https://Jobin.az/icons/icon-512x512.jpg", width: 512, height: 512 }],
     },
 };
 
@@ -48,7 +48,7 @@ export default async function ServicesPage() {
         "@type": "WebPage",
         "name": "Xidmətlər və Qiymətlər",
         "description": "İş elanları yerləşdirmək və reklam xidmətləri",
-        "url": "https://jooble.az/services",
+        "url": "https://Jobin.az/services",
         "mainEntity": {
             "@type": "ItemList",
             "numberOfItems": plans.length,
@@ -64,7 +64,7 @@ export default async function ServicesPage() {
                         "@type": "Product",
                         "name": plan.name,
                         "description": plan.description || plan.name,
-                        "image": "https://jooble.az/icons/icon-512x512.jpg",
+                        "image": "https://Jobin.az/icons/icon-512x512.jpg",
                         "offers": {
                             "@type": "Offer",
                             "price": numericPrice,
@@ -81,8 +81,8 @@ export default async function ServicesPage() {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
         "itemListElement": [
-            { "@type": "ListItem", "position": 1, "name": "Ana Səhifə", "item": "https://jooble.az" },
-            { "@type": "ListItem", "position": 2, "name": "Xidmətlər və Qiymətlər", "item": "https://jooble.az/services" }
+            { "@type": "ListItem", "position": 1, "name": "Ana Səhifə", "item": "https://Jobin.az" },
+            { "@type": "ListItem", "position": 2, "name": "Xidmətlər və Qiymətlər", "item": "https://Jobin.az/services" }
         ]
     };
 

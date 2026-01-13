@@ -70,7 +70,7 @@ export const generatePageSEO = async (page: string, additionalInfo?: string): Pr
 
   const defaultSeoData: Record<string, SEOMetadata> = {
     home: {
-      title: settings.site_title || "İş Elanları | Jooble Azərbaycan - Ən Yaxşı İş Elanları",
+      title: settings.site_title || "İş Elanları | Jobin Azərbaycan - Ən Yaxşı İş Elanları",
       description:
         settings.site_description ||
         "Azərbaycanda ən yaxşı iš elanları və vakansiyalar. Minlərlə şirkət və iş imkanı bir yerdə. İndi qeydiyyatdan keçin və arzuladığınız işi tapın.",
@@ -126,15 +126,15 @@ export const generatePageSEO = async (page: string, additionalInfo?: string): Pr
     },
     services: {
       title: "İş elanları qiymətləri | Premium Xidmətlər",
-      description: "Jooble premium xidmətləri və qiymət planları. Premium elanlar, prioritet dəstək və əlavə imkanlar.",
+      description: "Jobin premium xidmətləri və qiymət planları. Premium elanlar, prioritet dəstək və əlavə imkanlar.",
       keywords: "qiymət planları, premium xidmətlər, premium elanlar, ödənişli xidmətlər",
       url: "/services",
     },
     about: {
-      title: "Haqqımızda | Jooble Azərbaycan",
+      title: "Haqqımızda | Jobin Azərbaycan",
       description:
-        "Jooble haqqında məlumat. Missiyamız, dəyərlərimiz və Azərbaycanda iş axtarış platformasının təcrübəsi.",
-      keywords: "Jooble haqqında, missiya, Azərbaycan iş elanları, şirkət məlumatları",
+        "Jobin haqqında məlumat. Missiyamız, dəyərlərimiz və Azərbaycanda iş axtarış platformasının təcrübəsi.",
+      keywords: "Jobin haqqında, missiya, Azərbaycan iş elanları, şirkət məlumatları",
       url: "/about",
     },
   };
@@ -196,7 +196,7 @@ export const updatePageMeta = (metadata: SEOMetadata) => {
   // Get canonical URL - normalize to prevent duplicate content issues
   const canonicalUrl = normalizeUrl(metadata.url);
   // Ensure we don't duplicate the domain if URL is already absolute
-  const fullCanonicalUrl = canonicalUrl.startsWith("http") ? canonicalUrl : `https://jooble.az${canonicalUrl}`;
+  const fullCanonicalUrl = canonicalUrl.startsWith("http") ? canonicalUrl : `https://Jobin.az${canonicalUrl}`;
 
   // Update canonical URL
   const canonicalLink = document.querySelector('link[rel="canonical"]');
@@ -226,7 +226,7 @@ export const updatePageMeta = (metadata: SEOMetadata) => {
   updateOGTag("og:description", metadata.description);
   updateOGTag("og:url", fullCanonicalUrl);
   updateOGTag("og:type", "website");
-  updateOGTag("og:site_name", "Jooble Azərbaycan");
+  updateOGTag("og:site_name", "Jobin Azərbaycan");
 
   // Add hreflang for multi-language support
   const hreflangLink = document.querySelector('link[rel="alternate"][hreflang="az"]');

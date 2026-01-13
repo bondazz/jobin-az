@@ -5,7 +5,7 @@ const supabaseUrl = 'https://igrtzfvphltnoiwedbtz.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlncnR6ZnZwaGx0bm9pd2VkYnR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIyMTQzMDYsImV4cCI6MjA2Nzc5MDMwNn0.afoeynzfpIZMqMRgpD0fDQ_NdULXEML-LZ-SocnYKp0';
 
 export const metadata: Metadata = {
-    title: "Vakansiyalar | İş Elanları Azərbaycan - Jooble",
+    title: "Vakansiyalar | İş Elanları Azərbaycan - Jobin",
     description: "Azərbaycanda aktiv vakansiyalar və iş elanları. Müxtəlif sahələrdə iş imkanları, maaş məlumatları və şirkət təfərrüatları.",
     keywords: "vakansiyalar, iş elanları, Azərbaycan işləri, aktiv elanlar, iş axtarışı",
     alternates: {
@@ -89,9 +89,9 @@ export default async function VacanciesPage() {
     const structuredData = {
         "@context": "https://schema.org",
         "@type": "CollectionPage",
-        "name": "Vakansiyalar - Jooble Azərbaycan",
+        "name": "Vakansiyalar - Jobin Azərbaycan",
         "description": "Azərbaycanda aktiv vakansiyalar və iş elanları",
-        "url": "https://jooble.az/vacancies",
+        "url": "https://Jobin.az/vacancies",
         "mainEntity": {
             "@type": "ItemList",
             "numberOfItems": totalJobs,
@@ -115,7 +115,7 @@ export default async function VacanciesPage() {
                             "addressCountry": "AZ"
                         }
                     },
-                    "url": `https://jooble.az/vacancies/${job.slug}`
+                    "url": `https://Jobin.az/vacancies/${job.slug}`
                 }
             }))
         }
@@ -129,13 +129,13 @@ export default async function VacanciesPage() {
                 "@type": "ListItem",
                 "position": 1,
                 "name": "Ana Səhifə",
-                "item": "https://jooble.az"
+                "item": "https://Jobin.az"
             },
             {
                 "@type": "ListItem",
                 "position": 2,
                 "name": "Vakansiyalar",
-                "item": "https://jooble.az/vacancies"
+                "item": "https://Jobin.az/vacancies"
             }
         ]
     };
@@ -143,9 +143,9 @@ export default async function VacanciesPage() {
     const organizationSchema = {
         "@context": "https://schema.org",
         "@type": "Organization",
-        "name": "Jooble Azərbaycan",
-        "url": "https://jooble.az",
-        "logo": "https://jooble.az/icons/icon-512x512.jpg",
+        "name": "Jobin Azərbaycan",
+        "url": "https://Jobin.az",
+        "logo": "https://Jobin.az/icons/icon-512x512.jpg",
         "description": "Azərbaycanın ən böyük iş axtarış platforması",
         "aggregateRating": {
             "@type": "AggregateRating",
@@ -182,7 +182,7 @@ export default async function VacanciesPage() {
                                 <li key={job.id}>
                                     <article>
                                         <h3>
-                                            <a href={`https://jooble.az/vacancies/${job.slug}`}>
+                                            <a href={`https://Jobin.az/vacancies/${job.slug}`}>
                                                 {job.title}
                                             </a>
                                         </h3>
@@ -206,7 +206,7 @@ export default async function VacanciesPage() {
                         <ul>
                             {categories.map((category: any) => (
                                 <li key={category.id}>
-                                    <a href={`https://jooble.az/categories/${category.slug}`}>
+                                    <a href={`https://Jobin.az/categories/${category.slug}`}>
                                         {category.name} vakansiyaları
                                     </a>
                                 </li>
@@ -219,7 +219,7 @@ export default async function VacanciesPage() {
                         <ul>
                             {regions.map((region: any) => (
                                 <li key={region.id}>
-                                    <a href={`https://jooble.az/regions/${region.slug}`}>
+                                    <a href={`https://Jobin.az/regions/${region.slug}`}>
                                         {region.name} vakansiyaları
                                     </a>
                                 </li>
@@ -232,7 +232,7 @@ export default async function VacanciesPage() {
                         <ul>
                             {companies.map((company: any) => (
                                 <li key={company.id}>
-                                    <a href={`https://jooble.az/companies/${company.slug}`}>
+                                    <a href={`https://Jobin.az/companies/${company.slug}`}>
                                         {company.name} vakansiyaları
                                     </a>
                                 </li>
@@ -241,7 +241,7 @@ export default async function VacanciesPage() {
                     </section>
 
                     <footer>
-                        <p>© 2026 Jooble.az - Azərbaycanın ən böyük iş axtarış platforması.</p>
+                        <p>© 2026 Jobin.az - Azərbaycanın ən böyük iş axtarış platforması.</p>
                     </footer>
                 </article>
             </div>

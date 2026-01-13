@@ -6,19 +6,19 @@ const supabaseUrl = 'https://igrtzfvphltnoiwedbtz.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlncnR6ZnZwaGx0bm9pd2VkYnR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIyMTQzMDYsImV4cCI6MjA2Nzc5MDMwNn0.afoeynzfpIZMqMRgpD0fDQ_NdULXEML-LZ-SocnYKp0';
 
 export const metadata: Metadata = {
-    title: "Haqqımızda | Jooble.az - Azərbaycanın İş Axtarış Platforması",
-    description: "Jooble.az haqqında ətraflı məlumat, missiyamız və təklif etdiyimiz xidmətlər. Azərbaycanın aparıcı iş axtarış platforması.",
-    keywords: "haqqımızda, Jooble.az, iş axtarış platforması, vakansiya platforması, Azərbaycan, missiya, xidmətlər",
+    title: "Haqqımızda | Jobin.az - Azərbaycanın İş Axtarış Platforması",
+    description: "Jobin.az haqqında ətraflı məlumat, missiyamız və təklif etdiyimiz xidmətlər. Azərbaycanın aparıcı iş axtarış platforması.",
+    keywords: "haqqımızda, Jobin.az, iş axtarış platforması, vakansiya platforması, Azərbaycan, missiya, xidmətlər",
     alternates: {
-        canonical: "https://jooble.az/about",
+        canonical: "https://Jobin.az/about",
     },
     openGraph: {
-        title: "Haqqımızda | Jooble.az - Azərbaycanın İş Axtarış Platforması",
-        description: "Jooble.az haqqında ətraflı məlumat, missiyamız və təklif etdiyimiz xidmətlər.",
-        url: "https://jooble.az/about",
-        siteName: "Jooble.az",
+        title: "Haqqımızda | Jobin.az - Azərbaycanın İş Axtarış Platforması",
+        description: "Jobin.az haqqında ətraflı məlumat, missiyamız və təklif etdiyimiz xidmətlər.",
+        url: "https://Jobin.az/about",
+        siteName: "Jobin.az",
         type: "website",
-        images: [{ url: "https://jooble.az/icons/icon-512x512.jpg", width: 512, height: 512 }],
+        images: [{ url: "https://Jobin.az/icons/icon-512x512.jpg", width: 512, height: 512 }],
     },
 };
 
@@ -54,13 +54,13 @@ export default async function AboutPage() {
     const structuredData = {
         "@context": "https://schema.org",
         "@type": "AboutPage",
-        "name": "Haqqımızda - Jooble.az",
-        "description": "Jooble.az haqqında ətraflı məlumat",
-        "url": "https://jooble.az/about",
+        "name": "Haqqımızda - Jobin.az",
+        "description": "Jobin.az haqqında ətraflı məlumat",
+        "url": "https://Jobin.az/about",
         "mainEntity": {
             "@type": "Organization",
-            "name": "Jooble.az",
-            "url": "https://jooble.az",
+            "name": "Jobin.az",
+            "url": "https://Jobin.az",
             "description": "Azərbaycanın aparıcı iş axtarış platforması",
             "foundingDate": "2024",
             "areaServed": "Azerbaijan"
@@ -71,15 +71,15 @@ export default async function AboutPage() {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
         "itemListElement": [
-            { "@type": "ListItem", "position": 1, "name": "Ana Səhifə", "item": "https://jooble.az" },
-            { "@type": "ListItem", "position": 2, "name": "Haqqımızda", "item": "https://jooble.az/about" }
+            { "@type": "ListItem", "position": 1, "name": "Ana Səhifə", "item": "https://Jobin.az" },
+            { "@type": "ListItem", "position": 2, "name": "Haqqımızda", "item": "https://Jobin.az/about" }
         ]
     };
 
     return (
         <>
             <div className="sr-only" aria-hidden="true">
-                <h1>Haqqımızda - Jooble.az</h1>
+                <h1>Haqqımızda - Jobin.az</h1>
                 <p>Azərbaycanın aparıcı iş axtarış platforması. {jobCount} aktiv vakansiya və {companyCount} şirkət ilə xidmətinizdəyik.</p>
                 
                 <h2>Missiyamız</h2>

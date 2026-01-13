@@ -145,7 +145,7 @@ export default function BlogPostClient({ blog, relatedBlogs }: BlogPostClientPro
   }, [blog.content]);
 
   const handleShare = async (platform: string) => {
-    const url = `https://jooble.az/blog/${blog.slug}`;
+    const url = `https://Jobin.az/blog/${blog.slug}`;
     const title = blog.title;
 
     switch (platform) {
@@ -502,7 +502,7 @@ export default function BlogPostClient({ blog, relatedBlogs }: BlogPostClientPro
                       Ən son məqalələrdən xəbərdar olun
                     </p>
                     <a
-                      href="https://t.me/joobleaz"
+                      href="https://t.me/Jobinaz"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0088cc] text-white hover:bg-[#0088cc]/90 transition-colors text-sm font-medium"

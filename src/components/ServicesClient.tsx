@@ -156,7 +156,7 @@ const ServicesClient = () => {
                                 <div className="space-y-4 text-muted-foreground leading-relaxed">
                                     <p>
                                         İş elanı vermək istəyənlərdən xahiş olunur ki, vakant vəzifə barədə məlumatları Word formatında
-                                        <strong className="text-foreground"> info@jooble.az</strong> elektron ünvanına göndərsinlər.
+                                        <strong className="text-foreground"> info@Jobin.az</strong> elektron ünvanına göndərsinlər.
                                         Elan mətninin daha oxunaqlı və anlaşılan olması üçün komandamız tərəfindən bəzi qrammatik və üslubi düzəlişlər edilə bilər.
                                     </p>
 
@@ -203,7 +203,7 @@ const ServicesClient = () => {
                                 <div className="space-y-4 text-muted-foreground leading-relaxed">
                                     <p>
                                         <Link href="/vacancies" className="text-foreground font-bold hover:text-primary transition-colors">
-                                            Jooble.az
+                                            Jobin.az
                                         </Link> rəsmi qeydiyyatdan keçmiş hüquqi şəxsdir və bütün ödənişlər
                                         bank köçürməsi ilə qəbul olunur. Xidmətlərimizə görə bütün vergi və rəsmi sənədlər qanunvericiliyə uyğun təqdim edilir.
                                     </p>

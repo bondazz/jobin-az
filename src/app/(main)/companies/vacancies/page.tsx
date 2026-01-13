@@ -16,13 +16,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     if (!data) return {};
 
     return {
-        title: data.jobs_seo_title || `${data.name} - İş Elanları | Jooble`,
+        title: data.jobs_seo_title || `${data.name} - İş Elanları | Jobin`,
         description: data.jobs_seo_description || `${data.name} şirkətində aktiv vakansiyalar və iş elanları.`,
         openGraph: {
             images: data.logo ? [data.logo] : [],
         },
         alternates: {
-            canonical: `https://jooble.az/companies/${params.company}/vacancies`,
+            canonical: `https://Jobin.az/companies/${params.company}/vacancies`,
         },
     };
 }

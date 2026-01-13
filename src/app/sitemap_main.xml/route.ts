@@ -11,7 +11,7 @@ export async function GET() {
             .eq('is_active', true)
             .order('updated_at', { ascending: false });
 
-        const baseUrl = 'https://jooble.az';
+        const baseUrl = 'https://Jobin.az';
 
         let xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;

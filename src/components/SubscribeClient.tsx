@@ -61,7 +61,7 @@ const SubscribeClient = () => {
                                 <style>
                                     {`.title { font-family: var(--font-saira), sans-serif; fill:#F6FCFF; font-weight:700; }
                   .muted { font-family: var(--font-saira), sans-serif; fill:#DFF5FF; opacity:0.95; }
-                  .jooble { font-family: var(--font-saira), sans-serif; font-weight:700; fill:#FFFFFF; }`}
+                  .Jobin { font-family: var(--font-saira), sans-serif; font-weight:700; fill:#FFFFFF; }`}
                                 </style>
                             </defs>
 
@@ -106,11 +106,11 @@ const SubscribeClient = () => {
 
                                     <g transform="translate(16,13)">
                                         <rect x="0" y="0" width="52" height="52" rx="12" ry="12" fill="#000" />
-                                        <text x="26" y="33" className="jooble" fontSize="12" textAnchor="middle">Jooble</text>
+                                        <text x="26" y="33" className="Jobin" fontSize="12" textAnchor="middle">Jobin</text>
                                     </g>
 
                                     <text x="86" y="30" fontSize="15" className="title">Baş mühasib vakansiyası</text>
-                                    <text x="86" y="49" fontSize="12" className="muted">Jooble.az sənin üçün elan yerləşdirdi.</text>
+                                    <text x="86" y="49" fontSize="12" className="muted">Jobin.az sənin üçün elan yerləşdirdi.</text>
                                 </g>
 
                                 <g id="n2" filter="url(#softShadow)" transform="translate(20,-120)" opacity="0">
@@ -125,7 +125,7 @@ const SubscribeClient = () => {
 
                                     <g transform="translate(16,13)">
                                         <rect x="0" y="0" width="52" height="52" rx="12" ry="12" fill="#000" />
-                                        <text x="26" y="33" className="jooble" fontSize="12" textAnchor="middle">Jooble</text>
+                                        <text x="26" y="33" className="Jobin" fontSize="12" textAnchor="middle">Jobin</text>
                                     </g>
 
                                     <text x="86" y="30" fontSize="15" className="title">Satış meneceri</text>
@@ -144,7 +144,7 @@ const SubscribeClient = () => {
 
                                     <g transform="translate(16,13)">
                                         <rect x="0" y="0" width="52" height="52" rx="12" ry="12" fill="#000" />
-                                        <text x="26" y="33" className="jooble" fontSize="12" textAnchor="middle">Jooble</text>
+                                        <text x="26" y="33" className="Jobin" fontSize="12" textAnchor="middle">Jobin</text>
                                     </g>
 
                                     <text x="86" y="30" fontSize="15" className="title">Frontend developer</text>
@@ -163,7 +163,7 @@ const SubscribeClient = () => {
 
                                     <g transform="translate(16,13)">
                                         <rect x="0" y="0" width="52" height="52" rx="12" ry="12" fill="#000" />
-                                        <text x="26" y="33" className="jooble" fontSize="12" textAnchor="middle">Jooble</text>
+                                        <text x="26" y="33" className="Jobin" fontSize="12" textAnchor="middle">Jobin</text>
                                     </g>
 
                                     <text x="86" y="30" fontSize="15" className="title">Layiha rəhbəri</text>
@@ -182,7 +182,7 @@ const SubscribeClient = () => {
 
                                     <g transform="translate(16,13)">
                                         <rect x="0" y="0" width="52" height="52" rx="12" ry="12" fill="#000" />
-                                        <text x="26" y="33" className="jooble" fontSize="12" textAnchor="middle">Jooble</text>
+                                        <text x="26" y="33" className="Jobin" fontSize="12" textAnchor="middle">Jobin</text>
                                     </g>
 
                                     <text x="86" y="30" fontSize="15" className="title">Marketinq mütəxəssisi</text>

@@ -31,8 +31,8 @@ export async function GET() {
             .eq('is_published', true)
             .order('published_at', { ascending: false });
 
-        const baseUrl = 'https://jooble.az';
-        const siteName = 'Jooble.az';
+        const baseUrl = 'https://Jobin.az';
+        const siteName = 'Jobin.az';
         const now = new Date().toISOString();
 
         // XML with image and news sitemap namespaces (order matching the reference)

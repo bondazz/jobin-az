@@ -45,7 +45,7 @@ export default function AdminLoginClient() {
         try {
             // First, sign up the admin user
             const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-                email: 'info@jooble.az',
+                email: 'info@Jobin.az',
                 password: 'Samir_1155',
                 options: {
                     emailRedirectTo: window.location.origin + '/admin/dashboard',
@@ -160,7 +160,7 @@ export default function AdminLoginClient() {
                                 <Input
                                     id="email"
                                     type="email"
-                                    placeholder="info@jooble.az"
+                                    placeholder="info@Jobin.az"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     className="pl-10"
@@ -205,7 +205,7 @@ export default function AdminLoginClient() {
                                     {loading ? 'Admin hesabı yaradılır...' : 'Admin Hesabı Yarat'}
                                 </Button>
                                 <p className="text-xs text-blue-600 mt-2">
-                                    Email: info@jooble.az<br />
+                                    Email: info@Jobin.az<br />
                                     Şifrə: Samir_1155
                                 </p>
                             </div>

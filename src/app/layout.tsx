@@ -22,12 +22,12 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-    metadataBase: new URL('https://jooble.az'),
+    metadataBase: new URL('https://Jobin.az'),
     title: {
-        default: "Jooble - İş elanları və vakansiyalar",
-        template: "%s | Jooble"
+        default: "Jobin - İş elanları və vakansiyalar",
+        template: "%s | Jobin"
     },
-    description: "İş elanları və vakansiyalar - Jooble.az",
+    description: "İş elanları və vakansiyalar - Jobin.az",
     manifest: "/manifest.json",
     alternates: {
         canonical: '/',

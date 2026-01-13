@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-    const baseUrl = 'https://jooble.az';
+    const baseUrl = 'https://Jobin.az';
     const now = new Date().toISOString();
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -13,7 +13,7 @@ export async function GET() {
     <lastmod>${now}</lastmod>
   </sitemap>
   <sitemap>
-    <loc>${baseUrl}/sitemap_jooble.xml</loc>
+    <loc>${baseUrl}/sitemap_Jobin.xml</loc>
     <lastmod>${now}</lastmod>
   </sitemap>
   <sitemap>

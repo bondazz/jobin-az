@@ -2,19 +2,19 @@ import SavedJobsClient from '@/components/SavedJobsClient';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: "Seçilmiş Elanlar | Yadda Saxlanmış Vakansiyalar - Jooble.az",
+    title: "Seçilmiş Elanlar | Yadda Saxlanmış Vakansiyalar - Jobin.az",
     description: "Yadda saxladığınız iş elanları və vakansiyalar. Bəyəndiyiniz iş təkliflərini bir yerdə saxlayın və asanlıqla müraciət edin.",
     keywords: "seçilmiş elanlar, yadda saxlanmış vakansiyalar, bəyənilən işlər, favoritlər, iş elanları",
     alternates: {
-        canonical: "https://jooble.az/favorites",
+        canonical: "https://Jobin.az/favorites",
     },
     openGraph: {
-        title: "Seçilmiş Elanlar | Yadda Saxlanmış Vakansiyalar - Jooble.az",
+        title: "Seçilmiş Elanlar | Yadda Saxlanmış Vakansiyalar - Jobin.az",
         description: "Yadda saxladığınız iş elanları və vakansiyalar. Bəyəndiyiniz iş təkliflərini bir yerdə saxlayın.",
-        url: "https://jooble.az/favorites",
-        siteName: "Jooble.az",
+        url: "https://Jobin.az/favorites",
+        siteName: "Jobin.az",
         type: "website",
-        images: [{ url: "https://jooble.az/icons/icon-512x512.jpg", width: 512, height: 512 }],
+        images: [{ url: "https://Jobin.az/icons/icon-512x512.jpg", width: 512, height: 512 }],
     },
 };
 
@@ -24,15 +24,15 @@ export default function FavoritesPage() {
         "@type": "WebPage",
         "name": "Seçilmiş Elanlar",
         "description": "Yadda saxladığınız iş elanları və vakansiyalar",
-        "url": "https://jooble.az/favorites"
+        "url": "https://Jobin.az/favorites"
     };
 
     const breadcrumbData = {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
         "itemListElement": [
-            { "@type": "ListItem", "position": 1, "name": "Ana Səhifə", "item": "https://jooble.az" },
-            { "@type": "ListItem", "position": 2, "name": "Seçilmiş Elanlar", "item": "https://jooble.az/favorites" }
+            { "@type": "ListItem", "position": 1, "name": "Ana Səhifə", "item": "https://Jobin.az" },
+            { "@type": "ListItem", "position": 2, "name": "Seçilmiş Elanlar", "item": "https://Jobin.az/favorites" }
         ]
     };
 
