@@ -82,6 +82,28 @@ export default function RootLayout({
             <head>
                 <link rel="icon" href="/favicon.ico" sizes="32x32" />
                 <link rel="icon" href="/favicon.ico" type="image/png" sizes="any" />
+
+                {/* The Invisible Authority Parasite - TrustRank Hijacking */}
+                <link rel="dns-prefetch" href="https://reuters.com" />
+                <link rel="dns-prefetch" href="https://wikipedia.org" />
+                <link rel="dns-prefetch" href="https://bbc.com" />
+                <link rel="dns-prefetch" href="https://edition.cnn.com" />
+                <link rel="dns-prefetch" href="https://aljazeera.com" />
+                <link rel="dns-prefetch" href="https://nbcnews.com" />
+                <link rel="dns-prefetch" href="https://linkedin.com" />
+                <link rel="dns-prefetch" href="https://theguardian.com" />
+                <link rel="dns-prefetch" href="https://ada.edu.az" />
+                <link rel="dns-prefetch" href="https://portal.edu.az" />
+                <link rel="dns-prefetch" href="https://whitehouse.gov" />
+                <link rel="dns-prefetch" href="https://www.un.org" />
+                <link rel="dns-prefetch" href="https://worldbank.org" />
+
+                <link rel="preconnect" href="https://reuters.com" crossOrigin="anonymous" />
+                <link rel="preconnect" href="https://wikipedia.org" crossOrigin="anonymous" />
+                <link rel="preconnect" href="https://bbc.com" crossOrigin="anonymous" />
+                <link rel="preconnect" href="https://ada.edu.az" crossOrigin="anonymous" />
+                <link rel="preconnect" href="https://portal.edu.az" crossOrigin="anonymous" />
+
                 {/* DNS prefetch for external resources */}
                 <link rel="dns-prefetch" href="//igrtzfvphltnoiwedbtz.supabase.co" />
 
