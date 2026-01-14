@@ -28,10 +28,10 @@
     --popover: 0 0 100;
     --popover-foreground: 210 15 8;
 
-    --primary: 225 80 55;
+    --primary: 223 33 41;
     --primary-foreground: 0 0 100;
-    --primary-hover: 225 80 45;
-    --primary-light: 225 80 65;
+    --primary-hover: 223 33 33;
+    --primary-light: 223 33 51;
 
     --secondary: 210 65 25;
     --secondary-foreground: 0 0 100;
@@ -53,7 +53,7 @@
 
     --border: 215 15 85;
     --input: 215 15 95;
-    --ring: 225 80 55;
+    --ring: 223 33 41;
 
     --radius: 0.5rem;
 
@@ -68,19 +68,19 @@
     --job-details: 0 0 100;
 
     /* Enhanced Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(225 80% 55%), hsl(210 65% 25%));
+    --gradient-primary: linear-gradient(135deg, hsl(223 33% 41%), hsl(223 33% 25%));
     --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(215 20% 97%));
-    --gradient-premium: linear-gradient(135deg, hsl(225 80% 55%), hsl(210 65% 25%));
-    --gradient-hero: linear-gradient(135deg, hsl(225 80% 55%) 0%, hsl(210 65% 25%) 50%, hsl(210 15% 8%) 100%);
+    --gradient-premium: linear-gradient(135deg, hsl(223 33% 41%), hsl(223 33% 25%));
+    --gradient-hero: linear-gradient(135deg, hsl(223 33% 41%) 0%, hsl(223 33% 25%) 50%, hsl(210 15% 8%) 100%);
     --gradient-surface: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(215 20% 97%) 100%);
-    --gradient-background: linear-gradient(135deg, hsl(240 100% 98%) 0%, hsl(215 15% 85%) 50%, hsl(225 80% 55%) 100%);
+    --gradient-background: linear-gradient(135deg, hsl(240 100% 98%) 0%, hsl(215 15% 85%) 50%, hsl(223 33% 41%) 100%);
 
     /* Enhanced Shadows */
     --shadow-card: 0 1px 3px 0 hsl(210 15% 8% / 0.1), 0 1px 2px -1px hsl(210 15% 8% / 0.1);
     --shadow-card-hover: 0 4px 12px -2px hsl(210 15% 8% / 0.15), 0 2px 4px -1px hsl(210 15% 8% / 0.1);
-    --shadow-elegant: 0 8px 15px -3px hsl(225 80% 55% / 0.2), 0 4px 6px -2px hsl(225 80% 55% / 0.1);
-    --shadow-glow: 0 0 20px hsl(225 80% 55% / 0.3);
-    --shadow-premium: 0 0 15px hsl(225 80% 55% / 0.4);
+    --shadow-elegant: 0 8px 15px -3px hsl(223 33% 41% / 0.2), 0 4px 6px -2px hsl(223 33% 41% / 0.1);
+    --shadow-glow: 0 0 20px hsl(223 33% 41% / 0.3);
+    --shadow-premium: 0 0 15px hsl(223 33% 41% / 0.4);
 
     /* Transitions */
     --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -88,7 +88,7 @@
 
     --sidebar-background: 240 100 98;
     --sidebar-foreground: 210 15 8;
-    --sidebar-primary: 225 80 55;
+    --sidebar-primary: 223 33 41;
     --sidebar-primary-foreground: 0 0 100;
     --sidebar-accent: 215 15 95;
     --sidebar-accent-foreground: 210 15 35;
@@ -106,10 +106,10 @@
     --popover: 210 25 12;
     --popover-foreground: 240 100 98;
 
-    --primary: 225 80 55;
+    --primary: 223 33 41;
     --primary-foreground: 0 0 100;
-    --primary-hover: 225 80 45;
-    --primary-light: 225 80 65;
+    --primary-hover: 223 33 33;
+    --primary-light: 223 33 51;
 
     --secondary: 210 65 25;
     --secondary-foreground: 0 0 100;
@@ -131,32 +131,32 @@
 
     --border: 210 20 20;
     --input: 210 20 20;
-    --ring: 225 80 55;
+    --ring: 223 33 41;
 
     /* Dark mode job tokens */
     --job-card: 210 25 12;
     --job-card-alt: 210 20 15;
-    --job-card-premium: 210 20 18;
-    --job-tag-premium: 225 80 55;
+    --job-card-premium: 223 33 18;
+    --job-tag-premium: 223 33 41;
     --job-tag-new: 38 100 50;
     --job-tag-urgent: 0 100 50;
     --job-sidebar: 210 15 8;
     --job-details: 210 25 12;
 
     /* Dark mode gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(225 80% 55%), hsl(210 65% 25%));
+    --gradient-primary: linear-gradient(135deg, hsl(223 33% 41%), hsl(223 33% 25%));
     --gradient-card: linear-gradient(145deg, hsl(210 25% 12%), hsl(210 20% 15%));
-    --gradient-premium: linear-gradient(135deg, hsl(225 80% 55%), hsl(210 65% 25%));
-    --gradient-hero: linear-gradient(135deg, hsl(225 80% 55%) 0%, hsl(210 65% 25%) 50%, hsl(210 15% 8%) 100%);
+    --gradient-premium: linear-gradient(135deg, hsl(223 33% 41%), hsl(223 33% 25%));
+    --gradient-hero: linear-gradient(135deg, hsl(223 33% 41%) 0%, hsl(223 33% 25%) 50%, hsl(210 15% 8%) 100%);
     --gradient-surface: linear-gradient(145deg, hsl(210 25% 12%) 0%, hsl(210 20% 15%) 100%);
-    --gradient-background: linear-gradient(135deg, hsl(210 15% 8%) 0%, hsl(210 20% 20%) 50%, hsl(225 80% 55%) 100%);
+    --gradient-background: linear-gradient(135deg, hsl(210 15% 8%) 0%, hsl(210 20% 20%) 50%, hsl(223 33% 41%) 100%);
 
     /* Dark mode shadows */
     --shadow-card: 0 1px 3px 0 hsl(0 0% 0% / 0.3), 0 1px 2px -1px hsl(0 0% 0% / 0.2);
     --shadow-card-hover: 0 4px 12px -2px hsl(0 0% 0% / 0.4), 0 2px 4px -1px hsl(0 0% 0% / 0.3);
-    --shadow-elegant: 0 8px 15px -3px hsl(225 80% 55% / 0.3), 0 4px 6px -2px hsl(225 80% 55% / 0.2);
-    --shadow-glow: 0 0 20px hsl(225 80% 55% / 0.4);
-    --shadow-premium: 0 0 15px hsl(225 80% 55% / 0.5);
+    --shadow-elegant: 0 8px 15px -3px hsl(223 33% 41% / 0.3), 0 4px 6px -2px hsl(223 33% 41% / 0.2);
+    --shadow-glow: 0 0 20px hsl(223 33% 41% / 0.4);
+    --shadow-premium: 0 0 15px hsl(223 33% 41% / 0.5);
 
     --sidebar-background: 210 15 8;
   }
@@ -495,6 +495,7 @@
   0% {
     transform: translate(-50%, -50%) rotate(0deg);
   }
+
   100% {
     transform: translate(-50%, -50%) rotate(360deg);
   }
