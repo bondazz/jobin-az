@@ -5,7 +5,7 @@ export async function GET() {
 Allow: /
 
 Sitemap: https://Jobin.az/sitemap_blog.xml
-Sitemap: https://storage.Jobin.az/sitemap.xml
+Sitemap: https://Jobin.az/sitemap.xml
 `;
 
   return new NextResponse(robotsTxt, {
