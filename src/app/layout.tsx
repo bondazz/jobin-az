@@ -49,7 +49,7 @@ export const metadata: Metadata = {
 };
 
 // Sizin Google Analytics G-Kodu
-const GA_MEASUREMENT_ID = "G-C0N2ELTLL8";
+const GA_MEASUREMENT_ID = "G-41WK4BQ35T";
 
 export default function RootLayout({
     children,
