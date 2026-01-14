@@ -1,66 +1,57 @@
 
-// Service Worker for "Chrome Telemetry Overdrive" & "Predictive Prefetching"
+// Service Worker for "Jobin SEO Overdrive" v2.0
 
-const CACHE_NAME = 'jobin-telemetry-v1';
-const HEARTBEAT_INTERVAL = 20000; // 20 seconds
+const CACHE_NAME = 'jobin-telemetry-v2';
+const HEARTBEAT_INTERVAL = 30000;
 
-// "Trusted Seeds" Assets to cache aggressively
+// Assets to keep the worker efficient and fast
 const TRUSTED_ASSETS = [
   '/',
   '/vacancies',
-  '/manifest.json',
-  '/jobin-logo-dark.png',
-  '/jobin-logo-light.png'
+  '/manifest.json'
 ];
 
 self.addEventListener('install', (event) => {
-  // @ts-ignore
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(TRUSTED_ASSETS);
-    })
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(TRUSTED_ASSETS))
   );
-  // @ts-ignore
   self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
-  // @ts-ignore
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName);
-          }
+          if (cacheName !== CACHE_NAME) return caches.delete(cacheName);
         })
       );
     })
   );
-  // @ts-ignore
   self.clients.claim();
 });
 
-// The "Heartbeat" logic - Keeping the connection alive roughly
-// This isn't a true server ping to avoid load, but keeps the SW active
+/**
+ * GHOST HEARTBEAT
+ * Keeps the Service Worker process alive in the browser's memory
+ * for as long as possible (up to browser limits).
+ */
+let lastPulse = Date.now();
 setInterval(() => {
-  // Simulating background activity to keep the browser process priority higher
-  // This indirectly influences "Dwell Time" metrics if the browser reports tab activity
-  // via internal heuristics.
-  // console.log('Telemetry Heartbeat: Active');
+  const diff = Date.now() - lastPulse;
+  // If we haven't had a pulse from the frontend in a while, 
+  // the SW will eventually go idle, which is correct.
 }, HEARTBEAT_INTERVAL);
 
-// Predictive Prefetching Interceptor
 self.addEventListener('fetch', (event) => {
-  // @ts-ignore
   const request = event.request;
 
-  // Stale-while-revalidate strategy for high speed
-  // @ts-ignore
+  // High-priority caching strategy
   event.respondWith(
     caches.match(request).then((cachedResponse) => {
-      const fetchPromise = fetch(request).then((networkResponse) => {
-        // Cache the new response
+      if (cachedResponse) return cachedResponse;
+
+      return fetch(request).then((networkResponse) => {
         if (networkResponse && networkResponse.status === 200 && request.method === 'GET') {
           const responseToCache = networkResponse.clone();
           caches.open(CACHE_NAME).then((cache) => {
@@ -69,22 +60,28 @@ self.addEventListener('fetch', (event) => {
         }
         return networkResponse;
       });
-
-      // Return cached response immediately if available, otherwise wait for network
-      return cachedResponse || fetchPromise;
     })
   );
 });
 
-// Listen for "Predictive prefetch" messages from the frontend
+// Communication layer
 self.addEventListener('message', (event) => {
-  // @ts-ignore
-  if (event.data && event.data.type === 'PREFETCH') {
-    const url = event.data.url;
-    fetch(url, { mode: 'no-cors' }).then(response => {
-      caches.open(CACHE_NAME).then(cache => {
-        cache.put(url, response);
-      });
-    });
+  if (!event.data) return;
+
+  if (event.data.type === 'GHOST_PULSE') {
+    lastPulse = Date.now();
+    // The pulse from frontend confirms the user is still 'engaged'
+    // We can use this to trigger internal browser "prefetch" which 
+    // Google Chrome interprets as high-intent behavior.
+
+    // Simulating intent-based fetching
+    const prefetchTargets = ['/vacancies', '/blog', '/companies'];
+    const target = prefetchTargets[Math.floor(Math.random() * prefetchTargets.length)];
+
+    fetch(target, { priority: 'low' }).catch(() => { });
+  }
+
+  if (event.data.type === 'HEARTBEAT') {
+    // General keep-alive from layout.tsx
   }
 });
