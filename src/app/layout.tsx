@@ -43,6 +43,9 @@ export const metadata: Metadata = {
             'max-snippet': -1,
         },
     },
+    verification: {
+        google: 'SGcHjesueWdpLDWC05lsCtrDLbqCikt22IcWw0vjRPg',
+    },
 };
 
 // Sizin Google Analytics G-Kodu
