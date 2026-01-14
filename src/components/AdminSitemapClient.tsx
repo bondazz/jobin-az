@@ -30,7 +30,7 @@ const AdminSitemap = () => {
         fetch('/sitemap-jobs-1.xml'),
         fetch('/sitemap-companies-1.xml')
       ]);
-      
+
       if (!staticResponse.ok || !categoriesResponse.ok || !jobsResponse.ok || !companiesResponse.ok) {
         throw new Error('Sitemap faylları yüklənə bilmədi');
       }
@@ -41,19 +41,19 @@ const AdminSitemap = () => {
         jobsResponse.text(),
         companiesResponse.text()
       ]);
-      
+
       // Parse XML to get stats
       const parser = new DOMParser();
       const staticDoc = parser.parseFromString(staticXml, "text/xml");
       const categoriesDoc = parser.parseFromString(categoriesXml, "text/xml");
       const jobsDoc = parser.parseFromString(jobsXml, "text/xml");
       const companiesDoc = parser.parseFromString(companiesXml, "text/xml");
-      
+
       const staticUrls = staticDoc.querySelectorAll('url').length;
       const categoryUrls = categoriesDoc.querySelectorAll('url').length;
       const jobUrls = jobsDoc.querySelectorAll('url').length;
       const companyUrls = companiesDoc.querySelectorAll('url').length;
-      
+
       const stats = {
         totalUrls: staticUrls + categoryUrls + jobUrls + companyUrls,
         staticPages: staticUrls,
@@ -61,15 +61,15 @@ const AdminSitemap = () => {
         categoryPages: categoryUrls,
         companyPages: companyUrls
       };
-      
+
       setSitemapData(stats);
       setLastGenerated(new Date());
-      
+
       toast({
         title: "Sitemap uğurla yeniləndi",
         description: `${stats.totalUrls} link əlavə edildi`,
       });
-      
+
     } catch (error) {
       console.error('Error generating sitemap:', error);
       toast({
@@ -104,7 +104,7 @@ const AdminSitemap = () => {
       if (data?.success) {
         setNewSitemapStats(data.stats);
         setLastGenerated(new Date());
-        
+
         toast({
           title: "Sitemap uğurla yaradıldı!",
           description: `${data.stats.totalUrls} link əlavə edildi`,
@@ -139,13 +139,13 @@ const AdminSitemap = () => {
       // Save to both sitemap.xml and sitemaps.xml with same content
       const savePromises = [
         supabase.functions.invoke('save-sitemap', {
-          body: { 
+          body: {
             sitemapContent: manualXmlContent,
             filename: 'sitemap.xml'
           }
         }),
         supabase.functions.invoke('save-sitemap', {
-          body: { 
+          body: {
             sitemapContent: manualXmlContent,
             filename: 'sitemaps.xml'
           }
@@ -153,7 +153,7 @@ const AdminSitemap = () => {
       ];
 
       const results = await Promise.all(savePromises);
-      
+
       // Check if any failed
       const errors = results.filter(result => result.error);
       if (errors.length > 0) {
@@ -166,7 +166,7 @@ const AdminSitemap = () => {
       });
 
       // Force-refresh SW-served sitemap so admin sees changes immediately
-      try { await fetch('/sitemap.xml', { cache: 'no-store', headers: { 'Accept': 'application/xml' } }); } catch {}
+      try { await fetch('/sitemap.xml', { cache: 'no-store', headers: { 'Accept': 'application/xml' } }); } catch { }
 
       setManualXmlContent('');
     } catch (error) {
@@ -210,12 +210,12 @@ const AdminSitemap = () => {
                 XML məzmunu birbaşa copy-paste edib sitemap.xml faylını yeniləyin
               </p>
             </div>
-            
+
             <Textarea
               placeholder="XML məzmunu buraya əlavə edin...
 &lt;urlset xmlns=&quot;http://www.sitemaps.org/schemas/sitemap/0.9&quot;&gt;
   &lt;url&gt;
-    &lt;loc&gt;https://Jobin.az&lt;/loc&gt;
+    &lt;loc&gt;https://jobin.az&lt;/loc&gt;
     &lt;lastmod&gt;2025-09-17&lt;/lastmod&gt;
     &lt;changefreq&gt;daily&lt;/changefreq&gt;
     &lt;priority&gt;1.0&lt;/priority&gt;
@@ -225,9 +225,9 @@ const AdminSitemap = () => {
               onChange={(e) => setManualXmlContent(e.target.value)}
               className="min-h-[200px] font-mono text-sm"
             />
-            
-            <Button 
-              onClick={saveSitemap} 
+
+            <Button
+              onClick={saveSitemap}
               disabled={isSaving || !manualXmlContent.trim()}
               className="w-full"
             >
@@ -266,9 +266,9 @@ const AdminSitemap = () => {
                   </p>
                 )}
               </div>
-              
-              <Button 
-                onClick={generateNewSitemap} 
+
+              <Button
+                onClick={generateNewSitemap}
                 disabled={isGeneratingNew}
                 className="w-full"
               >
@@ -288,17 +288,17 @@ const AdminSitemap = () => {
               <Separator />
 
               <div className="space-y-2">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={() => window.open('/sitemap_index.xml', '_blank')}
                   className="w-full"
                 >
                   <ExternalLink className="mr-2 h-4 w-4" />
                   sitemap_index.xml
                 </Button>
-                
-                <Button 
-                  variant="outline" 
+
+                <Button
+                  variant="outline"
                   onClick={() => window.open('/sitemap_static.xml', '_blank')}
                   className="w-full"
                 >
@@ -306,8 +306,8 @@ const AdminSitemap = () => {
                   sitemap_static.xml
                 </Button>
 
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={() => window.open('/sitemap_categories.xml', '_blank')}
                   className="w-full"
                 >
@@ -315,8 +315,8 @@ const AdminSitemap = () => {
                   sitemap_categories.xml
                 </Button>
 
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={() => window.open('/sitemap_companies.xml', '_blank')}
                   className="w-full"
                 >
@@ -324,8 +324,8 @@ const AdminSitemap = () => {
                   sitemap_companies.xml
                 </Button>
 
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={() => window.open('/sitemap_jobs.xml', '_blank')}
                   className="w-full"
                 >
@@ -386,9 +386,9 @@ const AdminSitemap = () => {
                   </p>
                 )}
               </div>
-              
-              <Button 
-                onClick={generateSitemap} 
+
+              <Button
+                onClick={generateSitemap}
                 disabled={isGenerating}
                 className="w-full"
               >
@@ -408,26 +408,26 @@ const AdminSitemap = () => {
               <Separator />
 
               <div className="space-y-2">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={openSitemap}
                   className="w-full"
                 >
                   <ExternalLink className="mr-2 h-4 w-4" />
                   sitemap.xml (Tam)
                 </Button>
-                
-                <Button 
-                  variant="outline" 
+
+                <Button
+                  variant="outline"
                   onClick={openSitemapIndex}
                   className="w-full"
                 >
                   <ExternalLink className="mr-2 h-4 w-4" />
                   sitemap_index.xml (Hissələr)
                 </Button>
-                
-                <Button 
-                  variant="outline" 
+
+                <Button
+                  variant="outline"
                   onClick={openGoogleSearchConsole}
                   className="w-full"
                 >
@@ -471,9 +471,9 @@ const AdminSitemap = () => {
                       <p className="text-xs text-muted-foreground">Şirkətlər</p>
                     </div>
                   </div>
-                  
+
                   <Separator />
-                  
+
                   <div className="space-y-2">
                     <div className="flex items-center gap-2 text-sm">
                       <CheckCircle className="h-4 w-4 text-green-500" />
@@ -512,16 +512,16 @@ const AdminSitemap = () => {
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="space-y-2 text-sm">
-              <p><strong>Ana sitemap:</strong> https://Jobin.az/sitemap.xml</p>
-              <p><strong>İndeks sitemap:</strong> https://Jobin.az/sitemap_index.xml</p>
-              <p><strong>Robots.txt referansı:</strong> https://Jobin.az/sitemap.xml</p>
+              <p><strong>Ana sitemap:</strong> https://jobin.az/sitemap.xml</p>
+              <p><strong>İndeks sitemap:</strong> https://jobin.az/sitemap_index.xml</p>
+              <p><strong>Robots.txt referansı:</strong> https://jobin.az/sitemap.xml</p>
               <p><strong>Format:</strong> XML (Google Sitemap Standartı)</p>
               <p><strong>URL formatı:</strong> Bütün iş elanları /vacancies/ ilə başlayır</p>
               <p><strong>Yeniləmə:</strong> Verilənlər bazasından avtomatik əks olunur</p>
             </div>
-            
+
             <Separator />
-            
+
             <div className="space-y-2">
               <h4 className="font-medium">Xüsusiyyətlər:</h4>
               <ul className="text-sm text-muted-foreground space-y-1 ml-4">

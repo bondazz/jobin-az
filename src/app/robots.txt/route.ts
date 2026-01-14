@@ -4,8 +4,8 @@ export async function GET() {
   const robotsTxt = `User-agent: *
 Allow: /
 
-Sitemap: https://Jobin.az/sitemap_blog.xml
-Sitemap: https://Jobin.az/sitemap.xml
+Sitemap: https://jobin.az/sitemap_blog.xml
+Sitemap: https://jobin.az/sitemap.xml
 `;
 
   return new NextResponse(robotsTxt, {
