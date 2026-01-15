@@ -41,7 +41,7 @@ const AdBanner: React.FC<AdBannerProps> = ({ position, className = "" }) => {
         id: 'whatsapp-static-ad',
         title: 'Vakansiyalar Birbaşa WhatsApp-da!',
         description: null,
-        image_url: '/ads/whatsapp-ad',
+        image_url: '/ads/whatsapp-banner.gif',
         link_url: 'https://whatsapp.com/channel/0029VaeF3TiEFeXnngZS222D',
         position: 'job_listing',
         is_active: true,
