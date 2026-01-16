@@ -90,35 +90,58 @@ export default async function VacanciesPage() {
         "@context": "https://schema.org",
         "@type": "CollectionPage",
         "name": "Vakansiyalar - Jobin Azərbaycan",
-        "description": "Azərbaycanda aktiv vakansiyalar və iş elanları",
-        "url": "https://Jobin.az/vacancies",
+        "description": "Azərbaycanda aktiv vakansiyalar və iş elanları. Minlərlə yeni iş imkanı hər gün yenilənir.",
+        "url": "https://jobin.az/vacancies",
         "mainEntity": {
             "@type": "ItemList",
             "numberOfItems": totalJobs,
-            "itemListElement": jobs.slice(0, 20).map((job: any, index: number) => ({
-                "@type": "ListItem",
-                "position": index + 1,
-                "item": {
-                    "@type": "JobPosting",
-                    "title": job.title,
-                    "description": job.description?.substring(0, 200) || '',
-                    "datePosted": job.created_at,
-                    "hiringOrganization": {
-                        "@type": "Organization",
-                        "name": job.companies?.name || 'Şirkət'
-                    },
-                    "jobLocation": {
-                        "@type": "Place",
-                        "address": {
-                            "@type": "PostalAddress",
-                            "addressLocality": job.location || 'Bakı',
-                            "addressCountry": "AZ"
-                        }
-                    },
-                    "url": `https://Jobin.az/vacancies/${job.slug}`
-                }
-            }))
+            "itemListElement": jobs.slice(0, 20).map((job: any, index: number) => {
+                const postingDate = job.created_at || new Date().toISOString();
+                const validThroughDate = new Date(new Date(postingDate).getTime() + 30 * 24 * 60 * 60 * 1000).toISOString();
+
+                return {
+                    "@type": "ListItem",
+                    "position": index + 1,
+                    "item": {
+                        "@type": "JobPosting",
+                        "title": job.title,
+                        "description": `${job.title} vakansiyası ${job.companies?.name || "Jobin tərəfdaşı"} şirkətində.`,
+                        "datePosted": postingDate,
+                        "validThrough": validThroughDate,
+                        "employmentType": "FULL_TIME",
+                        "hiringOrganization": {
+                            "@type": "Organization",
+                            "name": job.companies?.name || 'Jobin',
+                            "logo": "https://jobin.az/icons/icon-512x512.jpg"
+                        },
+                        "jobLocation": {
+                            "@type": "Place",
+                            "address": {
+                                "@type": "PostalAddress",
+                                "streetAddress": job.location || 'Bakı',
+                                "addressLocality": job.location || 'Bakı',
+                                "addressRegion": "Bakı",
+                                "postalCode": "AZ1000",
+                                "addressCountry": "AZ"
+                            }
+                        },
+                        "url": `https://jobin.az/vacancies/${job.slug}`
+                    }
+                };
+            })
         }
+    };
+
+    const datasetSchema = {
+        "@context": "https://schema.org",
+        "@type": "Dataset",
+        "@id": "https://jobin.az/vacancies#dataset",
+        "name": "Azərbaycan Vakansiya Verilənlər Bazası 2026",
+        "description": "Azərbaycan üzrə bütün aktiv iş elanları və vakansiyaların statistikası.",
+        "publisher": { "@id": "https://jobin.az#org" },
+        "creator": { "@id": "https://jobin.az#org" },
+        "license": "https://creativecommons.org/licenses/by/4.0/",
+        "isAccessibleForFree": true
     };
 
     const breadcrumbData = {
@@ -143,10 +166,16 @@ export default async function VacanciesPage() {
     const organizationSchema = {
         "@context": "https://schema.org",
         "@type": "Organization",
+        "@id": "https://jobin.az#org",
         "name": "Jobin Azərbaycan",
-        "url": "https://Jobin.az",
-        "logo": "https://Jobin.az/icons/icon-512x512.jpg",
+        "url": "https://jobin.az",
+        "logo": "https://jobin.az/icons/icon-512x512.jpg",
         "description": "Azərbaycanın ən böyük iş axtarış platforması",
+        "sameAs": [
+            "https://www.facebook.com/jobin.az",
+            "https://www.instagram.com/jobin.az",
+            "https://www.linkedin.com/company/jobin-az"
+        ],
         "aggregateRating": {
             "@type": "AggregateRating",
             "ratingValue": "4.7",
@@ -171,6 +200,10 @@ export default async function VacanciesPage() {
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
             />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(datasetSchema) }}
+            />
 
             {/* SEO Content - Hidden but present in view-source for crawlers */}
             <div style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px', overflow: 'hidden' }}>
@@ -187,8 +220,8 @@ export default async function VacanciesPage() {
                                             </a>
                                         </h3>
                                         <p>
-                                            <strong>Şirkət:</strong> {job.companies?.name || 'Şirkət'} | 
-                                            <strong> Məkan:</strong> {job.location || 'Bakı'} | 
+                                            <strong>Şirkət:</strong> {job.companies?.name || 'Şirkət'} |
+                                            <strong> Məkan:</strong> {job.location || 'Bakı'} |
                                             <strong> İş növü:</strong> {job.type || 'Tam zamanlı'}
                                             {job.salary && <> | <strong>Maaş:</strong> {job.salary}</>}
                                         </p>

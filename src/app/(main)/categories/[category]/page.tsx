@@ -161,13 +161,30 @@ export default async function CategoryPage({ params }: Props) {
         }
     };
 
+    const organizationSchema = {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "@id": "https://jobin.az#org",
+        "name": "Jobin Azərbaycan",
+        "url": "https://jobin.az",
+        "logo": "https://jobin.az/icons/icon-512x512.jpg",
+        "sameAs": [
+            "https://www.facebook.com/jobin.az",
+            "https://www.instagram.com/jobin.az",
+            "https://www.linkedin.com/company/jobin-az"
+        ]
+    };
+
     const datasetSchema = {
         "@context": "https://schema.org",
         "@type": "Dataset",
         "@id": `https://jobin.az/categories/${category.slug}#dataset`,
         "name": `${category.name} Vakansiya Data Portalı 2026`,
         "description": `Azərbaycanda ${category.name} üzrə iş elanları statistikası.`,
-        "publisher": { "@id": "https://jobin.az#org" }
+        "publisher": { "@id": "https://jobin.az#org" },
+        "creator": { "@id": "https://jobin.az#org" },
+        "license": "https://creativecommons.org/licenses/by/4.0/",
+        "isAccessibleForFree": true
     };
 
     const breadcrumbData = {
@@ -205,6 +222,10 @@ export default async function CategoryPage({ params }: Props) {
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
             />
             <script
                 type="application/ld+json"

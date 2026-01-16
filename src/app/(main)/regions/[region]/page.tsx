@@ -148,13 +148,30 @@ export default async function RegionPage({ params }: RegionPageProps) {
         }
     };
 
+    const organizationSchema = {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "@id": "https://jobin.az#org",
+        "name": "Jobin Azərbaycan",
+        "url": "https://jobin.az",
+        "logo": "https://jobin.az/icons/icon-512x512.jpg",
+        "sameAs": [
+            "https://www.facebook.com/jobin.az",
+            "https://www.instagram.com/jobin.az",
+            "https://www.linkedin.com/company/jobin-az"
+        ]
+    };
+
     const datasetSchema = {
         "@context": "https://schema.org",
         "@type": "Dataset",
         "@id": `https://jobin.az/regions/${region.slug}#dataset`,
         "name": `${region.name} Regional İş Datası 2026`,
         "description": `${region.name} regionu üzrə vakansiya və məşğulluq statistikası.`,
-        "publisher": { "@id": "https://jobin.az#org" }
+        "publisher": { "@id": "https://jobin.az#org" },
+        "creator": { "@id": "https://jobin.az#org" },
+        "license": "https://creativecommons.org/licenses/by/4.0/",
+        "isAccessibleForFree": true
     };
 
     const breadcrumbData = {
@@ -219,6 +236,10 @@ export default async function RegionPage({ params }: RegionPageProps) {
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
             />
             <script
                 type="application/ld+json"

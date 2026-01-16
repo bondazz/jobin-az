@@ -54,7 +54,7 @@ const SimilarJobs = ({
 
   const fetchSimilarJobs = async () => {
     if (!categoryId) return;
-    
+
     try {
       const { data, error } = await supabase
         .from("jobs")
@@ -99,44 +99,55 @@ const SimilarJobs = ({
       "@context": "https://schema.org",
       "@type": "ItemList",
       "name": categoryName ? `${categoryName} - Oxşar Vakansiyalar` : "Oxşar Vakansiyalar",
-      "description": categoryName 
-        ? `${categoryName} kateqoriyasında ən son iş elanları və vakansiyalar` 
+      "description": categoryName
+        ? `${categoryName} kateqoriyasında ən son iş elanları və vakansiyalar`
         : "Oxşar iş elanları və vakansiyalar",
       "numberOfItems": similarJobs.length,
-      "itemListElement": similarJobs.map((job, index) => ({
-        "@type": "ListItem",
-        "position": index + 1,
-        "item": {
-          "@type": "JobPosting",
-          "title": job.title,
-          "description": job.title,
-          "datePosted": new Date(job.created_at).toISOString().split('T')[0],
-          "url": `https://Jobin.az/vacancies/${job.slug}`,
-          "hiringOrganization": {
-            "@type": "Organization",
-            "name": job.companies?.name || "Şirkət",
-            ...(job.companies?.logo && { "logo": job.companies.logo })
-          },
-          "jobLocation": {
-            "@type": "Place",
-            "address": {
-              "@type": "PostalAddress",
-              "addressLocality": job.location,
-              "addressCountry": "AZ"
-            }
-          },
-          ...(job.salary && {
+      "itemListElement": similarJobs.map((job, index) => {
+        const postingDate = job.created_at || new Date().toISOString();
+        const validThroughDate = new Date(new Date(postingDate).getTime() + 30 * 24 * 60 * 60 * 1000).toISOString();
+
+        return {
+          "@type": "ListItem",
+          "position": index + 1,
+          "item": {
+            "@type": "JobPosting",
+            "title": job.title,
+            "description": `${job.title} vakansiyası ${job.companies?.name || "Jobin tərəfdaşı"} şirkətində.`,
+            "datePosted": postingDate,
+            "validThrough": validThroughDate,
+            "employmentType": "FULL_TIME",
+            "url": `https://jobin.az/vacancies/${job.slug}`,
+            "hiringOrganization": {
+              "@type": "Organization",
+              "name": job.companies?.name || "Jobin",
+              "logo": job.companies?.logo || "https://jobin.az/icons/icon-512x512.jpg"
+            },
+            "jobLocation": {
+              "@type": "Place",
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": job.location || 'Bakı',
+                "addressLocality": job.location || 'Bakı',
+                "addressRegion": "Bakı",
+                "postalCode": "AZ1000",
+                "addressCountry": "AZ"
+              }
+            },
             "baseSalary": {
               "@type": "MonetaryAmount",
               "currency": "AZN",
               "value": {
                 "@type": "QuantitativeValue",
-                "value": job.salary
+                "value": job.salary && !isNaN(parseFloat(job.salary)) ? parseFloat(job.salary) : 500,
+                "minValue": job.salary && !isNaN(parseFloat(job.salary)) ? parseFloat(job.salary) : 500,
+                "maxValue": job.salary && !isNaN(parseFloat(job.salary)) ? parseFloat(job.salary) * 1.5 : 1500,
+                "unitText": "MONTH"
               }
             }
-          })
-        }
-      }))
+          }
+        };
+      })
     };
   };
 
@@ -169,7 +180,7 @@ const SimilarJobs = ({
       <div className={`grid ${isMobile ? "grid-cols-1" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"} gap-3`}>
         {similarJobs.map((job, index) => {
           const isPremium = job.tags?.includes("premium");
-          
+
           return (
             <Link
               key={job.id}
@@ -177,8 +188,8 @@ const SimilarJobs = ({
               className={`
                 group relative overflow-hidden rounded-xl border p-4 transition-all duration-300
                 hover:shadow-lg hover:-translate-y-1 hover:border-primary/40
-                ${isPremium 
-                  ? "bg-gradient-to-br from-amber-50/80 to-orange-50/50 dark:from-amber-950/20 dark:to-orange-950/10 border-amber-200/60 dark:border-amber-700/40" 
+                ${isPremium
+                  ? "bg-gradient-to-br from-amber-50/80 to-orange-50/50 dark:from-amber-950/20 dark:to-orange-950/10 border-amber-200/60 dark:border-amber-700/40"
                   : "bg-card border-border/50 hover:bg-accent/30"
                 }
               `}

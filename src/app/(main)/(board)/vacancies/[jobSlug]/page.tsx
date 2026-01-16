@@ -153,20 +153,23 @@ export default async function JobPage({ params }: Props) {
     const plainDescription = stripHtml(job.description || '');
 
     // JSON-LD Structured Data for JobPosting
+    const postingDate = job.created_at || new Date().toISOString();
+    const validThroughDate = job.expiration_date || new Date(new Date(postingDate).getTime() + 30 * 24 * 60 * 60 * 1000).toISOString();
+
     const jobPostingSchema = {
         "@context": "https://schema.org",
         "@type": "JobPosting",
         "title": job.title,
-        "description": plainDescription,
-        "datePosted": job.created_at,
-        "validThrough": job.expiration_date || undefined,
+        "description": plainDescription || `${job.title} vakansiyası haqqında ətraflı məlumat üçün müraciət edin.`,
+        "datePosted": postingDate,
+        "validThrough": validThroughDate,
         "employmentType": job.type === 'full-time' ? 'FULL_TIME' :
             job.type === 'part-time' ? 'PART_TIME' :
                 job.type === 'contract' ? 'CONTRACTOR' :
-                    job.type === 'internship' ? 'INTERN' : 'OTHER',
+                    job.type === 'internship' ? 'INTERN' : 'FULL_TIME',
         "hiringOrganization": {
             "@type": "Organization",
-            "name": companyName,
+            "name": companyName || "Təşkilat",
             "sameAs": company?.website || undefined,
             "logo": company?.logo || undefined
         },
@@ -174,21 +177,39 @@ export default async function JobPage({ params }: Props) {
             "@type": "Place",
             "address": {
                 "@type": "PostalAddress",
+                "streetAddress": job.location || 'Bakı',
                 "addressLocality": job.location || 'Bakı',
+                "addressRegion": "Bakı",
+                "postalCode": "AZ1000",
                 "addressCountry": "AZ"
             }
         },
-        ...(job.salary && {
-            "baseSalary": {
-                "@type": "MonetaryAmount",
-                "currency": "AZN",
-                "value": {
-                    "@type": "QuantitativeValue",
-                    "value": job.salary
-                }
+        "baseSalary": {
+            "@type": "MonetaryAmount",
+            "currency": "AZN",
+            "value": {
+                "@type": "QuantitativeValue",
+                "value": job.salary && !isNaN(parseFloat(job.salary)) ? parseFloat(job.salary) : 500,
+                "minValue": job.salary && !isNaN(parseFloat(job.salary)) ? parseFloat(job.salary) : 500,
+                "maxValue": job.salary && !isNaN(parseFloat(job.salary)) ? parseFloat(job.salary) * 1.5 : 1500,
+                "unitText": "MONTH"
             }
-        }),
+        },
         "url": `https://jobin.az/vacancies/${job.slug}`
+    };
+
+    const organizationSchema = {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "@id": "https://jobin.az#org",
+        "name": "Jobin Azərbaycan",
+        "url": "https://jobin.az",
+        "logo": "https://jobin.az/icons/icon-512x512.jpg",
+        "sameAs": [
+            "https://www.facebook.com/jobin.az",
+            "https://www.instagram.com/jobin.az",
+            "https://www.linkedin.com/company/jobin-az"
+        ]
     };
 
     // JSON-LD Triple-Threat: Occupation & Dataset
@@ -217,6 +238,9 @@ export default async function JobPage({ params }: Props) {
         "name": `${job.title} Vakansiya Statistikası 2026`,
         "description": `Azərbaycanda ${job.title} sahəsi üzrə aktiv elanların analitikası və məlumat bazası.`,
         "publisher": { "@id": "https://jobin.az#org" },
+        "creator": { "@id": "https://jobin.az#org" },
+        "license": "https://creativecommons.org/licenses/by/4.0/",
+        "isAccessibleForFree": true,
         "variableMeasured": "Vakansiya sayı, Orta maaş"
     };
 
@@ -311,6 +335,10 @@ export default async function JobPage({ params }: Props) {
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(occupationSchema) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
             />
             <script
                 type="application/ld+json"

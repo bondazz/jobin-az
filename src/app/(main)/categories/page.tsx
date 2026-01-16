@@ -54,7 +54,7 @@ async function getAllCategories() {
                 .select('*', { count: 'exact', head: true })
                 .eq('category_id', category.id)
                 .eq('is_active', true);
-            
+
             return {
                 ...category,
                 jobsCount: count || 0
@@ -69,13 +69,39 @@ export default async function CategoriesPage() {
     const categories = await getAllCategories();
     const totalJobs = categories.reduce((sum, cat) => sum + cat.jobsCount, 0);
 
+    const organizationSchema = {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "@id": "https://jobin.az#org",
+        "name": "Jobin Azərbaycan",
+        "url": "https://jobin.az",
+        "logo": "https://jobin.az/icons/icon-512x512.jpg",
+        "sameAs": [
+            "https://www.facebook.com/jobin.az",
+            "https://www.instagram.com/jobin.az",
+            "https://www.linkedin.com/company/jobin-az"
+        ]
+    };
+
+    const datasetSchema = {
+        "@context": "https://schema.org",
+        "@type": "Dataset",
+        "@id": "https://jobin.az/categories#dataset",
+        "name": "Azərbaycan İş Kateqoriyaları Statistikası 2026",
+        "description": "Sahələr üzrə vakansiya bölgüsü və əməliyyat statistikası.",
+        "publisher": { "@id": "https://jobin.az#org" },
+        "creator": { "@id": "https://jobin.az#org" },
+        "license": "https://creativecommons.org/licenses/by/4.0/",
+        "isAccessibleForFree": true
+    };
+
     // Structured data for categories page
     const structuredData = {
         "@context": "https://schema.org",
         "@type": "CollectionPage",
         "name": "İş Elanları Kateqoriyaları",
         "description": "Azərbaycanda müxtəlif sahələr üzrə iş elanları və vakansiyalar",
-        "url": "https://Jobin.az/categories",
+        "url": "https://jobin.az/categories",
         "mainEntity": {
             "@type": "ItemList",
             "name": "İş Kateqoriyaları",
@@ -86,7 +112,7 @@ export default async function CategoriesPage() {
                 "item": {
                     "@type": "Thing",
                     "name": category.name,
-                    "url": `https://Jobin.az/categories/${category.slug}`,
+                    "url": `https://jobin.az/categories/${category.slug}`,
                     "description": category.seo_description || `${category.name} sahəsində iş elanları`
                 }
             }))
@@ -101,13 +127,13 @@ export default async function CategoriesPage() {
                 "@type": "ListItem",
                 "position": 1,
                 "name": "Ana Səhifə",
-                "item": "https://Jobin.az"
+                "item": "https://jobin.az"
             },
             {
                 "@type": "ListItem",
                 "position": 2,
                 "name": "Kateqoriyalar",
-                "item": "https://Jobin.az/categories"
+                "item": "https://jobin.az/categories"
             }
         ]
     };
@@ -121,20 +147,28 @@ export default async function CategoriesPage() {
             />
             <script
                 type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(datasetSchema) }}
+            />
+            <script
+                type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }}
             />
-            
+
             {/* Hidden SEO content for search engines */}
             <div className="sr-only">
                 <article>
                     <h1>İş Elanları Kateqoriyaları - Azərbaycanda Vakansiyalar</h1>
-                    
+
                     <section>
                         <h2>Kateqoriyalar Haqqında</h2>
                         <p><strong>Ümumi Kateqoriya Sayı:</strong> {categories.length}</p>
                         <p><strong>Ümumi Aktiv Vakansiya:</strong> {totalJobs}</p>
                         <p>
-                            Azərbaycanda müxtəlif sahələr üzrə iş elanları və vakansiyalar. 
+                            Azərbaycanda müxtəlif sahələr üzrə iş elanları və vakansiyalar.
                             IT, maliyyə, marketinq, satış, tibb, mühəndislik, insan resursları və digər kateqoriyalarda aktual iş təklifləri.
                         </p>
                     </section>
@@ -175,8 +209,8 @@ export default async function CategoriesPage() {
                     <section>
                         <h2>İş Axtarışı</h2>
                         <p>
-                            Platformamızda {categories.length} fərqli kateqoriyada {totalJobs} aktiv vakansiya mövcuddur. 
-                            IT, maliyyə, satış, marketinq, mühəndislik, mühasibatlıq və digər sahələrdə iş axtarışı edən 
+                            Platformamızda {categories.length} fərqli kateqoriyada {totalJobs} aktiv vakansiya mövcuddur.
+                            IT, maliyyə, satış, marketinq, mühəndislik, mühasibatlıq və digər sahələrdə iş axtarışı edən
                             peşəkarlar üçün uyğun iş təklifləri tapa bilərsiniz.
                         </p>
                     </section>

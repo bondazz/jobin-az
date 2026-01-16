@@ -168,9 +168,16 @@ const HomeClient = () => {
         return {
             "@context": "https://schema.org",
             "@type": "Organization",
+            "@id": "https://jobin.az#org",
             "name": "Jobin Azərbaycan",
             "description": "Azərbaycan'ın ən böyük iş axtarış platforması. Müxtəlif sahələrdə minlərlə vakansiya və iş elanı.",
-            "url": typeof window !== 'undefined' ? window.location.origin : '',
+            "url": "https://jobin.az",
+            "logo": "https://jobin.az/icons/icon-512x512.jpg",
+            "sameAs": [
+                "https://www.facebook.com/jobin.az",
+                "https://www.instagram.com/jobin.az",
+                "https://www.linkedin.com/company/jobin-az"
+            ],
             "aggregateRating": {
                 "@type": "AggregateRating",
                 "ratingValue": "4.7",
@@ -185,9 +192,16 @@ const HomeClient = () => {
         return {
             "@context": "https://schema.org",
             "@type": "Organization",
+            "@id": "https://jobin.az#org",
             "name": "Jobin Azərbaycan",
             "description": "Azərbaycan'ın ən böyük iş axtarış platforması. Müxtəlif sahələrdə minlərlə vakansiya və iş elanı.",
-            "url": typeof window !== 'undefined' ? window.location.origin : '',
+            "url": "https://jobin.az",
+            "logo": "https://jobin.az/icons/icon-512x512.jpg",
+            "sameAs": [
+                "https://www.facebook.com/jobin.az",
+                "https://www.instagram.com/jobin.az",
+                "https://www.linkedin.com/company/jobin-az"
+            ],
             "aggregateRating": {
                 "@type": "AggregateRating",
                 "ratingValue": "4.8",
@@ -243,10 +257,10 @@ const HomeClient = () => {
                     {/* SEO Content for Vacancies page */}
                     {pathname === '/vacancies' && !jobSlug && (
                         <>
-                            <SEOBreadcrumb 
+                            <SEOBreadcrumb
                                 items={[
                                     { label: "Vakansiyalar" }
-                                ]} 
+                                ]}
                                 visuallyHidden={true}
                             />
                             <div className="sr-only">

@@ -37,24 +37,24 @@ export const metadata: Metadata = {
 
 async function getRegionsData() {
     const supabase = createClient(supabaseUrl, supabaseAnonKey);
-    
+
     const { data: regions } = await supabase
         .from('regions')
         .select('id, name, slug, description')
         .eq('is_active', true)
         .order('name');
-    
+
     const { data: jobs } = await supabase
         .from('jobs')
         .select('location')
         .eq('is_active', true);
-    
+
     const locationCounts: Record<string, number> = {};
     jobs?.forEach(job => {
         const loc = job.location?.toLowerCase() || '';
         locationCounts[loc] = (locationCounts[loc] || 0) + 1;
     });
-    
+
     return {
         regions: regions || [],
         locationCounts,
@@ -64,13 +64,39 @@ async function getRegionsData() {
 
 export default async function RegionsPage() {
     const { regions, locationCounts, totalJobs } = await getRegionsData();
-    
+
+    const organizationSchema = {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "@id": "https://jobin.az#org",
+        "name": "Jobin Azərbaycan",
+        "url": "https://jobin.az",
+        "logo": "https://jobin.az/icons/icon-512x512.jpg",
+        "sameAs": [
+            "https://www.facebook.com/jobin.az",
+            "https://www.instagram.com/jobin.az",
+            "https://www.linkedin.com/company/jobin-az"
+        ]
+    };
+
+    const datasetSchema = {
+        "@context": "https://schema.org",
+        "@type": "Dataset",
+        "@id": "https://jobin.az/regions#dataset",
+        "name": "Azərbaycan Regional İş Statistikası 2026",
+        "description": "Regionlar üzrə vakansiya sayı və məşğulluq datası.",
+        "publisher": { "@id": "https://jobin.az#org" },
+        "creator": { "@id": "https://jobin.az#org" },
+        "license": "https://creativecommons.org/licenses/by/4.0/",
+        "isAccessibleForFree": true
+    };
+
     const structuredData = {
         "@context": "https://schema.org",
         "@type": "CollectionPage",
         "name": "Regionlar üzrə İş Elanları",
         "description": "Azərbaycanın müxtəlif regionlarında iş elanları və vakansiyalar",
-        "url": "https://Jobin.az/regions",
+        "url": "https://jobin.az/regions",
         "mainEntity": {
             "@type": "ItemList",
             "numberOfItems": regions.length,
@@ -80,7 +106,7 @@ export default async function RegionsPage() {
                 "item": {
                     "@type": "Place",
                     "name": region.name,
-                    "url": `https://Jobin.az/regions/${region.slug}`
+                    "url": `https://jobin.az/regions/${region.slug}`
                 }
             }))
         }
@@ -94,24 +120,24 @@ export default async function RegionsPage() {
                 "@type": "ListItem",
                 "position": 1,
                 "name": "Ana Səhifə",
-                "item": "https://Jobin.az"
+                "item": "https://jobin.az"
             },
             {
                 "@type": "ListItem",
                 "position": 2,
                 "name": "Regionlar",
-                "item": "https://Jobin.az/regions"
+                "item": "https://jobin.az/regions"
             }
         ]
     };
-    
+
     return (
         <>
             {/* Server-rendered SEO content */}
             <div className="sr-only" aria-hidden="true">
                 <h1>Regionlar üzrə İş Elanları - Azərbaycan Vakansiyaları</h1>
                 <p>Azərbaycanın müxtəlif regionlarında {totalJobs} aktiv iş elanı mövcuddur.</p>
-                
+
                 <h2>Bütün Regionlar</h2>
                 <ul>
                     {regions.map(region => {
@@ -126,7 +152,7 @@ export default async function RegionsPage() {
                         );
                     })}
                 </ul>
-                
+
                 <h2>Populyar Regionlar</h2>
                 <ul>
                     {regions.slice(0, 10).map(region => (
@@ -136,7 +162,7 @@ export default async function RegionsPage() {
                     ))}
                 </ul>
             </div>
-            
+
             {/* JSON-LD Structured Data */}
             <script
                 type="application/ld+json"
@@ -144,9 +170,17 @@ export default async function RegionsPage() {
             />
             <script
                 type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(datasetSchema) }}
+            />
+            <script
+                type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }}
             />
-            
+
             <RegionsClient />
         </>
     );

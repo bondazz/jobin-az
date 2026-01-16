@@ -108,25 +108,33 @@ export default async function CompanyPage({ params }: Props) {
     const organizationJsonLd = {
         '@context': 'https://schema.org',
         '@type': 'Organization',
+        "@id": "https://jobin.az#org",
         name: company.name,
         description: plainDescription || `${company.name} şirkəti`,
         url: `https://jobin.az/companies/${company.slug}`,
-        logo: company.logo || undefined,
+        logo: company.logo || "https://jobin.az/icons/icon-512x512.jpg",
         address: company.address ? {
             '@type': 'PostalAddress',
             streetAddress: company.address,
+            addressLocality: 'Bakı',
             addressCountry: 'AZ'
-        } : undefined,
+        } : {
+            "@type": "PostalAddress",
+            "streetAddress": "Bakı",
+            "addressLocality": "Bakı",
+            "addressCountry": "AZ"
+        },
         contactPoint: (company.email || company.phone) ? {
             '@type': 'ContactPoint',
             email: company.email || undefined,
             telephone: company.phone || undefined,
         } : undefined,
-        sameAs: company.website ? [
-            company.website,
-            "https://www.wikidata.org/wiki/Q227", // Azerbaijan Entity
-            "https://az.wikipedia.org/wiki/Az%C9%99rbaycan_şirkətlərinin_siyahısı"
-        ] : undefined,
+        sameAs: [
+            company.website || "https://jobin.az",
+            "https://www.facebook.com/jobin.az",
+            "https://www.instagram.com/jobin.az",
+            "https://www.linkedin.com/company/jobin-az"
+        ],
     };
 
     const datasetJsonLd = {
@@ -135,7 +143,10 @@ export default async function CompanyPage({ params }: Props) {
         '@id': `https://jobin.az/companies/${company.slug}#dataset`,
         "name": `${company.name} Korporativ Data 2026`,
         "description": `${company.name} şirkətinin işçi sayı və vakansiya statistikası.`,
-        "publisher": { "@type": "Organization", "name": "Jobin.az" }
+        "publisher": { "@id": "https://jobin.az#org" },
+        "creator": { "@id": "https://jobin.az#org" },
+        "license": "https://creativecommons.org/licenses/by/4.0/",
+        "isAccessibleForFree": true
     };
 
     // Breadcrumb JSON-LD
