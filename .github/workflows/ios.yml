@@ -15,13 +15,12 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          cache: true
 
       - name: Install Dependencies and CocoaPods
         run: |
           flutter pub get
           cd ios
-          pod install --repo-update
+          pod install
         working-directory: ./Jooble-app
 
       - name: Build Unsigned iOS App Bundle
