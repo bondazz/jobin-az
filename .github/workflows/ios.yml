@@ -23,8 +23,13 @@ jobs:
           channel: 'stable'
           cache: true
 
-      - name: Install Dependencies
-        run: flutter pub get
+      - name: Disable Swift Package Manager
+        run: flutter config --no-enable-swift-package-manager
+
+      - name: Install Dependencies and CocoaPods
+        run: |
+          flutter pub get
+          cd ios && pod install || true
         working-directory: ./Jooble-app
 
       - name: Build iOS App (No Codesign)
@@ -34,7 +39,7 @@ jobs:
       - name: Create Payload and Zip to IPA
         run: |
           cd Jooble-app/build/ios/iphoneos
-          mkdir Payload
+          mkdir -p Payload
           mv Runner.app Payload/
           zip -r Jooble.ipa Payload
         shell: bash
