@@ -32,26 +32,27 @@ jobs:
           cd ios && pod install || true
         working-directory: ./Jooble-app
 
-      - name: Flutter Pre-build iOS Assets
-        run: flutter build ios --release --no-codesign || true
-        working-directory: ./Jooble-app
-
       - name: Xcodebuild Unsigned App Binary
         run: |
           cd Jooble-app
-          xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -sdk iphoneos CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO BUILD_DIR=build
+          xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -sdk iphoneos CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
         shell: bash
 
-      - name: Package Payload to IPA
+      - name: Find Runner.app and Package IPA
         run: |
-          cd Jooble-app/build/Release-iphoneos
+          cd Jooble-app
+          RUNNER_DIR=$(find . -name "Runner.app" -type d | head -n 1)
+          echo "Found Runner.app at: $RUNNER_DIR"
+          BASE_DIR=$(dirname "$RUNNER_DIR")
+          cd "$BASE_DIR"
           mkdir -p Payload
           cp -r Runner.app Payload/
           zip -r Jooble.ipa Payload
+          echo "IPA_PATH=$(pwd)/Jooble.ipa" >> $GITHUB_ENV
         shell: bash
 
       - name: Upload IPA Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Jooble-iOS-IPA
-          path: Jooble-app/build/Release-iphoneos/Jooble.ipa
+          path: Jooble-app/**/Jooble.ipa
