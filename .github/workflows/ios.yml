@@ -11,44 +11,44 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Java JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
           cache: true
 
-      - name: Disable Swift Package Manager
-        run: flutter config --no-enable-swift-package-manager
-
-      - name: Install Dependencies and CocoaPods
+      - name: Install Dependencies & CocoaPods
         run: |
           flutter pub get
-          cd ios && pod install || true
+          cd ios
+          pod install
         working-directory: ./Jooble-app
 
-      - name: Xcodebuild Unsigned App Binary
+      - name: Xcodebuild Unsigned Binary
         run: |
-          cd Jooble-app
-          xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -sdk iphoneos CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+          if [ -d "ios/Runner.xcworkspace" ]; then
+            xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -sdk iphoneos CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+          else
+            xcodebuild -project ios/Runner.xcodeproj -scheme Runner -configuration Release -sdk iphoneos CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+          fi
+        working-directory: ./Jooble-app
         shell: bash
 
       - name: Find Runner.app and Package IPA
         run: |
-          cd Jooble-app
-          RUNNER_DIR=$(find . -name "Runner.app" -type d | head -n 1)
-          echo "Found Runner.app at: $RUNNER_DIR"
-          BASE_DIR=$(dirname "$RUNNER_DIR")
-          cd "$BASE_DIR"
-          mkdir -p Payload
-          cp -r Runner.app Payload/
-          zip -r Jooble.ipa Payload
-          echo "IPA_PATH=$(pwd)/Jooble.ipa" >> $GITHUB_ENV
+          RUNNER_PATH=$(find build -name "Runner.app" -type d | head -n 1)
+          echo "Found Runner.app at: $RUNNER_PATH"
+          if [ -n "$RUNNER_PATH" ]; then
+            BASE_DIR=$(dirname "$RUNNER_PATH")
+            cd "$BASE_DIR"
+            mkdir -p Payload
+            cp -r Runner.app Payload/
+            zip -r Jooble.ipa Payload
+          else
+            echo "Runner.app not found!"
+            exit 1
+          fi
+        working-directory: ./Jooble-app
         shell: bash
 
       - name: Upload IPA Artifact
