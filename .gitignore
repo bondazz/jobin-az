@@ -1,0 +1,22 @@
+# Flutter / Dart
+**/build/
+**/.dart_tool/
+**/.pub/
+**/pubspec.lock
+
+# Node / Next.js
+**/node_modules/
+**/.next/
+**/out/
+
+# Android / iOS
+**/android/.gradle/
+**/android/app/build/
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Runner.xcworkspace/
+
+# Environment / IDE
+.env
+.DS_Store
+*.log

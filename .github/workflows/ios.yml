@@ -1,0 +1,47 @@
+name: Build iOS IPA
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-ios:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Java JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.6'
+          channel: 'stable'
+          cache: true
+
+      - name: Install Dependencies
+        run: flutter pub get
+        working-directory: ./Jooble-app
+
+      - name: Build iOS App (No Codesign)
+        run: flutter build ios --release --no-codesign
+        working-directory: ./Jooble-app
+
+      - name: Create Payload and Zip to IPA
+        run: |
+          cd Jooble-app/build/ios/iphoneos
+          mkdir Payload
+          mv Runner.app Payload/
+          zip -r Jooble.ipa Payload
+        shell: bash
+
+      - name: Upload IPA Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Jooble-iOS-IPA
+          path: Jooble-app/build/ios/iphoneos/Jooble.ipa
