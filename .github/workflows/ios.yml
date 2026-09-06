@@ -32,15 +32,21 @@ jobs:
           cd ios && pod install || true
         working-directory: ./Jooble-app
 
-      - name: Build iOS App (No Codesign)
-        run: flutter build ios --release --no-codesign
+      - name: Flutter Pre-build iOS Assets
+        run: flutter build ios --release --no-codesign || true
         working-directory: ./Jooble-app
 
-      - name: Create Payload and Zip to IPA
+      - name: Xcodebuild Unsigned App Binary
         run: |
-          cd Jooble-app/build/ios/iphoneos
+          cd Jooble-app
+          xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -sdk iphoneos CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO BUILD_DIR=build
+        shell: bash
+
+      - name: Package Payload to IPA
+        run: |
+          cd Jooble-app/build/Release-iphoneos
           mkdir -p Payload
-          mv Runner.app Payload/
+          cp -r Runner.app Payload/
           zip -r Jooble.ipa Payload
         shell: bash
 
@@ -48,4 +54,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Jooble-iOS-IPA
-          path: Jooble-app/build/ios/iphoneos/Jooble.ipa
+          path: Jooble-app/build/Release-iphoneos/Jooble.ipa
