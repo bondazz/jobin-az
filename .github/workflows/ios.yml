@@ -17,38 +17,27 @@ jobs:
           channel: 'stable'
           cache: true
 
-      - name: Install Dependencies & CocoaPods
+      - name: Install Dependencies and CocoaPods
         run: |
           flutter pub get
           cd ios
-          pod install
+          pod install --repo-update
         working-directory: ./Jooble-app
 
-      - name: Xcodebuild Unsigned Binary
-        run: |
-          if [ -d "ios/Runner.xcworkspace" ]; then
-            xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -sdk iphoneos CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
-          else
-            xcodebuild -project ios/Runner.xcodeproj -scheme Runner -configuration Release -sdk iphoneos CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
-          fi
+      - name: Build Unsigned iOS App Bundle
+        run: flutter build ios --release --no-codesign
         working-directory: ./Jooble-app
-        shell: bash
 
-      - name: Find Runner.app and Package IPA
+      - name: Package Payload into IPA
         run: |
+          cd Jooble-app
           RUNNER_PATH=$(find build -name "Runner.app" -type d | head -n 1)
           echo "Found Runner.app at: $RUNNER_PATH"
-          if [ -n "$RUNNER_PATH" ]; then
-            BASE_DIR=$(dirname "$RUNNER_PATH")
-            cd "$BASE_DIR"
-            mkdir -p Payload
-            cp -r Runner.app Payload/
-            zip -r Jooble.ipa Payload
-          else
-            echo "Runner.app not found!"
-            exit 1
-          fi
-        working-directory: ./Jooble-app
+          BASE_DIR=$(dirname "$RUNNER_PATH")
+          cd "$BASE_DIR"
+          mkdir -p Payload
+          cp -r Runner.app Payload/
+          zip -r Jooble.ipa Payload
         shell: bash
 
       - name: Upload IPA Artifact
