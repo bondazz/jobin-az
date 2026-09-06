@@ -825,7 +825,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen>
           ),
           // Instagram
           _buildSocialIcon(
-            icon: LucideIcons.instagram,
+            icon: LucideIcons.camera,
             color: const Color(0xFFE1306C),
             url: 'https://instagram.com/jooble.az',
           ),
@@ -843,7 +843,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen>
           ),
           // Facebook
           _buildSocialIcon(
-            icon: LucideIcons.facebook,
+            icon: LucideIcons.thumbsUp,
             color: const Color(0xFF1877F2),
             url: 'https://www.facebook.com/people/joobleaz/61582558110105',
           ),
