@@ -1,0 +1,15 @@
+UPDATE public.jobs
+SET created_at = CASE id
+  WHEN '3d1f538e-3e74-4522-af55-bba519a5d00d' THEN '2026-03-10 09:51:45.454+00'::timestamptz
+  WHEN '7f002316-7ae1-4078-84cc-d386df488554' THEN '2026-03-10 09:19:40.607+00'::timestamptz
+  WHEN '84b72320-3f3c-4bfb-85e2-581c274f8676' THEN '2026-03-10 09:03:48.850+00'::timestamptz
+  WHEN '4d8e76b3-089e-44a9-8776-561c27dd7e51' THEN '2026-03-10 08:13:32.075+00'::timestamptz
+  WHEN 'd931800f-2eeb-4ae4-8eb8-0b4249934e94' THEN '2026-03-10 07:48:11.190+00'::timestamptz
+END
+WHERE id IN (
+  '3d1f538e-3e74-4522-af55-bba519a5d00d',
+  '7f002316-7ae1-4078-84cc-d386df488554',
+  '84b72320-3f3c-4bfb-85e2-581c274f8676',
+  '4d8e76b3-089e-44a9-8776-561c27dd7e51',
+  'd931800f-2eeb-4ae4-8eb8-0b4249934e94'
+);

@@ -1,0 +1,55 @@
+project_id = "igrtzfvphltnoiwedbtz"
+
+[functions.prerender-proxy]
+verify_jwt = false
+
+[functions.sitemap-xml]
+verify_jwt = false
+
+[functions.sitemap-index]
+verify_jwt = false
+
+[functions.serve-sitemap]
+verify_jwt = false
+
+[functions.sitemap-main]
+verify_jwt = false
+
+[functions.generate-sitemaps]
+verify_jwt = false
+
+[functions.indexnew]
+verify_jwt = false
+
+[functions.send-verification-email]
+verify_jwt = false
+
+[functions.upload-to-ftp]
+verify_jwt = false
+
+[functions.save-sitemap]
+verify_jwt = false
+
+[functions.google-indexing]
+verify_jwt = true
+
+[functions.update-sitemap]
+verify_jwt = false
+
+[functions.expire-premium-tags]
+verify_jwt = false
+
+[functions.get-vapid-public-key]
+verify_jwt = false
+
+[functions.process-pending-notifications]
+verify_jwt = false
+
+[functions.epoint-callback]
+verify_jwt = false
+
+[functions.epoint-create-payment]
+verify_jwt = false
+
+[functions.scrape-jobs]
+verify_jwt = false

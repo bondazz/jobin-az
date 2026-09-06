@@ -1,0 +1,27 @@
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Bloq | Jooble.az - Karyera Məqalələri və İş Axtarışı Məsləhətləri",
+  description: "Karyera inkişafı, iş axtarışı, CV yazma, müsahibə hazırlığı və əmək bazarı haqqında ən son məqalələr. Jooble.az bloqu ilə karyeranızı inkişaf etdirin.",
+  keywords: ["karyera", "iş axtarışı", "CV", "müsahibə", "əmək bazarı", "bloq", "məqalə"],
+  alternates: {
+    canonical: 'https://jooble.az/blog',
+    languages: {
+      'az': 'https://jooble.az/blog',
+      'en': 'https://jooble.az/en/blog',
+      'ru': 'https://jooble.az/ru/blog',
+      'x-default': 'https://jooble.az/blog',
+    },
+  },
+  openGraph: {
+    title: "Bloq | Jooble.az - Karyera Məqalələri",
+    description: "Karyera inkişafı və iş axtarışı haqqında məqalələr",
+    type: "website",
+    url: "https://jooble.az/blog",
+  },
+};
+
+export default function BlogPage() {
+  // This page just provides metadata, the layout handles rendering BlogClient
+  return null;
+}

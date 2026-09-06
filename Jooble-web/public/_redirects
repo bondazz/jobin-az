@@ -1,0 +1,25 @@
+# Netlify-style redirects to serve dynamic sitemaps from Supabase Edge Functions
+# This ensures Googlebot gets XML directly from jooble.az paths
+
+# Canonical URLs handled via meta tags instead of redirects
+
+/sitemap.xml https://igrtzfvphltnoiwedbtz.supabase.co/storage/v1/object/public/sitemaps/sitemap.xml 200
+/sitemaps.xml https://igrtzfvphltnoiwedbtz.supabase.co/storage/v1/object/public/sitemaps/sitemaps.xml 200
+/sitemap_new.xml https://igrtzfvphltnoiwedbtz.supabase.co/storage/v1/object/public/sitemaps/sitemap_new.xml 200
+/sitemap_job.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap-jobs 200
+/sitemap1.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/sitemap-xml 200
+/sitemap_index.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap_index.xml 200
+/sitemap_main.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap_main.xml 200
+/sitemapjooble.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemapjooble.xml 200
+/sitemap-static.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap-static.xml 200
+/sitemap-categories.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap-categories.xml 200
+/sitemap_static.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap_static.xml 200
+/sitemap_categories.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap_categories.xml 200
+/sitemap_companies.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap_companies.xml 200
+/sitemap_jobs.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap_jobs.xml 200
+
+# Chunked sitemaps
+/sitemap-jobs-:page.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap-jobs-:page.xml 200
+/sitemap-companies-:page.xml https://igrtzfvphltnoiwedbtz.supabase.co/functions/v1/serve-sitemap?file=sitemap-companies-:page.xml 200
+
+# Catch-all disabled to prevent SPA redirect to home for XML routes
